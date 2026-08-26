@@ -9,10 +9,10 @@ export function Settings() {
   const navigate = useNavigate();
 
   const handleReset = () => {
-    const message = language === 'id' 
+    const message = language === 'id'
       ? "Apakah Anda yakin ingin mereset semua kemajuan? Ini tidak dapat dibatalkan."
       : "Are you sure you want to reset all progress? This cannot be undone.";
-      
+
     const confirmed = window.confirm(message);
     if (confirmed) {
       resetProgress();
@@ -83,7 +83,7 @@ export function Settings() {
               </h2>
               <div className="h-[2px] flex-1 bg-sumi/10"></div>
             </div>
-            
+
             <div className="border-[3px] border-sumi bg-kinari-light p-6 sm:p-8 relative overflow-hidden shadow-[4px_4px_0_0_rgba(26,26,26,0.06)]">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 <img
@@ -96,7 +96,7 @@ export function Settings() {
                     Panji Japanese Club
                   </h3>
                   <p className="text-sm font-medium text-sumi/80 leading-relaxed">
-                    Aplikasi ini didedikasikan untuk <strong className="text-sumi font-bold">Panji Japanese Club</strong> guna membantu anggota menguasai JLPT N5. Dikembangkan sepenuh hati oleh <strong className="text-ai font-bold">Madd</strong>.
+                    Aplikasi ini dibuat khusus untuk <strong className="text-sumi font-bold">PJC</strong> belajar menguasai JLPT N5. Credit by. <strong className="text-ai font-bold">Madd</strong>.
                   </p>
                 </div>
               </div>
@@ -119,8 +119,8 @@ export function Settings() {
                     {language === 'id' ? 'Reset Semua Data' : 'Reset All Progress'}
                   </h3>
                   <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 max-w-sm leading-relaxed">
-                    {language === 'id' 
-                      ? 'Menghapus permanen semua XP, data penguasaan, pencapaian, dan item lemah. Tindakan ini tidak dapat dibatalkan.' 
+                    {language === 'id'
+                      ? 'Menghapus permanen semua XP, data penguasaan, pencapaian, dan item lemah. Tindakan ini tidak dapat dibatalkan.'
                       : 'Permanently deletes all XP, mastery data, achievements, and weak items. This action cannot be undone.'}
                   </p>
                 </div>
