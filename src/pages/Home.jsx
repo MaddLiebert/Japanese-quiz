@@ -158,7 +158,7 @@ export function Home() {
 
               <div className="flex flex-col gap-4 pb-6 sm:pb-8 relative z-10">
                 <div>
-                  <h3 className="text-3xl sm:text-4xl font-bold text-sumi font-serif leading-tight">JLPT N5<br/>Mastery</h3>
+                  <h3 className="text-3xl sm:text-4xl font-bold text-sumi font-serif leading-tight">JLPT N5<br />Mastery</h3>
                   <p className="text-xs text-sumi/70 mt-3 uppercase tracking-[0.2em] font-bold">
                     {language === 'id'
                       ? 'Kuasai 800+ Kosakata, Tata Bahasa, dan Kanji.'
@@ -289,13 +289,13 @@ export function Home() {
             className="h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300 rounded-sm"
           />
           <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-sumi/60">
-            Dedicated to <span className="text-sumi font-black">Panji Japanese Club</span>
+            Dibuat Untuk <span className="text-sumi font-black">Panji Japanese Club</span>
           </span>
         </div>
 
         {/* Center */}
         <div className="text-[11px] tracking-[0.2em] uppercase font-bold text-sumi/50 text-center">
-          Crafted by <span className="font-bold text-ai">@MaddLiebert</span>
+          Credit by:<span className="font-bold text-ai">@MaddLiebert</span>
         </div>
 
         {/* Right */}

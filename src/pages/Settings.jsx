@@ -96,7 +96,7 @@ export function Settings() {
                     Panji Japanese Club
                   </h3>
                   <p className="text-sm font-medium text-sumi/80 leading-relaxed">
-                    Aplikasi ini dibuat khusus untuk <strong className="text-sumi font-bold">PJC</strong> belajar menguasai JLPT N5. Credit by. <strong className="text-ai font-bold">Madd</strong>.
+                    Aplikasi ini dibuat khusus untuk <strong className="text-sumi font-bold">PJC</strong> belajar menguasai JLPT N5. Credit by: <strong className="text-ai font-bold">Madd</strong>.
                   </p>
                 </div>
               </div>
