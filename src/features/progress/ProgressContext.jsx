@@ -54,6 +54,14 @@ export const ProgressProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : DEFAULT_ACHIEVEMENTS;
   });
 
+  const [username, setUsername] = useState(() => {
+    return localStorage.getItem('username') || '';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('username', username);
+  }, [username]);
+
   useEffect(() => {
     localStorage.setItem('user_progress', JSON.stringify(progress));
   }, [progress]);
@@ -142,6 +150,7 @@ export const ProgressProvider = ({ children }) => {
   return (
     <ProgressContext.Provider value={{
       progress, masteryData, weakItems, achievements, ACHIEVEMENT_META,
+      username, setUsername,
       addXp, setProgress, setMasteryData, setWeakItems, resetProgress
     }}>
       {children}

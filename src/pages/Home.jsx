@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "motion/react";
 import { Button } from "../components/ui/Button";
 import { useProgress } from "../features/progress/ProgressContext";
@@ -35,7 +36,8 @@ const AchievementStamp = ({ id, meta, index }) => (
 );
 
 export function Home() {
-  const { progress, weakItems, achievements, ACHIEVEMENT_META } = useProgress();
+  const { progress, weakItems, achievements, ACHIEVEMENT_META, username, setUsername } = useProgress();
+  const [inputName, setInputName] = useState("");
   const navigate = useNavigate();
   const { language } = useLanguage();
 
@@ -43,6 +45,63 @@ export function Home() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+      {/* Soft Login Modal */}
+      {!username && (
+        <div className="fixed inset-0 z-50 bg-kinari flex items-center justify-center p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-md border-[4px] border-sumi bg-kinari-light p-8 shadow-[8px_8px_0_0_#1a1a1a] relative"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-sumi text-kinari-light flex items-center justify-center font-serif text-xl font-black">
+                名
+              </div>
+              <div>
+                <h3 className="text-xl font-serif font-black text-sumi">
+                  {language === 'id' ? 'Selamat Datang' : 'Welcome'}
+                </h3>
+                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-sumi/60">
+                  {language === 'id' ? 'Masukkan Nama Pengguna' : 'Enter Your Nickname'}
+                </p>
+              </div>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (inputName.trim()) {
+                  setUsername(inputName.trim());
+                }
+              }}
+              className="flex flex-col gap-4"
+            >
+              <input
+                type="text"
+                required
+                value={inputName}
+                onChange={(e) => setInputName(e.target.value)}
+                placeholder="Masukkan Nickname-mu..."
+                className="w-full border-[3px] border-sumi bg-kinari px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none focus:bg-kinari-light transition-colors"
+                autoFocus
+              />
+              <Button
+                type="submit"
+                className="w-full bg-ai text-kinari-light rounded-none border-[3px] border-sumi text-xs py-3.5 uppercase font-bold tracking-widest shadow-[4px_4px_0_0_#1a1a1a] hover:shadow-[1px_1px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              >
+                {language === 'id' ? 'Masuk' : 'Submit'}
+              </Button>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Greeting */}
+      {username && (
+        <div className="text-xs uppercase tracking-widest font-bold text-sumi/60 mb-4">
+          Okaeri, {username} 🎌
+        </div>
+      )}
 
       {/* Outer Editorial Frame (Magazine Spread Concept) */}
       <motion.div

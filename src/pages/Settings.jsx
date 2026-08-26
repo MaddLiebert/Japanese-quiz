@@ -4,7 +4,7 @@ import { useProgress } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
 
 export function Settings() {
-  const { resetProgress } = useProgress();
+  const { resetProgress, username, setUsername } = useProgress();
   const { language } = useLanguage();
   const navigate = useNavigate();
 
@@ -50,6 +50,30 @@ export function Settings() {
         </header>
 
         <div className="p-6 sm:p-12 relative z-10 space-y-16">
+
+          {/* Profile / General Settings */}
+          <section>
+            <div className="flex items-center gap-4 mb-8">
+              <h2 className="text-2xl font-serif font-bold text-sumi">
+                {language === 'id' ? 'Profil Pengguna' : 'User Profile'}
+              </h2>
+              <div className="h-[2px] flex-1 bg-sumi/10"></div>
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">名前</span>
+            </div>
+
+            <div className="border-[3px] border-sumi/20 bg-kinari p-6 sm:p-8">
+              <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-3">
+                {language === 'id' ? 'Nama Panggilan / Nickname' : 'Nickname'}
+              </label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Masukkan Nickname-mu..."
+                className="w-full sm:max-w-md border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none focus:border-ai transition-colors"
+              />
+            </div>
+          </section>
 
           {/* App info section */}
           <section>
