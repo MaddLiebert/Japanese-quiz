@@ -75,6 +75,34 @@ export function Settings() {
             </div>
           </section>
 
+          {/* Dedication section */}
+          <section>
+            <div className="flex items-center gap-4 mb-8">
+              <h2 className="text-2xl font-serif font-bold text-sumi">
+                Dedication <span className="text-sm font-sans font-normal text-sumi/40">/ 献身</span>
+              </h2>
+              <div className="h-[2px] flex-1 bg-sumi/10"></div>
+            </div>
+            
+            <div className="border-[3px] border-sumi bg-kinari-light p-6 sm:p-8 relative overflow-hidden shadow-[4px_4px_0_0_rgba(26,26,26,0.06)]">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                <img
+                  src="/logo-eskul.jpeg"
+                  alt="Logo Panji Japanese Club"
+                  className="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300 flex-shrink-0 rounded-sm"
+                />
+                <div className="space-y-2">
+                  <h3 className="text-lg font-serif font-bold text-sumi">
+                    Panji Japanese Club
+                  </h3>
+                  <p className="text-sm font-medium text-sumi/80 leading-relaxed">
+                    Aplikasi ini didedikasikan untuk <strong className="text-sumi font-bold">Panji Japanese Club</strong> guna membantu anggota menguasai JLPT N5. Dikembangkan sepenuh hati oleh <strong className="text-ai font-bold">Madd</strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Danger zone */}
           <section>
             <div className="flex items-center gap-4 mb-8">

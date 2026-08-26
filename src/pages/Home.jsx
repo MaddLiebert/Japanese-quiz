@@ -279,16 +279,34 @@ export function Home() {
 
       </motion.div>
 
-      {/* Subtle Settings Link */}
-      <div className="flex justify-end mt-6 px-1">
+      {/* Footer / Hybrid Credits */}
+      <footer className="mt-8 pt-4 border-t-[3px] border-sumi/10 flex flex-col sm:flex-row items-center justify-between gap-4 px-1">
+        {/* Left */}
+        <div className="flex items-center gap-3">
+          <img
+            src="/logo-eskul.jpeg"
+            alt="Logo Eskul"
+            className="h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300 rounded-sm"
+          />
+          <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-sumi/60">
+            Dedicated to <span className="text-sumi font-black">Panji Japanese Club</span>
+          </span>
+        </div>
+
+        {/* Center */}
+        <div className="text-[11px] tracking-[0.2em] uppercase font-bold text-sumi/50 text-center">
+          Crafted by <span className="font-bold text-ai">@MaddLiebert</span>
+        </div>
+
+        {/* Right */}
         <button
           onClick={() => navigate('/settings')}
-          className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/30 hover:text-sumi/60 transition-colors group"
+          className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40 hover:text-sumi transition-colors group"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-45 transition-transform duration-300"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
           {language === 'id' ? 'Pengaturan' : 'Settings'}
         </button>
-      </div>
+      </footer>
     </div>
   );
 }
