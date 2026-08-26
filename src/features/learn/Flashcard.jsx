@@ -69,7 +69,7 @@ export function Flashcard({ kana, isMastered, onToggleMastery }) {
             </>
           ) : (
             /* Kana front: giant single character */
-            <h2 className="text-[10rem] sm:text-[12rem] font-serif text-sumi leading-none -ml-4 z-10 select-none">
+            <h2 className="text-7xl sm:text-9xl md:text-[11rem] font-serif text-sumi leading-none z-10 select-none text-center break-words max-w-full">
               {kana.char}
             </h2>
           )}

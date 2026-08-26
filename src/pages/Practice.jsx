@@ -26,12 +26,12 @@ function KanaTypeToggle({ active, onChange }) {
     { id: 'mixed', label: 'Mixed', jp: '混合' }
   ];
   return (
-    <div className="flex items-end gap-8 border-b-[2px] border-sumi/10 pb-0 mb-12">
+    <div className="flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 pb-0 mb-8 sm:mb-12 overflow-x-auto no-scrollbar flex-nowrap">
       {tabs.map(tab => (
         <button
           key={tab.id}
           onClick={() => onChange(tab.id)}
-          className={`pb-4 flex flex-col items-start gap-1 transition-colors border-b-[4px] -mb-[2px] ${active === tab.id
+          className={`pb-4 flex flex-col items-start gap-1 transition-colors border-b-[4px] -mb-[2px] shrink-0 ${active === tab.id
               ? 'border-ai text-ai'
               : 'border-transparent text-sumi/40 hover:text-sumi/70'
             }`}
@@ -332,7 +332,7 @@ export function Practice() {
                   </button>
 
                   {/* Kanji character — extra large */}
-                  <h2 className="text-[8rem] sm:text-[11rem] font-serif font-black text-sumi leading-none select-none relative z-10">
+                  <h2 className="text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-serif font-black text-sumi leading-none select-none relative z-10 text-center break-words max-w-full">
                     {currentQuestion.char}
                   </h2>
 
@@ -506,7 +506,7 @@ export function Practice() {
                   </button>
 
                   {/* Japanese character */}
-                  <h2 className="text-[7rem] sm:text-[9rem] font-serif font-black text-sumi leading-none select-none relative z-10">
+                  <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black text-sumi leading-tight select-none relative z-10 text-center break-words max-w-full">
                     {currentQuestion.char}
                   </h2>
 
@@ -645,11 +645,11 @@ export function Practice() {
                 <Volume2 size={20} />
               </button>
               {isGrammarMode ? (
-                <h2 className="text-4xl sm:text-5xl font-serif font-black text-sumi leading-normal select-none drop-shadow-sm px-4">
+                <h2 className="text-3xl sm:text-5xl font-serif font-black text-sumi leading-normal select-none drop-shadow-sm px-2 sm:px-4 text-center break-words max-w-full">
                   {currentQuestion.char}
                 </h2>
               ) : (
-                <h2 className="text-[10rem] sm:text-[14rem] font-serif font-black text-sumi leading-none select-none drop-shadow-sm">
+                <h2 className="text-7xl sm:text-9xl md:text-[11rem] lg:text-[13rem] font-serif font-black text-sumi leading-none select-none drop-shadow-sm text-center break-words max-w-full">
                   {currentQuestion.char}
                 </h2>
               )}
@@ -713,12 +713,12 @@ export function Practice() {
       >
         <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
       </button>
-      <header className="mb-16 border-b-[4px] border-sumi pb-8 relative">
+      <header className="mb-12 sm:mb-16 border-b-[4px] border-sumi pb-6 sm:pb-8 relative">
         <div className="absolute top-0 right-0 w-32 h-32 bg-asanoha opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
-        <h1 className="text-6xl sm:text-7xl font-serif font-black text-sumi tracking-tighter relative z-10">
+        <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-black text-sumi tracking-tighter relative z-10">
           {language === 'id' ? 'Sesi' : 'Practice'} <span className="text-ai">{language === 'id' ? 'Latihan' : 'Session'}</span>
         </h1>
-        <p className="text-xs font-bold tracking-[0.3em] uppercase text-sumi/60 mt-4 relative z-10">
+        <p className="text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-sumi/60 mt-3 sm:mt-4 relative z-10">
           {language === 'id' ? 'Atur pengaturan kuis kamu di sini' : 'Configure your quiz parameters'}
         </p>
       </header>

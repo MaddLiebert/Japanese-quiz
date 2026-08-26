@@ -41,10 +41,10 @@ export function Settings() {
           >
             <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
           </button>
-          <h1 className="text-5xl sm:text-7xl font-serif font-black text-sumi tracking-tighter">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-black text-sumi tracking-tighter">
             設定 <span className="text-shu">{language === 'id' ? 'Pengaturan' : 'Settings'}</span>
           </h1>
-          <p className="text-xs font-bold tracking-[0.3em] uppercase text-sumi/60 mt-4">
+          <p className="text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-sumi/60 mt-3 sm:mt-4">
             {language === 'id' ? 'Konfigurasi aplikasi dan manajemen data' : 'Application configuration and data management'}
           </p>
         </header>

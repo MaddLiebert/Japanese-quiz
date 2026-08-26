@@ -87,7 +87,7 @@ export function Home() {
               transition={{ delay: 0.3 }}
               className="relative z-10"
             >
-              <h1 className="text-6xl sm:text-8xl md:text-9xl font-serif font-black text-sumi tracking-tighter leading-[0.9]">
+              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black text-sumi tracking-tighter leading-[0.9]">
                 日本語<br />
                 <span className="text-shu">基礎</span>
               </h1>
@@ -150,9 +150,9 @@ export function Home() {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="relative z-10"
               >
-                <h2 className="text-[7rem] sm:text-[9rem] font-serif leading-none text-sumi -ml-4 group-hover:text-ai transition-colors duration-500 drop-shadow-md tracking-tight">合格</h2>
-                <div className="absolute bottom-4 -right-4 w-16 h-16 rounded-full border-[3px] border-shu text-shu flex items-center justify-center transform rotate-12 bg-kinari-light/90 shadow-sm">
-                  <span className="font-serif font-black text-xl">N5</span>
+                <h2 className="text-6xl sm:text-8xl md:text-9xl font-serif leading-none text-sumi -ml-2 sm:-ml-4 group-hover:text-ai transition-colors duration-500 drop-shadow-md tracking-tight">合格</h2>
+                <div className="absolute bottom-2 -right-2 sm:bottom-4 sm:-right-4 w-12 h-12 sm:w-16 sm:h-16 rounded-full border-[3px] border-shu text-shu flex items-center justify-center transform rotate-12 bg-kinari-light/90 shadow-sm">
+                  <span className="font-serif font-black text-base sm:text-xl">N5</span>
                 </div>
               </motion.div>
 

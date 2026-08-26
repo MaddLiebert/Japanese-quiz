@@ -23,12 +23,12 @@ function KanaTypeToggle({ active, onChange }) {
     { id: 'grammar', label: 'Grammar', jp: '文法' },
   ];
   return (
-    <div className="flex items-end gap-8 border-b-[2px] border-sumi/10 pb-0 mb-12">
+    <div className="flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 pb-0 mb-8 sm:mb-12 overflow-x-auto no-scrollbar flex-nowrap">
       {tabs.map(tab => (
         <button
           key={tab.id}
           onClick={() => onChange(tab.id)}
-          className={`pb-4 flex flex-col items-start gap-1 transition-colors border-b-[4px] -mb-[2px] ${
+          className={`pb-4 flex flex-col items-start gap-1 transition-colors border-b-[4px] -mb-[2px] shrink-0 ${
             active === tab.id
               ? 'border-ai text-ai'
               : 'border-transparent text-sumi/40 hover:text-sumi/70'
@@ -112,7 +112,7 @@ export function Learn() {
         </button>
         <header className="mb-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-48 h-48 bg-seigaiha opacity-[0.05] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
-          <h1 className="text-6xl sm:text-8xl font-serif font-black text-sumi tracking-tighter relative z-10">
+          <h1 className="text-4xl sm:text-7xl md:text-8xl font-serif font-black text-sumi tracking-tighter relative z-10">
             {language === 'id' ? 'Belajar' : 'Learn'} <span className="text-shu">
               {activeKanaType === 'hiragana' ? 'Hiragana'
                 : activeKanaType === 'katakana' ? 'Katakana'
@@ -121,7 +121,7 @@ export function Learn() {
                 : 'Kotoba'}
             </span>
           </h1>
-          <p className="text-xs font-bold tracking-[0.3em] uppercase text-sumi/60 mt-6 relative z-10">
+          <p className="text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-sumi/60 mt-4 sm:mt-6 relative z-10">
             {language === 'id' ? 'Pilih kategori untuk mulai belajar' : 'Select a row to begin your study session'}
           </p>
         </header>
