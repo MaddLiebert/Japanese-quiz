@@ -36,7 +36,13 @@ body {
   background-color: var(--kinari-val);
   color: var(--sumi-val);
   font-family: var(--font-sans);
-  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Smooth synchronized theme transition */
+html, body, div, header, main, section, footer, article, nav, aside, button, input, span, h1, h2, h3, h4, p, a {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .font-serif {

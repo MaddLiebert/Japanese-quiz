@@ -44,7 +44,7 @@ function App() {
       <LanguageProvider>
         <ProgressProvider>
           <BrowserRouter>
-            <div className="min-h-screen relative font-sans selection:bg-ai/20 overflow-x-hidden bg-[var(--backdrop-val)] transition-colors duration-300">
+            <div className="min-h-screen relative font-sans selection:bg-ai/20 overflow-x-hidden bg-[var(--backdrop-val)]">
           
               {/* 1. Global Washi Texture overlay */}
               <div 
