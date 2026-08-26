@@ -1,21 +1,42 @@
 @import "tailwindcss";
 
+:root {
+  --sumi-val: #1a1a1a;
+  --ai-val: #182b49;
+  --shu-val: #d3382f;
+  --kinari-val: #f3f0e8;
+  --kinari-light-val: #fdfcf9;
+  --matcha-val: #7d8f69;
+  --backdrop-val: #e8e4d9;
+}
+
+.dark, [data-theme="dark"] {
+  --sumi-val: #f3efe6;
+  --ai-val: #4f80c2;
+  --shu-val: #ef4c3c;
+  --kinari-val: #141517;
+  --kinari-light-val: #1c1d21;
+  --matcha-val: #8fa874;
+  --backdrop-val: #0c0d0f;
+}
+
 @theme {
-  --color-sumi: #1a1a1a;
-  --color-ai: #182b49;
-  --color-shu: #d3382f;
-  --color-kinari: #f3f0e8;
-  --color-kinari-light: #fdfcf9;
-  --color-matcha: #7d8f69;
+  --color-sumi: var(--sumi-val);
+  --color-ai: var(--ai-val);
+  --color-shu: var(--shu-val);
+  --color-kinari: var(--kinari-val);
+  --color-kinari-light: var(--kinari-light-val);
+  --color-matcha: var(--matcha-val);
   
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-serif: "Noto Serif JP", "Shippori Mincho", "Yu Mincho", serif;
 }
 
 body {
-  background-color: var(--color-kinari);
-  color: var(--color-sumi);
+  background-color: var(--kinari-val);
+  color: var(--sumi-val);
   font-family: var(--font-sans);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .font-serif {
@@ -32,14 +53,26 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg stroke='%231a1a1a' stroke-width='2' fill='none' opacity='0.15'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='30'/%3E%3Ccircle cx='0' cy='60' r='10'/%3E%3Ccircle cx='0' cy='60' r='20'/%3E%3Ccircle cx='0' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3C/g%3E%3C/svg%3E");
 }
 
+.dark .bg-seigaiha, [data-theme="dark"] .bg-seigaiha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg stroke='%23ffffff' stroke-width='2' fill='none' opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='30'/%3E%3Ccircle cx='0' cy='60' r='10'/%3E%3Ccircle cx='0' cy='60' r='20'/%3E%3Ccircle cx='0' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3C/g%3E%3C/svg%3E");
+}
+
 /* Asanoha (Hemp leaf) Pattern */
 .bg-asanoha {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30 Z' fill='none' stroke='%231a1a1a' stroke-width='1' opacity='0.2'/%3E%3Cpath d='M0 0 L60 60 M60 0 L0 60 M30 0 L30 60 M0 30 L60 30' stroke='%231a1a1a' stroke-width='1' opacity='0.2'/%3E%3C/svg%3E");
 }
 
+.dark .bg-asanoha, [data-theme="dark"] .bg-asanoha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30 Z' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.08'/%3E%3Cpath d='M0 0 L60 60 M60 0 L0 60 M30 0 L30 60 M0 30 L60 30' stroke='%23ffffff' stroke-width='1' opacity='0.08'/%3E%3C/svg%3E");
+}
+
 /* Ichimatsu Pattern */
 .bg-ichimatsu {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='20' height='20' fill='%231a1a1a' opacity='0.03'/%3E%3Crect x='20' y='20' width='20' height='20' fill='%231a1a1a' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+.dark .bg-ichimatsu, [data-theme="dark"] .bg-ichimatsu {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='20' height='20' fill='%23ffffff' opacity='0.03'/%3E%3Crect x='20' y='20' width='20' height='20' fill='%23ffffff' opacity='0.03'/%3E%3C/svg%3E");
 }
 
 /* Hide scrollbar for clean horizontal tabs on mobile */

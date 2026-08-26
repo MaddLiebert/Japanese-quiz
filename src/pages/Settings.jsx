@@ -2,10 +2,12 @@ import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { useProgress } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext";
 
 export function Settings() {
   const { resetProgress, username, setUsername } = useProgress();
   const { language } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleReset = () => {
@@ -55,23 +57,57 @@ export function Settings() {
           <section>
             <div className="flex items-center gap-4 mb-8">
               <h2 className="text-2xl font-serif font-bold text-sumi">
-                {language === 'id' ? 'Profil Pengguna' : 'User Profile'}
+                {language === 'id' ? 'Profil & Tampilan' : 'Profile & Appearance'}
               </h2>
               <div className="h-[2px] flex-1 bg-sumi/10"></div>
-              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">名前</span>
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">設定</span>
             </div>
 
-            <div className="border-[3px] border-sumi/20 bg-kinari p-6 sm:p-8">
-              <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-3">
-                {language === 'id' ? 'Nama Panggilan / Nickname' : 'Nickname'}
-              </label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Masukkan Nickname-mu..."
-                className="w-full sm:max-w-md border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none focus:border-ai transition-colors"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* Nickname Input */}
+              <div className="border-[3px] border-sumi/20 bg-kinari p-6 flex flex-col justify-between">
+                <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-3">
+                  {language === 'id' ? 'Nama Panggilan / Nickname' : 'Nickname'}
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Masukkan Nickname-mu..."
+                  className="w-full border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none focus:border-ai transition-colors"
+                />
+              </div>
+
+              {/* Theme Mode Toggle */}
+              <div className="border-[3px] border-sumi/20 bg-kinari p-6 flex flex-col justify-between">
+                <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-3">
+                  {language === 'id' ? 'Tema Tampilan' : 'Theme Mode'}
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setTheme('light')}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      theme === 'light'
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    <span>☀️</span> {language === 'id' ? 'Terang' : 'Light'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTheme('dark')}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      theme === 'dark'
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    <span>🌙</span> {language === 'id' ? 'Gelap' : 'Dark'}
+                  </button>
+                </div>
+              </div>
             </div>
           </section>
 
