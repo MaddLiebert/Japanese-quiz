@@ -1,0 +1,479 @@
+[
+  {
+    "id": "g_ni_freq",
+    "char": "に",
+    "romaji": "ni",
+    "question": "わたしは いっかげつ ___ 2かい、ギターを ならっています。",
+    "answer": "ni",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_ya_list",
+    "char": "や",
+    "romaji": "ya",
+    "question": "にちようびに かいもの ___ さんぽを します。",
+    "answer": "ya",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_de_place",
+    "char": "で",
+    "romaji": "de",
+    "question": "わたしの ははは ぎんこう ___ はたらいています。",
+    "answer": "de",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_ga_desire",
+    "char": "が",
+    "romaji": "ga",
+    "question": "わたしは あたらしい カメラ ___ ほしいです。",
+    "answer": "ga",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_mo_nothing",
+    "char": "何も",
+    "romaji": "nanimo",
+    "question": "デパートに いきましたが、___ かいませんでした。",
+    "answer": "nanimo",
+    "type": "grammar",
+    "category": "Adverbs"
+  },
+  {
+    "id": "g_zutto_compare",
+    "char": "ずっと",
+    "romaji": "zutto",
+    "question": "Aしょくどうの ラーメンは、だいがくの ラーメンより ___ おいしいです。",
+    "answer": "zutto",
+    "type": "grammar",
+    "category": "Adverbs"
+  },
+  {
+    "id": "g_wa_topic",
+    "char": "は",
+    "romaji": "wa",
+    "question": "わたし ___ がくせいです。",
+    "answer": "wa",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_wo_object",
+    "char": "を",
+    "romaji": "wo",
+    "question": "まいいち パン ___ たべます。",
+    "answer": "wo",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_ni_time",
+    "char": "に",
+    "romaji": "ni",
+    "question": "まいあさ 6じ ___ おきます。",
+    "answer": "ni",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_ni_destination",
+    "char": "に",
+    "romaji": "ni",
+    "question": "あした とうきょう ___ いきます。",
+    "answer": "ni",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_de_tool",
+    "char": "で",
+    "romaji": "de",
+    "question": "はし ___ ごはんを たべます。",
+    "answer": "de",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_ga_suki",
+    "char": "が",
+    "romaji": "ga",
+    "question": "わたしは いぬ ___ すきです。",
+    "answer": "ga",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_to_with",
+    "char": "と",
+    "romaji": "to",
+    "question": "ともだち ___ えいがを みます。",
+    "answer": "to",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_kara_from",
+    "char": "から",
+    "romaji": "kara",
+    "question": "じゅぎょうは 9じ ___ です。",
+    "answer": "kara",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_made_until",
+    "char": "まで",
+    "romaji": "made",
+    "question": "としょかんは 5じ ___ です。",
+    "answer": "made",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_mo_also",
+    "char": "も",
+    "romaji": "mo",
+    "question": "わたしは がくせいです。たなかさん ___ がくせいです。",
+    "answer": "mo",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_no_possession",
+    "char": "の",
+    "romaji": "no",
+    "question": "これは わたし ___ ほんです。",
+    "answer": "no",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_ga_exist",
+    "char": "が",
+    "romaji": "ga",
+    "question": "つくえの うえに ほん ___ あります。",
+    "answer": "ga",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_yori_than",
+    "char": "より",
+    "romaji": "yori",
+    "question": "きょうは きのう ___ あついです。",
+    "answer": "yori",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_ni_purpose",
+    "char": "に",
+    "romaji": "ni",
+    "question": "デパートへ かいもの ___ いきます。",
+    "answer": "ni",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_dake_only",
+    "char": "だけ",
+    "romaji": "dake",
+    "question": "きょうは 5じかん ___ ねました。",
+    "answer": "dake",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_shika_only",
+    "char": "しか",
+    "romaji": "shika",
+    "question": "れいぞうこに りんごが ひとつ ___ ありません。",
+    "answer": "shika",
+    "type": "grammar",
+    "category": "Particles"
+  },
+  {
+    "id": "g_ga_but",
+    "char": "が",
+    "romaji": "ga",
+    "question": "この パソコンは たかいです ___、いいです。",
+    "answer": "ga",
+    "type": "grammar",
+    "category": "Conjunctions"
+  },
+  {
+    "id": "g_dakara_so",
+    "char": "ですから",
+    "romaji": "desukara",
+    "question": "あめが ふっています。___、かさを かいます。",
+    "answer": "desukara",
+    "type": "grammar",
+    "category": "Conjunctions"
+  },
+  {
+    "id": "g_mashou_let",
+    "char": "ましょう",
+    "romaji": "mashou",
+    "question": "いっしょに ひるごはんを たべ___。",
+    "answer": "mashou",
+    "type": "grammar",
+    "category": "VerbForms"
+  },
+  {
+    "id": "g_masenka_invite",
+    "char": "ませんか",
+    "romaji": "masenka",
+    "question": "いっしょに おちゃを のみ___。",
+    "answer": "masenka",
+    "type": "grammar",
+    "category": "VerbForms"
+  },
+  {
+    "id": "g_tai_want",
+    "char": "たい",
+    "romaji": "tai",
+    "question": "わたしは あたらしい くるまが かい___ です。",
+    "answer": "tai",
+    "type": "grammar",
+    "category": "VerbForms"
+  },
+  {
+    "id": "g_tekudasai_please",
+    "char": "てください",
+    "romaji": "tekudasai",
+    "question": "ここに なまえを かい___。",
+    "answer": "tekudasai",
+    "type": "grammar",
+    "category": "VerbForms"
+  },
+  {
+    "id": "g_temoii_may",
+    "char": "てもいい",
+    "romaji": "temoii",
+    "question": "ここで しゃしんを とっ___ ですか。",
+    "answer": "temoii",
+    "type": "grammar",
+    "category": "VerbForms"
+  },
+  {
+    "id": "g_tewaike_mustnot",
+    "char": "てはいけ",
+    "romaji": "tewaike",
+    "question": "ここで たばこを すっ___ ません。",
+    "answer": "tewaike",
+    "type": "grammar",
+    "category": "VerbForms"
+  },
+  {
+    "id": "g_teiru_ing",
+    "char": "ています",
+    "romaji": "teimasu",
+    "question": "いま、あめが ふっ___。",
+    "answer": "teimasu",
+    "type": "grammar",
+    "category": "VerbForms"
+  },
+  {
+    "id": "g_naide_dont",
+    "char": "ないで",
+    "romaji": "naide",
+    "question": "ここで しゃしんを とら___ ください。",
+    "answer": "naide",
+    "type": "grammar",
+    "category": "VerbForms"
+  },
+  {
+    "id": "g_nakutemo_neednot",
+    "char": "なくてもいい",
+    "romaji": "nakutemoii",
+    "question": "あしたは やすみですから、がっこうへ いか___ です。",
+    "answer": "nakutemoii",
+    "type": "grammar",
+    "category": "VerbForms"
+  },
+  {
+    "id": "g_dochira",
+    "char": "どちら",
+    "romaji": "dochira",
+    "question": "コーヒーと こうちゃと、___ が いいですか。",
+    "answer": "dochira",
+    "type": "grammar",
+    "category": "Comparisons"
+  },
+  {
+    "id": "g_houga",
+    "char": "ほうが",
+    "romaji": "hou ga",
+    "question": "コーヒーの ___ いいです。",
+    "answer": "hou ga",
+    "type": "grammar",
+    "category": "Comparisons"
+  },
+  {
+    "id": "g_ichiban",
+    "char": "いちばん",
+    "romaji": "ichiban",
+    "question": "くだものの中で、りんごが ___ すきです。",
+    "answer": "ichiban",
+    "type": "grammar",
+    "category": "Comparisons"
+  },
+  {
+    "id": "g_adj_past",
+    "char": "かった",
+    "romaji": "katta",
+    "question": "きのうの テストは むずかし___ です。",
+    "answer": "katta",
+    "type": "grammar",
+    "category": "AdjectivesGrammar"
+  },
+  {
+    "id": "g_adj_pastneg",
+    "char": "くなかった",
+    "romaji": "kunakatta",
+    "question": "きのうの えいがは おもしろ___ です。",
+    "answer": "kunakatta",
+    "type": "grammar",
+    "category": "AdjectivesGrammar"
+  },
+  {
+    "id": "g_na_past",
+    "char": "でした",
+    "romaji": "deshita",
+    "question": "きのうの パーティーは にぎやか___。",
+    "answer": "deshita",
+    "type": "grammar",
+    "category": "AdjectivesGrammar"
+  },
+  {
+    "id": "g_na_pastneg",
+    "char": "じゃありませんでした",
+    "romaji": "ja arimasen deshita",
+    "question": "きのうは ひま___。",
+    "answer": "ja arimasen deshita",
+    "type": "grammar",
+    "category": "AdjectivesGrammar"
+  },
+  {
+    "id": "g_adv_iadj",
+    "char": "く",
+    "romaji": "ku",
+    "question": "もっと はや___ あるいてください。",
+    "answer": "ku",
+    "type": "grammar",
+    "category": "AdjectivesGrammar"
+  },
+  {
+    "id": "g_adv_naadj",
+    "char": "に",
+    "romaji": "ni",
+    "question": "へやを きれい___ してください。",
+    "answer": "ni",
+    "type": "grammar",
+    "category": "AdjectivesGrammar"
+  },
+  {
+    "id": "g_give_ageru",
+    "char": "あげました",
+    "romaji": "agemashita",
+    "question": "わたしは たなかさんに ほんを ___。",
+    "answer": "agemashita",
+    "type": "grammar",
+    "category": "GivingReceiving"
+  },
+  {
+    "id": "g_receive_morau",
+    "char": "もらいました",
+    "romaji": "moraimashita",
+    "question": "わたしは たなかさんに ほんを ___。",
+    "answer": "moraimashita",
+    "type": "grammar",
+    "category": "GivingReceiving"
+  },
+  {
+    "id": "g_giveme_kureru",
+    "char": "くれました",
+    "romaji": "kuremashita",
+    "question": "たなかさんは わたしに ほんを ___。",
+    "answer": "kuremashita",
+    "type": "grammar",
+    "category": "GivingReceiving"
+  },
+  {
+    "id": "g_nagara",
+    "char": "ながら",
+    "romaji": "nagara",
+    "question": "おんがくを きき___、べんきょうします。",
+    "answer": "nagara",
+    "type": "grammar",
+    "category": "VerbFormsExt"
+  },
+  {
+    "id": "g_maeni",
+    "char": "まえに",
+    "romaji": "mae ni",
+    "question": "ねる ___、はを みがきます。",
+    "answer": "mae ni",
+    "type": "grammar",
+    "category": "VerbFormsExt"
+  },
+  {
+    "id": "g_atode",
+    "char": "あとで",
+    "romaji": "ato de",
+    "question": "ごはんを たべた ___、くすりを のみます。",
+    "answer": "ato de",
+    "type": "grammar",
+    "category": "VerbFormsExt"
+  },
+  {
+    "id": "g_koto_dekiru",
+    "char": "こと",
+    "romaji": "koto",
+    "question": "にほんごを はなす ___ が できます。",
+    "answer": "koto",
+    "type": "grammar",
+    "category": "VerbFormsExt"
+  },
+  {
+    "id": "g_tsumori",
+    "char": "つもり",
+    "romaji": "tsumori",
+    "question": "あしたは かいものに いく ___ です。",
+    "answer": "tsumori",
+    "type": "grammar",
+    "category": "VerbFormsExt"
+  },
+  {
+    "id": "g_tari",
+    "char": "たり",
+    "romaji": "tari",
+    "question": "にちようびは ほんを よん___、おんがくを きいたり します。",
+    "answer": "tari",
+    "type": "grammar",
+    "category": "VerbFormsExt"
+  },
+  {
+    "id": "g_narimasu",
+    "char": "なります",
+    "romaji": "narimasu",
+    "question": "あしたは さむく ___。",
+    "answer": "narimasu",
+    "type": "grammar",
+    "category": "VerbFormsExt"
+  },
+  {
+    "id": "g_shiteimasu",
+    "char": "しています",
+    "romaji": "shiteimasu",
+    "question": "たなかさんは メガネを ___。",
+    "answer": "shiteimasu",
+    "type": "grammar",
+    "category": "VerbFormsExt"
+  }
+]

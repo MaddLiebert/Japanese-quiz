@@ -1,0 +1,6365 @@
+[
+  {
+    "id": "v_ohayou",
+    "char": "おはよう",
+    "romaji": "ohayou",
+    "meaning": "Good morning",
+    "meaning_id": "Selamat pagi",
+    "type": "kotoba",
+    "category": "Greetings"
+  },
+  {
+    "id": "v_arigatou",
+    "char": "ありがとう",
+    "romaji": "arigatou",
+    "meaning": "Thank you",
+    "meaning_id": "Terima kasih",
+    "type": "kotoba",
+    "category": "Greetings"
+  },
+  {
+    "id": "v_ichi",
+    "char": "いち",
+    "romaji": "ichi",
+    "meaning": "One",
+    "meaning_id": "Satu",
+    "type": "kotoba",
+    "category": "Numbers"
+  },
+  {
+    "id": "v_ni",
+    "char": "に",
+    "romaji": "ni",
+    "meaning": "Two",
+    "meaning_id": "Dua",
+    "type": "kotoba",
+    "category": "Numbers"
+  },
+  {
+    "id": "v_sushi",
+    "char": "すし",
+    "romaji": "sushi",
+    "meaning": "Sushi",
+    "meaning_id": "Sushi",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_mizu",
+    "char": "みず",
+    "romaji": "mizu",
+    "meaning": "Water",
+    "meaning_id": "Air",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_watashi",
+    "char": "わたし",
+    "romaji": "watashi",
+    "meaning": "I, me",
+    "meaning_id": "Saya / Aku",
+    "type": "kotoba",
+    "category": "Pronouns"
+  },
+  {
+    "id": "v_anata",
+    "char": "あなた",
+    "romaji": "anata",
+    "meaning": "You",
+    "meaning_id": "Kamu",
+    "type": "kotoba",
+    "category": "Pronouns"
+  },
+  {
+    "id": "v_sensei",
+    "char": "せんせい",
+    "romaji": "sensei",
+    "meaning": "Teacher",
+    "meaning_id": "Guru",
+    "type": "kotoba",
+    "category": "Professions"
+  },
+  {
+    "id": "v_gakusei",
+    "char": "がくせい",
+    "romaji": "gakusei",
+    "meaning": "Student",
+    "meaning_id": "Siswa / Mahasiswa",
+    "type": "kotoba",
+    "category": "Professions"
+  },
+  {
+    "id": "v_kyou",
+    "char": "きょう",
+    "romaji": "kyou",
+    "meaning": "Today",
+    "meaning_id": "Hari ini",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_ashita",
+    "char": "あした",
+    "romaji": "ashita",
+    "meaning": "Tomorrow",
+    "meaning_id": "Besok",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_ima",
+    "char": "いま",
+    "romaji": "ima",
+    "meaning": "Now",
+    "meaning_id": "Sekarang",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_kino",
+    "char": "きのう",
+    "romaji": "kinou",
+    "meaning": "Yesterday",
+    "meaning_id": "Kemarin",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_taberu",
+    "char": "たべる",
+    "romaji": "taberu",
+    "meaning": "To eat",
+    "meaning_id": "Makan",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_nomu",
+    "char": "のむ",
+    "romaji": "nomu",
+    "meaning": "To drink",
+    "meaning_id": "Minum",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_iku",
+    "char": "いく",
+    "romaji": "iku",
+    "meaning": "To go",
+    "meaning_id": "Pergi",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_miru",
+    "char": "みる",
+    "romaji": "miru",
+    "meaning": "To see / watch",
+    "meaning_id": "Melihat / Menonton",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_ookii",
+    "char": "おおきい",
+    "romaji": "ookii",
+    "meaning": "Big",
+    "meaning_id": "Besar",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_chiisai",
+    "char": "ちいさい",
+    "romaji": "chiisai",
+    "meaning": "Small",
+    "meaning_id": "Kecil",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_takai",
+    "char": "たかい",
+    "romaji": "takai",
+    "meaning": "High / Expensive",
+    "meaning_id": "Tinggi / Mahal",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_yasui",
+    "char": "やすい",
+    "romaji": "yasui",
+    "meaning": "Cheap",
+    "meaning_id": "Murah",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_hon",
+    "char": "ほん",
+    "romaji": "hon",
+    "meaning": "Book",
+    "meaning_id": "Buku",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_kuruma",
+    "char": "くるま",
+    "romaji": "kuruma",
+    "meaning": "Car",
+    "meaning_id": "Mobil",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_kane",
+    "char": "おかね",
+    "romaji": "okane",
+    "meaning": "Money",
+    "meaning_id": "Uang",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_mise",
+    "char": "みせ",
+    "romaji": "mise",
+    "meaning": "Shop / Store",
+    "meaning_id": "Toko",
+    "type": "kotoba",
+    "category": "Places"
+  },
+  {
+    "id": "v_gaikoku",
+    "char": "がいこく",
+    "romaji": "gaikoku",
+    "meaning": "Foreign country",
+    "meaning_id": "Luar negeri",
+    "type": "kotoba",
+    "category": "Places"
+  },
+  {
+    "id": "v_kita",
+    "char": "きた",
+    "romaji": "kita",
+    "meaning": "North",
+    "meaning_id": "Utara",
+    "type": "kotoba",
+    "category": "Directions"
+  },
+  {
+    "id": "v_tenki",
+    "char": "てんき",
+    "romaji": "tenki",
+    "meaning": "Weather",
+    "meaning_id": "Cuaca",
+    "type": "kotoba",
+    "category": "Nature"
+  },
+  {
+    "id": "v_sora",
+    "char": "そら",
+    "romaji": "sora",
+    "meaning": "Sky",
+    "meaning_id": "Langit",
+    "type": "kotoba",
+    "category": "Nature"
+  },
+  {
+    "id": "v_saifu",
+    "char": "さいふ",
+    "romaji": "saifu",
+    "meaning": "Wallet",
+    "meaning_id": "Dompet",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_kugatsu",
+    "char": "くがつ",
+    "romaji": "kugatsu",
+    "meaning": "September",
+    "meaning_id": "September",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_kesa",
+    "char": "けさ",
+    "romaji": "kesa",
+    "meaning": "This morning",
+    "meaning_id": "Pagi ini",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_yomu",
+    "char": "よむ",
+    "romaji": "yomu",
+    "meaning": "To read",
+    "meaning_id": "Membaca",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_tatsu",
+    "char": "たつ",
+    "romaji": "tatsu",
+    "meaning": "To stand",
+    "meaning_id": "Berdiri",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_oriru",
+    "char": "おりる",
+    "romaji": "oriru",
+    "meaning": "To go down",
+    "meaning_id": "Turun",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_haku",
+    "char": "はく",
+    "romaji": "haku",
+    "meaning": "To wear",
+    "meaning_id": "Memakai (Bawah)",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_kaeru",
+    "char": "かえる",
+    "romaji": "kaeru",
+    "meaning": "To return (home)",
+    "meaning_id": "Pulang",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_oshieru",
+    "char": "おしえる",
+    "romaji": "oshieru",
+    "meaning": "To teach",
+    "meaning_id": "Mengajar",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_narau",
+    "char": "ならう",
+    "romaji": "narau",
+    "meaning": "To learn",
+    "meaning_id": "Belajar",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_tooi",
+    "char": "とおい",
+    "romaji": "tooi",
+    "meaning": "Far",
+    "meaning_id": "Jauh",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_kantan",
+    "char": "かんたん",
+    "romaji": "kantan",
+    "meaning": "Easy / Simple",
+    "meaning_id": "Mudah",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_yasashii",
+    "char": "やさしい",
+    "romaji": "yasashii",
+    "meaning": "Easy / Gentle",
+    "meaning_id": "Mudah / Baik hati",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_chichi",
+    "char": "ちち",
+    "romaji": "chichi",
+    "meaning": "Father",
+    "meaning_id": "Ayah",
+    "type": "kotoba",
+    "category": "Family"
+  },
+  {
+    "id": "v_haha",
+    "char": "はは",
+    "romaji": "haha",
+    "meaning": "Mother",
+    "meaning_id": "Ibu",
+    "type": "kotoba",
+    "category": "Family"
+  },
+  {
+    "id": "v_ani",
+    "char": "あに",
+    "romaji": "ani",
+    "meaning": "Older brother",
+    "meaning_id": "Kakak Laki-laki",
+    "type": "kotoba",
+    "category": "Family"
+  },
+  {
+    "id": "v_ane",
+    "char": "あね",
+    "romaji": "ane",
+    "meaning": "Older sister",
+    "meaning_id": "Kakak Perempuan",
+    "type": "kotoba",
+    "category": "Family"
+  },
+  {
+    "id": "v_otouto",
+    "char": "おとうと",
+    "romaji": "otouto",
+    "meaning": "Younger brother",
+    "meaning_id": "Adik Laki-laki",
+    "type": "kotoba",
+    "category": "Family"
+  },
+  {
+    "id": "v_imouto",
+    "char": "いもうと",
+    "romaji": "imouto",
+    "meaning": "Younger sister",
+    "meaning_id": "Adik Perempuan",
+    "type": "kotoba",
+    "category": "Family"
+  },
+  {
+    "id": "v_atama",
+    "char": "あたま",
+    "romaji": "atama",
+    "meaning": "Head",
+    "meaning_id": "Kepala",
+    "type": "kotoba",
+    "category": "Body"
+  },
+  {
+    "id": "v_me",
+    "char": "め",
+    "romaji": "me",
+    "meaning": "Eye",
+    "meaning_id": "Mata",
+    "type": "kotoba",
+    "category": "Body"
+  },
+  {
+    "id": "v_mimi",
+    "char": "みみ",
+    "romaji": "mimi",
+    "meaning": "Ear",
+    "meaning_id": "Telinga",
+    "type": "kotoba",
+    "category": "Body"
+  },
+  {
+    "id": "v_kuchi",
+    "char": "くち",
+    "romaji": "kuchi",
+    "meaning": "Mouth",
+    "meaning_id": "Mulut",
+    "type": "kotoba",
+    "category": "Body"
+  },
+  {
+    "id": "v_te",
+    "char": "て",
+    "romaji": "te",
+    "meaning": "Hand",
+    "meaning_id": "Tangan",
+    "type": "kotoba",
+    "category": "Body"
+  },
+  {
+    "id": "v_ashi",
+    "char": "あし",
+    "romaji": "ashi",
+    "meaning": "Leg / Foot",
+    "meaning_id": "Kaki",
+    "type": "kotoba",
+    "category": "Body"
+  },
+  {
+    "id": "v_inu",
+    "char": "いぬ",
+    "romaji": "inu",
+    "meaning": "Dog",
+    "meaning_id": "Anjing",
+    "type": "kotoba",
+    "category": "Animals"
+  },
+  {
+    "id": "v_neko",
+    "char": "ねこ",
+    "romaji": "neko",
+    "meaning": "Cat",
+    "meaning_id": "Kucing",
+    "type": "kotoba",
+    "category": "Animals"
+  },
+  {
+    "id": "v_tori",
+    "char": "とり",
+    "romaji": "tori",
+    "meaning": "Bird",
+    "meaning_id": "Burung",
+    "type": "kotoba",
+    "category": "Animals"
+  },
+  {
+    "id": "v_sakana",
+    "char": "さかな",
+    "romaji": "sakana",
+    "meaning": "Fish",
+    "meaning_id": "Ikan",
+    "type": "kotoba",
+    "category": "Animals"
+  },
+  {
+    "id": "v_kaku",
+    "char": "かく",
+    "romaji": "kaku",
+    "meaning": "To write",
+    "meaning_id": "Menulis",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_kiku",
+    "char": "きく",
+    "romaji": "kiku",
+    "meaning": "To listen / ask",
+    "meaning_id": "Mendengar",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_hanasu",
+    "char": "はなす",
+    "romaji": "hanasu",
+    "meaning": "To speak",
+    "meaning_id": "Berbicara",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_aruku",
+    "char": "あるく",
+    "romaji": "aruku",
+    "meaning": "To walk",
+    "meaning_id": "Berjalan",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_hashiru",
+    "char": "はしる",
+    "romaji": "hashiru",
+    "meaning": "To run",
+    "meaning_id": "Berlari",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_oyogu",
+    "char": "およぐ",
+    "romaji": "oyogu",
+    "meaning": "To swim",
+    "meaning_id": "Berenang",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_asobu",
+    "char": "あそぶ",
+    "romaji": "asobu",
+    "meaning": "To play",
+    "meaning_id": "Bermain",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_matsu",
+    "char": "まつ",
+    "romaji": "matsu",
+    "meaning": "To wait",
+    "meaning_id": "Menunggu",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_samui",
+    "char": "さむい",
+    "romaji": "samui",
+    "meaning": "Cold",
+    "meaning_id": "Dingin (Cuaca)",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_atsui",
+    "char": "あつい",
+    "romaji": "atsui",
+    "meaning": "Hot",
+    "meaning_id": "Panas",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_atarashii",
+    "char": "あたらしい",
+    "romaji": "atarashii",
+    "meaning": "New",
+    "meaning_id": "Baru",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_furui",
+    "char": "ふるい",
+    "romaji": "furui",
+    "meaning": "Old",
+    "meaning_id": "Kuno",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_isogashii",
+    "char": "いそがしい",
+    "romaji": "isogashii",
+    "meaning": "Busy",
+    "meaning_id": "Sibuk",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_tanoshii",
+    "char": "たのしい",
+    "romaji": "tanoshii",
+    "meaning": "Fun",
+    "meaning_id": "Menyenangkan",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_omoshiroi",
+    "char": "おもしろい",
+    "romaji": "omoshiroi",
+    "meaning": "Interesting",
+    "meaning_id": "Menarik",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_muzukashii",
+    "char": "むずかしい",
+    "romaji": "muzukashii",
+    "meaning": "Difficult",
+    "meaning_id": "Sulit",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_aka",
+    "char": "あか",
+    "romaji": "aka",
+    "meaning": "Red",
+    "meaning_id": "Merah",
+    "type": "kotoba",
+    "category": "Colors"
+  },
+  {
+    "id": "v_ao",
+    "char": "あお",
+    "romaji": "ao",
+    "meaning": "Blue",
+    "meaning_id": "Biru",
+    "type": "kotoba",
+    "category": "Colors"
+  },
+  {
+    "id": "v_kuro",
+    "char": "くろ",
+    "romaji": "kuro",
+    "meaning": "Black",
+    "meaning_id": "Hitam",
+    "type": "kotoba",
+    "category": "Colors"
+  },
+  {
+    "id": "v_shiro",
+    "char": "しろ",
+    "romaji": "shiro",
+    "meaning": "White",
+    "meaning_id": "Putih",
+    "type": "kotoba",
+    "category": "Colors"
+  },
+  {
+    "id": "v_ue",
+    "char": "うえ",
+    "romaji": "ue",
+    "meaning": "Up / Above",
+    "meaning_id": "Atas",
+    "type": "kotoba",
+    "category": "Positions"
+  },
+  {
+    "id": "v_shita",
+    "char": "した",
+    "romaji": "shita",
+    "meaning": "Down / Below",
+    "meaning_id": "Bawah",
+    "type": "kotoba",
+    "category": "Positions"
+  },
+  {
+    "id": "v_mae",
+    "char": "まえ",
+    "romaji": "mae",
+    "meaning": "Front",
+    "meaning_id": "Depan",
+    "type": "kotoba",
+    "category": "Positions"
+  },
+  {
+    "id": "v_ushiro",
+    "char": "うしろ",
+    "romaji": "ushiro",
+    "meaning": "Behind",
+    "meaning_id": "Belakang",
+    "type": "kotoba",
+    "category": "Positions"
+  },
+  {
+    "id": "v_naka",
+    "char": "なか",
+    "romaji": "naka",
+    "meaning": "Inside",
+    "meaning_id": "Dalam",
+    "type": "kotoba",
+    "category": "Positions"
+  },
+  {
+    "id": "v_soto",
+    "char": "そと",
+    "romaji": "soto",
+    "meaning": "Outside",
+    "meaning_id": "Luar",
+    "type": "kotoba",
+    "category": "Positions"
+  },
+  {
+    "id": "v_migi",
+    "char": "みぎ",
+    "romaji": "migi",
+    "meaning": "Right",
+    "meaning_id": "Kanan",
+    "type": "kotoba",
+    "category": "Positions"
+  },
+  {
+    "id": "v_hidari",
+    "char": "ひだり",
+    "romaji": "hidari",
+    "meaning": "Left",
+    "meaning_id": "Kiri",
+    "type": "kotoba",
+    "category": "Positions"
+  },
+  {
+    "id": "v_getsuyoubi",
+    "char": "げつようび",
+    "romaji": "getsuyoubi",
+    "meaning": "Monday",
+    "meaning_id": "Senin",
+    "type": "kotoba",
+    "category": "Days"
+  },
+  {
+    "id": "v_kayoubi",
+    "char": "かようび",
+    "romaji": "kayoubi",
+    "meaning": "Tuesday",
+    "meaning_id": "Selasa",
+    "type": "kotoba",
+    "category": "Days"
+  },
+  {
+    "id": "v_suiyoubi",
+    "char": "すいようび",
+    "romaji": "suiyoubi",
+    "meaning": "Wednesday",
+    "meaning_id": "Rabu",
+    "type": "kotoba",
+    "category": "Days"
+  },
+  {
+    "id": "v_mokuyoubi",
+    "char": "もくようび",
+    "romaji": "mokuyoubi",
+    "meaning": "Thursday",
+    "meaning_id": "Kamis",
+    "type": "kotoba",
+    "category": "Days"
+  },
+  {
+    "id": "v_kinyoubi",
+    "char": "きんようび",
+    "romaji": "kinyoubi",
+    "meaning": "Friday",
+    "meaning_id": "Jumat",
+    "type": "kotoba",
+    "category": "Days"
+  },
+  {
+    "id": "v_doyoubi",
+    "char": "どようび",
+    "romaji": "doyoubi",
+    "meaning": "Saturday",
+    "meaning_id": "Sabtu",
+    "type": "kotoba",
+    "category": "Days"
+  },
+  {
+    "id": "v_nichiyoubi",
+    "char": "にちようび",
+    "romaji": "nichiyoubi",
+    "meaning": "Sunday",
+    "meaning_id": "Minggu",
+    "type": "kotoba",
+    "category": "Days"
+  },
+  {
+    "id": "v_tsukue",
+    "char": "つくえ",
+    "romaji": "tsukue",
+    "meaning": "Desk",
+    "meaning_id": "Meja",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_isu",
+    "char": "いす",
+    "romaji": "isu",
+    "meaning": "Chair",
+    "meaning_id": "Kursi",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_mado",
+    "char": "まど",
+    "romaji": "mado",
+    "meaning": "Window",
+    "meaning_id": "Jendela",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_doa",
+    "char": "ドア",
+    "romaji": "doa",
+    "meaning": "Door",
+    "meaning_id": "Pintu",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_heya",
+    "char": "へや",
+    "romaji": "heya",
+    "meaning": "Room",
+    "meaning_id": "Kamar / Ruangan",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_fuku",
+    "char": "ふく",
+    "romaji": "fuku",
+    "meaning": "Clothes",
+    "meaning_id": "Baju / Pakaian",
+    "type": "kotoba",
+    "category": "Clothing"
+  },
+  {
+    "id": "v_kutsu",
+    "char": "くつ",
+    "romaji": "kutsu",
+    "meaning": "Shoes",
+    "meaning_id": "Sepatu",
+    "type": "kotoba",
+    "category": "Clothing"
+  },
+  {
+    "id": "v_boushi",
+    "char": "ぼうし",
+    "romaji": "boushi",
+    "meaning": "Hat",
+    "meaning_id": "Topi",
+    "type": "kotoba",
+    "category": "Clothing"
+  },
+  {
+    "id": "v_kaban",
+    "char": "かばん",
+    "romaji": "kaban",
+    "meaning": "Bag",
+    "meaning_id": "Tas",
+    "type": "kotoba",
+    "category": "Clothing"
+  },
+  {
+    "id": "v_megane",
+    "char": "めがね",
+    "romaji": "megane",
+    "meaning": "Glasses",
+    "meaning_id": "Kacamata",
+    "type": "kotoba",
+    "category": "Clothing"
+  },
+  {
+    "id": "v_ichigatsu",
+    "char": "いちがつ",
+    "romaji": "ichigatsu",
+    "meaning": "January",
+    "meaning_id": "Januari",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_nigatsu",
+    "char": "にがつ",
+    "romaji": "nigatsu",
+    "meaning": "February",
+    "meaning_id": "Februari",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_sangatsu",
+    "char": "さんがつ",
+    "romaji": "sangatsu",
+    "meaning": "March",
+    "meaning_id": "Maret",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_shigatsu",
+    "char": "しがつ",
+    "romaji": "shigatsu",
+    "meaning": "April",
+    "meaning_id": "April",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_gogatsu",
+    "char": "ごがつ",
+    "romaji": "gogatsu",
+    "meaning": "May",
+    "meaning_id": "Mei",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_rokugatsu",
+    "char": "ろくがつ",
+    "romaji": "rokugatsu",
+    "meaning": "June",
+    "meaning_id": "Juni",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_shichigatsu",
+    "char": "しちがつ",
+    "romaji": "shichigatsu",
+    "meaning": "July",
+    "meaning_id": "Juli",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_hachigatsu",
+    "char": "はちがつ",
+    "romaji": "hachigatsu",
+    "meaning": "August",
+    "meaning_id": "Agustus",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_juugatsu",
+    "char": "じゅうがつ",
+    "romaji": "juugatsu",
+    "meaning": "October",
+    "meaning_id": "Oktober",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_juuichigatsu",
+    "char": "じゅういちがつ",
+    "romaji": "juuichigatsu",
+    "meaning": "November",
+    "meaning_id": "November",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_juunigatsu",
+    "char": "じゅうにがつ",
+    "romaji": "juunigatsu",
+    "meaning": "December",
+    "meaning_id": "Desember",
+    "type": "kotoba",
+    "category": "Months"
+  },
+  {
+    "id": "v_haru",
+    "char": "はる",
+    "romaji": "haru",
+    "meaning": "Spring",
+    "meaning_id": "Musim Semi",
+    "type": "kotoba",
+    "category": "Seasons"
+  },
+  {
+    "id": "v_natsu",
+    "char": "なつ",
+    "romaji": "natsu",
+    "meaning": "Summer",
+    "meaning_id": "Musim Panas",
+    "type": "kotoba",
+    "category": "Seasons"
+  },
+  {
+    "id": "v_aki",
+    "char": "あき",
+    "romaji": "aki",
+    "meaning": "Autumn",
+    "meaning_id": "Musim Gugur",
+    "type": "kotoba",
+    "category": "Seasons"
+  },
+  {
+    "id": "v_fuyu",
+    "char": "ふゆ",
+    "romaji": "fuyu",
+    "meaning": "Winter",
+    "meaning_id": "Musim Dingin",
+    "type": "kotoba",
+    "category": "Seasons"
+  },
+  {
+    "id": "v_densha",
+    "char": "でんしゃ",
+    "romaji": "densha",
+    "meaning": "Train",
+    "meaning_id": "Kereta Listrik",
+    "type": "kotoba",
+    "category": "Transport"
+  },
+  {
+    "id": "v_chikatetsu",
+    "char": "ちかてつ",
+    "romaji": "chikatetsu",
+    "meaning": "Subway",
+    "meaning_id": "Kereta Bawah Tanah",
+    "type": "kotoba",
+    "category": "Transport"
+  },
+  {
+    "id": "v_hikouki",
+    "char": "ひこうき",
+    "romaji": "hikouki",
+    "meaning": "Airplane",
+    "meaning_id": "Pesawat",
+    "type": "kotoba",
+    "category": "Transport"
+  },
+  {
+    "id": "v_fune",
+    "char": "ふね",
+    "romaji": "fune",
+    "meaning": "Ship",
+    "meaning_id": "Kapal",
+    "type": "kotoba",
+    "category": "Transport"
+  },
+  {
+    "id": "v_jitensha",
+    "char": "じてんしゃ",
+    "romaji": "jitensha",
+    "meaning": "Bicycle",
+    "meaning_id": "Sepeda",
+    "type": "kotoba",
+    "category": "Transport"
+  },
+  {
+    "id": "v_otokonohito",
+    "char": "おとこのひと",
+    "romaji": "otoko no hito",
+    "meaning": "Man",
+    "meaning_id": "Laki-laki",
+    "type": "kotoba",
+    "category": "People"
+  },
+  {
+    "id": "v_onnanohito",
+    "char": "おんなのひと",
+    "romaji": "onna no hito",
+    "meaning": "Woman",
+    "meaning_id": "Perempuan",
+    "type": "kotoba",
+    "category": "People"
+  },
+  {
+    "id": "v_otokonoko",
+    "char": "おとこのこ",
+    "romaji": "otoko no ko",
+    "meaning": "Boy",
+    "meaning_id": "Anak Laki-laki",
+    "type": "kotoba",
+    "category": "People"
+  },
+  {
+    "id": "v_onnanoko",
+    "char": "おんなのこ",
+    "romaji": "onna no ko",
+    "meaning": "Girl",
+    "meaning_id": "Anak Perempuan",
+    "type": "kotoba",
+    "category": "People"
+  },
+  {
+    "id": "v_gakkou",
+    "char": "がっこう",
+    "romaji": "gakkou",
+    "meaning": "School",
+    "meaning_id": "Sekolah",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_enpitsu",
+    "char": "えんぴつ",
+    "romaji": "enpitsu",
+    "meaning": "Pencil",
+    "meaning_id": "Pensil",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_keshigomu",
+    "char": "けしゴム",
+    "romaji": "keshigomu",
+    "meaning": "Eraser",
+    "meaning_id": "Penghapus",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_nooto",
+    "char": "ノート",
+    "romaji": "nooto",
+    "meaning": "Notebook",
+    "meaning_id": "Buku Catatan",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_jisho",
+    "char": "じしょ",
+    "romaji": "jisho",
+    "meaning": "Dictionary",
+    "meaning_id": "Kamus",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_pan",
+    "char": "パン",
+    "romaji": "pan",
+    "meaning": "Bread",
+    "meaning_id": "Roti",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_tamago",
+    "char": "たまご",
+    "romaji": "tamago",
+    "meaning": "Egg",
+    "meaning_id": "Telur",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_ringo",
+    "char": "りんご",
+    "romaji": "ringo",
+    "meaning": "Apple",
+    "meaning_id": "Apel",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_niku",
+    "char": "にく",
+    "romaji": "niku",
+    "meaning": "Meat",
+    "meaning_id": "Daging",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_ocha",
+    "char": "おちゃ",
+    "romaji": "ocha",
+    "meaning": "Green tea",
+    "meaning_id": "Teh Hijau",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_koohii",
+    "char": "コーヒー",
+    "romaji": "koohii",
+    "meaning": "Coffee",
+    "meaning_id": "Kopi",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_gyuunyuu",
+    "char": "ぎゅうにゅう",
+    "romaji": "gyuunyuu",
+    "meaning": "Milk",
+    "meaning_id": "Susu",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_ginkou",
+    "char": "ぎんこう",
+    "romaji": "ginkou",
+    "meaning": "Bank",
+    "meaning_id": "Bank",
+    "type": "kotoba",
+    "category": "PublicPlaces"
+  },
+  {
+    "id": "v_byouin",
+    "char": "びょういん",
+    "romaji": "byouin",
+    "meaning": "Hospital",
+    "meaning_id": "Rumah Sakit",
+    "type": "kotoba",
+    "category": "PublicPlaces"
+  },
+  {
+    "id": "v_yuubinkyoku",
+    "char": "ゆうびんきょく",
+    "romaji": "yuubinkyoku",
+    "meaning": "Post office",
+    "meaning_id": "Kantor Pos",
+    "type": "kotoba",
+    "category": "PublicPlaces"
+  },
+  {
+    "id": "v_toshokan",
+    "char": "としょかん",
+    "romaji": "toshokan",
+    "meaning": "Library",
+    "meaning_id": "Perpustakaan",
+    "type": "kotoba",
+    "category": "PublicPlaces"
+  },
+  {
+    "id": "v_eki",
+    "char": "えき",
+    "romaji": "eki",
+    "meaning": "Station",
+    "meaning_id": "Stasiun",
+    "type": "kotoba",
+    "category": "PublicPlaces"
+  },
+  {
+    "id": "v_kouen",
+    "char": "こうえん",
+    "romaji": "kouen",
+    "meaning": "Park",
+    "meaning_id": "Taman",
+    "type": "kotoba",
+    "category": "PublicPlaces"
+  },
+  {
+    "id": "v_resutoran",
+    "char": "レストラン",
+    "romaji": "resutoran",
+    "meaning": "Restaurant",
+    "meaning_id": "Restoran",
+    "type": "kotoba",
+    "category": "PublicPlaces"
+  },
+  {
+    "id": "v_kau",
+    "char": "かう",
+    "romaji": "kau",
+    "meaning": "To buy",
+    "meaning_id": "Membeli",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_au",
+    "char": "あう",
+    "romaji": "au",
+    "meaning": "To meet",
+    "meaning_id": "Bertemu",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_noru",
+    "char": "のる",
+    "romaji": "noru",
+    "meaning": "To ride / get on",
+    "meaning_id": "Naik (Kendaraan)",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_tsukau",
+    "char": "つかう",
+    "romaji": "tsukau",
+    "meaning": "To use",
+    "meaning_id": "Menggunakan",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_tsukuru",
+    "char": "つくる",
+    "romaji": "tsukuru",
+    "meaning": "To make",
+    "meaning_id": "Membuat",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_wakaru",
+    "char": "わかる",
+    "romaji": "wakaru",
+    "meaning": "To understand",
+    "meaning_id": "Mengerti",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_nani",
+    "char": "なに",
+    "romaji": "nani / nan",
+    "meaning": "What",
+    "meaning_id": "Apa",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_dare",
+    "char": "だれ",
+    "romaji": "dare",
+    "meaning": "Who",
+    "meaning_id": "Siapa",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_doko",
+    "char": "どこ",
+    "romaji": "doko",
+    "meaning": "Where",
+    "meaning_id": "Di mana",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_itsu",
+    "char": "いつ",
+    "romaji": "itsu",
+    "meaning": "When",
+    "meaning_id": "Kapan",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_doushite",
+    "char": "どうして",
+    "romaji": "doushite",
+    "meaning": "Why",
+    "meaning_id": "Mengapa / Kenapa",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_ikura",
+    "char": "いくら",
+    "romaji": "ikura",
+    "meaning": "How much (price)",
+    "meaning_id": "Berapa harganya",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_ikutsu",
+    "char": "いくつ",
+    "romaji": "ikutsu",
+    "meaning": "How many",
+    "meaning_id": "Berapa banyak",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_dore",
+    "char": "どれ",
+    "romaji": "dore",
+    "meaning": "Which one",
+    "meaning_id": "Yang mana",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_otousan",
+    "char": "おとうさん",
+    "romaji": "otousan",
+    "meaning": "Father (someone else's)",
+    "meaning_id": "Ayah (Orang lain)",
+    "type": "kotoba",
+    "category": "FamilyFormal"
+  },
+  {
+    "id": "v_okaasan",
+    "char": "おかあさん",
+    "romaji": "okaasan",
+    "meaning": "Mother (someone else's)",
+    "meaning_id": "Ibu (Orang lain)",
+    "type": "kotoba",
+    "category": "FamilyFormal"
+  },
+  {
+    "id": "v_oniisan",
+    "char": "おにいさん",
+    "romaji": "oniisan",
+    "meaning": "Older brother",
+    "meaning_id": "Kakak Laki-laki (Orang lain)",
+    "type": "kotoba",
+    "category": "FamilyFormal"
+  },
+  {
+    "id": "v_oneesan",
+    "char": "おねえさん",
+    "romaji": "oneesan",
+    "meaning": "Older sister",
+    "meaning_id": "Kakak Perempuan (Orang lain)",
+    "type": "kotoba",
+    "category": "FamilyFormal"
+  },
+  {
+    "id": "v_ojiisan",
+    "char": "おじいさん",
+    "romaji": "ojiisan",
+    "meaning": "Grandfather",
+    "meaning_id": "Kakek",
+    "type": "kotoba",
+    "category": "FamilyFormal"
+  },
+  {
+    "id": "v_obaasan",
+    "char": "おばあさん",
+    "romaji": "obaasan",
+    "meaning": "Grandmother",
+    "meaning_id": "Nenek",
+    "type": "kotoba",
+    "category": "FamilyFormal"
+  },
+  {
+    "id": "v_okiru",
+    "char": "おきる",
+    "romaji": "okiru",
+    "meaning": "To wake up",
+    "meaning_id": "Bangun tidur",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_neru",
+    "char": "ねる",
+    "romaji": "neru",
+    "meaning": "To sleep",
+    "meaning_id": "Tidur",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_kuru",
+    "char": "くる",
+    "romaji": "kuru",
+    "meaning": "To come",
+    "meaning_id": "Datang",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_suru",
+    "char": "する",
+    "romaji": "suru",
+    "meaning": "To do",
+    "meaning_id": "Melakukan",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_yasumu",
+    "char": "やすむ",
+    "romaji": "yasumu",
+    "meaning": "To rest",
+    "meaning_id": "Istirahat / Libur",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_hataraku",
+    "char": "はたらく",
+    "romaji": "hataraku",
+    "meaning": "To work",
+    "meaning_id": "Bekerja",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_owaru",
+    "char": "おわる",
+    "romaji": "owaru",
+    "meaning": "To finish",
+    "meaning_id": "Selesai",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_hajimaru",
+    "char": "はじまる",
+    "romaji": "hajimaru",
+    "meaning": "To begin",
+    "meaning_id": "Mulai",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_amai",
+    "char": "あまい",
+    "romaji": "amai",
+    "meaning": "Sweet",
+    "meaning_id": "Manis",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_karai",
+    "char": "からい",
+    "romaji": "karai",
+    "meaning": "Spicy",
+    "meaning_id": "Pedas",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_itai",
+    "char": "いたい",
+    "romaji": "itai",
+    "meaning": "Painful",
+    "meaning_id": "Sakit / Nyeri",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_nemui",
+    "char": "ねむい",
+    "romaji": "nemui",
+    "meaning": "Sleepy",
+    "meaning_id": "Mengantuk",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_tsuyoi",
+    "char": "つよい",
+    "romaji": "tsuyoi",
+    "meaning": "Strong",
+    "meaning_id": "Kuat",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_yowai",
+    "char": "よわい",
+    "romaji": "yowai",
+    "meaning": "Weak",
+    "meaning_id": "Lemah",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_hitori",
+    "char": "ひとり",
+    "romaji": "hitori",
+    "meaning": "One person",
+    "meaning_id": "Satu orang",
+    "type": "kotoba",
+    "category": "Counters"
+  },
+  {
+    "id": "v_futari",
+    "char": "ふたり",
+    "romaji": "futari",
+    "meaning": "Two people",
+    "meaning_id": "Dua orang",
+    "type": "kotoba",
+    "category": "Counters"
+  },
+  {
+    "id": "v_hitotsu",
+    "char": "ひとつ",
+    "romaji": "hitotsu",
+    "meaning": "One thing",
+    "meaning_id": "Satu buah",
+    "type": "kotoba",
+    "category": "Counters"
+  },
+  {
+    "id": "v_futatsu",
+    "char": "ふたつ",
+    "romaji": "futatsu",
+    "meaning": "Two things",
+    "meaning_id": "Dua buah",
+    "type": "kotoba",
+    "category": "Counters"
+  },
+  {
+    "id": "v_mittsu",
+    "char": "みっつ",
+    "romaji": "mittsu",
+    "meaning": "Three things",
+    "meaning_id": "Tiga buah",
+    "type": "kotoba",
+    "category": "Counters"
+  },
+  {
+    "id": "v_asa",
+    "char": "あさ",
+    "romaji": "asa",
+    "meaning": "Morning",
+    "meaning_id": "Pagi",
+    "type": "kotoba",
+    "category": "TimeExtended"
+  },
+  {
+    "id": "v_hiru",
+    "char": "ひる",
+    "romaji": "hiru",
+    "meaning": "Noon",
+    "meaning_id": "Siang",
+    "type": "kotoba",
+    "category": "TimeExtended"
+  },
+  {
+    "id": "v_yoru",
+    "char": "よる",
+    "romaji": "yoru",
+    "meaning": "Night",
+    "meaning_id": "Malam",
+    "type": "kotoba",
+    "category": "TimeExtended"
+  },
+  {
+    "id": "v_ban",
+    "char": "ばん",
+    "romaji": "ban",
+    "meaning": "Evening",
+    "meaning_id": "Malam (Sore menjelang malam)",
+    "type": "kotoba",
+    "category": "TimeExtended"
+  },
+  {
+    "id": "v_kotoshi",
+    "char": "ことし",
+    "romaji": "kotoshi",
+    "meaning": "This year",
+    "meaning_id": "Tahun ini",
+    "type": "kotoba",
+    "category": "TimeExtended"
+  },
+  {
+    "id": "v_kyonen",
+    "char": "きょねん",
+    "romaji": "kyonen",
+    "meaning": "Last year",
+    "meaning_id": "Tahun lalu",
+    "type": "kotoba",
+    "category": "TimeExtended"
+  },
+  {
+    "id": "v_rainen",
+    "char": "らいねん",
+    "romaji": "rainen",
+    "meaning": "Next year",
+    "meaning_id": "Tahun depan",
+    "type": "kotoba",
+    "category": "TimeExtended"
+  },
+  {
+    "id": "v_nagai",
+    "char": "ながい",
+    "romaji": "nagai",
+    "meaning": "Long",
+    "meaning_id": "Panjang",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_mijikai",
+    "char": "みじかい",
+    "romaji": "mijikai",
+    "meaning": "Short",
+    "meaning_id": "Pendek",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_omoi",
+    "char": "おもい",
+    "romaji": "omoi",
+    "meaning": "Heavy",
+    "meaning_id": "Berat",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_karui",
+    "char": "かるい",
+    "romaji": "karui",
+    "meaning": "Light (weight)",
+    "meaning_id": "Ringan",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_hayai",
+    "char": "はやい",
+    "romaji": "hayai",
+    "meaning": "Fast / Early",
+    "meaning_id": "Cepat / Awal",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_osoi",
+    "char": "おそい",
+    "romaji": "osoi",
+    "meaning": "Slow / Late",
+    "meaning_id": "Lambat / Terlambat",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_akarui",
+    "char": "あかるい",
+    "romaji": "akarui",
+    "meaning": "Bright",
+    "meaning_id": "Terang",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_kurai",
+    "char": "くらい",
+    "romaji": "kurai",
+    "meaning": "Dark",
+    "meaning_id": "Gelap",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_hiroi",
+    "char": "ひろい",
+    "romaji": "hiroi",
+    "meaning": "Wide",
+    "meaning_id": "Luas",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_semai",
+    "char": "せまい",
+    "romaji": "semai",
+    "meaning": "Narrow",
+    "meaning_id": "Sempit",
+    "type": "kotoba",
+    "category": "AdjectivesExt"
+  },
+  {
+    "id": "v_ageru",
+    "char": "あげる",
+    "romaji": "ageru",
+    "meaning": "To give",
+    "meaning_id": "Memberi",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_morau",
+    "char": "もらう",
+    "romaji": "morau",
+    "meaning": "To receive",
+    "meaning_id": "Menerima",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_kasu",
+    "char": "かす",
+    "romaji": "kasu",
+    "meaning": "To lend",
+    "meaning_id": "Meminjamkan",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_kariru",
+    "char": "かりる",
+    "romaji": "kariru",
+    "meaning": "To borrow",
+    "meaning_id": "Meminjam",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_oboeru",
+    "char": "おぼえる",
+    "romaji": "oboeru",
+    "meaning": "To memorize",
+    "meaning_id": "Menghafal",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_wasureru",
+    "char": "わすれる",
+    "romaji": "wasureru",
+    "meaning": "To forget",
+    "meaning_id": "Lupa",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_kangaeru",
+    "char": "かんがえる",
+    "romaji": "kangaeru",
+    "meaning": "To think",
+    "meaning_id": "Berpikir",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_yobu",
+    "char": "よぶ",
+    "romaji": "yobu",
+    "meaning": "To call",
+    "meaning_id": "Memanggil",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_shiru",
+    "char": "しる",
+    "romaji": "shiru",
+    "meaning": "To know",
+    "meaning_id": "Tahu",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_sumu",
+    "char": "すむ",
+    "romaji": "sumu",
+    "meaning": "To live / reside",
+    "meaning_id": "Tinggal / Menetap",
+    "type": "kotoba",
+    "category": "VerbsExt"
+  },
+  {
+    "id": "v_gohan",
+    "char": "ごはん",
+    "romaji": "gohan",
+    "meaning": "Rice / Meal",
+    "meaning_id": "Nasi / Makanan",
+    "type": "kotoba",
+    "category": "Dining"
+  },
+  {
+    "id": "v_sake",
+    "char": "さけ",
+    "romaji": "sake",
+    "meaning": "Alcohol / Sake",
+    "meaning_id": "Minuman Keras",
+    "type": "kotoba",
+    "category": "Dining"
+  },
+  {
+    "id": "v_yasai",
+    "char": "やさい",
+    "romaji": "yasai",
+    "meaning": "Vegetable",
+    "meaning_id": "Sayuran",
+    "type": "kotoba",
+    "category": "Dining"
+  },
+  {
+    "id": "v_kudamono",
+    "char": "くだもの",
+    "romaji": "kudamono",
+    "meaning": "Fruit",
+    "meaning_id": "Buah-buahan",
+    "type": "kotoba",
+    "category": "Dining"
+  },
+  {
+    "id": "v_ryouri",
+    "char": "りょうり",
+    "romaji": "ryouri",
+    "meaning": "Cooking",
+    "meaning_id": "Masakan",
+    "type": "kotoba",
+    "category": "Dining"
+  },
+  {
+    "id": "v_shokudou",
+    "char": "しょくどう",
+    "romaji": "shokudou",
+    "meaning": "Cafeteria",
+    "meaning_id": "Kantin / Ruang Makan",
+    "type": "kotoba",
+    "category": "Dining"
+  },
+  {
+    "id": "v_yama",
+    "char": "やま",
+    "romaji": "yama",
+    "meaning": "Mountain",
+    "meaning_id": "Gunung",
+    "type": "kotoba",
+    "category": "NatureExt"
+  },
+  {
+    "id": "v_kawa",
+    "char": "かわ",
+    "romaji": "kawa",
+    "meaning": "River",
+    "meaning_id": "Sungai",
+    "type": "kotoba",
+    "category": "NatureExt"
+  },
+  {
+    "id": "v_umi",
+    "char": "うみ",
+    "romaji": "umi",
+    "meaning": "Sea",
+    "meaning_id": "Laut",
+    "type": "kotoba",
+    "category": "NatureExt"
+  },
+  {
+    "id": "v_hana",
+    "char": "はな",
+    "romaji": "hana",
+    "meaning": "Flower",
+    "meaning_id": "Bunga",
+    "type": "kotoba",
+    "category": "NatureExt"
+  },
+  {
+    "id": "v_ki",
+    "char": "き",
+    "romaji": "ki",
+    "meaning": "Tree",
+    "meaning_id": "Pohon",
+    "type": "kotoba",
+    "category": "NatureExt"
+  },
+  {
+    "id": "v_michi",
+    "char": "みち",
+    "romaji": "michi",
+    "meaning": "Road",
+    "meaning_id": "Jalan",
+    "type": "kotoba",
+    "category": "NatureExt"
+  },
+  {
+    "id": "v_tatemono",
+    "char": "たてもの",
+    "romaji": "tatemono",
+    "meaning": "Building",
+    "meaning_id": "Bangunan",
+    "type": "kotoba",
+    "category": "NatureExt"
+  },
+  {
+    "id": "v_denwa",
+    "char": "でんわ",
+    "romaji": "denwa",
+    "meaning": "Telephone",
+    "meaning_id": "Telepon",
+    "type": "kotoba",
+    "category": "MiscItems"
+  },
+  {
+    "id": "v_tegami",
+    "char": "てがみ",
+    "romaji": "tegami",
+    "meaning": "Letter",
+    "meaning_id": "Surat",
+    "type": "kotoba",
+    "category": "MiscItems"
+  },
+  {
+    "id": "v_naifu",
+    "char": "ナイフ",
+    "romaji": "naifu",
+    "meaning": "Knife",
+    "meaning_id": "Pisau",
+    "type": "kotoba",
+    "category": "MiscItems"
+  },
+  {
+    "id": "v_fooku",
+    "char": "フォーク",
+    "romaji": "fooku",
+    "meaning": "Fork",
+    "meaning_id": "Garpu",
+    "type": "kotoba",
+    "category": "MiscItems"
+  },
+  {
+    "id": "v_hashi",
+    "char": "はし",
+    "romaji": "hashi",
+    "meaning": "Chopsticks",
+    "meaning_id": "Sumpit",
+    "type": "kotoba",
+    "category": "MiscItems"
+  },
+  {
+    "id": "v_kamera",
+    "char": "カメラ",
+    "romaji": "kamera",
+    "meaning": "Camera",
+    "meaning_id": "Kamera",
+    "type": "kotoba",
+    "category": "MiscItems"
+  },
+  {
+    "id": "v_terebi",
+    "char": "テレビ",
+    "romaji": "terebi",
+    "meaning": "Television",
+    "meaning_id": "Televisi",
+    "type": "kotoba",
+    "category": "MiscItems"
+  },
+  {
+    "id": "v_minami",
+    "char": "みなみ",
+    "romaji": "minami",
+    "meaning": "South",
+    "meaning_id": "Selatan",
+    "type": "kotoba",
+    "category": "DirectionsExt"
+  },
+  {
+    "id": "v_higashi",
+    "char": "ひがし",
+    "romaji": "higashi",
+    "meaning": "East",
+    "meaning_id": "Timur",
+    "type": "kotoba",
+    "category": "DirectionsExt"
+  },
+  {
+    "id": "v_nishi",
+    "char": "にし",
+    "romaji": "nishi",
+    "meaning": "West",
+    "meaning_id": "Barat",
+    "type": "kotoba",
+    "category": "DirectionsExt"
+  },
+  {
+    "id": "v_tonari",
+    "char": "となり",
+    "romaji": "tonari",
+    "meaning": "Next to",
+    "meaning_id": "Sebelah",
+    "type": "kotoba",
+    "category": "DirectionsExt"
+  },
+  {
+    "id": "v_chikaku",
+    "char": "ちかく",
+    "romaji": "chikaku",
+    "meaning": "Near",
+    "meaning_id": "Dekat / Sekitar",
+    "type": "kotoba",
+    "category": "DirectionsExt"
+  },
+  {
+    "id": "v_eiga",
+    "char": "えいが",
+    "romaji": "eiga",
+    "meaning": "Movie",
+    "meaning_id": "Film",
+    "type": "kotoba",
+    "category": "Entertainment"
+  },
+  {
+    "id": "v_ongaku",
+    "char": "おんがく",
+    "romaji": "ongaku",
+    "meaning": "Music",
+    "meaning_id": "Musik",
+    "type": "kotoba",
+    "category": "Entertainment"
+  },
+  {
+    "id": "v_uta",
+    "char": "うた",
+    "romaji": "uta",
+    "meaning": "Song",
+    "meaning_id": "Lagu",
+    "type": "kotoba",
+    "category": "Entertainment"
+  },
+  {
+    "id": "v_shashin",
+    "char": "しゃしん",
+    "romaji": "shashin",
+    "meaning": "Photo",
+    "meaning_id": "Foto",
+    "type": "kotoba",
+    "category": "Entertainment"
+  },
+  {
+    "id": "v_zasshi",
+    "char": "ざっし",
+    "romaji": "zasshi",
+    "meaning": "Magazine",
+    "meaning_id": "Majalah",
+    "type": "kotoba",
+    "category": "Entertainment"
+  },
+  {
+    "id": "v_shinbun",
+    "char": "しんぶん",
+    "romaji": "shinbun",
+    "meaning": "Newspaper",
+    "meaning_id": "Koran",
+    "type": "kotoba",
+    "category": "DailyItems"
+  },
+  {
+    "id": "v_tokei",
+    "char": "とけい",
+    "romaji": "tokei",
+    "meaning": "Clock / Watch",
+    "meaning_id": "Jam",
+    "type": "kotoba",
+    "category": "DailyItems"
+  },
+  {
+    "id": "v_kasa",
+    "char": "かさ",
+    "romaji": "kasa",
+    "meaning": "Umbrella",
+    "meaning_id": "Payung",
+    "type": "kotoba",
+    "category": "DailyItems"
+  },
+  {
+    "id": "v_shukudai",
+    "char": "しゅくだい",
+    "romaji": "shukudai",
+    "meaning": "Homework",
+    "meaning_id": "PR / Tugas",
+    "type": "kotoba",
+    "category": "DailyItems"
+  },
+  {
+    "id": "v_kippu",
+    "char": "きっぷ",
+    "romaji": "kippu",
+    "meaning": "Ticket",
+    "meaning_id": "Tiket",
+    "type": "kotoba",
+    "category": "DailyItems"
+  },
+  {
+    "id": "v_kitte",
+    "char": "きって",
+    "romaji": "kitte",
+    "meaning": "Stamp",
+    "meaning_id": "Perangko",
+    "type": "kotoba",
+    "category": "DailyItems"
+  },
+  {
+    "id": "v_totemo",
+    "char": "とても",
+    "romaji": "totemo",
+    "meaning": "Very",
+    "meaning_id": "Sangat",
+    "type": "kotoba",
+    "category": "Adverbs"
+  },
+  {
+    "id": "v_sukoshi",
+    "char": "すこし",
+    "romaji": "sukoshi",
+    "meaning": "A little",
+    "meaning_id": "Sedikit",
+    "type": "kotoba",
+    "category": "Adverbs"
+  },
+  {
+    "id": "v_takusan",
+    "char": "たくさん",
+    "romaji": "takusan",
+    "meaning": "A lot",
+    "meaning_id": "Banyak",
+    "type": "kotoba",
+    "category": "Adverbs"
+  },
+  {
+    "id": "v_itsumo",
+    "char": "いつも",
+    "romaji": "itsumo",
+    "meaning": "Always",
+    "meaning_id": "Selalu",
+    "type": "kotoba",
+    "category": "Adverbs"
+  },
+  {
+    "id": "v_tokidoki",
+    "char": "ときどき",
+    "romaji": "tokidoki",
+    "meaning": "Sometimes",
+    "meaning_id": "Kadang-kadang",
+    "type": "kotoba",
+    "category": "Adverbs"
+  },
+  {
+    "id": "v_kirei",
+    "char": "きれい",
+    "romaji": "kirei",
+    "meaning": "Beautiful / Clean",
+    "meaning_id": "Cantik / Bersih",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_shizuka",
+    "char": "しずか",
+    "romaji": "shizuka",
+    "meaning": "Quiet",
+    "meaning_id": "Tenang",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_nigiyaka",
+    "char": "にぎやか",
+    "romaji": "nigiyaka",
+    "meaning": "Lively",
+    "meaning_id": "Ramai",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_himana",
+    "char": "ひまな",
+    "romaji": "hima na",
+    "meaning": "Free (time)",
+    "meaning_id": "Senggang",
+    "type": "kotoba",
+    "category": "Adjectives"
+  },
+  {
+    "id": "v_tsuitachi",
+    "char": "ついたち",
+    "romaji": "tsuitachi",
+    "meaning": "1st day of month",
+    "meaning_id": "Tanggal 1",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_futsuka",
+    "char": "ふつか",
+    "romaji": "futsuka",
+    "meaning": "2nd day",
+    "meaning_id": "Tanggal 2",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_mikka",
+    "char": "みっか",
+    "romaji": "mikka",
+    "meaning": "3rd day",
+    "meaning_id": "Tanggal 3",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_yokka",
+    "char": "よっか",
+    "romaji": "yokka",
+    "meaning": "4th day",
+    "meaning_id": "Tanggal 4",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_itsuka",
+    "char": "いつか",
+    "romaji": "itsuka",
+    "meaning": "5th day",
+    "meaning_id": "Tanggal 5",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_muika",
+    "char": "むいか",
+    "romaji": "muika",
+    "meaning": "6th day",
+    "meaning_id": "Tanggal 6",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nanoka",
+    "char": "なのか",
+    "romaji": "nanoka",
+    "meaning": "7th day",
+    "meaning_id": "Tanggal 7",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_youka",
+    "char": "ようか",
+    "romaji": "youka",
+    "meaning": "8th day",
+    "meaning_id": "Tanggal 8",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_kokonoka",
+    "char": "ここのか",
+    "romaji": "kokonoka",
+    "meaning": "9th day",
+    "meaning_id": "Tanggal 9",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_tooka",
+    "char": "とおか",
+    "romaji": "tooka",
+    "meaning": "10th day",
+    "meaning_id": "Tanggal 10",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_juuyokka",
+    "char": "じゅうよっか",
+    "romaji": "juuyokka",
+    "meaning": "14th day",
+    "meaning_id": "Tanggal 14",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_hatsuka",
+    "char": "はつか",
+    "romaji": "hatsuka",
+    "meaning": "20th day",
+    "meaning_id": "Tanggal 20",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nijuyokka",
+    "char": "にじゅうよっか",
+    "romaji": "nijuyokka",
+    "meaning": "24th day",
+    "meaning_id": "Tanggal 24",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_akeru",
+    "char": "あける",
+    "romaji": "akeru",
+    "meaning": "To open",
+    "meaning_id": "Membuka",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_shimeru",
+    "char": "しめる",
+    "romaji": "shimeru",
+    "meaning": "To close",
+    "meaning_id": "Menutup",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_tsukeru",
+    "char": "つける",
+    "romaji": "tsukeru",
+    "meaning": "To turn on",
+    "meaning_id": "Menyalakan",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_kesu",
+    "char": "けす",
+    "romaji": "kesu",
+    "meaning": "To turn off",
+    "meaning_id": "Mematikan",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_hairu",
+    "char": "はいる",
+    "romaji": "hairu",
+    "meaning": "To enter",
+    "meaning_id": "Masuk",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_deru",
+    "char": "でる",
+    "romaji": "deru",
+    "meaning": "To exit",
+    "meaning_id": "Keluar",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_dasu",
+    "char": "だす",
+    "romaji": "dasu",
+    "meaning": "To take out",
+    "meaning_id": "Mengeluarkan / Menyerahkan",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_ireru",
+    "char": "いれる",
+    "romaji": "ireru",
+    "meaning": "To put in",
+    "meaning_id": "Memasukkan",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_tomaru",
+    "char": "とまる",
+    "romaji": "tomaru",
+    "meaning": "To stop",
+    "meaning_id": "Berhenti",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_utau",
+    "char": "うたう",
+    "romaji": "utau",
+    "meaning": "To sing",
+    "meaning_id": "Bernyanyi",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_arau",
+    "char": "あらう",
+    "romaji": "arau",
+    "meaning": "To wash",
+    "meaning_id": "Mencuci",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_kiru",
+    "char": "きる",
+    "romaji": "kiru",
+    "meaning": "To wear (upper body)",
+    "meaning_id": "Memakai (Baju atas)",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_nugu",
+    "char": "ぬぐ",
+    "romaji": "nugu",
+    "meaning": "To take off (clothes)",
+    "meaning_id": "Melepas (Pakaian)",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_kaburu",
+    "char": "かぶる",
+    "romaji": "kaburu",
+    "meaning": "To wear (on head)",
+    "meaning_id": "Memakai (Di kepala/Topi)",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_kakeru",
+    "char": "かける",
+    "romaji": "kakeru",
+    "meaning": "To put on (glasses)",
+    "meaning_id": "Memakai (Kacamata)",
+    "type": "kotoba",
+    "category": "VerbsUltra"
+  },
+  {
+    "id": "v_machi",
+    "char": "まち",
+    "romaji": "machi",
+    "meaning": "Town / City",
+    "meaning_id": "Kota",
+    "type": "kotoba",
+    "category": "CityPlaces"
+  },
+  {
+    "id": "v_mura",
+    "char": "むら",
+    "romaji": "mura",
+    "meaning": "Village",
+    "meaning_id": "Desa",
+    "type": "kotoba",
+    "category": "CityPlaces"
+  },
+  {
+    "id": "v_hashi_bridge",
+    "char": "はし",
+    "romaji": "hashi",
+    "meaning": "Bridge",
+    "meaning_id": "Jembatan",
+    "type": "kotoba",
+    "category": "CityPlaces"
+  },
+  {
+    "id": "v_kousaten",
+    "char": "こうさてん",
+    "romaji": "kousaten",
+    "meaning": "Intersection",
+    "meaning_id": "Perempatan / Simpang",
+    "type": "kotoba",
+    "category": "CityPlaces"
+  },
+  {
+    "id": "v_kado",
+    "char": "かど",
+    "romaji": "kado",
+    "meaning": "Corner",
+    "meaning_id": "Sudut / Tikungan",
+    "type": "kotoba",
+    "category": "CityPlaces"
+  },
+  {
+    "id": "v_taishikan",
+    "char": "たいしかん",
+    "romaji": "taishikan",
+    "meaning": "Embassy",
+    "meaning_id": "Kedutaan Besar",
+    "type": "kotoba",
+    "category": "CityPlaces"
+  },
+  {
+    "id": "v_daigaku",
+    "char": "だいがく",
+    "romaji": "daigaku",
+    "meaning": "University",
+    "meaning_id": "Universitas",
+    "type": "kotoba",
+    "category": "CityPlaces"
+  },
+  {
+    "id": "v_kouban",
+    "char": "こうばん",
+    "romaji": "kouban",
+    "meaning": "Police box",
+    "meaning_id": "Pos Polisi",
+    "type": "kotoba",
+    "category": "CityPlaces"
+  },
+  {
+    "id": "v_eigakan",
+    "char": "えいがかん",
+    "romaji": "eigakan",
+    "meaning": "Movie theater",
+    "meaning_id": "Bioskop",
+    "type": "kotoba",
+    "category": "CityPlaces"
+  },
+  {
+    "id": "v_apaato",
+    "char": "アパート",
+    "romaji": "apaato",
+    "meaning": "Apartment",
+    "meaning_id": "Apartemen",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_depaato",
+    "char": "デパート",
+    "romaji": "depaato",
+    "meaning": "Department store",
+    "meaning_id": "Pusat Perbelanjaan",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_basutei",
+    "char": "バスてい",
+    "romaji": "basutei",
+    "meaning": "Bus stop",
+    "meaning_id": "Halte Bus",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_takushii",
+    "char": "タクシー",
+    "romaji": "takushii",
+    "meaning": "Taxi",
+    "meaning_id": "Taksi",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_basu",
+    "char": "バス",
+    "romaji": "basu",
+    "meaning": "Bus",
+    "meaning_id": "Bus",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_rajio",
+    "char": "ラジオ",
+    "romaji": "rajio",
+    "meaning": "Radio",
+    "meaning_id": "Radio",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_matchi",
+    "char": "マッチ",
+    "romaji": "matchi",
+    "meaning": "Match",
+    "meaning_id": "Korek Api",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_sutoobu",
+    "char": "ストーブ",
+    "romaji": "sutoobu",
+    "meaning": "Heater / Stove",
+    "meaning_id": "Penghanas Ruangan",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_eakon",
+    "char": "エアコン",
+    "romaji": "eakon",
+    "meaning": "Air conditioner",
+    "meaning_id": "AC / Pendingin Ruangan",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_surippa",
+    "char": "スリッパ",
+    "romaji": "surippa",
+    "meaning": "Slippers",
+    "meaning_id": "Sandal Rumah",
+    "type": "kotoba",
+    "category": "KatakanaN5"
+  },
+  {
+    "id": "v_kao",
+    "char": "かお",
+    "romaji": "kao",
+    "meaning": "Face",
+    "meaning_id": "Wajah",
+    "type": "kotoba",
+    "category": "BodyExt"
+  },
+  {
+    "id": "v_kami",
+    "char": "かみ",
+    "romaji": "kami",
+    "meaning": "Hair",
+    "meaning_id": "Rambut",
+    "type": "kotoba",
+    "category": "BodyExt"
+  },
+  {
+    "id": "v_hana_nose",
+    "char": "はな",
+    "romaji": "hana",
+    "meaning": "Nose",
+    "meaning_id": "Hidung",
+    "type": "kotoba",
+    "category": "BodyExt"
+  },
+  {
+    "id": "v_ha_tooth",
+    "char": "は",
+    "romaji": "ha",
+    "meaning": "Tooth",
+    "meaning_id": "Gigi",
+    "type": "kotoba",
+    "category": "BodyExt"
+  },
+  {
+    "id": "v_onaka",
+    "char": "おなか",
+    "romaji": "onaka",
+    "meaning": "Stomach",
+    "meaning_id": "Perut",
+    "type": "kotoba",
+    "category": "BodyExt"
+  },
+  {
+    "id": "v_senaka",
+    "char": "せなか",
+    "romaji": "senaka",
+    "meaning": "Back (body)",
+    "meaning_id": "Punggung",
+    "type": "kotoba",
+    "category": "BodyExt"
+  },
+  {
+    "id": "v_kata",
+    "char": "かた",
+    "romaji": "kata",
+    "meaning": "Shoulder",
+    "meaning_id": "Bahu",
+    "type": "kotoba",
+    "category": "BodyExt"
+  },
+  {
+    "id": "v_kubi",
+    "char": "くび",
+    "romaji": "kubi",
+    "meaning": "Neck",
+    "meaning_id": "Leher",
+    "type": "kotoba",
+    "category": "BodyExt"
+  },
+  {
+    "id": "v_yubi",
+    "char": "ゆび",
+    "romaji": "yubi",
+    "meaning": "Finger",
+    "meaning_id": "Jari",
+    "type": "kotoba",
+    "category": "BodyExt"
+  },
+  {
+    "id": "v_sofu",
+    "char": "そふ",
+    "romaji": "sofu",
+    "meaning": "Grandfather (own)",
+    "meaning_id": "Kakek (Sendiri)",
+    "type": "kotoba",
+    "category": "FamilyHumble"
+  },
+  {
+    "id": "v_sobo",
+    "char": "そぼ",
+    "romaji": "sobo",
+    "meaning": "Grandmother (own)",
+    "meaning_id": "Nenek (Sendiri)",
+    "type": "kotoba",
+    "category": "FamilyHumble"
+  },
+  {
+    "id": "v_shujin",
+    "char": "しゅじん",
+    "romaji": "shujin",
+    "meaning": "Husband (own)",
+    "meaning_id": "Suami (Sendiri)",
+    "type": "kotoba",
+    "category": "FamilyHumble"
+  },
+  {
+    "id": "v_kanai",
+    "char": "かない",
+    "romaji": "kanai",
+    "meaning": "Wife (own)",
+    "meaning_id": "Istri (Sendiri)",
+    "type": "kotoba",
+    "category": "FamilyHumble"
+  },
+  {
+    "id": "v_musuko",
+    "char": "むすこ",
+    "romaji": "musuko",
+    "meaning": "Son (own)",
+    "meaning_id": "Anak Laki-laki (Sendiri)",
+    "type": "kotoba",
+    "category": "FamilyHumble"
+  },
+  {
+    "id": "v_musume",
+    "char": "むすめ",
+    "romaji": "musume",
+    "meaning": "Daughter (own)",
+    "meaning_id": "Anak Perempuan (Sendiri)",
+    "type": "kotoba",
+    "category": "FamilyHumble"
+  },
+  {
+    "id": "v_tsumetai",
+    "char": "つめたい",
+    "romaji": "tsumetai",
+    "meaning": "Cold (to touch)",
+    "meaning_id": "Dingin (Benda)",
+    "type": "kotoba",
+    "category": "AdjectivesUltra"
+  },
+  {
+    "id": "v_atatakai",
+    "char": "あたたかい",
+    "romaji": "atatakai",
+    "meaning": "Warm",
+    "meaning_id": "Hangat",
+    "type": "kotoba",
+    "category": "AdjectivesUltra"
+  },
+  {
+    "id": "v_suzushii",
+    "char": "すずしい",
+    "romaji": "suzushii",
+    "meaning": "Cool (weather)",
+    "meaning_id": "Sejuk",
+    "type": "kotoba",
+    "category": "AdjectivesUltra"
+  },
+  {
+    "id": "v_suppai",
+    "char": "すっぱい",
+    "romaji": "suppai",
+    "meaning": "Sour",
+    "meaning_id": "Asam",
+    "type": "kotoba",
+    "category": "AdjectivesUltra"
+  },
+  {
+    "id": "v_nigai",
+    "char": "にがい",
+    "romaji": "nigai",
+    "meaning": "Bitter",
+    "meaning_id": "Pahit",
+    "type": "kotoba",
+    "category": "AdjectivesUltra"
+  },
+  {
+    "id": "v_usui",
+    "char": "うすい",
+    "romaji": "usui",
+    "meaning": "Thin (objects)",
+    "meaning_id": "Tipis",
+    "type": "kotoba",
+    "category": "AdjectivesUltra"
+  },
+  {
+    "id": "v_atsui_thick",
+    "char": "あつい",
+    "romaji": "atsui",
+    "meaning": "Thick (objects)",
+    "meaning_id": "Tebal",
+    "type": "kotoba",
+    "category": "AdjectivesUltra"
+  },
+  {
+    "id": "v_wakai",
+    "char": "わかい",
+    "romaji": "wakai",
+    "meaning": "Young",
+    "meaning_id": "Muda",
+    "type": "kotoba",
+    "category": "AdjectivesUltra"
+  },
+  {
+    "id": "v_senshuu",
+    "char": "せんしゅう",
+    "romaji": "senshuu",
+    "meaning": "Last week",
+    "meaning_id": "Minggu lalu",
+    "type": "kotoba",
+    "category": "TimeUltra"
+  },
+  {
+    "id": "v_konshuu",
+    "char": "こんしゅう",
+    "romaji": "konshuu",
+    "meaning": "This week",
+    "meaning_id": "Minggu ini",
+    "type": "kotoba",
+    "category": "TimeUltra"
+  },
+  {
+    "id": "v_raishuu",
+    "char": "らいしゅう",
+    "romaji": "raishuu",
+    "meaning": "Next week",
+    "meaning_id": "Minggu depan",
+    "type": "kotoba",
+    "category": "TimeUltra"
+  },
+  {
+    "id": "v_sengetsu",
+    "char": "せんげつ",
+    "romaji": "sengetsu",
+    "meaning": "Last month",
+    "meaning_id": "Bulan lalu",
+    "type": "kotoba",
+    "category": "TimeUltra"
+  },
+  {
+    "id": "v_kongetsu",
+    "char": "こんげつ",
+    "romaji": "kongetsu",
+    "meaning": "This month",
+    "meaning_id": "Bulan ini",
+    "type": "kotoba",
+    "category": "TimeUltra"
+  },
+  {
+    "id": "v_raigetsu",
+    "char": "らいげつ",
+    "romaji": "raigetsu",
+    "meaning": "Next month",
+    "meaning_id": "Bulan depan",
+    "type": "kotoba",
+    "category": "TimeUltra"
+  },
+  {
+    "id": "v_ototoi",
+    "char": "おととい",
+    "romaji": "ototoi",
+    "meaning": "Day before yesterday",
+    "meaning_id": "Kemarin lusa",
+    "type": "kotoba",
+    "category": "TimeUltra"
+  },
+  {
+    "id": "v_asatte",
+    "char": "あさって",
+    "romaji": "asatte",
+    "meaning": "Day after tomorrow",
+    "meaning_id": "Besok lusa",
+    "type": "kotoba",
+    "category": "TimeUltra"
+  },
+  {
+    "id": "v_demo",
+    "char": "でも",
+    "romaji": "demo",
+    "meaning": "But",
+    "meaning_id": "Tapi",
+    "type": "kotoba",
+    "category": "ConjunctionsAdverbs"
+  },
+  {
+    "id": "v_dakara",
+    "char": "だから",
+    "romaji": "dakara",
+    "meaning": "So / Therefore",
+    "meaning_id": "Karena itu / Jadi",
+    "type": "kotoba",
+    "category": "ConjunctionsAdverbs"
+  },
+  {
+    "id": "v_soshite",
+    "char": "そして",
+    "romaji": "soshite",
+    "meaning": "And / And then",
+    "meaning_id": "Dan / Kemudian",
+    "type": "kotoba",
+    "category": "ConjunctionsAdverbs"
+  },
+  {
+    "id": "v_sorekara",
+    "char": "それから",
+    "romaji": "sorekara",
+    "meaning": "After that",
+    "meaning_id": "Setelah itu",
+    "type": "kotoba",
+    "category": "ConjunctionsAdverbs"
+  },
+  {
+    "id": "v_motto",
+    "char": "もっと",
+    "romaji": "motto",
+    "meaning": "More",
+    "meaning_id": "Lebih",
+    "type": "kotoba",
+    "category": "ConjunctionsAdverbs"
+  },
+  {
+    "id": "v_hontouni",
+    "char": "ほんとうに",
+    "romaji": "hontouni",
+    "meaning": "Really",
+    "meaning_id": "Benar-benar / Sungguh",
+    "type": "kotoba",
+    "category": "ConjunctionsAdverbs"
+  },
+  {
+    "id": "v_yoku",
+    "char": "よく",
+    "romaji": "yoku",
+    "meaning": "Often / Well",
+    "meaning_id": "Sering / Dengan baik",
+    "type": "kotoba",
+    "category": "ConjunctionsAdverbs"
+  },
+  {
+    "id": "v_taitei",
+    "char": "たいてい",
+    "romaji": "taitei",
+    "meaning": "Usually",
+    "meaning_id": "Biasanya",
+    "type": "kotoba",
+    "category": "ConjunctionsAdverbs"
+  },
+  {
+    "id": "v_zenzen",
+    "char": "ぜんぜん",
+    "romaji": "zenzen",
+    "meaning": "Not at all",
+    "meaning_id": "Sama sekali (tidak)",
+    "type": "kotoba",
+    "category": "ConjunctionsAdverbs"
+  },
+  {
+    "id": "v_jugyou",
+    "char": "じゅぎょう",
+    "romaji": "jugyou",
+    "meaning": "Class / Lesson",
+    "meaning_id": "Pelajaran / Kelas",
+    "type": "kotoba",
+    "category": "SchoolExt"
+  },
+  {
+    "id": "v_shitsumon",
+    "char": "しつもん",
+    "romaji": "shitsumon",
+    "meaning": "Question",
+    "meaning_id": "Pertanyaan",
+    "type": "kotoba",
+    "category": "SchoolExt"
+  },
+  {
+    "id": "v_mondai",
+    "char": "もんだい",
+    "romaji": "mondai",
+    "meaning": "Problem / Question",
+    "meaning_id": "Soal / Masalah",
+    "type": "kotoba",
+    "category": "SchoolExt"
+  },
+  {
+    "id": "v_kotae",
+    "char": "こたえ",
+    "romaji": "kotae",
+    "meaning": "Answer",
+    "meaning_id": "Jawaban",
+    "type": "kotoba",
+    "category": "SchoolExt"
+  },
+  {
+    "id": "v_rei",
+    "char": "れい",
+    "romaji": "rei",
+    "meaning": "Example",
+    "meaning_id": "Contoh",
+    "type": "kotoba",
+    "category": "SchoolExt"
+  },
+  {
+    "id": "v_ryokou",
+    "char": "りょこう",
+    "romaji": "ryokou",
+    "meaning": "Travel / Trip",
+    "meaning_id": "Jalan-jalan / Wisata",
+    "type": "kotoba",
+    "category": "Activities"
+  },
+  {
+    "id": "v_sanpo",
+    "char": "さんぽ",
+    "romaji": "sanpo",
+    "meaning": "Walk / Stroll",
+    "meaning_id": "Jalan-jalan santai",
+    "type": "kotoba",
+    "category": "Activities"
+  },
+  {
+    "id": "v_kaimono",
+    "char": "かいもの",
+    "romaji": "kaimono",
+    "meaning": "Shopping",
+    "meaning_id": "Belanja",
+    "type": "kotoba",
+    "category": "Activities"
+  },
+  {
+    "id": "v_sentaku",
+    "char": "せんたく",
+    "romaji": "sentaku",
+    "meaning": "Laundry",
+    "meaning_id": "Mencuci Baju",
+    "type": "kotoba",
+    "category": "Activities"
+  },
+  {
+    "id": "v_souji",
+    "char": "そうじ",
+    "romaji": "souji",
+    "meaning": "Cleaning",
+    "meaning_id": "Bersih-bersih",
+    "type": "kotoba",
+    "category": "Activities"
+  },
+  {
+    "id": "v_shigoto",
+    "char": "しごと",
+    "romaji": "shigoto",
+    "meaning": "Work / Job",
+    "meaning_id": "Pekerjaan",
+    "type": "kotoba",
+    "category": "Activities"
+  },
+  {
+    "id": "v_benkyou",
+    "char": "べんきょう",
+    "romaji": "benkyou",
+    "meaning": "Study",
+    "meaning_id": "Belajar",
+    "type": "kotoba",
+    "category": "Activities"
+  },
+  {
+    "id": "v_renshuu",
+    "char": "れんしゅう",
+    "romaji": "renshuu",
+    "meaning": "Practice",
+    "meaning_id": "Latihan",
+    "type": "kotoba",
+    "category": "Activities"
+  },
+  {
+    "id": "v_byouki",
+    "char": "びょうき",
+    "romaji": "byouki",
+    "meaning": "Illness / Sickness",
+    "meaning_id": "Sakit / Penyakit",
+    "type": "kotoba",
+    "category": "Health"
+  },
+  {
+    "id": "v_kaze_sick",
+    "char": "かぜ",
+    "romaji": "kaze",
+    "meaning": "Cold (illness)",
+    "meaning_id": "Masuk angin / Pilek",
+    "type": "kotoba",
+    "category": "Health"
+  },
+  {
+    "id": "v_kusuri",
+    "char": "くすり",
+    "romaji": "kusuri",
+    "meaning": "Medicine",
+    "meaning_id": "Obat",
+    "type": "kotoba",
+    "category": "Health"
+  },
+  {
+    "id": "v_isha",
+    "char": "いしゃ",
+    "romaji": "isha",
+    "meaning": "Doctor",
+    "meaning_id": "Dokter",
+    "type": "kotoba",
+    "category": "Health"
+  },
+  {
+    "id": "v_shatsu",
+    "char": "シャツ",
+    "romaji": "shatsu",
+    "meaning": "Shirt",
+    "meaning_id": "Kemeja",
+    "type": "kotoba",
+    "category": "ClothingExt"
+  },
+  {
+    "id": "v_zubon",
+    "char": "ズボン",
+    "romaji": "zubon",
+    "meaning": "Pants / Trousers",
+    "meaning_id": "Celana",
+    "type": "kotoba",
+    "category": "ClothingExt"
+  },
+  {
+    "id": "v_sukaato",
+    "char": "スカート",
+    "romaji": "sukaato",
+    "meaning": "Skirt",
+    "meaning_id": "Rok",
+    "type": "kotoba",
+    "category": "ClothingExt"
+  },
+  {
+    "id": "v_kooto",
+    "char": "コート",
+    "romaji": "kooto",
+    "meaning": "Coat",
+    "meaning_id": "Mantel / Jas",
+    "type": "kotoba",
+    "category": "ClothingExt"
+  },
+  {
+    "id": "v_seetaa",
+    "char": "セーター",
+    "romaji": "seetaa",
+    "meaning": "Sweater",
+    "meaning_id": "Baju Hangat",
+    "type": "kotoba",
+    "category": "ClothingExt"
+  },
+  {
+    "id": "v_nekutai",
+    "char": "ネクタイ",
+    "romaji": "nekutai",
+    "meaning": "Necktie",
+    "meaning_id": "Dasi",
+    "type": "kotoba",
+    "category": "ClothingExt"
+  },
+  {
+    "id": "v_soba",
+    "char": "そば",
+    "romaji": "soba",
+    "meaning": "Beside / Near",
+    "meaning_id": "Di samping / Dekat",
+    "type": "kotoba",
+    "category": "PositionsExt"
+  },
+  {
+    "id": "v_yoko",
+    "char": "よこ",
+    "romaji": "yoko",
+    "meaning": "Side / Horizontal",
+    "meaning_id": "Sebelah",
+    "type": "kotoba",
+    "category": "PositionsExt"
+  },
+  {
+    "id": "v_aida",
+    "char": "あいだ",
+    "romaji": "aida",
+    "meaning": "Between",
+    "meaning_id": "Di antara",
+    "type": "kotoba",
+    "category": "PositionsExt"
+  },
+  {
+    "id": "v_mannaka",
+    "char": "まんなか",
+    "romaji": "mannaka",
+    "meaning": "Middle / Center",
+    "meaning_id": "Di tengah-tengah",
+    "type": "kotoba",
+    "category": "PositionsExt"
+  },
+  {
+    "id": "v_mukou",
+    "char": "むこう",
+    "romaji": "mukou",
+    "meaning": "Over there",
+    "meaning_id": "Di seberang sana",
+    "type": "kotoba",
+    "category": "PositionsExt"
+  },
+  {
+    "id": "v_kocchi",
+    "char": "こっち",
+    "romaji": "kocchi",
+    "meaning": "This way / Here",
+    "meaning_id": "Sebelah sini",
+    "type": "kotoba",
+    "category": "PositionsExt"
+  },
+  {
+    "id": "v_socchi",
+    "char": "そっち",
+    "romaji": "socchi",
+    "meaning": "That way / There",
+    "meaning_id": "Sebelah sana",
+    "type": "kotoba",
+    "category": "PositionsExt"
+  },
+  {
+    "id": "v_acchi",
+    "char": "あっち",
+    "romaji": "acchi",
+    "meaning": "Over there (far)",
+    "meaning_id": "Sebelah sana (jauh)",
+    "type": "kotoba",
+    "category": "PositionsExt"
+  },
+  {
+    "id": "v_saku",
+    "char": "さく",
+    "romaji": "saku",
+    "meaning": "To bloom",
+    "meaning_id": "Mekar (Bunga)",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_furu",
+    "char": "ふる",
+    "romaji": "furu",
+    "meaning": "To fall (rain/snow)",
+    "meaning_id": "Turun (Hujan/Salju)",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_hareru",
+    "char": "はれる",
+    "romaji": "hareru",
+    "meaning": "To clear up",
+    "meaning_id": "Cerah",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_kumoru",
+    "char": "くもる",
+    "romaji": "kumoru",
+    "meaning": "To get cloudy",
+    "meaning_id": "Mendung",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_noboru",
+    "char": "のぼる",
+    "romaji": "noboru",
+    "meaning": "To climb",
+    "meaning_id": "Mendaki",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_narabu",
+    "char": "ならぶ",
+    "romaji": "narabu",
+    "meaning": "To line up",
+    "meaning_id": "Berbaris / Antre",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_tsukareru",
+    "char": "つかれる",
+    "romaji": "tsukareru",
+    "meaning": "To get tired",
+    "meaning_id": "Lelah / Capek",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_okureru",
+    "char": "おくれる",
+    "romaji": "okureru",
+    "meaning": "To be late",
+    "meaning_id": "Terlambat",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_tsutomeru",
+    "char": "つとめる",
+    "romaji": "tsutomeru",
+    "meaning": "To work for",
+    "meaning_id": "Bekerja pada (Perusahaan)",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_hiku_catch",
+    "char": "ひく",
+    "romaji": "hiku",
+    "meaning": "To pull / Catch cold",
+    "meaning_id": "Menarik / Kena Flu",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_hiku_play",
+    "char": "ひく",
+    "romaji": "hiku",
+    "meaning": "To play (instrument)",
+    "meaning_id": "Memainkan (Gitar/Piano)",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_sasu",
+    "char": "さす",
+    "romaji": "sasu",
+    "meaning": "To open umbrella",
+    "meaning_id": "Membuka Payung",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_fuku_wind",
+    "char": "ふく",
+    "romaji": "fuku",
+    "meaning": "To blow (wind)",
+    "meaning_id": "Bertiup (Angin)",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_naku",
+    "char": "なく",
+    "romaji": "naku",
+    "meaning": "To sing (bird)",
+    "meaning_id": "Berkicau (Burung)",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_chigau",
+    "char": "ちがう",
+    "romaji": "chigau",
+    "meaning": "To be different/wrong",
+    "meaning_id": "Beda / Salah",
+    "type": "kotoba",
+    "category": "VerbsMega"
+  },
+  {
+    "id": "v_jouzu",
+    "char": "じょうず",
+    "romaji": "jouzu",
+    "meaning": "Skillful",
+    "meaning_id": "Pintar / Mahir",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_heta",
+    "char": "へた",
+    "romaji": "heta",
+    "meaning": "Unskillful",
+    "meaning_id": "Tidak Mahir",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_suki",
+    "char": "すき",
+    "romaji": "suki",
+    "meaning": "Like",
+    "meaning_id": "Suka",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_kirai",
+    "char": "きらい",
+    "romaji": "kirai",
+    "meaning": "Dislike / Hate",
+    "meaning_id": "Benci",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_abunai",
+    "char": "あぶない",
+    "romaji": "abunai",
+    "meaning": "Dangerous",
+    "meaning_id": "Bahaya",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_anzen",
+    "char": "あんぜん",
+    "romaji": "anzen",
+    "meaning": "Safe",
+    "meaning_id": "Aman",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_taisetsu",
+    "char": "たいせつ",
+    "romaji": "taisetsu",
+    "meaning": "Important",
+    "meaning_id": "Penting",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_kitanai",
+    "char": "きたない",
+    "romaji": "kitanai",
+    "meaning": "Dirty",
+    "meaning_id": "Kotor",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_urusai",
+    "char": "うるさい",
+    "romaji": "urusai",
+    "meaning": "Noisy",
+    "meaning_id": "Berisik",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_marui",
+    "char": "まるい",
+    "romaji": "marui",
+    "meaning": "Round",
+    "meaning_id": "Bulat",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_hosoi",
+    "char": "ほそい",
+    "romaji": "hosoi",
+    "meaning": "Thin (shape)",
+    "meaning_id": "Kurus / Ramping",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_futoi",
+    "char": "ふとい",
+    "romaji": "futoi",
+    "meaning": "Thick (shape)",
+    "meaning_id": "Gemuk / Besar (Bentuk)",
+    "type": "kotoba",
+    "category": "AdjectivesMega"
+  },
+  {
+    "id": "v_ichimai",
+    "char": "いちまい",
+    "romaji": "ichimai",
+    "meaning": "One (flat object)",
+    "meaning_id": "1 Lembar",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_nimai",
+    "char": "にまい",
+    "romaji": "nimai",
+    "meaning": "Two (flat objects)",
+    "meaning_id": "2 Lembar",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_ippon",
+    "char": "いっぽん",
+    "romaji": "ippon",
+    "meaning": "One (long object)",
+    "meaning_id": "1 Batang",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_nihon_counter",
+    "char": "にほん",
+    "romaji": "nihon",
+    "meaning": "Two (long objects)",
+    "meaning_id": "2 Batang",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_sanbon",
+    "char": "さんぼん",
+    "romaji": "sanbon",
+    "meaning": "Three (long objects)",
+    "meaning_id": "3 Batang",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_ikkai",
+    "char": "いっかい",
+    "romaji": "ikkai",
+    "meaning": "1st floor / One time",
+    "meaning_id": "Lantai 1 / Sekali",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_ichidai",
+    "char": "いちだい",
+    "romaji": "ichidai",
+    "meaning": "One (machine/car)",
+    "meaning_id": "1 Mesin / Unit",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_issatsu",
+    "char": "いっさつ",
+    "romaji": "issatsu",
+    "meaning": "One (book)",
+    "meaning_id": "1 Jilid / Buku",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_ippiki",
+    "char": "いっぴき",
+    "romaji": "ippiki",
+    "meaning": "One (small animal)",
+    "meaning_id": "1 Ekor (Hewan kecil)",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_ippai",
+    "char": "いっぱい",
+    "romaji": "ippai",
+    "meaning": "One cup/glass / Full",
+    "meaning_id": "1 Gelas / Penuh",
+    "type": "kotoba",
+    "category": "CountersExt"
+  },
+  {
+    "id": "v_konnichiwa",
+    "char": "こんにちは",
+    "romaji": "konnichiwa",
+    "meaning": "Hello / Good afternoon",
+    "meaning_id": "Halo / Selamat siang",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_konbanwa",
+    "char": "こんばんは",
+    "romaji": "konbanwa",
+    "meaning": "Good evening",
+    "meaning_id": "Selamat malam",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_sayounara",
+    "char": "さようなら",
+    "romaji": "sayounara",
+    "meaning": "Goodbye",
+    "meaning_id": "Selamat tinggal",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_sumimasen",
+    "char": "すみません",
+    "romaji": "sumimasen",
+    "meaning": "Excuse me / Sorry",
+    "meaning_id": "Permisi / Maaf",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_gomennasai",
+    "char": "ごめんなさい",
+    "romaji": "gomennasai",
+    "meaning": "I'm sorry",
+    "meaning_id": "Maafkan saya",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_itadakimasu",
+    "char": "いただきます",
+    "romaji": "itadakimasu",
+    "meaning": "Let's eat",
+    "meaning_id": "Selamat makan",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_gochisousama",
+    "char": "ごちそうさま",
+    "romaji": "gochisousama",
+    "meaning": "Thanks for meal",
+    "meaning_id": "Terima kasih atas makanannya",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_tadaima",
+    "char": "ただいま",
+    "romaji": "tadaima",
+    "meaning": "I'm home",
+    "meaning_id": "Saya pulang",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_okaerinasai",
+    "char": "おかえりなさい",
+    "romaji": "okaerinasai",
+    "meaning": "Welcome back",
+    "meaning_id": "Selamat datang kembali",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_itterasshai",
+    "char": "いってらっしゃい",
+    "romaji": "itterasshai",
+    "meaning": "Have a good day",
+    "meaning_id": "Hati-hati di jalan",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_ittekimasu",
+    "char": "いってきます",
+    "romaji": "ittekimasu",
+    "meaning": "I'm going",
+    "meaning_id": "Saya pergi (dan akan kembali)",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_minasan",
+    "char": "みなさん",
+    "romaji": "minasan",
+    "meaning": "Everyone",
+    "meaning_id": "Semuanya / Hadirin",
+    "type": "kotoba",
+    "category": "PeopleExt"
+  },
+  {
+    "id": "v_ryoushin",
+    "char": "りょうしん",
+    "romaji": "ryoushin",
+    "meaning": "Parents",
+    "meaning_id": "Orang Tua",
+    "type": "kotoba",
+    "category": "PeopleExt"
+  },
+  {
+    "id": "v_kyoudai",
+    "char": "きょうだい",
+    "romaji": "kyoudai",
+    "meaning": "Siblings",
+    "meaning_id": "Saudara Kandung",
+    "type": "kotoba",
+    "category": "PeopleExt"
+  },
+  {
+    "id": "v_otona",
+    "char": "おとな",
+    "romaji": "otona",
+    "meaning": "Adult",
+    "meaning_id": "Orang Dewasa",
+    "type": "kotoba",
+    "category": "PeopleExt"
+  },
+  {
+    "id": "v_kodomo",
+    "char": "こども",
+    "romaji": "kodomo",
+    "meaning": "Child",
+    "meaning_id": "Anak-anak",
+    "type": "kotoba",
+    "category": "PeopleExt"
+  },
+  {
+    "id": "v_jibun",
+    "char": "じぶん",
+    "romaji": "jibun",
+    "meaning": "Oneself",
+    "meaning_id": "Diri sendiri",
+    "type": "kotoba",
+    "category": "PeopleExt"
+  },
+  {
+    "id": "v_reizouko",
+    "char": "れいぞうこ",
+    "romaji": "reizouko",
+    "meaning": "Refrigerator",
+    "meaning_id": "Kulkas",
+    "type": "kotoba",
+    "category": "HomeAppliances"
+  },
+  {
+    "id": "v_soujiki",
+    "char": "そうじき",
+    "romaji": "soujiki",
+    "meaning": "Vacuum cleaner",
+    "meaning_id": "Penyedot Debu",
+    "type": "kotoba",
+    "category": "HomeAppliances"
+  },
+  {
+    "id": "v_sentakuki",
+    "char": "せんたくき",
+    "romaji": "sentakuki",
+    "meaning": "Washing machine",
+    "meaning_id": "Mesin Cuci",
+    "type": "kotoba",
+    "category": "HomeAppliances"
+  },
+  {
+    "id": "v_sara",
+    "char": "さら",
+    "romaji": "sara",
+    "meaning": "Plate",
+    "meaning_id": "Piring",
+    "type": "kotoba",
+    "category": "HomeAppliances"
+  },
+  {
+    "id": "v_koppu",
+    "char": "コップ",
+    "romaji": "koppu",
+    "meaning": "Glass / Cup",
+    "meaning_id": "Gelas Kaca",
+    "type": "kotoba",
+    "category": "HomeAppliances"
+  },
+  {
+    "id": "v_chawan",
+    "char": "ちゃわん",
+    "romaji": "chawan",
+    "meaning": "Rice bowl",
+    "meaning_id": "Mangkuk Nasi",
+    "type": "kotoba",
+    "category": "HomeAppliances"
+  },
+  {
+    "id": "v_kaisha",
+    "char": "かいしゃ",
+    "romaji": "kaisha",
+    "meaning": "Company",
+    "meaning_id": "Perusahaan",
+    "type": "kotoba",
+    "category": "PlacesExt"
+  },
+  {
+    "id": "v_jimusho",
+    "char": "じむしょ",
+    "romaji": "jimusho",
+    "meaning": "Office",
+    "meaning_id": "Kantor",
+    "type": "kotoba",
+    "category": "PlacesExt"
+  },
+  {
+    "id": "v_toire",
+    "char": "トイレ",
+    "romaji": "toire",
+    "meaning": "Toilet / Restroom",
+    "meaning_id": "Toilet / WC",
+    "type": "kotoba",
+    "category": "PlacesExt"
+  },
+  {
+    "id": "v_otearai",
+    "char": "おてあらい",
+    "romaji": "otearai",
+    "meaning": "Restroom (Polite)",
+    "meaning_id": "Kamar Kecil (Sopan)",
+    "type": "kotoba",
+    "category": "PlacesExt"
+  },
+  {
+    "id": "v_kaidan",
+    "char": "かいだん",
+    "romaji": "kaidan",
+    "meaning": "Stairs",
+    "meaning_id": "Tangga",
+    "type": "kotoba",
+    "category": "PlacesExt"
+  },
+  {
+    "id": "v_erebeetaa",
+    "char": "エレベーター",
+    "romaji": "erebeetaa",
+    "meaning": "Elevator",
+    "meaning_id": "Lift",
+    "type": "kotoba",
+    "category": "PlacesExt"
+  },
+  {
+    "id": "v_esukareetaa",
+    "char": "エスカレーター",
+    "romaji": "esukareetaa",
+    "meaning": "Escalator",
+    "meaning_id": "Eskalator",
+    "type": "kotoba",
+    "category": "PlacesExt"
+  },
+  {
+    "id": "v_uketsuke",
+    "char": "うけつけ",
+    "romaji": "uketsuke",
+    "meaning": "Reception desk",
+    "meaning_id": "Meja Resepsionis",
+    "type": "kotoba",
+    "category": "PlacesExt"
+  },
+  {
+    "id": "v_kore",
+    "char": "これ",
+    "romaji": "kore",
+    "meaning": "This",
+    "meaning_id": "Ini (Benda)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_sore",
+    "char": "それ",
+    "romaji": "sore",
+    "meaning": "That",
+    "meaning_id": "Itu (Dekat lawan bicara)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_are",
+    "char": "あれ",
+    "romaji": "are",
+    "meaning": "That over there",
+    "meaning_id": "Itu (Jauh)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_kono",
+    "char": "この",
+    "romaji": "kono",
+    "meaning": "This (+ noun)",
+    "meaning_id": "Ini (+ Kata Benda)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_sono",
+    "char": "その",
+    "romaji": "sono",
+    "meaning": "That (+ noun)",
+    "meaning_id": "Itu (+ Kata Benda)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_ano",
+    "char": "あの",
+    "romaji": "ano",
+    "meaning": "That over there (+ noun)",
+    "meaning_id": "Itu jauh (+ Kata Benda)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_dono",
+    "char": "どの",
+    "romaji": "dono",
+    "meaning": "Which (+ noun)",
+    "meaning_id": "Yang mana (+ Kata Benda)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_koko",
+    "char": "ここ",
+    "romaji": "koko",
+    "meaning": "Here",
+    "meaning_id": "Di sini (Tempat)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_soko",
+    "char": "そこ",
+    "romaji": "soko",
+    "meaning": "There",
+    "meaning_id": "Di situ (Tempat)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_asoko",
+    "char": "あそこ",
+    "romaji": "asoko",
+    "meaning": "Over there",
+    "meaning_id": "Di sana (Jauh)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_nanika",
+    "char": "なにか",
+    "romaji": "nanika",
+    "meaning": "Something",
+    "meaning_id": "Sesuatu",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_dareka",
+    "char": "だれか",
+    "romaji": "dareka",
+    "meaning": "Someone",
+    "meaning_id": "Seseorang",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_dokoka",
+    "char": "どこか",
+    "romaji": "dokoka",
+    "meaning": "Somewhere",
+    "meaning_id": "Suatu tempat",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_itsuka_someday",
+    "char": "いつか",
+    "romaji": "itsuka",
+    "meaning": "Someday",
+    "meaning_id": "Suatu hari nanti",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_kami_paper",
+    "char": "かみ",
+    "romaji": "kami",
+    "meaning": "Paper",
+    "meaning_id": "Kertas",
+    "type": "kotoba",
+    "category": "MaterialsItems"
+  },
+  {
+    "id": "v_hasami",
+    "char": "はさみ",
+    "romaji": "hasami",
+    "meaning": "Scissors",
+    "meaning_id": "Gunting",
+    "type": "kotoba",
+    "category": "MaterialsItems"
+  },
+  {
+    "id": "v_hako",
+    "char": "はこ",
+    "romaji": "hako",
+    "meaning": "Box",
+    "meaning_id": "Kotak",
+    "type": "kotoba",
+    "category": "MaterialsItems"
+  },
+  {
+    "id": "v_kagi",
+    "char": "かぎ",
+    "romaji": "kagi",
+    "meaning": "Key",
+    "meaning_id": "Kunci",
+    "type": "kotoba",
+    "category": "MaterialsItems"
+  },
+  {
+    "id": "v_teepu",
+    "char": "テープ",
+    "romaji": "teepu",
+    "meaning": "Tape",
+    "meaning_id": "Plester / Kaset",
+    "type": "kotoba",
+    "category": "MaterialsItems"
+  },
+  {
+    "id": "v_pasokon",
+    "char": "パソコン",
+    "romaji": "pasokon",
+    "meaning": "Personal Computer",
+    "meaning_id": "PC / Laptop",
+    "type": "kotoba",
+    "category": "MaterialsItems"
+  },
+  {
+    "id": "v_konpyuutaa",
+    "char": "コンピューター",
+    "romaji": "konpyuutaa",
+    "meaning": "Computer",
+    "meaning_id": "Komputer",
+    "type": "kotoba",
+    "category": "MaterialsItems"
+  },
+  {
+    "id": "v_sumaho",
+    "char": "スマホ",
+    "romaji": "sumaho",
+    "meaning": "Smartphone",
+    "meaning_id": "Ponsel Pintar",
+    "type": "kotoba",
+    "category": "MaterialsItems"
+  },
+  {
+    "id": "v_supootsu",
+    "char": "スポーツ",
+    "romaji": "supootsu",
+    "meaning": "Sports",
+    "meaning_id": "Olahraga",
+    "type": "kotoba",
+    "category": "HobbiesSports"
+  },
+  {
+    "id": "v_sakkaa",
+    "char": "サッカー",
+    "romaji": "sakkaa",
+    "meaning": "Soccer",
+    "meaning_id": "Sepak Bola",
+    "type": "kotoba",
+    "category": "HobbiesSports"
+  },
+  {
+    "id": "v_yakyuu",
+    "char": "やきゅう",
+    "romaji": "yakyuu",
+    "meaning": "Baseball",
+    "meaning_id": "Bisbol",
+    "type": "kotoba",
+    "category": "HobbiesSports"
+  },
+  {
+    "id": "v_tenisu",
+    "char": "テニス",
+    "romaji": "tenisu",
+    "meaning": "Tennis",
+    "meaning_id": "Tenis",
+    "type": "kotoba",
+    "category": "HobbiesSports"
+  },
+  {
+    "id": "v_suiei",
+    "char": "すいえい",
+    "romaji": "suiei",
+    "meaning": "Swimming",
+    "meaning_id": "Berenang (Benda)",
+    "type": "kotoba",
+    "category": "HobbiesSports"
+  },
+  {
+    "id": "v_gitaa",
+    "char": "ギター",
+    "romaji": "gitaa",
+    "meaning": "Guitar",
+    "meaning_id": "Gitar",
+    "type": "kotoba",
+    "category": "HobbiesSports"
+  },
+  {
+    "id": "v_piano",
+    "char": "ピアノ",
+    "romaji": "piano",
+    "meaning": "Piano",
+    "meaning_id": "Piano",
+    "type": "kotoba",
+    "category": "HobbiesSports"
+  },
+  {
+    "id": "v_gyuuniku",
+    "char": "ぎゅうにく",
+    "romaji": "gyuuniku",
+    "meaning": "Beef",
+    "meaning_id": "Daging Sapi",
+    "type": "kotoba",
+    "category": "FoodExt"
+  },
+  {
+    "id": "v_butaniku",
+    "char": "ぶたにく",
+    "romaji": "butaniku",
+    "meaning": "Pork",
+    "meaning_id": "Daging Babi",
+    "type": "kotoba",
+    "category": "FoodExt"
+  },
+  {
+    "id": "v_toriniku",
+    "char": "とりにく",
+    "romaji": "toriniku",
+    "meaning": "Chicken",
+    "meaning_id": "Daging Ayam",
+    "type": "kotoba",
+    "category": "FoodExt"
+  },
+  {
+    "id": "v_okashi",
+    "char": "おかし",
+    "romaji": "okashi",
+    "meaning": "Sweets / Snacks",
+    "meaning_id": "Camilan / Manisan",
+    "type": "kotoba",
+    "category": "FoodExt"
+  },
+  {
+    "id": "v_ame_candy",
+    "char": "あめ",
+    "romaji": "ame",
+    "meaning": "Candy",
+    "meaning_id": "Permen",
+    "type": "kotoba",
+    "category": "FoodExt"
+  },
+  {
+    "id": "v_satou",
+    "char": "さとう",
+    "romaji": "satou",
+    "meaning": "Sugar",
+    "meaning_id": "Gula",
+    "type": "kotoba",
+    "category": "FoodExt"
+  },
+  {
+    "id": "v_shio",
+    "char": "しお",
+    "romaji": "shio",
+    "meaning": "Salt",
+    "meaning_id": "Garam",
+    "type": "kotoba",
+    "category": "FoodExt"
+  },
+  {
+    "id": "v_shouyu",
+    "char": "しょうゆ",
+    "romaji": "shouyu",
+    "meaning": "Soy sauce",
+    "meaning_id": "Kecap Asin",
+    "type": "kotoba",
+    "category": "FoodExt"
+  },
+  {
+    "id": "v_jikan",
+    "char": "じかん",
+    "romaji": "jikan",
+    "meaning": "Time / Hour",
+    "meaning_id": "Waktu / Jam (Durasi)",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_han",
+    "char": "はん",
+    "romaji": "han",
+    "meaning": "Half",
+    "meaning_id": "Setengah (Jam)",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_fun",
+    "char": "ふん / ぷん",
+    "romaji": "fun / pun",
+    "meaning": "Minute",
+    "meaning_id": "Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_byou",
+    "char": "びょう",
+    "romaji": "byou",
+    "meaning": "Second",
+    "meaning_id": "Detik",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_shuukan",
+    "char": "しゅうかん",
+    "romaji": "shuukan",
+    "meaning": "Weeks (duration)",
+    "meaning_id": "Minggu (Durasi)",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_kagetsu",
+    "char": "かげつ",
+    "romaji": "kagetsu",
+    "meaning": "Months (duration)",
+    "meaning_id": "Bulan (Durasi)",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_nenkan",
+    "char": "ねんかん",
+    "romaji": "nenkan",
+    "meaning": "Years (duration)",
+    "meaning_id": "Tahun (Durasi)",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_goro",
+    "char": "ごろ",
+    "romaji": "goro",
+    "meaning": "Around (time)",
+    "meaning_id": "Sekitar (Waktu tepat)",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_kurai",
+    "char": "くらい",
+    "romaji": "kurai",
+    "meaning": "About (duration)",
+    "meaning_id": "Kira-kira (Durasi)",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_uma",
+    "char": "うま",
+    "romaji": "uma",
+    "meaning": "Horse",
+    "meaning_id": "Kuda",
+    "type": "kotoba",
+    "category": "NatureAnimals"
+  },
+  {
+    "id": "v_ushi",
+    "char": "うし",
+    "romaji": "ushi",
+    "meaning": "Cow",
+    "meaning_id": "Sapi",
+    "type": "kotoba",
+    "category": "NatureAnimals"
+  },
+  {
+    "id": "v_buta",
+    "char": "ぶた",
+    "romaji": "buta",
+    "meaning": "Pig",
+    "meaning_id": "Babi",
+    "type": "kotoba",
+    "category": "NatureAnimals"
+  },
+  {
+    "id": "v_saru",
+    "char": "さる",
+    "romaji": "saru",
+    "meaning": "Monkey",
+    "meaning_id": "Monyet",
+    "type": "kotoba",
+    "category": "NatureAnimals"
+  },
+  {
+    "id": "v_ike",
+    "char": "いけ",
+    "romaji": "ike",
+    "meaning": "Pond",
+    "meaning_id": "Kolam",
+    "type": "kotoba",
+    "category": "NatureAnimals"
+  },
+  {
+    "id": "v_mori",
+    "char": "もり",
+    "romaji": "mori",
+    "meaning": "Forest",
+    "meaning_id": "Hutan lebat",
+    "type": "kotoba",
+    "category": "NatureAnimals"
+  },
+  {
+    "id": "v_hayashi",
+    "char": "はやし",
+    "romaji": "hayashi",
+    "meaning": "Woods",
+    "meaning_id": "Hutan kecil",
+    "type": "kotoba",
+    "category": "NatureAnimals"
+  },
+  {
+    "id": "v_kiiroi",
+    "char": "きいろい",
+    "romaji": "kiiroi",
+    "meaning": "Yellow",
+    "meaning_id": "Kuning",
+    "type": "kotoba",
+    "category": "ColorsExt"
+  },
+  {
+    "id": "v_chairoi",
+    "char": "ちゃいろい",
+    "romaji": "chairoi",
+    "meaning": "Brown",
+    "meaning_id": "Cokelat",
+    "type": "kotoba",
+    "category": "ColorsExt"
+  },
+  {
+    "id": "v_midori",
+    "char": "みどり",
+    "romaji": "midori",
+    "meaning": "Green",
+    "meaning_id": "Hijau",
+    "type": "kotoba",
+    "category": "ColorsExt"
+  },
+  {
+    "id": "v_murasaki",
+    "char": "むらさき",
+    "romaji": "murasaki",
+    "meaning": "Purple",
+    "meaning_id": "Ungu",
+    "type": "kotoba",
+    "category": "ColorsExt"
+  },
+  {
+    "id": "v_naku_cry",
+    "char": "なく",
+    "romaji": "naku",
+    "meaning": "To cry",
+    "meaning_id": "Menangis",
+    "type": "kotoba",
+    "category": "VerbsUltra2"
+  },
+  {
+    "id": "v_warau",
+    "char": "わらう",
+    "romaji": "warau",
+    "meaning": "To laugh",
+    "meaning_id": "Tertawa",
+    "type": "kotoba",
+    "category": "VerbsUltra2"
+  },
+  {
+    "id": "v_okoru",
+    "char": "おこる",
+    "romaji": "okoru",
+    "meaning": "To get angry",
+    "meaning_id": "Marah",
+    "type": "kotoba",
+    "category": "VerbsUltra2"
+  },
+  {
+    "id": "v_komaru",
+    "char": "こまる",
+    "romaji": "komaru",
+    "meaning": "To be in trouble",
+    "meaning_id": "Kesulitan / Bingung",
+    "type": "kotoba",
+    "category": "VerbsUltra2"
+  },
+  {
+    "id": "v_shinu",
+    "char": "しぬ",
+    "romaji": "shinu",
+    "meaning": "To die",
+    "meaning_id": "Mati",
+    "type": "kotoba",
+    "category": "VerbsUltra2"
+  },
+  {
+    "id": "v_suteru",
+    "char": "すてる",
+    "romaji": "suteru",
+    "meaning": "To throw away",
+    "meaning_id": "Membuang",
+    "type": "kotoba",
+    "category": "VerbsUltra2"
+  },
+  {
+    "id": "v_hirou",
+    "char": "ひろう",
+    "romaji": "hirou",
+    "meaning": "To pick up",
+    "meaning_id": "Memungut / Mengambil",
+    "type": "kotoba",
+    "category": "VerbsUltra2"
+  },
+  {
+    "id": "v_kimeru",
+    "char": "きめる",
+    "romaji": "kimeru",
+    "meaning": "To decide",
+    "meaning_id": "Memutuskan",
+    "type": "kotoba",
+    "category": "VerbsUltra2"
+  },
+  {
+    "id": "v_yaru",
+    "char": "やる",
+    "romaji": "yaru",
+    "meaning": "To do (casual)",
+    "meaning_id": "Melakukan (Kasual)",
+    "type": "kotoba",
+    "category": "VerbsUltra2"
+  },
+  {
+    "id": "v_sugu",
+    "char": "すぐ",
+    "romaji": "sugu",
+    "meaning": "Immediately",
+    "meaning_id": "Segera",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_mou",
+    "char": "もう",
+    "romaji": "mou",
+    "meaning": "Already / Anymore",
+    "meaning_id": "Sudah / Lagi",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_mada",
+    "char": "まだ",
+    "romaji": "mada",
+    "meaning": "Not yet / Still",
+    "meaning_id": "Belum / Masih",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_mata",
+    "char": "また",
+    "romaji": "mata",
+    "meaning": "Again",
+    "meaning_id": "Lagi (Sekali lagi)",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_ato",
+    "char": "あと",
+    "romaji": "ato",
+    "meaning": "Later / After",
+    "meaning_id": "Nanti / Setelah",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_isshoni",
+    "char": "いっしょに",
+    "romaji": "isshoni",
+    "meaning": "Together",
+    "meaning_id": "Bersama-sama",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_dandan",
+    "char": "だんだん",
+    "romaji": "dandan",
+    "meaning": "Gradually",
+    "meaning_id": "Berangsur-angsur",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_massugu",
+    "char": "まっすぐ",
+    "romaji": "massugu",
+    "meaning": "Straight ahead",
+    "meaning_id": "Lurus terus",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_tabun",
+    "char": "たぶん",
+    "romaji": "tabun",
+    "meaning": "Probably / Maybe",
+    "meaning_id": "Mungkin",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_kitto",
+    "char": "きっと",
+    "romaji": "kitto",
+    "meaning": "Surely",
+    "meaning_id": "Pasti / Tentu saja",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_yukkuri",
+    "char": "ゆっくり",
+    "romaji": "yukkuri",
+    "meaning": "Slowly",
+    "meaning_id": "Pelan-pelan",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_hayaku_adv",
+    "char": "はやく",
+    "romaji": "hayaku",
+    "meaning": "Quickly",
+    "meaning_id": "Dengan cepat",
+    "type": "kotoba",
+    "category": "AdverbsExt"
+  },
+  {
+    "id": "v_mainichi",
+    "char": "まいにち",
+    "romaji": "mainichi",
+    "meaning": "Every day",
+    "meaning_id": "Setiap hari",
+    "type": "kotoba",
+    "category": "TimeFrequency"
+  },
+  {
+    "id": "v_maiasa",
+    "char": "まいあさ",
+    "romaji": "maiasa",
+    "meaning": "Every morning",
+    "meaning_id": "Setiap pagi",
+    "type": "kotoba",
+    "category": "TimeFrequency"
+  },
+  {
+    "id": "v_maiban",
+    "char": "まいばん",
+    "romaji": "maiban",
+    "meaning": "Every night",
+    "meaning_id": "Setiap malam",
+    "type": "kotoba",
+    "category": "TimeFrequency"
+  },
+  {
+    "id": "v_maishuu",
+    "char": "まいしゅう",
+    "romaji": "maishuu",
+    "meaning": "Every week",
+    "meaning_id": "Setiap minggu",
+    "type": "kotoba",
+    "category": "TimeFrequency"
+  },
+  {
+    "id": "v_maitsuki",
+    "char": "まいつき",
+    "romaji": "maitsuki",
+    "meaning": "Every month",
+    "meaning_id": "Setiap bulan",
+    "type": "kotoba",
+    "category": "TimeFrequency"
+  },
+  {
+    "id": "v_maitoshi",
+    "char": "まいとし",
+    "romaji": "maitoshi",
+    "meaning": "Every year",
+    "meaning_id": "Setiap tahun",
+    "type": "kotoba",
+    "category": "TimeFrequency"
+  },
+  {
+    "id": "v_genki",
+    "char": "げんき",
+    "romaji": "genki",
+    "meaning": "Healthy / Energetic",
+    "meaning_id": "Sehat / Bersemangat",
+    "type": "kotoba",
+    "category": "Traits"
+  },
+  {
+    "id": "v_yuumei",
+    "char": "ゆうめい",
+    "romaji": "yuumei",
+    "meaning": "Famous",
+    "meaning_id": "Terkenal",
+    "type": "kotoba",
+    "category": "Traits"
+  },
+  {
+    "id": "v_shinsetsu",
+    "char": "しんせつ",
+    "romaji": "shinsetsu",
+    "meaning": "Kind",
+    "meaning_id": "Ramah / Baik hati",
+    "type": "kotoba",
+    "category": "Traits"
+  },
+  {
+    "id": "v_benri",
+    "char": "べんり",
+    "romaji": "benri",
+    "meaning": "Convenient",
+    "meaning_id": "Praktis / Nyaman",
+    "type": "kotoba",
+    "category": "Traits"
+  },
+  {
+    "id": "v_fuben",
+    "char": "ふべん",
+    "romaji": "fuben",
+    "meaning": "Inconvenient",
+    "meaning_id": "Tidak praktis",
+    "type": "kotoba",
+    "category": "Traits"
+  },
+  {
+    "id": "v_suteki",
+    "char": "すてき",
+    "romaji": "suteki",
+    "meaning": "Wonderful",
+    "meaning_id": "Bagus sekali / Menawan",
+    "type": "kotoba",
+    "category": "Traits"
+  },
+  {
+    "id": "v_daijoubu",
+    "char": "だいじょうぶ",
+    "romaji": "daijoubu",
+    "meaning": "Okay / Alright",
+    "meaning_id": "Tidak apa-apa / Aman",
+    "type": "kotoba",
+    "category": "Traits"
+  },
+  {
+    "id": "v_e_picture",
+    "char": "え",
+    "romaji": "e",
+    "meaning": "Picture / Painting",
+    "meaning_id": "Gambar / Lukisan",
+    "type": "kotoba",
+    "category": "MailTravel"
+  },
+  {
+    "id": "v_chizu",
+    "char": "ちず",
+    "romaji": "chizu",
+    "meaning": "Map",
+    "meaning_id": "Peta",
+    "type": "kotoba",
+    "category": "MailTravel"
+  },
+  {
+    "id": "v_nimotsu",
+    "char": "にもつ",
+    "romaji": "nimotsu",
+    "meaning": "Luggage / Baggage",
+    "meaning_id": "Barang bawaan / Paket",
+    "type": "kotoba",
+    "category": "MailTravel"
+  },
+  {
+    "id": "v_pasupooto",
+    "char": "パスポート",
+    "romaji": "pasupooto",
+    "meaning": "Passport",
+    "meaning_id": "Paspor",
+    "type": "kotoba",
+    "category": "MailTravel"
+  },
+  {
+    "id": "v_hagaki",
+    "char": "はがき",
+    "romaji": "hagaki",
+    "meaning": "Postcard",
+    "meaning_id": "Kartu pos",
+    "type": "kotoba",
+    "category": "MailTravel"
+  },
+  {
+    "id": "v_fuutou",
+    "char": "ふうとう",
+    "romaji": "fuutou",
+    "meaning": "Envelope",
+    "meaning_id": "Amplop",
+    "type": "kotoba",
+    "category": "MailTravel"
+  },
+  {
+    "id": "v_beddo",
+    "char": "ベッド",
+    "romaji": "beddo",
+    "meaning": "Bed",
+    "meaning_id": "Tempat tidur",
+    "type": "kotoba",
+    "category": "MailTravel"
+  },
+  {
+    "id": "v_jidosha",
+    "char": "じどうしゃ",
+    "romaji": "jidousha",
+    "meaning": "Car / Automobile",
+    "meaning_id": "Mobil (Formal)",
+    "type": "kotoba",
+    "category": "TransportPlaces"
+  },
+  {
+    "id": "v_shinkansen",
+    "char": "しんかんせん",
+    "romaji": "shinkansen",
+    "meaning": "Bullet train",
+    "meaning_id": "Kereta Cepat Shinkansen",
+    "type": "kotoba",
+    "category": "TransportPlaces"
+  },
+  {
+    "id": "v_kuukou",
+    "char": "くうこう",
+    "romaji": "kuukou",
+    "meaning": "Airport",
+    "meaning_id": "Bandara",
+    "type": "kotoba",
+    "category": "TransportPlaces"
+  },
+  {
+    "id": "v_minato",
+    "char": "みなと",
+    "romaji": "minato",
+    "meaning": "Port",
+    "meaning_id": "Pelabuhan",
+    "type": "kotoba",
+    "category": "TransportPlaces"
+  },
+  {
+    "id": "v_michibata",
+    "char": "みち",
+    "romaji": "michi",
+    "meaning": "Street / Road",
+    "meaning_id": "Jalanan",
+    "type": "kotoba",
+    "category": "TransportPlaces"
+  },
+  {
+    "id": "v_hare",
+    "char": "はれ",
+    "romaji": "hare",
+    "meaning": "Sunny weather",
+    "meaning_id": "Cuaca cerah",
+    "type": "kotoba",
+    "category": "WeatherNouns"
+  },
+  {
+    "id": "v_kumori",
+    "char": "くもり",
+    "romaji": "kumori",
+    "meaning": "Cloudy weather",
+    "meaning_id": "Cuaca mendung",
+    "type": "kotoba",
+    "category": "WeatherNouns"
+  },
+  {
+    "id": "v_kion",
+    "char": "きおん",
+    "romaji": "kion",
+    "meaning": "Temperature",
+    "meaning_id": "Suhu Udara",
+    "type": "kotoba",
+    "category": "WeatherNouns"
+  },
+  {
+    "id": "v_harau",
+    "char": "はらう",
+    "romaji": "harau",
+    "meaning": "To pay",
+    "meaning_id": "Membayar",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_kaesu",
+    "char": "かえす",
+    "romaji": "kaesu",
+    "meaning": "To return (a thing)",
+    "meaning_id": "Mengembalikan (Benda)",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_nakusu",
+    "char": "なくす",
+    "romaji": "nakusu",
+    "meaning": "To lose (something)",
+    "meaning_id": "Menghilangkan",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_sagasu",
+    "char": "さがす",
+    "romaji": "sagasu",
+    "meaning": "To look for",
+    "meaning_id": "Mencari",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_tetsudau",
+    "char": "てつだう",
+    "romaji": "tetsudau",
+    "meaning": "To help",
+    "meaning_id": "Membantu",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_shiraberu",
+    "char": "しらべる",
+    "romaji": "shiraberu",
+    "meaning": "To investigate / check",
+    "meaning_id": "Memeriksa / Mencari tahu",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_motsu",
+    "char": "もつ",
+    "romaji": "motsu",
+    "meaning": "To hold / have",
+    "meaning_id": "Membawa / Memegang",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_isogu",
+    "char": "いそぐ",
+    "romaji": "isogu",
+    "meaning": "To hurry",
+    "meaning_id": "Buru-buru",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_toru",
+    "char": "とる",
+    "romaji": "toru",
+    "meaning": "To take",
+    "meaning_id": "Mengambil",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_toru_photo",
+    "char": "とる",
+    "romaji": "toru",
+    "meaning": "To take a photo",
+    "meaning_id": "Memotret",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_abiru",
+    "char": "あびる",
+    "romaji": "abiru",
+    "meaning": "To shower",
+    "meaning_id": "Mandi (Shower)",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_suu",
+    "char": "すう",
+    "romaji": "suu",
+    "meaning": "To smoke / breathe",
+    "meaning_id": "Menghisap (Rokok)",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_tesuto",
+    "char": "テスト",
+    "romaji": "tesuto",
+    "meaning": "Test / Exam",
+    "meaning_id": "Ujian / Tes",
+    "type": "kotoba",
+    "category": "SchoolLanguage"
+  },
+  {
+    "id": "v_kyoushitsu",
+    "char": "きょうしつ",
+    "romaji": "kyoushitsu",
+    "meaning": "Classroom",
+    "meaning_id": "Ruang kelas",
+    "type": "kotoba",
+    "category": "SchoolLanguage"
+  },
+  {
+    "id": "v_eigo",
+    "char": "えいご",
+    "romaji": "eigo",
+    "meaning": "English language",
+    "meaning_id": "Bahasa Inggris",
+    "type": "kotoba",
+    "category": "SchoolLanguage"
+  },
+  {
+    "id": "v_nihongo",
+    "char": "にほんご",
+    "romaji": "nihongo",
+    "meaning": "Japanese language",
+    "meaning_id": "Bahasa Jepang",
+    "type": "kotoba",
+    "category": "SchoolLanguage"
+  },
+  {
+    "id": "v_jugyouryou",
+    "char": "じゅぎょうりょう",
+    "romaji": "jugyouryou",
+    "meaning": "Tuition fee",
+    "meaning_id": "Uang sekolah",
+    "type": "kotoba",
+    "category": "SchoolLanguage"
+  },
+  {
+    "id": "v_yottsu",
+    "char": "よっつ",
+    "romaji": "yottsu",
+    "meaning": "Four things",
+    "meaning_id": "Empat buah",
+    "type": "kotoba",
+    "category": "CountersUniversal"
+  },
+  {
+    "id": "v_itsutsu",
+    "char": "いつつ",
+    "romaji": "itsutsu",
+    "meaning": "Five things",
+    "meaning_id": "Lima buah",
+    "type": "kotoba",
+    "category": "CountersUniversal"
+  },
+  {
+    "id": "v_muttsu",
+    "char": "むっつ",
+    "romaji": "muttsu",
+    "meaning": "Six things",
+    "meaning_id": "Enam buah",
+    "type": "kotoba",
+    "category": "CountersUniversal"
+  },
+  {
+    "id": "v_nanatsu",
+    "char": "ななつ",
+    "romaji": "nanatsu",
+    "meaning": "Seven things",
+    "meaning_id": "Tujuh buah",
+    "type": "kotoba",
+    "category": "CountersUniversal"
+  },
+  {
+    "id": "v_yattsu",
+    "char": "やっつ",
+    "romaji": "yattsu",
+    "meaning": "Eight things",
+    "meaning_id": "Delapan buah",
+    "type": "kotoba",
+    "category": "CountersUniversal"
+  },
+  {
+    "id": "v_kokonotsu",
+    "char": "ここのつ",
+    "romaji": "kokonotsu",
+    "meaning": "Nine things",
+    "meaning_id": "Sembilan buah",
+    "type": "kotoba",
+    "category": "CountersUniversal"
+  },
+  {
+    "id": "v_too",
+    "char": "とお",
+    "romaji": "too",
+    "meaning": "Ten things",
+    "meaning_id": "Sepuluh buah",
+    "type": "kotoba",
+    "category": "CountersUniversal"
+  },
+  {
+    "id": "v_daidokoro",
+    "char": "だいどころ",
+    "romaji": "daidokoro",
+    "meaning": "Kitchen",
+    "meaning_id": "Dapur",
+    "type": "kotoba",
+    "category": "HouseExt"
+  },
+  {
+    "id": "v_ofuro",
+    "char": "おふろ",
+    "romaji": "ofuro",
+    "meaning": "Bath",
+    "meaning_id": "Kamar mandi / Bak mandi",
+    "type": "kotoba",
+    "category": "HouseExt"
+  },
+  {
+    "id": "v_genkan",
+    "char": "げんかん",
+    "romaji": "genkan",
+    "meaning": "Entrance",
+    "meaning_id": "Pintu masuk utama",
+    "type": "kotoba",
+    "category": "HouseExt"
+  },
+  {
+    "id": "v_niwa",
+    "char": "にわ",
+    "romaji": "niwa",
+    "meaning": "Garden / Yard",
+    "meaning_id": "Taman / Halaman",
+    "type": "kotoba",
+    "category": "HouseExt"
+  },
+  {
+    "id": "v_kutsushita",
+    "char": "くつした",
+    "romaji": "kutsushita",
+    "meaning": "Socks",
+    "meaning_id": "Kaos kaki",
+    "type": "kotoba",
+    "category": "ClothingUltra"
+  },
+  {
+    "id": "v_uwagi",
+    "char": "うわぎ",
+    "romaji": "uwagi",
+    "meaning": "Jacket / Outerwear",
+    "meaning_id": "Jaket / Baju luar",
+    "type": "kotoba",
+    "category": "ClothingUltra"
+  },
+  {
+    "id": "v_shitagi",
+    "char": "したぎ",
+    "romaji": "shitagi",
+    "meaning": "Underwear",
+    "meaning_id": "Pakaian dalam",
+    "type": "kotoba",
+    "category": "ClothingUltra"
+  },
+  {
+    "id": "v_poketto",
+    "char": "ポケット",
+    "romaji": "poketto",
+    "meaning": "Pocket",
+    "meaning_id": "Saku / Kantong",
+    "type": "kotoba",
+    "category": "ClothingUltra"
+  },
+  {
+    "id": "v_gosujin",
+    "char": "ごしゅじん",
+    "romaji": "goshujin",
+    "meaning": "Husband (someone else's)",
+    "meaning_id": "Suami (Orang lain)",
+    "type": "kotoba",
+    "category": "FamilyPolite"
+  },
+  {
+    "id": "v_okusan",
+    "char": "おくさん",
+    "romaji": "okusan",
+    "meaning": "Wife (someone else's)",
+    "meaning_id": "Istri (Orang lain)",
+    "type": "kotoba",
+    "category": "FamilyPolite"
+  },
+  {
+    "id": "v_donna",
+    "char": "どんな",
+    "romaji": "donna",
+    "meaning": "What kind of",
+    "meaning_id": "Yang seperti apa",
+    "type": "kotoba",
+    "category": "QuestionsExt"
+  },
+  {
+    "id": "v_dou",
+    "char": "どう",
+    "romaji": "dou",
+    "meaning": "How",
+    "meaning_id": "Bagaimana",
+    "type": "kotoba",
+    "category": "QuestionsExt"
+  },
+  {
+    "id": "v_ikaga",
+    "char": "いかが",
+    "romaji": "ikaga",
+    "meaning": "How (polite)",
+    "meaning_id": "Bagaimana (Sopan)",
+    "type": "kotoba",
+    "category": "QuestionsExt"
+  },
+  {
+    "id": "v_kaishain",
+    "char": "かいしゃいん",
+    "romaji": "kaishain",
+    "meaning": "Company employee",
+    "meaning_id": "Pegawai Perusahaan",
+    "type": "kotoba",
+    "category": "OccupationsExt"
+  },
+  {
+    "id": "v_ginkouin",
+    "char": "ぎんこういん",
+    "romaji": "ginkouin",
+    "meaning": "Bank employee",
+    "meaning_id": "Pegawai Bank",
+    "type": "kotoba",
+    "category": "OccupationsExt"
+  },
+  {
+    "id": "v_tenin",
+    "char": "てんいん",
+    "romaji": "tenin",
+    "meaning": "Store clerk",
+    "meaning_id": "Pegawai Toko",
+    "type": "kotoba",
+    "category": "OccupationsExt"
+  },
+  {
+    "id": "v_keisatsukan",
+    "char": "けいさつかん",
+    "romaji": "keisatsukan",
+    "meaning": "Police officer",
+    "meaning_id": "Polisi",
+    "type": "kotoba",
+    "category": "OccupationsExt"
+  },
+  {
+    "id": "v_kenkyuusha",
+    "char": "けんきゅうしゃ",
+    "romaji": "kenkyuusha",
+    "meaning": "Researcher",
+    "meaning_id": "Peneliti",
+    "type": "kotoba",
+    "category": "OccupationsExt"
+  },
+  {
+    "id": "v_asagohan",
+    "char": "あさごはん",
+    "romaji": "asagohan",
+    "meaning": "Breakfast",
+    "meaning_id": "Sarapan",
+    "type": "kotoba",
+    "category": "Meals"
+  },
+  {
+    "id": "v_hirugohan",
+    "char": "ひるごはん",
+    "romaji": "hirugohan",
+    "meaning": "Lunch",
+    "meaning_id": "Makan Siang",
+    "type": "kotoba",
+    "category": "Meals"
+  },
+  {
+    "id": "v_bangohan",
+    "char": "ばんごはん",
+    "romaji": "bangohan",
+    "meaning": "Dinner",
+    "meaning_id": "Makan Malam",
+    "type": "kotoba",
+    "category": "Meals"
+  },
+  {
+    "id": "v_koucha",
+    "char": "こうちゃ",
+    "romaji": "koucha",
+    "meaning": "Black tea",
+    "meaning_id": "Teh Hitam",
+    "type": "kotoba",
+    "category": "Meals"
+  },
+  {
+    "id": "v_juusu",
+    "char": "ジュース",
+    "romaji": "juusu",
+    "meaning": "Juice",
+    "meaning_id": "Jus",
+    "type": "kotoba",
+    "category": "Meals"
+  },
+  {
+    "id": "v_keeki",
+    "char": "ケーキ",
+    "romaji": "keeki",
+    "meaning": "Cake",
+    "meaning_id": "Kue",
+    "type": "kotoba",
+    "category": "Meals"
+  },
+  {
+    "id": "v_miruku",
+    "char": "ミルク",
+    "romaji": "miruku",
+    "meaning": "Milk",
+    "meaning_id": "Susu (Katakana)",
+    "type": "kotoba",
+    "category": "Meals"
+  },
+  {
+    "id": "v_suwaru",
+    "char": "すわる",
+    "romaji": "suwaru",
+    "meaning": "To sit",
+    "meaning_id": "Duduk",
+    "type": "kotoba",
+    "category": "VerbsState"
+  },
+  {
+    "id": "v_oku",
+    "char": "おく",
+    "romaji": "oku",
+    "meaning": "To put / place",
+    "meaning_id": "Meletakkan / Menaruh",
+    "type": "kotoba",
+    "category": "VerbsState"
+  },
+  {
+    "id": "v_tsuku",
+    "char": "つく",
+    "romaji": "tsuku",
+    "meaning": "To arrive",
+    "meaning_id": "Tiba / Sampai",
+    "type": "kotoba",
+    "category": "VerbsState"
+  },
+  {
+    "id": "v_tomaru_stay",
+    "char": "とまる",
+    "romaji": "tomaru",
+    "meaning": "To stay (at hotel)",
+    "meaning_id": "Menginap",
+    "type": "kotoba",
+    "category": "VerbsState"
+  },
+  {
+    "id": "v_ugoku",
+    "char": "うごく",
+    "romaji": "ugoku",
+    "meaning": "To move",
+    "meaning_id": "Bergerak",
+    "type": "kotoba",
+    "category": "VerbsState"
+  },
+  {
+    "id": "v_sentakusuru",
+    "char": "せんたくする",
+    "romaji": "sentakusuru",
+    "meaning": "To do laundry",
+    "meaning_id": "Mencuci (Baju)",
+    "type": "kotoba",
+    "category": "SuruVerbs"
+  },
+  {
+    "id": "v_ryourisuru",
+    "char": "りょうりする",
+    "romaji": "ryourisuru",
+    "meaning": "To cook",
+    "meaning_id": "Memasak",
+    "type": "kotoba",
+    "category": "SuruVerbs"
+  },
+  {
+    "id": "v_soujisuru",
+    "char": "そうじする",
+    "romaji": "soujisuru",
+    "meaning": "To clean",
+    "meaning_id": "Membersihkan",
+    "type": "kotoba",
+    "category": "SuruVerbs"
+  },
+  {
+    "id": "v_denwasuru",
+    "char": "でんわする",
+    "romaji": "denwasuru",
+    "meaning": "To make a phone call",
+    "meaning_id": "Menelepon",
+    "type": "kotoba",
+    "category": "SuruVerbs"
+  },
+  {
+    "id": "v_shinpaisuru",
+    "char": "しんぱいする",
+    "romaji": "shinpaisuru",
+    "meaning": "To worry",
+    "meaning_id": "Khawatir",
+    "type": "kotoba",
+    "category": "SuruVerbs"
+  },
+  {
+    "id": "v_kaimonosuru",
+    "char": "かいものする",
+    "romaji": "kaimonosuru",
+    "meaning": "To do shopping",
+    "meaning_id": "Berbelanja",
+    "type": "kotoba",
+    "category": "SuruVerbs"
+  },
+  {
+    "id": "v_kekkonsuru",
+    "char": "けっこんする",
+    "romaji": "kekkonsuru",
+    "meaning": "To get married",
+    "meaning_id": "Menikah",
+    "type": "kotoba",
+    "category": "SuruVerbs"
+  },
+  {
+    "id": "v_akai_adj",
+    "char": "あかい",
+    "romaji": "akai",
+    "meaning": "Red (Adjective)",
+    "meaning_id": "Merah (Kata Sifat)",
+    "type": "kotoba",
+    "category": "ColorsAdj"
+  },
+  {
+    "id": "v_aoi_adj",
+    "char": "あおい",
+    "romaji": "aoi",
+    "meaning": "Blue (Adjective)",
+    "meaning_id": "Biru (Kata Sifat)",
+    "type": "kotoba",
+    "category": "ColorsAdj"
+  },
+  {
+    "id": "v_shiroi_adj",
+    "char": "しろい",
+    "romaji": "shiroi",
+    "meaning": "White (Adjective)",
+    "meaning_id": "Putih (Kata Sifat)",
+    "type": "kotoba",
+    "category": "ColorsAdj"
+  },
+  {
+    "id": "v_kuroi_adj",
+    "char": "くろい",
+    "romaji": "kuroi",
+    "meaning": "Black (Adjective)",
+    "meaning_id": "Hitam (Kata Sifat)",
+    "type": "kotoba",
+    "category": "ColorsAdj"
+  },
+  {
+    "id": "v_zenbu",
+    "char": "ぜんぶ",
+    "romaji": "zenbu",
+    "meaning": "All / Whole",
+    "meaning_id": "Semua / Seluruhnya",
+    "type": "kotoba",
+    "category": "QuantityState"
+  },
+  {
+    "id": "v_daitai",
+    "char": "だいたい",
+    "romaji": "daitai",
+    "meaning": "Mostly / Roughly",
+    "meaning_id": "Sebagian besar / Kira-kira",
+    "type": "kotoba",
+    "category": "QuantityState"
+  },
+  {
+    "id": "v_onaji",
+    "char": "おなじ",
+    "romaji": "onaji",
+    "meaning": "Same",
+    "meaning_id": "Sama",
+    "type": "kotoba",
+    "category": "QuantityState"
+  },
+  {
+    "id": "v_tsugi",
+    "char": "つぎ",
+    "romaji": "tsugi",
+    "meaning": "Next",
+    "meaning_id": "Selanjutnya / Berikutnya",
+    "type": "kotoba",
+    "category": "QuantityState"
+  },
+  {
+    "id": "v_hoka",
+    "char": "ほか",
+    "romaji": "hoka",
+    "meaning": "Other",
+    "meaning_id": "Lain / Yang lain",
+    "type": "kotoba",
+    "category": "QuantityState"
+  },
+  {
+    "id": "v_saigo",
+    "char": "さいご",
+    "romaji": "saigo",
+    "meaning": "Last / End",
+    "meaning_id": "Terakhir",
+    "type": "kotoba",
+    "category": "QuantityState"
+  },
+  {
+    "id": "v_ichiban",
+    "char": "いちばん",
+    "romaji": "ichiban",
+    "meaning": "Number one / Most",
+    "meaning_id": "Nomor satu / Paling",
+    "type": "kotoba",
+    "category": "QuantityState"
+  },
+  {
+    "id": "v_hontou",
+    "char": "ほんとう",
+    "romaji": "hontou",
+    "meaning": "Truth / Real",
+    "meaning_id": "Kenyataan / Asli",
+    "type": "kotoba",
+    "category": "QuantityState"
+  },
+  {
+    "id": "v_uso",
+    "char": "うそ",
+    "romaji": "uso",
+    "meaning": "Lie",
+    "meaning_id": "Bohong",
+    "type": "kotoba",
+    "category": "QuantityState"
+  },
+  {
+    "id": "v_taifuu",
+    "char": "たいふう",
+    "romaji": "taifuu",
+    "meaning": "Typhoon",
+    "meaning_id": "Angin Topan",
+    "type": "kotoba",
+    "category": "Disasters"
+  },
+  {
+    "id": "v_jishin",
+    "char": "じしん",
+    "romaji": "jishin",
+    "meaning": "Earthquake",
+    "meaning_id": "Gempa Bumi",
+    "type": "kotoba",
+    "category": "Disasters"
+  },
+  {
+    "id": "v_kaji",
+    "char": "かじ",
+    "romaji": "kaji",
+    "meaning": "Fire (disaster)",
+    "meaning_id": "Kebakaran",
+    "type": "kotoba",
+    "category": "Disasters"
+  },
+  {
+    "id": "v_jiko",
+    "char": "じこ",
+    "romaji": "jiko",
+    "meaning": "Accident",
+    "meaning_id": "Kecelakaan",
+    "type": "kotoba",
+    "category": "Disasters"
+  },
+  {
+    "id": "v_onsen",
+    "char": "おんせん",
+    "romaji": "onsen",
+    "meaning": "Hot spring",
+    "meaning_id": "Pemandian Air Panas",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_ryokan",
+    "char": "りょかん",
+    "romaji": "ryokan",
+    "meaning": "Japanese Inn",
+    "meaning_id": "Penginapan Tradisional",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_hoteru",
+    "char": "ホテル",
+    "romaji": "hoteru",
+    "meaning": "Hotel",
+    "meaning_id": "Hotel",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_kaigi",
+    "char": "かいぎ",
+    "romaji": "kaigi",
+    "meaning": "Meeting",
+    "meaning_id": "Rapat / Pertemuan",
+    "type": "kotoba",
+    "category": "LanguageStudy"
+  },
+  {
+    "id": "v_junbi",
+    "char": "じゅんび",
+    "romaji": "junbi",
+    "meaning": "Preparation",
+    "meaning_id": "Persiapan",
+    "type": "kotoba",
+    "category": "LanguageStudy"
+  },
+  {
+    "id": "v_shiken",
+    "char": "しけん",
+    "romaji": "shiken",
+    "meaning": "Exam",
+    "meaning_id": "Ujian / Tes",
+    "type": "kotoba",
+    "category": "LanguageStudy"
+  },
+  {
+    "id": "v_bunshou",
+    "char": "ぶんしょう",
+    "romaji": "bunshou",
+    "meaning": "Sentence",
+    "meaning_id": "Kalimat",
+    "type": "kotoba",
+    "category": "LanguageStudy"
+  },
+  {
+    "id": "v_kotoba_word",
+    "char": "ことば",
+    "romaji": "kotoba",
+    "meaning": "Word / Language",
+    "meaning_id": "Kata / Bahasa",
+    "type": "kotoba",
+    "category": "LanguageStudy"
+  },
+  {
+    "id": "v_namae",
+    "char": "なまえ",
+    "romaji": "namae",
+    "meaning": "Name",
+    "meaning_id": "Nama",
+    "type": "kotoba",
+    "category": "LanguageStudy"
+  },
+  {
+    "id": "v_juusho",
+    "char": "じゅうしょ",
+    "romaji": "juusho",
+    "meaning": "Address",
+    "meaning_id": "Alamat",
+    "type": "kotoba",
+    "category": "LanguageStudy"
+  },
+  {
+    "id": "v_denwabangou",
+    "char": "でんわばんごう",
+    "romaji": "denwabangou",
+    "meaning": "Phone number",
+    "meaning_id": "Nomor Telepon",
+    "type": "kotoba",
+    "category": "LanguageStudy"
+  },
+  {
+    "id": "v_meeru",
+    "char": "メール",
+    "romaji": "meeru",
+    "meaning": "Email",
+    "meaning_id": "Surel / Email",
+    "type": "kotoba",
+    "category": "LanguageStudy"
+  },
+  {
+    "id": "v_doubutsu",
+    "char": "どうぶつ",
+    "romaji": "doubutsu",
+    "meaning": "Animal",
+    "meaning_id": "Hewan (Umum)",
+    "type": "kotoba",
+    "category": "NatureCosmic"
+  },
+  {
+    "id": "v_kusa",
+    "char": "くさ",
+    "romaji": "kusa",
+    "meaning": "Grass",
+    "meaning_id": "Rumput",
+    "type": "kotoba",
+    "category": "NatureCosmic"
+  },
+  {
+    "id": "v_ha_leaf",
+    "char": "は",
+    "romaji": "ha",
+    "meaning": "Leaf",
+    "meaning_id": "Daun",
+    "type": "kotoba",
+    "category": "NatureCosmic"
+  },
+  {
+    "id": "v_ishi",
+    "char": "いし",
+    "romaji": "ishi",
+    "meaning": "Stone",
+    "meaning_id": "Batu",
+    "type": "kotoba",
+    "category": "NatureCosmic"
+  },
+  {
+    "id": "v_tsuki",
+    "char": "つき",
+    "romaji": "tsuki",
+    "meaning": "Moon",
+    "meaning_id": "Bulan (Satelit)",
+    "type": "kotoba",
+    "category": "NatureCosmic"
+  },
+  {
+    "id": "v_hoshi",
+    "char": "ほし",
+    "romaji": "hoshi",
+    "meaning": "Star",
+    "meaning_id": "Bintang",
+    "type": "kotoba",
+    "category": "NatureCosmic"
+  },
+  {
+    "id": "v_taiyou",
+    "char": "たいよう",
+    "romaji": "taiyou",
+    "meaning": "Sun",
+    "meaning_id": "Matahari",
+    "type": "kotoba",
+    "category": "NatureCosmic"
+  },
+  {
+    "id": "v_konya",
+    "char": "こんや",
+    "romaji": "konya",
+    "meaning": "Tonight",
+    "meaning_id": "Malam ini",
+    "type": "kotoba",
+    "category": "TimeSpecifics"
+  },
+  {
+    "id": "v_yuugata",
+    "char": "ゆうがた",
+    "romaji": "yuugata",
+    "meaning": "Late afternoon / Evening",
+    "meaning_id": "Sore menjelang malam",
+    "type": "kotoba",
+    "category": "TimeSpecifics"
+  },
+  {
+    "id": "v_senjitsu",
+    "char": "せんじつ",
+    "romaji": "senjitsu",
+    "meaning": "The other day",
+    "meaning_id": "Beberapa hari yang lalu",
+    "type": "kotoba",
+    "category": "TimeSpecifics"
+  },
+  {
+    "id": "v_senpuuki",
+    "char": "せんぷうき",
+    "romaji": "senpuuki",
+    "meaning": "Electric fan",
+    "meaning_id": "Kipas Angin",
+    "type": "kotoba",
+    "category": "HomeItemsExt"
+  },
+  {
+    "id": "v_kagami",
+    "char": "かがみ",
+    "romaji": "kagami",
+    "meaning": "Mirror",
+    "meaning_id": "Cermin",
+    "type": "kotoba",
+    "category": "HomeItemsExt"
+  },
+  {
+    "id": "v_sentakumono",
+    "char": "せんたくもの",
+    "romaji": "sentakumono",
+    "meaning": "Laundry (clothes)",
+    "meaning_id": "Cucian baju",
+    "type": "kotoba",
+    "category": "HomeItemsExt"
+  },
+  {
+    "id": "v_puresento",
+    "char": "プレゼント",
+    "romaji": "puresento",
+    "meaning": "Present / Gift",
+    "meaning_id": "Hadiah / Kado",
+    "type": "kotoba",
+    "category": "HomeItemsExt"
+  },
+  {
+    "id": "v_omiyage",
+    "char": "おみやげ",
+    "romaji": "omiyage",
+    "meaning": "Souvenir",
+    "meaning_id": "Oleh-oleh",
+    "type": "kotoba",
+    "category": "HomeItemsExt"
+  },
+  {
+    "id": "v_hyaku",
+    "char": "ひゃく",
+    "romaji": "hyaku",
+    "meaning": "Hundred",
+    "meaning_id": "Seratus",
+    "type": "kotoba",
+    "category": "NumbersHigh"
+  },
+  {
+    "id": "v_sen",
+    "char": "せん",
+    "romaji": "sen",
+    "meaning": "Thousand",
+    "meaning_id": "Seribu",
+    "type": "kotoba",
+    "category": "NumbersHigh"
+  },
+  {
+    "id": "v_man",
+    "char": "まん",
+    "romaji": "man",
+    "meaning": "Ten thousand",
+    "meaning_id": "Sepuluh ribu",
+    "type": "kotoba",
+    "category": "NumbersHigh"
+  },
+  {
+    "id": "v_zero",
+    "char": "ゼロ / れい",
+    "romaji": "zero / rei",
+    "meaning": "Zero",
+    "meaning_id": "Nol",
+    "type": "kotoba",
+    "category": "NumbersHigh"
+  },
+  {
+    "id": "v_hanbun",
+    "char": "はんぶん",
+    "romaji": "hanbun",
+    "meaning": "Half",
+    "meaning_id": "Setengah (Bagian)",
+    "type": "kotoba",
+    "category": "NumbersHigh"
+  },
+  {
+    "id": "v_tanjoubi",
+    "char": "たんじょうび",
+    "romaji": "tanjoubi",
+    "meaning": "Birthday",
+    "meaning_id": "Ulang Tahun",
+    "type": "kotoba",
+    "category": "HolidaysEvents"
+  },
+  {
+    "id": "v_shuumatsu",
+    "char": "しゅうまつ",
+    "romaji": "shuumatsu",
+    "meaning": "Weekend",
+    "meaning_id": "Akhir Pekan",
+    "type": "kotoba",
+    "category": "HolidaysEvents"
+  },
+  {
+    "id": "v_yasumi",
+    "char": "やすみ",
+    "romaji": "yasumi",
+    "meaning": "Holiday / Rest",
+    "meaning_id": "Libur / Istirahat",
+    "type": "kotoba",
+    "category": "HolidaysEvents"
+  },
+  {
+    "id": "v_natsuyasumi",
+    "char": "なつやすみ",
+    "romaji": "natsuyasumi",
+    "meaning": "Summer vacation",
+    "meaning_id": "Libur Musim Panas",
+    "type": "kotoba",
+    "category": "HolidaysEvents"
+  },
+  {
+    "id": "v_fuyuyasumi",
+    "char": "ふゆやすみ",
+    "romaji": "fuyuyasumi",
+    "meaning": "Winter vacation",
+    "meaning_id": "Libur Musim Dingin",
+    "type": "kotoba",
+    "category": "HolidaysEvents"
+  },
+  {
+    "id": "v_paatii",
+    "char": "パーティー",
+    "romaji": "paatii",
+    "meaning": "Party",
+    "meaning_id": "Pesta",
+    "type": "kotoba",
+    "category": "HolidaysEvents"
+  },
+  {
+    "id": "v_warui",
+    "char": "わるい",
+    "romaji": "warui",
+    "meaning": "Bad",
+    "meaning_id": "Buruk / Jelek",
+    "type": "kotoba",
+    "category": "AdjectivesFinal"
+  },
+  {
+    "id": "v_tsumaranai",
+    "char": "つまらない",
+    "romaji": "tsumaranai",
+    "meaning": "Boring",
+    "meaning_id": "Membosankan",
+    "type": "kotoba",
+    "category": "AdjectivesFinal"
+  },
+  {
+    "id": "v_hoshii",
+    "char": "ほしい",
+    "romaji": "hoshii",
+    "meaning": "Want",
+    "meaning_id": "Ingin (Benda)",
+    "type": "kotoba",
+    "category": "AdjectivesFinal"
+  },
+  {
+    "id": "v_chikai",
+    "char": "ちかい",
+    "romaji": "chikai",
+    "meaning": "Near / Close",
+    "meaning_id": "Dekat",
+    "type": "kotoba",
+    "category": "AdjectivesFinal"
+  },
+  {
+    "id": "v_iroiro",
+    "char": "いろいろ",
+    "romaji": "iroiro",
+    "meaning": "Various",
+    "meaning_id": "Bermacam-macam",
+    "type": "kotoba",
+    "category": "AdjectivesFinal"
+  },
+  {
+    "id": "v_yoi",
+    "char": "よい / いい",
+    "romaji": "yoi / ii",
+    "meaning": "Good",
+    "meaning_id": "Bagus / Baik",
+    "type": "kotoba",
+    "category": "AdjectivesFinal"
+  },
+  {
+    "id": "v_rippa",
+    "char": "りっぱ",
+    "romaji": "rippa",
+    "meaning": "Splendid / Fine",
+    "meaning_id": "Megah / Hebat",
+    "type": "kotoba",
+    "category": "AdjectivesFinal"
+  },
+  {
+    "id": "v_migaku",
+    "char": "みがく",
+    "romaji": "migaku",
+    "meaning": "To brush (teeth)",
+    "meaning_id": "Menggosok (Gigi)",
+    "type": "kotoba",
+    "category": "VerbsFinal"
+  },
+  {
+    "id": "v_osu",
+    "char": "おす",
+    "romaji": "osu",
+    "meaning": "To push",
+    "meaning_id": "Mendorong / Menekan",
+    "type": "kotoba",
+    "category": "VerbsFinal"
+  },
+  {
+    "id": "v_okuru",
+    "char": "おくる",
+    "romaji": "okuru",
+    "meaning": "To send",
+    "meaning_id": "Mengirim",
+    "type": "kotoba",
+    "category": "VerbsFinal"
+  },
+  {
+    "id": "v_miseru",
+    "char": "みせる",
+    "romaji": "miseru",
+    "meaning": "To show",
+    "meaning_id": "Memperlihatkan",
+    "type": "kotoba",
+    "category": "VerbsFinal"
+  },
+  {
+    "id": "v_kureru",
+    "char": "くれる",
+    "romaji": "kureru",
+    "meaning": "To give (to me)",
+    "meaning_id": "Memberikan (Kepada saya)",
+    "type": "kotoba",
+    "category": "VerbsFinal"
+  },
+  {
+    "id": "v_mawaru",
+    "char": "まわる",
+    "romaji": "mawaru",
+    "meaning": "To turn / go around",
+    "meaning_id": "Berputar / Mengelilingi",
+    "type": "kotoba",
+    "category": "VerbsFinal"
+  },
+  {
+    "id": "v_sameru",
+    "char": "さめる",
+    "romaji": "sameru",
+    "meaning": "To wake up / cool down",
+    "meaning_id": "Terbangun / Menjadi dingin",
+    "type": "kotoba",
+    "category": "VerbsFinal"
+  },
+  {
+    "id": "v_karendaa",
+    "char": "カレンダー",
+    "romaji": "karendaa",
+    "meaning": "Calendar",
+    "meaning_id": "Kalender",
+    "type": "kotoba",
+    "category": "KatakanaMisc"
+  },
+  {
+    "id": "v_kurasu",
+    "char": "クラス",
+    "romaji": "kurasu",
+    "meaning": "Class",
+    "meaning_id": "Kelas",
+    "type": "kotoba",
+    "category": "KatakanaMisc"
+  },
+  {
+    "id": "v_botan",
+    "char": "ボタン",
+    "romaji": "botan",
+    "meaning": "Button",
+    "meaning_id": "Tombol / Kancing",
+    "type": "kotoba",
+    "category": "KatakanaMisc"
+  },
+  {
+    "id": "v_peeji",
+    "char": "ページ",
+    "romaji": "peeji",
+    "meaning": "Page",
+    "meaning_id": "Halaman (Buku)",
+    "type": "kotoba",
+    "category": "KatakanaMisc"
+  },
+  {
+    "id": "v_pen",
+    "char": "ペン",
+    "romaji": "pen",
+    "meaning": "Pen",
+    "meaning_id": "Pena / Pulpen",
+    "type": "kotoba",
+    "category": "KatakanaMisc"
+  },
+  {
+    "id": "v_teeburu",
+    "char": "テーブル",
+    "romaji": "teeburu",
+    "meaning": "Table",
+    "meaning_id": "Meja (Barat)",
+    "type": "kotoba",
+    "category": "KatakanaMisc"
+  },
+  {
+    "id": "v_naifu2",
+    "char": "ナイフ",
+    "romaji": "naifu",
+    "meaning": "Knife",
+    "meaning_id": "Pisau (Barat)",
+    "type": "kotoba",
+    "category": "KatakanaMisc"
+  },
+  {
+    "id": "v_imi",
+    "char": "いみ",
+    "romaji": "imi",
+    "meaning": "Meaning",
+    "meaning_id": "Arti / Makna",
+    "type": "kotoba",
+    "category": "AcademicInfo"
+  },
+  {
+    "id": "v_bangou",
+    "char": "ばんごう",
+    "romaji": "bangou",
+    "meaning": "Number",
+    "meaning_id": "Nomor",
+    "type": "kotoba",
+    "category": "AcademicInfo"
+  },
+  {
+    "id": "v_kuni",
+    "char": "くに",
+    "romaji": "kuni",
+    "meaning": "Country",
+    "meaning_id": "Negara",
+    "type": "kotoba",
+    "category": "AcademicInfo"
+  },
+  {
+    "id": "v_gaikokujin",
+    "char": "がいこくじん",
+    "romaji": "gaikokujin",
+    "meaning": "Foreigner",
+    "meaning_id": "Orang Asing",
+    "type": "kotoba",
+    "category": "AcademicInfo"
+  },
+  {
+    "id": "v_ryuugakusei",
+    "char": "りゅうがくせい",
+    "romaji": "ryuugakusei",
+    "meaning": "International student",
+    "meaning_id": "Mahasiswa Asing",
+    "type": "kotoba",
+    "category": "AcademicInfo"
+  },
+  {
+    "id": "v_mikan",
+    "char": "みかん",
+    "romaji": "mikan",
+    "meaning": "Mandarin orange",
+    "meaning_id": "Jeruk Mandarin",
+    "type": "kotoba",
+    "category": "FoodMisc"
+  },
+  {
+    "id": "v_banana",
+    "char": "バナナ",
+    "romaji": "banana",
+    "meaning": "Banana",
+    "meaning_id": "Pisang",
+    "type": "kotoba",
+    "category": "FoodMisc"
+  },
+  {
+    "id": "v_karee",
+    "char": "カレー",
+    "romaji": "karee",
+    "meaning": "Curry",
+    "meaning_id": "Kari",
+    "type": "kotoba",
+    "category": "FoodMisc"
+  },
+  {
+    "id": "v_raamen",
+    "char": "ラーメン",
+    "romaji": "raamen",
+    "meaning": "Ramen",
+    "meaning_id": "Mi Ramen",
+    "type": "kotoba",
+    "category": "FoodMisc"
+  },
+  {
+    "id": "v_obentou",
+    "char": "おべんとう",
+    "romaji": "obentou",
+    "meaning": "Box lunch",
+    "meaning_id": "Bekal Makanan",
+    "type": "kotoba",
+    "category": "FoodMisc"
+  },
+  {
+    "id": "v_oji",
+    "char": "おじ",
+    "romaji": "oji",
+    "meaning": "Uncle (own)",
+    "meaning_id": "Paman (Sendiri)",
+    "type": "kotoba",
+    "category": "FamilyExtended"
+  },
+  {
+    "id": "v_oba",
+    "char": "おば",
+    "romaji": "oba",
+    "meaning": "Aunt (own)",
+    "meaning_id": "Bibi (Sendiri)",
+    "type": "kotoba",
+    "category": "FamilyExtended"
+  },
+  {
+    "id": "v_ojisan",
+    "char": "おじさん",
+    "romaji": "ojisan",
+    "meaning": "Uncle (someone else's)",
+    "meaning_id": "Paman (Orang Lain)",
+    "type": "kotoba",
+    "category": "FamilyExtended"
+  },
+  {
+    "id": "v_obasan",
+    "char": "おばさん",
+    "romaji": "obasan",
+    "meaning": "Aunt (someone else's)",
+    "meaning_id": "Bibi (Orang Lain)",
+    "type": "kotoba",
+    "category": "FamilyExtended"
+  },
+  {
+    "id": "v_irasshaimase",
+    "char": "いらっしゃいませ",
+    "romaji": "irasshaimase",
+    "meaning": "Welcome (in store)",
+    "meaning_id": "Selamat Datang (Di Toko)",
+    "type": "kotoba",
+    "category": "PhrasesFinal"
+  },
+  {
+    "id": "v_ojamashimasu",
+    "char": "おじゃまします",
+    "romaji": "ojamashimasu",
+    "meaning": "Excuse me (entering a house)",
+    "meaning_id": "Permisi (Masuk Rumah Orang)",
+    "type": "kotoba",
+    "category": "PhrasesFinal"
+  },
+  {
+    "id": "v_omedetou",
+    "char": "おめでとう",
+    "romaji": "omedetou",
+    "meaning": "Congratulations",
+    "meaning_id": "Selamat!",
+    "type": "kotoba",
+    "category": "PhrasesFinal"
+  },
+  {
+    "id": "v_onegaishimasu",
+    "char": "おねがいします",
+    "romaji": "onegaishimasu",
+    "meaning": "Please",
+    "meaning_id": "Tolong / Mohon bantuannya",
+    "type": "kotoba",
+    "category": "PhrasesFinal"
+  },
+  {
+    "id": "v_douzo",
+    "char": "どうぞ",
+    "romaji": "douzo",
+    "meaning": "Please / Here you go",
+    "meaning_id": "Silakan",
+    "type": "kotoba",
+    "category": "PhrasesFinal"
+  },
+  {
+    "id": "v_doumo",
+    "char": "どうも",
+    "romaji": "doumo",
+    "meaning": "Thanks (casual)",
+    "meaning_id": "Terima kasih (Kasual)",
+    "type": "kotoba",
+    "category": "PhrasesFinal"
+  }
+]

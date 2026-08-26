@@ -1,0 +1,862 @@
+[
+  {
+    "id": "k_ichi",
+    "char": "一",
+    "onyomi": "イチ、イツ",
+    "kunyomi": "ひと(つ)",
+    "meaning": "One",
+    "meaning_id": "Satu",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_ni",
+    "char": "二",
+    "onyomi": "ニ、ジ",
+    "kunyomi": "ふた(つ)",
+    "meaning": "Two",
+    "meaning_id": "Dua",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_san",
+    "char": "三",
+    "onyomi": "サン",
+    "kunyomi": "みっ(つ)",
+    "meaning": "Three",
+    "meaning_id": "Tiga",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_yon",
+    "char": "四",
+    "onyomi": "シ",
+    "kunyomi": "よん、よっ(つ)",
+    "meaning": "Four",
+    "meaning_id": "Empat",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_go",
+    "char": "五",
+    "onyomi": "ゴ",
+    "kunyomi": "いつ(つ)",
+    "meaning": "Five",
+    "meaning_id": "Lima",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_roku",
+    "char": "六",
+    "onyomi": "ロク",
+    "kunyomi": "むっ(つ)",
+    "meaning": "Six",
+    "meaning_id": "Enam",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_nana",
+    "char": "七",
+    "onyomi": "シチ",
+    "kunyomi": "なな(つ)",
+    "meaning": "Seven",
+    "meaning_id": "Tujuh",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_hachi",
+    "char": "八",
+    "onyomi": "ハチ",
+    "kunyomi": "やっ(つ)",
+    "meaning": "Eight",
+    "meaning_id": "Delapan",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_kyuu",
+    "char": "九",
+    "onyomi": "キュウ、ク",
+    "kunyomi": "ここの(つ)",
+    "meaning": "Nine",
+    "meaning_id": "Sembilan",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_juu",
+    "char": "十",
+    "onyomi": "ジュウ",
+    "kunyomi": "とお",
+    "meaning": "Ten",
+    "meaning_id": "Sepuluh",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_hyaku",
+    "char": "百",
+    "onyomi": "ヒャク",
+    "kunyomi": "-",
+    "meaning": "Hundred",
+    "meaning_id": "Seratus",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_sen",
+    "char": "千",
+    "onyomi": "セン",
+    "kunyomi": "ち",
+    "meaning": "Thousand",
+    "meaning_id": "Seribu",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_man",
+    "char": "万",
+    "onyomi": "マン、バン",
+    "kunyomi": "-",
+    "meaning": "Ten Thousand",
+    "meaning_id": "Sepuluh Ribu",
+    "type": "kanji",
+    "category": "NumbersKanji"
+  },
+  {
+    "id": "k_nichi",
+    "char": "日",
+    "onyomi": "ニチ、ジツ",
+    "kunyomi": "ひ、-び、か",
+    "meaning": "Day / Sun",
+    "meaning_id": "Hari / Matahari",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_getsu",
+    "char": "月",
+    "onyomi": "ゲツ、ガツ",
+    "kunyomi": "つき",
+    "meaning": "Month / Moon",
+    "meaning_id": "Bulan",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_ka",
+    "char": "火",
+    "onyomi": "カ",
+    "kunyomi": "ひ、-び、ほ",
+    "meaning": "Fire",
+    "meaning_id": "Api (Selasa)",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_sui",
+    "char": "水",
+    "onyomi": "スイ",
+    "kunyomi": "みず",
+    "meaning": "Water",
+    "meaning_id": "Air (Rabu)",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_moku",
+    "char": "木",
+    "onyomi": "モク、ボク",
+    "kunyomi": "き、こ",
+    "meaning": "Tree / Wood",
+    "meaning_id": "Pohon / Kayu (Kamis)",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_kin",
+    "char": "金",
+    "onyomi": "キン、コン",
+    "kunyomi": "かね、かな-",
+    "meaning": "Gold / Money",
+    "meaning_id": "Emas / Uang (Jumat)",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_do",
+    "char": "土",
+    "onyomi": "ド、ト",
+    "kunyomi": "つち",
+    "meaning": "Soil / Earth",
+    "meaning_id": "Tanah (Sabtu)",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_nen",
+    "char": "年",
+    "onyomi": "ネン",
+    "kunyomi": "とし",
+    "meaning": "Year",
+    "meaning_id": "Tahun",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_ima",
+    "char": "今",
+    "onyomi": "コン、キン",
+    "kunyomi": "いま",
+    "meaning": "Now",
+    "meaning_id": "Sekarang",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_ji",
+    "char": "時",
+    "onyomi": "ジ",
+    "kunyomi": "とき、-どき",
+    "meaning": "Time / Hour",
+    "meaning_id": "Waktu / Jam",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_fun",
+    "char": "分",
+    "onyomi": "ブン、フン、ブ",
+    "kunyomi": "わ(ける)",
+    "meaning": "Minute / Divide",
+    "meaning_id": "Menit / Membagi",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_han",
+    "char": "半",
+    "onyomi": "ハン",
+    "kunyomi": "なか(ば)",
+    "meaning": "Half",
+    "meaning_id": "Setengah",
+    "type": "kanji",
+    "category": "TimeDays"
+  },
+  {
+    "id": "k_yama",
+    "char": "山",
+    "onyomi": "サン、セン",
+    "kunyomi": "やま",
+    "meaning": "Mountain",
+    "meaning_id": "Gunung",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_kawa",
+    "char": "川",
+    "onyomi": "セン",
+    "kunyomi": "かわ",
+    "meaning": "River",
+    "meaning_id": "Sungai",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_ten",
+    "char": "天",
+    "onyomi": "テン",
+    "kunyomi": "あまつ、あめ",
+    "meaning": "Heaven / Sky",
+    "meaning_id": "Langit / Surga",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_ki",
+    "char": "気",
+    "onyomi": "キ、ケ",
+    "kunyomi": "いき",
+    "meaning": "Spirit / Mind / Air",
+    "meaning_id": "Udara / Pikiran / Energi",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_sora",
+    "char": "空",
+    "onyomi": "クウ",
+    "kunyomi": "そら、あ(く)",
+    "meaning": "Sky / Empty",
+    "meaning_id": "Langit / Kosong",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_ame",
+    "char": "雨",
+    "onyomi": "ウ",
+    "kunyomi": "あめ、あま-",
+    "meaning": "Rain",
+    "meaning_id": "Hujan",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_kita",
+    "char": "北",
+    "onyomi": "ホク",
+    "kunyomi": "きた",
+    "meaning": "North",
+    "meaning_id": "Utara",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_minami",
+    "char": "南",
+    "onyomi": "ナン、ナ",
+    "kunyomi": "みなみ",
+    "meaning": "South",
+    "meaning_id": "Selatan",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_higashi",
+    "char": "東",
+    "onyomi": "トウ",
+    "kunyomi": "ひがし",
+    "meaning": "East",
+    "meaning_id": "Timur",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_nishi",
+    "char": "西",
+    "onyomi": "セイ、サイ",
+    "kunyomi": "にし",
+    "meaning": "West",
+    "meaning_id": "Barat",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_migi",
+    "char": "右",
+    "onyomi": "ユウ、ウ",
+    "kunyomi": "みぎ",
+    "meaning": "Right",
+    "meaning_id": "Kanan",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_hidari",
+    "char": "左",
+    "onyomi": "サ、シャ",
+    "kunyomi": "ひだり",
+    "meaning": "Left",
+    "meaning_id": "Kiri",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_ue",
+    "char": "上",
+    "onyomi": "ジョウ、ショウ",
+    "kunyomi": "うえ、あ(がる)",
+    "meaning": "Up / Above",
+    "meaning_id": "Atas",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_shita",
+    "char": "下",
+    "onyomi": "カ、ゲ",
+    "kunyomi": "した、さ(がる)",
+    "meaning": "Down / Below",
+    "meaning_id": "Bawah",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_naka",
+    "char": "中",
+    "onyomi": "チュウ",
+    "kunyomi": "なか",
+    "meaning": "Inside / Middle",
+    "meaning_id": "Tengah / Dalam",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_soto",
+    "char": "外",
+    "onyomi": "ガイ、ゲ",
+    "kunyomi": "そと、はず(れる)",
+    "meaning": "Outside",
+    "meaning_id": "Luar",
+    "type": "kanji",
+    "category": "NatureDirections"
+  },
+  {
+    "id": "k_hito",
+    "char": "人",
+    "onyomi": "ジン、ニン",
+    "kunyomi": "ひと",
+    "meaning": "Person",
+    "meaning_id": "Orang",
+    "type": "kanji",
+    "category": "PeopleBody"
+  },
+  {
+    "id": "k_otoko",
+    "char": "男",
+    "onyomi": "ダン、ナン",
+    "kunyomi": "おとこ",
+    "meaning": "Man",
+    "meaning_id": "Laki-laki",
+    "type": "kanji",
+    "category": "PeopleBody"
+  },
+  {
+    "id": "k_onna",
+    "char": "女",
+    "onyomi": "ジョ、ニョ",
+    "kunyomi": "おんな、め",
+    "meaning": "Woman",
+    "meaning_id": "Perempuan",
+    "type": "kanji",
+    "category": "PeopleBody"
+  },
+  {
+    "id": "k_ko",
+    "char": "子",
+    "onyomi": "シ、ス",
+    "kunyomi": "こ",
+    "meaning": "Child",
+    "meaning_id": "Anak",
+    "type": "kanji",
+    "category": "PeopleBody"
+  },
+  {
+    "id": "k_me",
+    "char": "目",
+    "onyomi": "モク、ボク",
+    "kunyomi": "め、ま",
+    "meaning": "Eye",
+    "meaning_id": "Mata",
+    "type": "kanji",
+    "category": "PeopleBody"
+  },
+  {
+    "id": "k_mimi",
+    "char": "耳",
+    "onyomi": "ジ",
+    "kunyomi": "みみ",
+    "meaning": "Ear",
+    "meaning_id": "Telinga",
+    "type": "kanji",
+    "category": "PeopleBody"
+  },
+  {
+    "id": "k_kuchi",
+    "char": "口",
+    "onyomi": "コウ、ク",
+    "kunyomi": "くち",
+    "meaning": "Mouth",
+    "meaning_id": "Mulut",
+    "type": "kanji",
+    "category": "PeopleBody"
+  },
+  {
+    "id": "k_te",
+    "char": "手",
+    "onyomi": "シュ",
+    "kunyomi": "て、た",
+    "meaning": "Hand",
+    "meaning_id": "Tangan",
+    "type": "kanji",
+    "category": "PeopleBody"
+  },
+  {
+    "id": "k_ashi",
+    "char": "足",
+    "onyomi": "ソク",
+    "kunyomi": "あし、た(りる)",
+    "meaning": "Leg / Foot",
+    "meaning_id": "Kaki",
+    "type": "kanji",
+    "category": "PeopleBody"
+  },
+  {
+    "id": "k_ookii",
+    "char": "大",
+    "onyomi": "ダイ、タイ",
+    "kunyomi": "おお(きい)",
+    "meaning": "Big",
+    "meaning_id": "Besar",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_chiisai",
+    "char": "小",
+    "onyomi": "ショウ",
+    "kunyomi": "ちい(さい)、こ、お",
+    "meaning": "Small",
+    "meaning_id": "Kecil",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_takai",
+    "char": "高",
+    "onyomi": "コウ",
+    "kunyomi": "たか(い)",
+    "meaning": "High / Expensive",
+    "meaning_id": "Tinggi / Mahal",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_yasui",
+    "char": "安",
+    "onyomi": "アン",
+    "kunyomi": "やす(い)",
+    "meaning": "Cheap / Safe",
+    "meaning_id": "Murah / Aman",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_atarashii",
+    "char": "新",
+    "onyomi": "シン",
+    "kunyomi": "あたら(しい)",
+    "meaning": "New",
+    "meaning_id": "Baru",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_furui",
+    "char": "古",
+    "onyomi": "コ",
+    "kunyomi": "ふる(い)",
+    "meaning": "Old",
+    "meaning_id": "Kuno / Tua",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_nagai",
+    "char": "長",
+    "onyomi": "チョウ",
+    "kunyomi": "なが(い)",
+    "meaning": "Long",
+    "meaning_id": "Panjang",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_ooi",
+    "char": "多",
+    "onyomi": "タ",
+    "kunyomi": "おお(い)",
+    "meaning": "Many",
+    "meaning_id": "Banyak",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_sukunai",
+    "char": "少",
+    "onyomi": "ショウ",
+    "kunyomi": "すく(ない)、すこ(し)",
+    "meaning": "Few / Little",
+    "meaning_id": "Sedikit",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_shiro",
+    "char": "白",
+    "onyomi": "ハク、ビャク",
+    "kunyomi": "しろ(い)",
+    "meaning": "White",
+    "meaning_id": "Putih",
+    "type": "kanji",
+    "category": "TraitsSizes"
+  },
+  {
+    "id": "k_miru",
+    "char": "見",
+    "onyomi": "ケン",
+    "kunyomi": "み(る)",
+    "meaning": "To see",
+    "meaning_id": "Melihat",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_iku",
+    "char": "行",
+    "onyomi": "コウ、ギョウ",
+    "kunyomi": "い(く)、ゆ(く)、おこな(う)",
+    "meaning": "To go",
+    "meaning_id": "Pergi",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_kuru",
+    "char": "来",
+    "onyomi": "ライ",
+    "kunyomi": "く(る)、き(たる)",
+    "meaning": "To come",
+    "meaning_id": "Datang",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_taberu",
+    "char": "食",
+    "onyomi": "ショク、ジキ",
+    "kunyomi": "た(べる)、く(う)",
+    "meaning": "To eat",
+    "meaning_id": "Makan",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_nomu",
+    "char": "飲",
+    "onyomi": "イン",
+    "kunyomi": "の(む)",
+    "meaning": "To drink",
+    "meaning_id": "Minum",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_au",
+    "char": "会",
+    "onyomi": "カイ、エ",
+    "kunyomi": "あ(う)",
+    "meaning": "To meet",
+    "meaning_id": "Bertemu",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_yasumu",
+    "char": "休",
+    "onyomi": "キュウ",
+    "kunyomi": "やす(む)",
+    "meaning": "To rest",
+    "meaning_id": "Istirahat / Libur",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_kau",
+    "char": "買",
+    "onyomi": "バイ",
+    "kunyomi": "か(う)",
+    "meaning": "To buy",
+    "meaning_id": "Membeli",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_iu",
+    "char": "言",
+    "onyomi": "ゲン、ゴン",
+    "kunyomi": "い(う)、こと",
+    "meaning": "To say",
+    "meaning_id": "Berkata",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_hanasu",
+    "char": "話",
+    "onyomi": "ワ",
+    "kunyomi": "はな(す)、はなし",
+    "meaning": "To speak",
+    "meaning_id": "Berbicara",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_yomu",
+    "char": "読",
+    "onyomi": "ドク、トク、トウ",
+    "kunyomi": "よ(む)",
+    "meaning": "To read",
+    "meaning_id": "Membaca",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_kaku",
+    "char": "書",
+    "onyomi": "ショ",
+    "kunyomi": "か(く)",
+    "meaning": "To write",
+    "meaning_id": "Menulis",
+    "type": "kanji",
+    "category": "VerbsKanji"
+  },
+  {
+    "id": "k_gaku",
+    "char": "学",
+    "onyomi": "ガク",
+    "kunyomi": "まな(ぶ)",
+    "meaning": "Study / Learning",
+    "meaning_id": "Belajar / Ilmu",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_kou",
+    "char": "校",
+    "onyomi": "コウ",
+    "kunyomi": "-",
+    "meaning": "School",
+    "meaning_id": "Sekolah (Bangunan)",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_sei",
+    "char": "生",
+    "onyomi": "セイ、ショウ",
+    "kunyomi": "い(きる)、う(む)、なま",
+    "meaning": "Life / Birth",
+    "meaning_id": "Kehidupan / Lahir",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_sen",
+    "char": "先",
+    "onyomi": "セン",
+    "kunyomi": "さき",
+    "meaning": "Before / Ahead",
+    "meaning_id": "Sebelum / Terdahulu",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_nani",
+    "char": "何",
+    "onyomi": "カ",
+    "kunyomi": "なに、なん",
+    "meaning": "What",
+    "meaning_id": "Apa",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_hon",
+    "char": "本",
+    "onyomi": "ホン",
+    "kunyomi": "もと",
+    "meaning": "Book / Origin",
+    "meaning_id": "Buku / Asal",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_go",
+    "char": "語",
+    "onyomi": "ゴ",
+    "kunyomi": "かた(る)",
+    "meaning": "Language / Word",
+    "meaning_id": "Bahasa",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_kuni",
+    "char": "国",
+    "onyomi": "コク",
+    "kunyomi": "くに",
+    "meaning": "Country",
+    "meaning_id": "Negara",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_sha",
+    "char": "社",
+    "onyomi": "シャ",
+    "kunyomi": "やしろ",
+    "meaning": "Company / Shrine",
+    "meaning_id": "Perusahaan / Kuil",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_mise",
+    "char": "店",
+    "onyomi": "テン",
+    "kunyomi": "みせ",
+    "meaning": "Shop",
+    "meaning_id": "Toko",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_eki",
+    "char": "駅",
+    "onyomi": "エキ",
+    "kunyomi": "-",
+    "meaning": "Station",
+    "meaning_id": "Stasiun",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_kuruma",
+    "char": "車",
+    "onyomi": "シャ",
+    "kunyomi": "くるま",
+    "meaning": "Car",
+    "meaning_id": "Mobil",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_den",
+    "char": "電",
+    "onyomi": "デン",
+    "kunyomi": "-",
+    "meaning": "Electricity",
+    "meaning_id": "Listrik",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  },
+  {
+    "id": "k_en",
+    "char": "円",
+    "onyomi": "エン",
+    "kunyomi": "まる(い)",
+    "meaning": "Yen / Round",
+    "meaning_id": "Yen / Bulat",
+    "type": "kanji",
+    "category": "SchoolPlaces"
+  }
+]

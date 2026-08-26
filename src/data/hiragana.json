@@ -1,0 +1,132 @@
+[
+  { "id": "h_a",   "char": "あ", "romaji": "a",   "type": "hiragana", "row": "a"   },
+  { "id": "h_i",   "char": "い", "romaji": "i",   "type": "hiragana", "row": "a"   },
+  { "id": "h_u",   "char": "う", "romaji": "u",   "type": "hiragana", "row": "a"   },
+  { "id": "h_e",   "char": "え", "romaji": "e",   "type": "hiragana", "row": "a"   },
+  { "id": "h_o",   "char": "お", "romaji": "o",   "type": "hiragana", "row": "a"   },
+
+  { "id": "h_ka",  "char": "か", "romaji": "ka",  "type": "hiragana", "row": "ka"  },
+  { "id": "h_ki",  "char": "き", "romaji": "ki",  "type": "hiragana", "row": "ka"  },
+  { "id": "h_ku",  "char": "く", "romaji": "ku",  "type": "hiragana", "row": "ka"  },
+  { "id": "h_ke",  "char": "け", "romaji": "ke",  "type": "hiragana", "row": "ka"  },
+  { "id": "h_ko",  "char": "こ", "romaji": "ko",  "type": "hiragana", "row": "ka"  },
+
+  { "id": "h_sa",  "char": "さ", "romaji": "sa",  "type": "hiragana", "row": "sa"  },
+  { "id": "h_shi", "char": "し", "romaji": "shi", "type": "hiragana", "row": "sa"  },
+  { "id": "h_su",  "char": "す", "romaji": "su",  "type": "hiragana", "row": "sa"  },
+  { "id": "h_se",  "char": "せ", "romaji": "se",  "type": "hiragana", "row": "sa"  },
+  { "id": "h_so",  "char": "そ", "romaji": "so",  "type": "hiragana", "row": "sa"  },
+
+  { "id": "h_ta",  "char": "た", "romaji": "ta",  "type": "hiragana", "row": "ta"  },
+  { "id": "h_chi", "char": "ち", "romaji": "chi", "type": "hiragana", "row": "ta"  },
+  { "id": "h_tsu", "char": "つ", "romaji": "tsu", "type": "hiragana", "row": "ta"  },
+  { "id": "h_te",  "char": "て", "romaji": "te",  "type": "hiragana", "row": "ta"  },
+  { "id": "h_to",  "char": "と", "romaji": "to",  "type": "hiragana", "row": "ta"  },
+
+  { "id": "h_na",  "char": "な", "romaji": "na",  "type": "hiragana", "row": "na"  },
+  { "id": "h_ni",  "char": "に", "romaji": "ni",  "type": "hiragana", "row": "na"  },
+  { "id": "h_nu",  "char": "ぬ", "romaji": "nu",  "type": "hiragana", "row": "na"  },
+  { "id": "h_ne",  "char": "ね", "romaji": "ne",  "type": "hiragana", "row": "na"  },
+  { "id": "h_no",  "char": "の", "romaji": "no",  "type": "hiragana", "row": "na"  },
+
+  { "id": "h_ha",  "char": "は", "romaji": "ha",  "type": "hiragana", "row": "ha"  },
+  { "id": "h_hi",  "char": "ひ", "romaji": "hi",  "type": "hiragana", "row": "ha"  },
+  { "id": "h_fu",  "char": "ふ", "romaji": "fu",  "type": "hiragana", "row": "ha"  },
+  { "id": "h_he",  "char": "へ", "romaji": "he",  "type": "hiragana", "row": "ha"  },
+  { "id": "h_ho",  "char": "ほ", "romaji": "ho",  "type": "hiragana", "row": "ha"  },
+
+  { "id": "h_ma",  "char": "ま", "romaji": "ma",  "type": "hiragana", "row": "ma"  },
+  { "id": "h_mi",  "char": "み", "romaji": "mi",  "type": "hiragana", "row": "ma"  },
+  { "id": "h_mu",  "char": "む", "romaji": "mu",  "type": "hiragana", "row": "ma"  },
+  { "id": "h_me",  "char": "め", "romaji": "me",  "type": "hiragana", "row": "ma"  },
+  { "id": "h_mo",  "char": "も", "romaji": "mo",  "type": "hiragana", "row": "ma"  },
+
+  { "id": "h_ya",  "char": "や", "romaji": "ya",  "type": "hiragana", "row": "ya"  },
+  { "id": "h_yu",  "char": "ゆ", "romaji": "yu",  "type": "hiragana", "row": "ya"  },
+  { "id": "h_yo",  "char": "よ", "romaji": "yo",  "type": "hiragana", "row": "ya"  },
+
+  { "id": "h_ra",  "char": "ら", "romaji": "ra",  "type": "hiragana", "row": "ra"  },
+  { "id": "h_ri",  "char": "り", "romaji": "ri",  "type": "hiragana", "row": "ra"  },
+  { "id": "h_ru",  "char": "る", "romaji": "ru",  "type": "hiragana", "row": "ra"  },
+  { "id": "h_re",  "char": "れ", "romaji": "re",  "type": "hiragana", "row": "ra"  },
+  { "id": "h_ro",  "char": "ろ", "romaji": "ro",  "type": "hiragana", "row": "ra"  },
+
+  { "id": "h_wa",  "char": "わ", "romaji": "wa",  "type": "hiragana", "row": "wa"  },
+  { "id": "h_wo",  "char": "を", "romaji": "wo",  "type": "hiragana", "row": "wa"  },
+
+  { "id": "h_n",   "char": "ん", "romaji": "n",   "type": "hiragana", "row": "n"   },
+
+  { "id": "h_ga",  "char": "が", "romaji": "ga",  "type": "hiragana", "row": "ga"  },
+  { "id": "h_gi",  "char": "ぎ", "romaji": "gi",  "type": "hiragana", "row": "ga"  },
+  { "id": "h_gu",  "char": "ぐ", "romaji": "gu",  "type": "hiragana", "row": "ga"  },
+  { "id": "h_ge",  "char": "げ", "romaji": "ge",  "type": "hiragana", "row": "ga"  },
+  { "id": "h_go",  "char": "ご", "romaji": "go",  "type": "hiragana", "row": "ga"  },
+
+  { "id": "h_za",  "char": "ざ", "romaji": "za",  "type": "hiragana", "row": "za"  },
+  { "id": "h_ji",  "char": "じ", "romaji": "ji",  "type": "hiragana", "row": "za"  },
+  { "id": "h_zu",  "char": "ず", "romaji": "zu",  "type": "hiragana", "row": "za"  },
+  { "id": "h_ze",  "char": "ぜ", "romaji": "ze",  "type": "hiragana", "row": "za"  },
+  { "id": "h_zo",  "char": "ぞ", "romaji": "zo",  "type": "hiragana", "row": "za"  },
+
+  { "id": "h_da",  "char": "だ", "romaji": "da",  "type": "hiragana", "row": "da"  },
+  { "id": "h_di",  "char": "ぢ", "romaji": "ji",  "type": "hiragana", "row": "da"  },
+  { "id": "h_du",  "char": "づ", "romaji": "zu",  "type": "hiragana", "row": "da"  },
+  { "id": "h_de",  "char": "で", "romaji": "de",  "type": "hiragana", "row": "da"  },
+  { "id": "h_do",  "char": "ど", "romaji": "do",  "type": "hiragana", "row": "da"  },
+
+  { "id": "h_ba",  "char": "ば", "romaji": "ba",  "type": "hiragana", "row": "ba"  },
+  { "id": "h_bi",  "char": "び", "romaji": "bi",  "type": "hiragana", "row": "ba"  },
+  { "id": "h_bu",  "char": "ぶ", "romaji": "bu",  "type": "hiragana", "row": "ba"  },
+  { "id": "h_be",  "char": "べ", "romaji": "be",  "type": "hiragana", "row": "ba"  },
+  { "id": "h_bo",  "char": "ぼ", "romaji": "bo",  "type": "hiragana", "row": "ba"  },
+
+  { "id": "h_pa",  "char": "ぱ", "romaji": "pa",  "type": "hiragana", "row": "pa"  },
+  { "id": "h_pi",  "char": "ぴ", "romaji": "pi",  "type": "hiragana", "row": "pa"  },
+  { "id": "h_pu",  "char": "ぷ", "romaji": "pu",  "type": "hiragana", "row": "pa"  },
+  { "id": "h_pe",  "char": "ぺ", "romaji": "pe",  "type": "hiragana", "row": "pa"  },
+  { "id": "h_po",  "char": "ぽ", "romaji": "po",  "type": "hiragana", "row": "pa"  },
+
+  { "id": "h_kya", "char": "きゃ", "romaji": "kya", "type": "hiragana", "row": "kya" },
+  { "id": "h_kyu", "char": "きゅ", "romaji": "kyu", "type": "hiragana", "row": "kya" },
+  { "id": "h_kyo", "char": "きょ", "romaji": "kyo", "type": "hiragana", "row": "kya" },
+
+  { "id": "h_sha", "char": "しゃ", "romaji": "sha", "type": "hiragana", "row": "sha" },
+  { "id": "h_shu", "char": "しゅ", "romaji": "shu", "type": "hiragana", "row": "sha" },
+  { "id": "h_sho", "char": "しょ", "romaji": "sho", "type": "hiragana", "row": "sha" },
+
+  { "id": "h_cha", "char": "ちゃ", "romaji": "cha", "type": "hiragana", "row": "cha" },
+  { "id": "h_chu", "char": "ちゅ", "romaji": "chu", "type": "hiragana", "row": "cha" },
+  { "id": "h_cho", "char": "ちょ", "romaji": "cho", "type": "hiragana", "row": "cha" },
+
+  { "id": "h_nya", "char": "にゃ", "romaji": "nya", "type": "hiragana", "row": "nya" },
+  { "id": "h_nyu", "char": "にゅ", "romaji": "nyu", "type": "hiragana", "row": "nya" },
+  { "id": "h_nyo", "char": "にょ", "romaji": "nyo", "type": "hiragana", "row": "nya" },
+
+  { "id": "h_hya", "char": "ひゃ", "romaji": "hya", "type": "hiragana", "row": "hya" },
+  { "id": "h_hyu", "char": "ひゅ", "romaji": "hyu", "type": "hiragana", "row": "hya" },
+  { "id": "h_hyo", "char": "ひょ", "romaji": "hyo", "type": "hiragana", "row": "hya" },
+
+  { "id": "h_mya", "char": "みゃ", "romaji": "mya", "type": "hiragana", "row": "mya" },
+  { "id": "h_myu", "char": "みゅ", "romaji": "myu", "type": "hiragana", "row": "mya" },
+  { "id": "h_myo", "char": "みょ", "romaji": "myo", "type": "hiragana", "row": "mya" },
+
+  { "id": "h_rya", "char": "りゃ", "romaji": "rya", "type": "hiragana", "row": "rya" },
+  { "id": "h_ryu", "char": "りゅ", "romaji": "ryu", "type": "hiragana", "row": "rya" },
+  { "id": "h_ryo", "char": "りょ", "romaji": "ryo", "type": "hiragana", "row": "rya" },
+
+  { "id": "h_gya", "char": "ぎゃ", "romaji": "gya", "type": "hiragana", "row": "gya" },
+  { "id": "h_gyu", "char": "ぎゅ", "romaji": "gyu", "type": "hiragana", "row": "gya" },
+  { "id": "h_gyo", "char": "ぎょ", "romaji": "gyo", "type": "hiragana", "row": "gya" },
+
+  { "id": "h_ja",  "char": "じゃ", "romaji": "ja",  "type": "hiragana", "row": "ja"  },
+  { "id": "h_ju",  "char": "じゅ", "romaji": "ju",  "type": "hiragana", "row": "ja"  },
+  { "id": "h_jo",  "char": "じょ", "romaji": "jo",  "type": "hiragana", "row": "ja"  },
+
+  { "id": "h_bya", "char": "びゃ", "romaji": "bya", "type": "hiragana", "row": "bya" },
+  { "id": "h_byu", "char": "びゅ", "romaji": "byu", "type": "hiragana", "row": "bya" },
+  { "id": "h_byo", "char": "びょ", "romaji": "byo", "type": "hiragana", "row": "bya" },
+
+  { "id": "h_pya", "char": "ぴゃ", "romaji": "pya", "type": "hiragana", "row": "pya" },
+  { "id": "h_pyu", "char": "ぴゅ", "romaji": "pyu", "type": "hiragana", "row": "pya" },
+  { "id": "h_pyo", "char": "ぴょ", "romaji": "pyo", "type": "hiragana", "row": "pya" }
+]
