@@ -1,11 +1,11 @@
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
-import { useProgress } from "../features/progress/ProgressContext";
+import { useUserStats } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 
 export function Settings() {
-  const { resetProgress, username, setUsername } = useProgress();
+  const { resetProgress, username, setUsername } = useUserStats();
   const { language } = useLanguage();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();

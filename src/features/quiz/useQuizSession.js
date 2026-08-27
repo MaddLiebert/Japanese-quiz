@@ -1,12 +1,18 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { useItemProgress } from '../progress/ProgressContext';
 import hiraganaData from '../../data/hiragana.json';
 import katakanaData from '../../data/katakana.json';
 import kotobaData from '../../data/kotoba.json';
 import grammarData from '../../data/grammar.json';
 import kanjiData from '../../data/kanji.json';
 
-function shuffle(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 function buildGrammarOptions(item, allGrammar, optionCount) {
@@ -71,6 +77,15 @@ export function useQuizSession() {
   const questionsRef = useRef([]);
   const currentIndexRef = useRef(0);
   const isAnsweredRef = useRef(false);
+  const timeoutRef = useRef(null);
+  
+  const { recordAnswer } = useItemProgress();
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const initializeQuiz = useCallback((config) => {
     const { mode, pools, rows, difficulty, sourceData = hiraganaData } = config;
@@ -141,12 +156,16 @@ export function useQuizSession() {
     if (!currentQ) return;
 
     const correct = selectedOptionId === currentQ.target.id;
+    
+    // Record to persistent storage
+    recordAnswer(currentQ.target.id, correct);
+
     if (correct) {
       setScore(prev => prev + 1);
     } else {
       setWrongAnswers(prev => [...prev, currentQ.target.id]);
     }
-  }, []); // no deps needed — reads from refs
+  }, [recordAnswer]); // reads from refs except for recordAnswer
 
   // advanceQuestion: moves to next question. Uses refs.
   const advanceQuestion = useCallback(() => {
@@ -166,7 +185,8 @@ export function useQuizSession() {
   // Legacy shim for kana mode: select + auto-advance after 800ms
   const answerQuestion = useCallback((selectedOptionId) => {
     selectAnswer(selectedOptionId);
-    setTimeout(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
       advanceQuestion();
     }, 800);
   }, [selectAnswer, advanceQuestion]);

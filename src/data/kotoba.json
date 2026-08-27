@@ -1800,7 +1800,7 @@
     "category": "AdjectivesExt"
   },
   {
-    "id": "v_kurai",
+    "id": "v_kurai_dark",
     "char": "くらい",
     "romaji": "kurai",
     "meaning": "Dark",
@@ -4401,7 +4401,7 @@
     "category": "TimeDuration"
   },
   {
-    "id": "v_kurai",
+    "id": "v_kurai_about",
     "char": "くらい",
     "romaji": "kurai",
     "meaning": "About (duration)",

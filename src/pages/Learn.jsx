@@ -6,7 +6,7 @@ import katakanaData from "../data/katakana.json";
 import kotobaData from "../data/kotoba.json";
 import grammarData from "../data/grammar.json";
 import kanjiData from "../data/kanji.json";
-import { useProgress } from "../features/progress/ProgressContext";
+import { useItemProgress } from "../features/progress/ProgressContext";
 import { Flashcard } from "../features/learn/Flashcard";
 import { Button } from "../components/ui/Button";
 import { useLanguage } from "../context/LanguageContext";
@@ -45,7 +45,7 @@ function KanaTypeToggle({ active, onChange }) {
 export function Learn() {
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const { masteryData, setMasteryData } = useProgress();
+  const { itemProgress, forceMasterItem } = useItemProgress();
   const [activeKanaType, setActiveKanaType] = useState('hiragana');
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -60,7 +60,7 @@ export function Learn() {
         : activeKanaType === 'grammar'
           ? grammarData
           : kotobaData;
-  const masteryKey = activeKanaType;
+
 
   const rows = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
     ? [...new Set(activeData.map(kana => kana.category))]
@@ -86,18 +86,7 @@ export function Learn() {
   };
 
   const handleToggleMastery = (kanaId) => {
-    setMasteryData(prev => {
-      const bucket = prev[masteryKey] || {};
-      const currentStatus = bucket[kanaId];
-      const newStatus = currentStatus === 'mastered' ? 'learning' : 'mastered';
-      return {
-        ...prev,
-        [masteryKey]: {
-          ...bucket,
-          [kanaId]: newStatus
-        }
-      };
-    });
+    forceMasterItem(kanaId);
   };
 
   // ── Row Selection View ────────────────────────────────────────────────────────
@@ -153,7 +142,7 @@ export function Learn() {
             const rowItems = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
               ? activeData.filter(k => k.category === row)
               : activeData.filter(k => k.row === row);
-            const masteredCount = rowItems.filter(k => masteryData[masteryKey]?.[k.id] === 'mastered').length;
+            const masteredCount = rowItems.filter(k => itemProgress[k.id]?.status === 'mastered').length;
             const progress = (masteredCount / rowItems.length) * 100;
             
             return (
@@ -202,7 +191,7 @@ export function Learn() {
     ? activeData.filter(k => k.category === selectedRow)
     : activeData.filter(k => k.row === selectedRow);
   const currentKana = rowKana[currentCardIndex];
-  const isMastered = masteryData[masteryKey]?.[currentKana?.id] === 'mastered';
+  const isMastered = itemProgress[currentKana?.id]?.status === 'mastered';
 
   const handleNext = () => {
     if (currentCardIndex < rowKana.length - 1) setCurrentCardIndex(prev => prev + 1);

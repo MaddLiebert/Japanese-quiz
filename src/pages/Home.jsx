@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Button } from "../components/ui/Button";
-import { useProgress } from "../features/progress/ProgressContext";
+import { useUserStats, useItemProgress, useAchievements } from "../features/progress/ProgressContext";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -36,7 +36,9 @@ const AchievementStamp = ({ id, meta, index }) => (
 );
 
 export function Home() {
-  const { progress, weakItems, achievements, ACHIEVEMENT_META, username, setUsername } = useProgress();
+  const { progress, username, setUsername } = useUserStats();
+  const { weakItems } = useItemProgress();
+  const { achievements, ACHIEVEMENT_META } = useAchievements();
   const [inputName, setInputName] = useState("");
   const navigate = useNavigate();
   const { language } = useLanguage();

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { Volume2 } from "lucide-react";
@@ -11,7 +11,6 @@ import kotobaData from "../data/kotoba.json";
 import grammarData from "../data/grammar.json";
 import kanjiData from "../data/kanji.json";
 import { useQuizSession } from "../features/quiz/useQuizSession";
-import { useProgress } from "../features/progress/ProgressContext";
 import { Button } from "../components/ui/Button";
 import { categoryTranslations } from "../utils/translations";
 
@@ -32,8 +31,8 @@ function KanaTypeToggle({ active, onChange }) {
           key={tab.id}
           onClick={() => onChange(tab.id)}
           className={`pb-4 flex flex-col items-start gap-1 transition-colors border-b-[4px] -mb-[2px] shrink-0 ${active === tab.id
-              ? 'border-ai text-ai'
-              : 'border-transparent text-sumi/40 hover:text-sumi/70'
+            ? 'border-ai text-ai'
+            : 'border-transparent text-sumi/40 hover:text-sumi/70'
             }`}
         >
           <span className="text-[10px] font-bold tracking-[0.3em] uppercase">{tab.label}</span>
@@ -45,19 +44,7 @@ function KanaTypeToggle({ active, onChange }) {
 }
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
-  const { addXp, setWeakItems } = useProgress();
   const { language } = useLanguage();
-
-  useEffect(() => {
-    addXp(score * 10);
-    if (wrongAnswers.length > 0) {
-      setWeakItems(prev => {
-        const newItems = new Set([...prev, ...wrongAnswers]);
-        return Array.from(newItems);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const percentage = (score / totalQuestions) * 100;
   let grade = 'C';
@@ -135,8 +122,16 @@ export function Practice() {
   const [activeKanaType, setActiveKanaType] = useState('hiragana');
   const [mixedPools, setMixedPools] = useState(['hiragana', 'katakana', 'kotoba', 'grammar', 'kanji']);
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const timerRef = useRef(null);
 
+  // Ini penangkal petirnya: kalau komponen mati, timer dibunuh!
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const { language } = useLanguage();
 
   const getTranslatedRow = (row) => {
     return (language === 'id' && categoryTranslations[row]) ? categoryTranslations[row] : row;
@@ -152,8 +147,7 @@ export function Practice() {
           ? grammarData
           : kotobaData;
 
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [isCorrect, setIsCorrect] = useState(null);
+
 
   const {
     initializeQuiz,
@@ -174,29 +168,23 @@ export function Practice() {
 
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option) => {
-    if (selectedOption !== null) return;
+    if (isAnswered) return;
 
     const correct = option.id === currentQuestion.id;
-    setSelectedOption(option.id);
-    setIsCorrect(correct);
-
     if (correct) {
       playCorrectSound();
     } else {
       playWrongSound();
     }
 
-    setTimeout(() => {
-      answerQuestion(option.id);
-      setSelectedOption(null);
-      setIsCorrect(null);
-    }, 800);
+    answerQuestion(option.id);
   };
 
   // Kotoba / Grammar mode: click selects, Next button advances
   const handleKotobaOptionClick = (option) => {
     if (isAnswered) return;
     const correct = option.id === currentQuestion.id;
+
     if (correct) {
       playCorrectSound();
     } else {
@@ -287,7 +275,7 @@ export function Practice() {
           <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
-            <button 
+            <button
               onClick={() => setQuizStarted(false)}
               className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit"
             >
@@ -428,11 +416,10 @@ export function Practice() {
                   animate={{ opacity: 1, y: 0 }}
                   className="w-full max-w-lg mt-6"
                 >
-                  <div className={`w-full mb-4 py-3 text-center font-bold text-sm uppercase tracking-widest border-[3px] ${
-                    isCurrentAnswerCorrect
-                      ? 'bg-matcha/10 border-matcha text-matcha'
-                      : 'bg-shu/10 border-shu text-shu'
-                  }`}>
+                  <div className={`w-full mb-4 py-3 text-center font-bold text-sm uppercase tracking-widest border-[3px] ${isCurrentAnswerCorrect
+                    ? 'bg-matcha/10 border-matcha text-matcha'
+                    : 'bg-shu/10 border-shu text-shu'
+                    }`}>
                     {isCurrentAnswerCorrect
                       ? (language === 'id' ? '✓ Benar!' : '✓ Correct!')
                       : (language === 'id' ? '✗ Salah — lihat jawaban yang benar di atas' : '✗ Wrong — the correct answer is highlighted')
@@ -461,7 +448,7 @@ export function Practice() {
           <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
-            <button 
+            <button
               onClick={() => setQuizStarted(false)}
               className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit"
             >
@@ -581,11 +568,10 @@ export function Practice() {
                   animate={{ opacity: 1, y: 0 }}
                   className="w-full max-w-lg mt-6"
                 >
-                  <div className={`w-full mb-4 py-3 text-center font-bold text-sm uppercase tracking-widest border-[3px] ${
-                    isCurrentAnswerCorrect
-                      ? 'bg-matcha/10 border-matcha text-matcha'
-                      : 'bg-shu/10 border-shu text-shu'
-                  }`}>
+                  <div className={`w-full mb-4 py-3 text-center font-bold text-sm uppercase tracking-widest border-[3px] ${isCurrentAnswerCorrect
+                    ? 'bg-matcha/10 border-matcha text-matcha'
+                    : 'bg-shu/10 border-shu text-shu'
+                    }`}>
                     {isCurrentAnswerCorrect
                       ? (language === 'id' ? '✓ Benar!' : '✓ Correct!')
                       : (language === 'id' ? '✗ Salah — lihat jawaban yang benar di atas' : '✗ Wrong — the correct answer is highlighted')
@@ -612,7 +598,7 @@ export function Practice() {
         <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
           <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
-          <button 
+          <button
             onClick={() => setQuizStarted(false)}
             className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit"
           >
@@ -657,10 +643,10 @@ export function Practice() {
 
             <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full max-w-lg">
               {options.map((option) => {
-                const isThisSelected = selectedOption === option.id;
+                const isThisSelected = answeredId === option.id;
                 const isThisCorrect = option.id === currentQuestion.id;
-                const showCorrect = selectedOption !== null && isThisCorrect;
-                const showWrong = isThisSelected && !isCorrect;
+                const showCorrect = isAnswered && isThisCorrect;
+                const showWrong = isThisSelected && !isCurrentAnswerCorrect;
 
                 let btnClass = "bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] transition-all p-4 sm:p-6 font-bold text-sumi flex items-center justify-center rounded-none ";
                 if (isGrammarMode) {
@@ -669,7 +655,7 @@ export function Practice() {
                   btnClass += " tracking-widest text-2xl sm:text-3xl";
                 }
 
-                if (selectedOption === null) {
+                if (!isAnswered) {
                   btnClass += " hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_0_#1a1a1a] hover:bg-kinari-light active:bg-ai active:text-kinari-light active:translate-x-[6px] active:translate-y-[6px] active:shadow-none cursor-pointer";
                 } else {
                   if (showCorrect) {
@@ -692,7 +678,7 @@ export function Practice() {
                     }
                     transition={{ duration: 0.4 }}
                     className={btnClass}
-                    disabled={selectedOption !== null}
+                    disabled={isAnswered}
                   >
                     {isGrammarMode ? option.char : option.romaji}
                   </motion.button>
@@ -707,7 +693,7 @@ export function Practice() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen">
-      <button 
+      <button
         onClick={() => navigate(-1)}
         className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20"
       >
@@ -747,8 +733,8 @@ export function Practice() {
                     key={pool}
                     onClick={() => toggleMixedPool(pool)}
                     className={`px-8 py-4 border-[3px] border-sumi font-bold text-sm tracking-widest uppercase transition-all shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] ${isSelected
-                        ? 'bg-sumi text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
-                        : 'bg-kinari text-sumi hover:bg-kinari-light'
+                      ? 'bg-sumi text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
+                      : 'bg-kinari text-sumi hover:bg-kinari-light'
                       }`}
                   >
                     {pool}
@@ -765,8 +751,8 @@ export function Practice() {
                     key={row}
                     onClick={() => toggleRow(row)}
                     className={`px-8 py-4 border-[3px] border-sumi font-bold text-sm tracking-widest uppercase transition-all shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] ${isSelected
-                        ? 'bg-sumi text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
-                        : 'bg-kinari text-sumi hover:bg-kinari-light'
+                      ? 'bg-sumi text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
+                      : 'bg-kinari text-sumi hover:bg-kinari-light'
                       }`}
                   >
                     {getTranslatedRow(row)} {(activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji') ? '' : (language === 'id' ? 'Baris' : 'Row')}
@@ -793,8 +779,8 @@ export function Practice() {
                   key={diff}
                   onClick={() => setDifficulty(diff)}
                   className={`flex-1 py-4 border-[3px] border-sumi font-bold text-sm tracking-widest uppercase transition-all shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] ${isSelected
-                      ? 'bg-ai text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
-                      : 'bg-kinari text-sumi hover:bg-kinari-light'
+                    ? 'bg-ai text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
+                    : 'bg-kinari text-sumi hover:bg-kinari-light'
                     }`}
                 >
                   {language === 'id'
@@ -813,8 +799,8 @@ export function Practice() {
             onClick={handleStartQuiz}
             disabled={activeKanaType === 'mixed' ? mixedPools.length === 0 : selectedRows.length === 0}
             className={`w-full py-6 sm:py-8 text-xl sm:text-2xl tracking-[0.3em] font-black uppercase border-[4px] border-sumi rounded-none shadow-[8px_8px_0_0_#1a1a1a] transition-all ${(activeKanaType === 'mixed' ? mixedPools.length === 0 : selectedRows.length === 0)
-                ? '!bg-kinari !text-sumi/30 cursor-not-allowed !shadow-none !border-sumi/30 hover:translate-x-0 hover:translate-y-0'
-                : '!bg-shu !text-kinari-light hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[4px_4px_0_0_#1a1a1a]'
+              ? '!bg-kinari !text-sumi/30 cursor-not-allowed !shadow-none !border-sumi/30 hover:translate-x-0 hover:translate-y-0'
+              : '!bg-shu !text-kinari-light hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[4px_4px_0_0_#1a1a1a]'
               }`}
           >
             {language === 'id' ? 'Mulai Kuis' : 'Start Quiz'}

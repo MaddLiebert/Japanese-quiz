@@ -128,13 +128,14 @@ export function Flashcard({ kana, isMastered, onToggleMastery }) {
             <Button 
               onClick={(e) => {
                 e.stopPropagation();
-                onToggleMastery();
+                if (!isMastered) onToggleMastery();
               }}
-              className={`w-full uppercase tracking-widest font-bold text-sm py-4 border-[3px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] rounded-none ${isMastered ? '!bg-ai !text-kinari-light' : '!bg-kinari !text-sumi hover:!bg-kinari-light'}`}
+              disabled={isMastered}
+              className={`w-full uppercase tracking-widest font-bold text-sm py-4 border-[3px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] rounded-none ${isMastered ? '!bg-ai !text-kinari-light cursor-not-allowed hover:translate-x-0 hover:translate-y-0 hover:shadow-[4px_4px_0_0_#1a1a1a]' : '!bg-kinari !text-sumi hover:!bg-kinari-light'}`}
             >
               {isMastered 
-                ? (language === 'id' ? 'Dikuasai' : 'Mastered') 
-                : (language === 'id' ? 'Tandai Dikuasai' : 'Mark as Mastered')
+                ? (language === 'id' ? 'Telah Dikuasai (SRS)' : 'Mastered (SRS)') 
+                : (language === 'id' ? 'Paksa Dikuasai (Test)' : 'Force Master (Test)')
               }
             </Button>
           </div>
