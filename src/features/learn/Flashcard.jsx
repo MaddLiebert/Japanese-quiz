@@ -5,7 +5,7 @@ import { Button } from "../../components/ui/Button";
 import { playDramaticAudio } from "../../utils/audio";
 import { useLanguage } from "../../context/LanguageContext";
 
-export function Flashcard({ kana, isMastered, onToggleMastery }) {
+export function Flashcard({ kana, isMastered, onToggleMastery, difficulty = 'Easy' }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const { language } = useLanguage();
   const isKotoba = kana.type === 'kotoba';
@@ -33,16 +33,18 @@ export function Flashcard({ kana, isMastered, onToggleMastery }) {
         >
           <div className="absolute inset-0 bg-asanoha opacity-5 pointer-events-none"></div>
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              const textToSpeak = isGrammar ? (kana.question || kana.char).replace('___', kana.char) : kana.char;
-              playDramaticAudio(textToSpeak);
-            }}
-            className="absolute top-6 left-6 w-10 h-10 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] z-20 hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
-          >
-            <Volume2 size={20} />
-          </button>
+          {difficulty === 'Easy' && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                const textToSpeak = isGrammar ? (kana.question || kana.char).replace('___', kana.char) : kana.char;
+                playDramaticAudio(textToSpeak);
+              }}
+              className="absolute top-6 left-6 w-10 h-10 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] z-20 hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+            >
+              <Volume2 size={20} />
+            </button>
+          )}
 
           {isGrammar ? (
             /* Grammar front: full sentence + answer */

@@ -163,7 +163,8 @@ export function Practice() {
     score,
     totalQuestions,
     wrongAnswers,
-    currentIndex
+    currentIndex,
+    timeLeft
   } = useQuizSession();
 
   // Kana mode: auto-advance after 800ms (legacy)
@@ -286,6 +287,11 @@ export function Practice() {
                 {language === 'id' ? 'Soal' : 'Question'} <span className="text-ai text-lg sm:text-xl">{currentIndex + 1}</span> {language === 'id' ? 'dari' : 'of'} {totalQuestions}
               </div>
               <div className="flex items-center gap-4">
+                {difficulty === 'Hard' && timeLeft !== null && (
+                  <span className="text-xs font-bold tracking-widest uppercase text-shu">
+                    {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+                  </span>
+                )}
                 <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
                   {language === 'id' ? 'Skor' : 'Score'}: <span className="text-ai">{score}</span>
                 </span>
@@ -312,12 +318,14 @@ export function Practice() {
                 <div className="bg-kinari border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] p-8 sm:p-12 flex flex-col items-center gap-4 relative overflow-hidden">
                   <div className="absolute inset-0 bg-[radial-gradient(circle,currentColor_1.5px,transparent_1.5px)] bg-[length:14px_14px] text-sumi/[0.03] pointer-events-none"></div>
                   {/* TTS */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); playDramaticAudio(currentQuestion.char); }}
-                    className="w-9 h-9 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all self-end relative z-10"
-                  >
-                    <Volume2 size={18} />
-                  </button>
+                  {difficulty === 'Easy' && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); playDramaticAudio(currentQuestion.char); }}
+                      className="w-9 h-9 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all self-end relative z-10"
+                    >
+                      <Volume2 size={18} />
+                    </button>
+                  )}
 
                   {/* Kanji character — extra large */}
                   <h2 className="text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-serif font-black text-sumi leading-none select-none relative z-10 text-center break-words max-w-full">
@@ -459,6 +467,11 @@ export function Practice() {
                 {language === 'id' ? 'Soal' : 'Question'} <span className="text-ai text-lg sm:text-xl">{currentIndex + 1}</span> {language === 'id' ? 'dari' : 'of'} {totalQuestions}
               </div>
               <div className="flex items-center gap-4">
+                {difficulty === 'Hard' && timeLeft !== null && (
+                  <span className="text-xs font-bold tracking-widest uppercase text-shu">
+                    {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+                  </span>
+                )}
                 <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
                   {language === 'id' ? 'Skor' : 'Score'}: <span className="text-ai">{score}</span>
                 </span>
@@ -485,12 +498,14 @@ export function Practice() {
                 <div className="bg-kinari border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] p-8 sm:p-12 flex flex-col items-center gap-4 relative overflow-hidden">
                   <div className="absolute inset-0 bg-[radial-gradient(circle,currentColor_1.5px,transparent_1.5px)] bg-[length:14px_14px] text-sumi/[0.03] pointer-events-none"></div>
                   {/* TTS button */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); playDramaticAudio(currentQuestion.char); }}
-                    className="w-9 h-9 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all self-end relative z-10"
-                  >
-                    <Volume2 size={18} />
-                  </button>
+                  {difficulty === 'Easy' && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); playDramaticAudio(currentQuestion.char); }}
+                      className="w-9 h-9 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all self-end relative z-10"
+                    >
+                      <Volume2 size={18} />
+                    </button>
+                  )}
 
                   {/* Japanese character */}
                   <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black text-sumi leading-tight select-none relative z-10 text-center break-words max-w-full">
@@ -608,6 +623,16 @@ export function Practice() {
             <div className="text-xs sm:text-sm uppercase tracking-[0.3em] font-bold text-sumi/60">
               {language === 'id' ? 'Soal' : 'Question'} <span className="text-ai text-lg sm:text-xl">{currentIndex + 1}</span> {language === 'id' ? 'dari' : 'of'} {totalQuestions}
             </div>
+            <div className="flex items-center gap-4">
+              {difficulty === 'Hard' && timeLeft !== null && (
+                <span className="text-xs font-bold tracking-widest uppercase text-shu">
+                  {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+                </span>
+              )}
+              <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
+                {language === 'id' ? 'Skor' : 'Score'}: <span className="text-ai">{score}</span>
+              </span>
+            </div>
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-center relative z-10 pb-16">
@@ -618,18 +643,20 @@ export function Practice() {
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
               className="mb-16 sm:mb-24 flex flex-col items-center gap-6"
             >
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const textToSpeak = isGrammarMode
-                    ? (currentQuestion.question || currentQuestion.char).replace('___', currentQuestion.char)
-                    : currentQuestion.char;
-                  playDramaticAudio(textToSpeak);
-                }}
-                className="w-10 h-10 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] z-20 hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
-              >
-                <Volume2 size={20} />
-              </button>
+              {difficulty === 'Easy' && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const textToSpeak = isGrammarMode
+                      ? (currentQuestion.question || currentQuestion.char).replace('___', currentQuestion.char)
+                      : currentQuestion.char;
+                    playDramaticAudio(textToSpeak);
+                  }}
+                  className="w-10 h-10 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] z-20 hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+                >
+                  <Volume2 size={20} />
+                </button>
+              )}
               {isGrammarMode ? (
                 <h2 className="text-3xl sm:text-5xl font-serif font-black text-sumi leading-normal select-none drop-shadow-sm px-2 sm:px-4 text-center break-words max-w-full">
                   {currentQuestion.question}

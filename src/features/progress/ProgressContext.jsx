@@ -16,6 +16,13 @@ export const useUserStats = () => {
   return context;
 };
 
+export const getRank = (xp) => {
+  if (xp < 5000) return "Kouhai 🐣";
+  if (xp < 10000) return "Senpai 🗡️";
+  if (xp < 20000) return "Sensei 📜";
+  return "Shogun 👹";
+};
+
 const DEFAULT_PROGRESS = {
   xp: 0,
   level: 1,
@@ -166,7 +173,7 @@ export const ProgressProvider = ({ children }) => {
     });
   }, []);
 
-  const recordAnswer = useCallback((itemId, isCorrect) => {
+  const recordAnswer = useCallback((itemId, isCorrect, xpReward = 10) => {
     const today = getLocalDateString();
     
     // 1. Update Global Stats
@@ -225,7 +232,7 @@ export const ProgressProvider = ({ children }) => {
     });
     
     if (isCorrect) {
-       addXp(10);
+       addXp(xpReward);
     }
   }, [addXp]);
 

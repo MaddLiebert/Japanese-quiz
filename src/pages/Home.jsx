@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Button } from "../components/ui/Button";
-import { useUserStats, useItemProgress, useAchievements } from "../features/progress/ProgressContext";
+import { useUserStats, useItemProgress, useAchievements, getRank } from "../features/progress/ProgressContext";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -179,7 +179,7 @@ export function Home() {
 
             <div className="mt-4 text-center">
               <div className="text-sm uppercase tracking-[0.3em] font-bold text-sumi border-b-[2px] border-sumi pb-1 mb-2 inline-block">
-                {language === 'id' ? 'Pemula' : 'Apprentice'}
+                {getRank(progress.xp)}
               </div>
               <p className="text-xs text-sumi/60 uppercase tracking-widest font-bold">
                 {progress.xp.toLocaleString()} {language === 'id' ? 'Total XP' : 'Total XP'}

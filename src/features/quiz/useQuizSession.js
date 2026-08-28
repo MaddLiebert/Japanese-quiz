@@ -102,9 +102,11 @@ export function useQuizSession() {
   const [wrongAnswers, setWrongAnswers] = useState([]);
   const [answeredId, setAnsweredId] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(null);
 
   // Use refs to hold latest state for use inside callbacks without stale closures
   const questionsRef = useRef([]);
+  const difficultyRef = useRef('easy');
   const currentIndexRef = useRef(0);
   const isAnsweredRef = useRef(false);
   const timeoutRef = useRef(null);
@@ -141,9 +143,12 @@ export function useQuizSession() {
 
     if (availableItems.length === 0) return;
 
+    const diff = (difficulty || 'easy').toLowerCase();
+    difficultyRef.current = diff;
+
     let optionCount = 4;
-    if (difficulty === 'Easy') optionCount = 3;
-    if (difficulty === 'Hard') optionCount = 6;
+    if (diff === 'easy') optionCount = 4;
+    if (diff === 'medium' || diff === 'hard') optionCount = 6;
 
     const shuffledItems = shuffle(availableItems);
     const generatedQuestions = shuffledItems.map(item => {
@@ -162,7 +167,39 @@ export function useQuizSession() {
     setWrongAnswers([]);
     setAnsweredId(null);
     setIsAnswered(false);
+    setTimeLeft(diff === 'hard' ? 7 : null);
   }, []);
+
+  // Hard mode timer countdown
+  useEffect(() => {
+    if (timeLeft === null || timeLeft <= 0 || isAnsweredRef.current || isFinished) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => (prev <= 1 ? 0 : prev - 1));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, isFinished]);
+
+  // Handle timer expiration
+  useEffect(() => {
+    if (timeLeft === 0 && !isAnsweredRef.current && !isFinished) {
+      isAnsweredRef.current = true;
+      setIsAnswered(true);
+      setAnsweredId(null); // No option selected
+      
+      const currentQ = questionsRef.current[currentIndexRef.current];
+      if (currentQ) {
+        recordAnswer(currentQ.target.id, false, 0); // 0 XP for timeout
+        setWrongAnswers(prev => [...prev, currentQ.target.id]);
+        
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+          advanceQuestion();
+        }, 800);
+      }
+    }
+  }, [timeLeft, isFinished, recordAnswer]);
 
   // selectAnswer: records the click, updates score. Uses refs to avoid stale closures.
   const selectAnswer = useCallback((selectedOptionId) => {
@@ -177,8 +214,12 @@ export function useQuizSession() {
 
     const correct = selectedOptionId === currentQ.target.id;
     
+    let xpReward = 10;
+    if (difficultyRef.current === 'medium') xpReward = 20;
+    if (difficultyRef.current === 'hard') xpReward = 35;
+
     // Record to persistent storage
-    recordAnswer(currentQ.target.id, correct);
+    recordAnswer(currentQ.target.id, correct, xpReward);
 
     if (correct) {
       setScore(prev => prev + 1);
@@ -197,6 +238,9 @@ export function useQuizSession() {
     if (nextIndex < questionsRef.current.length) {
       currentIndexRef.current = nextIndex;
       setCurrentIndex(nextIndex);
+      if (difficultyRef.current === 'hard') {
+        setTimeLeft(7);
+      }
     } else {
       setIsFinished(true);
     }
@@ -232,5 +276,6 @@ export function useQuizSession() {
     currentQuestion: currentQ ? currentQ.target : null,
     options: currentQ ? currentQ.options : [],
     totalQuestions: questions.length,
+    timeLeft,
   };
 }
