@@ -15,53 +15,83 @@ function shuffle(array) {
   return arr;
 }
 
-function buildGrammarOptions(item, allGrammar, optionCount) {
-  const pool = allGrammar.filter(d => d.id !== item.id);
-  const sameCategory = shuffle(pool.filter(d => d.category === item.category));
-  const others = shuffle(pool.filter(d => d.category !== item.category));
-  const distractorItems = [...sameCategory, ...others].slice(0, optionCount - 1);
-  const correctOption = { id: item.id, char: item.char, answer: item.answer, type: 'grammar' };
-  const distractorOptions = distractorItems.map(d => ({
-    id: d.id, char: d.char, answer: d.answer, type: 'grammar'
-  }));
-  return shuffle([...distractorOptions, correctOption]);
+// ── Global data lookup by type (used for fallback only) ──────────────────────
+const GLOBAL_DATA_BY_TYPE = {
+  hiragana: hiraganaData,
+  katakana: katakanaData,
+  kotoba: kotobaData,
+  grammar: grammarData,
+  kanji: kanjiData,
+};
+
+// ── Smart Distractor Builder ─────────────────────────────────────────────────
+// Picks distractors using a 3-tier priority:
+//   1. Same row/category inside the user's quiz pool
+//   2. Different row/category inside the user's quiz pool
+//   3. Global fallback (type-matched, avoids cross-category contamination)
+function pickDistractors(item, quizPool, optionCount) {
+  const needed = optionCount - 1;
+  const groupKey = (item.type === 'kotoba' || item.type === 'grammar' || item.type === 'kanji')
+    ? 'category' : 'row';
+
+  // Tier 1 & 2: from the user's quiz pool (excluding the current item)
+  const poolWithoutSelf = quizPool.filter(d => d.id !== item.id);
+  const sameGroup  = shuffle(poolWithoutSelf.filter(d => d[groupKey] === item[groupKey]));
+  const otherGroup = shuffle(poolWithoutSelf.filter(d => d[groupKey] !== item[groupKey]));
+
+  const picked = [...sameGroup, ...otherGroup].slice(0, needed);
+
+  // Tier 3: if the user's pool is too small, pull from the global dataset
+  if (picked.length < needed) {
+    const usedIds = new Set([item.id, ...picked.map(d => d.id)]);
+    const globalPool = (GLOBAL_DATA_BY_TYPE[item.type] || []).filter(d => {
+      if (usedIds.has(d.id)) return false;
+      // For kana: match the same type and avoid mixing standard vs digraph/dakuten rows
+      if (item.type === 'hiragana' || item.type === 'katakana') {
+        return d.type === item.type;
+      }
+      // For kotoba/grammar/kanji: match type (already guaranteed by GLOBAL_DATA_BY_TYPE key)
+      return true;
+    });
+    const extras = shuffle(globalPool).slice(0, needed - picked.length);
+    picked.push(...extras);
+  }
+
+  return picked;
 }
 
-function buildKotobaOptions(item, allKotoba, optionCount) {
-  const pool = allKotoba.filter(d => d.id !== item.id);
-  const sameCategory = shuffle(pool.filter(d => d.category === item.category));
-  const others = shuffle(pool.filter(d => d.category !== item.category));
-  const distractorItems = [...sameCategory, ...others].slice(0, optionCount - 1);
-  const correctOption = {
-    id: item.id, meaning: item.meaning, meaning_id: item.meaning_id,
-    romaji: item.romaji, type: 'kotoba', isCorrect: true
-  };
-  const distractorOptions = distractorItems.map(d => ({
-    id: d.id, meaning: d.meaning, meaning_id: d.meaning_id,
-    romaji: d.romaji, type: 'kotoba', isCorrect: false
-  }));
-  return shuffle([...distractorOptions, correctOption]);
+// ── Option formatters (shape the distractor data into what the UI expects) ───
+function toOptionShape(d) {
+  if (d.type === 'grammar') {
+    return { id: d.id, char: d.char, answer: d.answer, type: 'grammar' };
+  }
+  if (d.type === 'kotoba') {
+    return { id: d.id, meaning: d.meaning, meaning_id: d.meaning_id, romaji: d.romaji, type: 'kotoba', isCorrect: false };
+  }
+  if (d.type === 'kanji') {
+    return { id: d.id, meaning: d.meaning, meaning_id: d.meaning_id, onyomi: d.onyomi, kunyomi: d.kunyomi, type: 'kanji', isCorrect: false };
+  }
+  // kana — pass through (UI reads .id, .char, .romaji directly)
+  return d;
 }
 
-function buildKanjiOptions(item, allKanji, optionCount) {
-  const pool = allKanji.filter(d => d.id !== item.id);
-  const sameCategory = shuffle(pool.filter(d => d.category === item.category));
-  const others = shuffle(pool.filter(d => d.category !== item.category));
-  const distractorItems = [...sameCategory, ...others].slice(0, optionCount - 1);
-  const correctOption = {
-    id: item.id, meaning: item.meaning, meaning_id: item.meaning_id,
-    onyomi: item.onyomi, kunyomi: item.kunyomi, type: 'kanji', isCorrect: true
-  };
-  const distractorOptions = distractorItems.map(d => ({
-    id: d.id, meaning: d.meaning, meaning_id: d.meaning_id,
-    onyomi: d.onyomi, kunyomi: d.kunyomi, type: 'kanji', isCorrect: false
-  }));
-  return shuffle([...distractorOptions, correctOption]);
-}
+function buildOptions(item, quizPool, optionCount) {
+  const distractors = pickDistractors(item, quizPool, optionCount);
 
-function buildKanaOptions(item, typeData, optionCount) {
-  const distractors = shuffle(typeData.filter(d => d.id !== item.id)).slice(0, optionCount - 1);
-  return shuffle([...distractors, item]);
+  // Build the correct-answer option with the right shape
+  let correctOption;
+  if (item.type === 'grammar') {
+    correctOption = { id: item.id, char: item.char, answer: item.answer, type: 'grammar' };
+  } else if (item.type === 'kotoba') {
+    correctOption = { id: item.id, meaning: item.meaning, meaning_id: item.meaning_id, romaji: item.romaji, type: 'kotoba', isCorrect: true };
+  } else if (item.type === 'kanji') {
+    correctOption = { id: item.id, meaning: item.meaning, meaning_id: item.meaning_id, onyomi: item.onyomi, kunyomi: item.kunyomi, type: 'kanji', isCorrect: true };
+  } else {
+    correctOption = item; // kana
+  }
+
+  const distractorOptions = distractors.map(toOptionShape);
+  return shuffle([...distractorOptions, correctOption]);
 }
 
 export function useQuizSession() {
@@ -117,17 +147,7 @@ export function useQuizSession() {
 
     const shuffledItems = shuffle(availableItems);
     const generatedQuestions = shuffledItems.map(item => {
-      let options;
-      if (item.type === 'grammar') {
-        options = buildGrammarOptions(item, grammarData, optionCount);
-      } else if (item.type === 'kotoba') {
-        options = buildKotobaOptions(item, kotobaData, optionCount);
-      } else if (item.type === 'kanji') {
-        options = buildKanjiOptions(item, kanjiData, optionCount);
-      } else {
-        const typeData = item.type === 'katakana' ? katakanaData : hiraganaData;
-        options = buildKanaOptions(item, typeData, optionCount);
-      }
+      const options = buildOptions(item, availableItems, optionCount);
       return { target: item, options };
     });
 
