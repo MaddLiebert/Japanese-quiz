@@ -632,7 +632,7 @@ export function Practice() {
               </button>
               {isGrammarMode ? (
                 <h2 className="text-3xl sm:text-5xl font-serif font-black text-sumi leading-normal select-none drop-shadow-sm px-2 sm:px-4 text-center break-words max-w-full">
-                  {currentQuestion.char}
+                  {currentQuestion.question}
                 </h2>
               ) : (
                 <h2 className="text-7xl sm:text-9xl md:text-[11rem] lg:text-[13rem] font-serif font-black text-sumi leading-none select-none drop-shadow-sm text-center break-words max-w-full">
