@@ -248,7 +248,7 @@ export function Review() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    const textToSpeak = isGrammar ? currentWeakChar.char.replace('___', currentWeakChar.answer) : currentWeakChar.char;
+                    const textToSpeak = isGrammar ? (currentWeakChar.question || currentWeakChar.char).replace('___', currentWeakChar.char) : currentWeakChar.char;
                     playDramaticAudio(textToSpeak);
                   }}
                   className="w-9 h-9 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all self-end relative z-10"
@@ -257,8 +257,8 @@ export function Review() {
                 </button>
 
                 {isGrammar ? (
-                  <h2 className="text-2xl sm:text-4xl font-serif font-black text-sumi leading-normal select-none relative z-10 px-2 text-center break-words max-w-full">
-                    {currentWeakChar.char}
+                  <h2 className="text-xl sm:text-3xl font-serif font-black text-sumi leading-normal select-none relative z-10 px-2 text-center break-words max-w-full">
+                    {currentWeakChar.question || currentWeakChar.char}
                   </h2>
                 ) : (
                   <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black text-sumi leading-tight select-none relative z-10 text-center break-words max-w-full">

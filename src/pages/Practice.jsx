@@ -622,7 +622,7 @@ export function Practice() {
                 onClick={(e) => {
                   e.stopPropagation();
                   const textToSpeak = isGrammarMode
-                    ? currentQuestion.char.replace('___', currentQuestion.answer)
+                    ? (currentQuestion.question || currentQuestion.char).replace('___', currentQuestion.char)
                     : currentQuestion.char;
                   playDramaticAudio(textToSpeak);
                 }}

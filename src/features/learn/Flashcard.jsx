@@ -36,7 +36,7 @@ export function Flashcard({ kana, isMastered, onToggleMastery }) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              const textToSpeak = isGrammar ? kana.char.replace('___', kana.answer) : kana.char;
+              const textToSpeak = isGrammar ? (kana.question || kana.char).replace('___', kana.char) : kana.char;
               playDramaticAudio(textToSpeak);
             }}
             className="absolute top-6 left-6 w-10 h-10 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] z-20 hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
@@ -48,8 +48,8 @@ export function Flashcard({ kana, isMastered, onToggleMastery }) {
             /* Grammar front: full sentence + answer */
             <>
               <div className="text-[8px] uppercase tracking-[0.4em] font-bold text-sumi/40 mb-4 z-10">{kana.category}</div>
-              <h2 className="text-4xl sm:text-5xl font-serif text-sumi leading-normal z-10 select-none text-center px-4 mb-6">
-                {kana.char}
+              <h2 className="text-3xl sm:text-4xl font-serif text-sumi leading-normal z-10 select-none text-center px-4 mb-6">
+                {kana.question || kana.char}
               </h2>
               <div className="text-xl font-bold text-ai z-10 tracking-widest">Answer: {kana.answer}</div>
             </>
