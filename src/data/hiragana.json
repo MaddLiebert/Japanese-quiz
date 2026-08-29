@@ -3,728 +3,728 @@
     "id": "hira_a",
     "char": "あ",
     "romaji": "a",
-    "type": "hiragana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "hira_i",
     "char": "い",
     "romaji": "i",
-    "type": "hiragana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "hira_u",
     "char": "う",
     "romaji": "u",
-    "type": "hiragana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "hira_e",
     "char": "え",
     "romaji": "e",
-    "type": "hiragana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "hira_o",
     "char": "お",
     "romaji": "o",
-    "type": "hiragana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "hira_ka",
     "char": "か",
     "romaji": "ka",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "hira_ki",
     "char": "き",
     "romaji": "ki",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "hira_ku",
     "char": "く",
     "romaji": "ku",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "hira_ke",
     "char": "け",
     "romaji": "ke",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "hira_ko",
     "char": "こ",
     "romaji": "ko",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "hira_sa",
     "char": "さ",
     "romaji": "sa",
-    "type": "hiragana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "hira_shi",
     "char": "し",
     "romaji": "shi",
-    "type": "hiragana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "hira_su",
     "char": "す",
     "romaji": "su",
-    "type": "hiragana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "hira_se",
     "char": "せ",
     "romaji": "se",
-    "type": "hiragana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "hira_so",
     "char": "そ",
     "romaji": "so",
-    "type": "hiragana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "hira_ta",
     "char": "た",
     "romaji": "ta",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "hira_chi",
     "char": "ち",
     "romaji": "chi",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "hira_tsu",
     "char": "つ",
     "romaji": "tsu",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "hira_te",
     "char": "て",
     "romaji": "te",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "hira_to",
     "char": "と",
     "romaji": "to",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "hira_na",
     "char": "な",
     "romaji": "na",
-    "type": "hiragana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "hira_ni",
     "char": "に",
     "romaji": "ni",
-    "type": "hiragana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "hira_nu",
     "char": "ぬ",
     "romaji": "nu",
-    "type": "hiragana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "hira_ne",
     "char": "ね",
     "romaji": "ne",
-    "type": "hiragana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "hira_no",
     "char": "の",
     "romaji": "no",
-    "type": "hiragana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "hira_ha",
     "char": "は",
     "romaji": "ha",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "hira_hi",
     "char": "ひ",
     "romaji": "hi",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "hira_fu",
     "char": "ふ",
     "romaji": "fu",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "hira_he",
     "char": "へ",
     "romaji": "he",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "hira_ho",
     "char": "ほ",
     "romaji": "ho",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "hira_ma",
     "char": "ま",
     "romaji": "ma",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "hira_mi",
     "char": "み",
     "romaji": "mi",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "hira_mu",
     "char": "む",
     "romaji": "mu",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "hira_me",
     "char": "め",
     "romaji": "me",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "hira_mo",
     "char": "も",
     "romaji": "mo",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "hira_ya",
     "char": "や",
     "romaji": "ya",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ya"
   },
   {
     "id": "hira_yu",
     "char": "ゆ",
     "romaji": "yu",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ya"
   },
   {
     "id": "hira_yo",
     "char": "よ",
     "romaji": "yo",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ya"
   },
   {
     "id": "hira_ra",
     "char": "ら",
     "romaji": "ra",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "hira_ri",
     "char": "り",
     "romaji": "ri",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "hira_ru",
     "char": "る",
     "romaji": "ru",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "hira_re",
     "char": "れ",
     "romaji": "re",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "hira_ro",
     "char": "ろ",
     "romaji": "ro",
-    "type": "hiragana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "hira_wa",
     "char": "わ",
     "romaji": "wa",
-    "type": "hiragana",
+    "type": "seion",
     "row": "wa"
   },
   {
     "id": "hira_wo",
     "char": "を",
     "romaji": "wo",
-    "type": "hiragana",
+    "type": "seion",
     "row": "wa"
   },
   {
     "id": "hira_n",
     "char": "ん",
     "romaji": "n",
-    "type": "hiragana",
+    "type": "seion",
     "row": "n"
   },
   {
     "id": "hira_ga",
     "char": "が",
     "romaji": "ga",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ga"
   },
   {
     "id": "hira_gi",
     "char": "ぎ",
     "romaji": "gi",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ga"
   },
   {
     "id": "hira_gu",
     "char": "ぐ",
     "romaji": "gu",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ga"
   },
   {
     "id": "hira_ge",
     "char": "げ",
     "romaji": "ge",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ga"
   },
   {
     "id": "hira_go",
     "char": "ご",
     "romaji": "go",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ga"
   },
   {
     "id": "hira_za",
     "char": "ざ",
     "romaji": "za",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "za"
   },
   {
     "id": "hira_ji",
     "char": "じ",
     "romaji": "ji",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "za"
   },
   {
     "id": "hira_zu",
     "char": "ず",
     "romaji": "zu",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "za"
   },
   {
     "id": "hira_ze",
     "char": "ぜ",
     "romaji": "ze",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "za"
   },
   {
     "id": "hira_zo",
     "char": "ぞ",
     "romaji": "zo",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "za"
   },
   {
     "id": "hira_da",
     "char": "だ",
     "romaji": "da",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "da"
   },
   {
     "id": "hira_di",
     "char": "ぢ",
     "romaji": "ji",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "da"
   },
   {
     "id": "hira_du",
     "char": "づ",
     "romaji": "zu",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "da"
   },
   {
     "id": "hira_de",
     "char": "で",
     "romaji": "de",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "da"
   },
   {
     "id": "hira_do",
     "char": "ど",
     "romaji": "do",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "da"
   },
   {
     "id": "hira_ba",
     "char": "ば",
     "romaji": "ba",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ba"
   },
   {
     "id": "hira_bi",
     "char": "び",
     "romaji": "bi",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ba"
   },
   {
     "id": "hira_bu",
     "char": "ぶ",
     "romaji": "bu",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ba"
   },
   {
     "id": "hira_be",
     "char": "べ",
     "romaji": "be",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ba"
   },
   {
     "id": "hira_bo",
     "char": "ぼ",
     "romaji": "bo",
-    "type": "hiragana",
+    "type": "dakuon",
     "row": "ba"
   },
   {
     "id": "hira_pa",
     "char": "ぱ",
     "romaji": "pa",
-    "type": "hiragana",
+    "type": "handakuon",
     "row": "pa"
   },
   {
     "id": "hira_pi",
     "char": "ぴ",
     "romaji": "pi",
-    "type": "hiragana",
+    "type": "handakuon",
     "row": "pa"
   },
   {
     "id": "hira_pu",
     "char": "ぷ",
     "romaji": "pu",
-    "type": "hiragana",
+    "type": "handakuon",
     "row": "pa"
   },
   {
     "id": "hira_pe",
     "char": "ぺ",
     "romaji": "pe",
-    "type": "hiragana",
+    "type": "handakuon",
     "row": "pa"
   },
   {
     "id": "hira_po",
     "char": "ぽ",
     "romaji": "po",
-    "type": "hiragana",
+    "type": "handakuon",
     "row": "pa"
   },
   {
     "id": "hira_kya",
     "char": "きゃ",
     "romaji": "kya",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "kya"
   },
   {
     "id": "hira_kyu",
     "char": "きゅ",
     "romaji": "kyu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "kya"
   },
   {
     "id": "hira_kyo",
     "char": "きょ",
     "romaji": "kyo",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "kya"
   },
   {
     "id": "hira_sha",
     "char": "しゃ",
     "romaji": "sha",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "sha"
   },
   {
     "id": "hira_shu",
     "char": "しゅ",
     "romaji": "shu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "sha"
   },
   {
     "id": "hira_sho",
     "char": "しょ",
     "romaji": "sho",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "sha"
   },
   {
     "id": "hira_cha",
     "char": "ちゃ",
     "romaji": "cha",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "cha"
   },
   {
     "id": "hira_chu",
     "char": "ちゅ",
     "romaji": "chu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "cha"
   },
   {
     "id": "hira_cho",
     "char": "ちょ",
     "romaji": "cho",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "cha"
   },
   {
     "id": "hira_nya",
     "char": "にゃ",
     "romaji": "nya",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "nya"
   },
   {
     "id": "hira_nyu",
     "char": "にゅ",
     "romaji": "nyu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "nya"
   },
   {
     "id": "hira_nyo",
     "char": "にょ",
     "romaji": "nyo",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "nya"
   },
   {
     "id": "hira_hya",
     "char": "ひゃ",
     "romaji": "hya",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "hya"
   },
   {
     "id": "hira_hyu",
     "char": "ひゅ",
     "romaji": "hyu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "hya"
   },
   {
     "id": "hira_hyo",
     "char": "ひょ",
     "romaji": "hyo",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "hya"
   },
   {
     "id": "hira_mya",
     "char": "みゃ",
     "romaji": "mya",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "mya"
   },
   {
     "id": "hira_myu",
     "char": "みゅ",
     "romaji": "myu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "mya"
   },
   {
     "id": "hira_myo",
     "char": "みょ",
     "romaji": "myo",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "mya"
   },
   {
     "id": "hira_rya",
     "char": "りゃ",
     "romaji": "rya",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "rya"
   },
   {
     "id": "hira_ryu",
     "char": "りゅ",
     "romaji": "ryu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "rya"
   },
   {
     "id": "hira_ryo",
     "char": "りょ",
     "romaji": "ryo",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "rya"
   },
   {
     "id": "hira_gya",
     "char": "ぎゃ",
     "romaji": "gya",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "gya"
   },
   {
     "id": "hira_gyu",
     "char": "ぎゅ",
     "romaji": "gyu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "gya"
   },
   {
     "id": "hira_gyo",
     "char": "ぎょ",
     "romaji": "gyo",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "gya"
   },
   {
     "id": "hira_ja",
     "char": "じゃ",
     "romaji": "ja",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "ja"
   },
   {
     "id": "hira_ju",
     "char": "じゅ",
     "romaji": "ju",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "ja"
   },
   {
     "id": "hira_jo",
     "char": "じょ",
     "romaji": "jo",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "ja"
   },
   {
     "id": "hira_bya",
     "char": "びゃ",
     "romaji": "bya",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "bya"
   },
   {
     "id": "hira_byu",
     "char": "びゅ",
     "romaji": "byu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "bya"
   },
   {
     "id": "hira_byo",
     "char": "びょ",
     "romaji": "byo",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "bya"
   },
   {
     "id": "hira_pya",
     "char": "ぴゃ",
     "romaji": "pya",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "pya"
   },
   {
     "id": "hira_pyu",
     "char": "ぴゅ",
     "romaji": "pyu",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "pya"
   },
   {
     "id": "hira_pyo",
     "char": "ぴょ",
     "romaji": "pyo",
-    "type": "hiragana",
+    "type": "yoon",
     "row": "pya"
   }
 ]

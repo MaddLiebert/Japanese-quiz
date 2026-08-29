@@ -3,322 +3,322 @@
     "id": "kata_a",
     "char": "ア",
     "romaji": "a",
-    "type": "katakana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "kata_i",
     "char": "イ",
     "romaji": "i",
-    "type": "katakana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "kata_u",
     "char": "ウ",
     "romaji": "u",
-    "type": "katakana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "kata_e",
     "char": "エ",
     "romaji": "e",
-    "type": "katakana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "kata_o",
     "char": "オ",
     "romaji": "o",
-    "type": "katakana",
+    "type": "seion",
     "row": "a"
   },
   {
     "id": "kata_ka",
     "char": "カ",
     "romaji": "ka",
-    "type": "katakana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "kata_ki",
     "char": "キ",
     "romaji": "ki",
-    "type": "katakana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "kata_ku",
     "char": "ク",
     "romaji": "ku",
-    "type": "katakana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "kata_ke",
     "char": "ケ",
     "romaji": "ke",
-    "type": "katakana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "kata_ko",
     "char": "コ",
     "romaji": "ko",
-    "type": "katakana",
+    "type": "seion",
     "row": "ka"
   },
   {
     "id": "kata_sa",
     "char": "サ",
     "romaji": "sa",
-    "type": "katakana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "kata_shi",
     "char": "シ",
     "romaji": "shi",
-    "type": "katakana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "kata_su",
     "char": "ス",
     "romaji": "su",
-    "type": "katakana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "kata_se",
     "char": "セ",
     "romaji": "se",
-    "type": "katakana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "kata_so",
     "char": "ソ",
     "romaji": "so",
-    "type": "katakana",
+    "type": "seion",
     "row": "sa"
   },
   {
     "id": "kata_ta",
     "char": "タ",
     "romaji": "ta",
-    "type": "katakana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "kata_chi",
     "char": "チ",
     "romaji": "chi",
-    "type": "katakana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "kata_tsu",
     "char": "ツ",
     "romaji": "tsu",
-    "type": "katakana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "kata_te",
     "char": "テ",
     "romaji": "te",
-    "type": "katakana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "kata_to",
     "char": "ト",
     "romaji": "to",
-    "type": "katakana",
+    "type": "seion",
     "row": "ta"
   },
   {
     "id": "kata_na",
     "char": "ナ",
     "romaji": "na",
-    "type": "katakana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "kata_ni",
     "char": "ニ",
     "romaji": "ni",
-    "type": "katakana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "kata_nu",
     "char": "ヌ",
     "romaji": "nu",
-    "type": "katakana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "kata_ne",
     "char": "ネ",
     "romaji": "ne",
-    "type": "katakana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "kata_no",
     "char": "ノ",
     "romaji": "no",
-    "type": "katakana",
+    "type": "seion",
     "row": "na"
   },
   {
     "id": "kata_ha",
     "char": "ハ",
     "romaji": "ha",
-    "type": "katakana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "kata_hi",
     "char": "ヒ",
     "romaji": "hi",
-    "type": "katakana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "kata_fu",
     "char": "フ",
     "romaji": "fu",
-    "type": "katakana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "kata_he",
     "char": "ヘ",
     "romaji": "he",
-    "type": "katakana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "kata_ho",
     "char": "ホ",
     "romaji": "ho",
-    "type": "katakana",
+    "type": "seion",
     "row": "ha"
   },
   {
     "id": "kata_ma",
     "char": "マ",
     "romaji": "ma",
-    "type": "katakana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "kata_mi",
     "char": "ミ",
     "romaji": "mi",
-    "type": "katakana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "kata_mu",
     "char": "ム",
     "romaji": "mu",
-    "type": "katakana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "kata_me",
     "char": "メ",
     "romaji": "me",
-    "type": "katakana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "kata_mo",
     "char": "モ",
     "romaji": "mo",
-    "type": "katakana",
+    "type": "seion",
     "row": "ma"
   },
   {
     "id": "kata_ya",
     "char": "ヤ",
     "romaji": "ya",
-    "type": "katakana",
+    "type": "seion",
     "row": "ya"
   },
   {
     "id": "kata_yu",
     "char": "ユ",
     "romaji": "yu",
-    "type": "katakana",
+    "type": "seion",
     "row": "ya"
   },
   {
     "id": "kata_yo",
     "char": "ヨ",
     "romaji": "yo",
-    "type": "katakana",
+    "type": "seion",
     "row": "ya"
   },
   {
     "id": "kata_ra",
     "char": "ラ",
     "romaji": "ra",
-    "type": "katakana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "kata_ri",
     "char": "リ",
     "romaji": "ri",
-    "type": "katakana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "kata_ru",
     "char": "ル",
     "romaji": "ru",
-    "type": "katakana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "kata_re",
     "char": "レ",
     "romaji": "re",
-    "type": "katakana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "kata_ro",
     "char": "ロ",
     "romaji": "ro",
-    "type": "katakana",
+    "type": "seion",
     "row": "ra"
   },
   {
     "id": "kata_wa",
     "char": "ワ",
     "romaji": "wa",
-    "type": "katakana",
+    "type": "seion",
     "row": "wa"
   },
   {
     "id": "kata_wo",
     "char": "ヲ",
     "romaji": "wo",
-    "type": "katakana",
+    "type": "seion",
     "row": "wa"
   },
   {
     "id": "kata_n",
     "char": "ン",
     "romaji": "n",
-    "type": "katakana",
+    "type": "seion",
     "row": "n"
   }
 ]

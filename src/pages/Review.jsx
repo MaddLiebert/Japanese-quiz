@@ -57,8 +57,8 @@ export function Review() {
   useEffect(() => {
     if (isReviewing && currentWeakChar) {
       let pool = [];
-      if (currentWeakChar.type === 'hiragana') pool = hiraganaData;
-      else if (currentWeakChar.type === 'katakana') pool = katakanaData;
+      if (currentWeakChar.id?.startsWith('hira_') || currentWeakChar.type === 'hiragana') pool = hiraganaData;
+      else if (currentWeakChar.id?.startsWith('kata_') || currentWeakChar.type === 'katakana') pool = katakanaData;
       else if (currentWeakChar.type === 'kotoba') pool = kotobaData;
       else if (currentWeakChar.type === 'grammar') pool = grammarData;
       else if (currentWeakChar.type === 'kanji') pool = kanjiData;
@@ -99,7 +99,7 @@ export function Review() {
     }
 
     // For kana, auto-advance. For others, let them click Next.
-    const isKana = currentWeakChar.type === 'hiragana' || currentWeakChar.type === 'katakana';
+    const isKana = currentWeakChar.id?.startsWith('hira_') || currentWeakChar.id?.startsWith('kata_') || currentWeakChar.type === 'hiragana' || currentWeakChar.type === 'katakana' || ['seion', 'dakuon', 'handakuon', 'yoon'].includes(currentWeakChar.type);
 
     if (isKana) {
       timerRef.current = setTimeout(() => {

@@ -44,10 +44,13 @@ function pickDistractors(item, quizPool, optionCount) {
   // Tier 3: if the user's pool is too small, pull from the global dataset
   if (picked.length < needed) {
     const usedIds = new Set([item.id, ...picked.map(d => d.id)]);
-    const globalPool = (GLOBAL_DATA_BY_TYPE[item.type] || []).filter(d => {
+    const targetDataset = item.id?.startsWith('hira_') ? hiraganaData
+      : item.id?.startsWith('kata_') ? katakanaData
+      : GLOBAL_DATA_BY_TYPE[item.type] || [];
+    const globalPool = targetDataset.filter(d => {
       if (usedIds.has(d.id)) return false;
-      // For kana: match the same type and avoid mixing standard vs digraph/dakuten rows
-      if (item.type === 'hiragana' || item.type === 'katakana') {
+      // For kana: match the same type (e.g. seion, dakuon, handakuon, yoon) when possible
+      if (item.id?.startsWith('hira_') || item.id?.startsWith('kata_')) {
         return d.type === item.type;
       }
       // For kotoba/grammar/kanji: match type (already guaranteed by GLOBAL_DATA_BY_TYPE key)
