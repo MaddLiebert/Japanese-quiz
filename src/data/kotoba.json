@@ -6361,5 +6361,1695 @@
     "meaning_id": "Terima kasih (Kasual)",
     "type": "kotoba",
     "category": "PhrasesFinal"
+  },
+  {
+    "id": "v_monosashi",
+    "char": "ものさし",
+    "word": "ものさし",
+    "romaji": "monosashi",
+    "meaning": "Ruler",
+    "meaning_id": "Penggaris",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_jougi",
+    "char": "じょうぎ",
+    "word": "じょうぎ",
+    "romaji": "jougi",
+    "meaning": "Ruler",
+    "meaning_id": "Penggaris",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_shaapupenshiru",
+    "char": "シャープペンシル",
+    "word": "シャープペンシル",
+    "romaji": "shaapupenshiru",
+    "meaning": "Mechanical pencil",
+    "meaning_id": "Pensil Mekanik",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_shaapen",
+    "char": "シャーペン",
+    "word": "シャーペン",
+    "romaji": "shaapen",
+    "meaning": "Mechanical pencil",
+    "meaning_id": "Pensil Mekanik",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_enpitsukezuri",
+    "char": "えんぴつけずり",
+    "word": "えんぴつけずり",
+    "romaji": "enpitsu-kezuri",
+    "meaning": "Pencil sharpener",
+    "meaning_id": "Rautan Pensil",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_maakaapen",
+    "char": "マーカーペン",
+    "word": "マーカーペン",
+    "romaji": "maakaapen",
+    "meaning": "Marker pen / Felt-tip pen",
+    "meaning_id": "Spidol",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_seroteepu",
+    "char": "セロテープ",
+    "word": "セロテープ",
+    "romaji": "seroteepu",
+    "meaning": "Cellophane tape / Scotch tape",
+    "meaning_id": "Selotip",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_nori",
+    "char": "のり",
+    "word": "のり",
+    "romaji": "nori",
+    "meaning": "Glue",
+    "meaning_id": "Lem",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_hocchikisu",
+    "char": "ホッチキス",
+    "word": "ホッチキス",
+    "romaji": "hocchikisu",
+    "meaning": "Stapler",
+    "meaning_id": "Stapler / Hekter",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_kattaa",
+    "char": "カッター",
+    "word": "カッター",
+    "romaji": "kattaa",
+    "meaning": "Cutter knife / Utility knife",
+    "meaning_id": "Pisau Cutter",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_anaakepanchi",
+    "char": "あなあけパンチ",
+    "word": "あなあけパンチ",
+    "romaji": "anaake-panchi",
+    "meaning": "Hole punch",
+    "meaning_id": "Pembolong Kertas",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_shuuseiteepu",
+    "char": "しゅうせいテープ",
+    "word": "しゅうせいテープ",
+    "romaji": "shuusei-teepu",
+    "meaning": "Correction tape",
+    "meaning_id": "Pita Koreksi (Tipe-x)",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_keisanki",
+    "char": "けいさんき",
+    "word": "けいさんき",
+    "romaji": "keisanki",
+    "meaning": "Calculator",
+    "meaning_id": "Kalkulator / Mesin Hitung",
+    "type": "kotoba",
+    "category": "Objects"
+  },
+  {
+    "id": "v_karitemoiidesuka",
+    "char": "かりてもいいですか",
+    "word": "かりてもいいですか",
+    "romaji": "karitemo ii desuka",
+    "meaning": "May I borrow...?",
+    "meaning_id": "Bolehkah meminjam...?",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_tsukatteimasu",
+    "char": "つかっています",
+    "word": "つかっています",
+    "romaji": "tsukatteimasu",
+    "meaning": "Currently using / In use",
+    "meaning_id": "Sedang dipakai",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_kokuban",
+    "char": "こくばん",
+    "word": "こくばん",
+    "romaji": "kokuban",
+    "meaning": "Blackboard",
+    "meaning_id": "Papan Tulis Hitam",
+    "type": "kotoba",
+    "category": "Classroom"
+  },
+  {
+    "id": "v_howaitoboodo",
+    "char": "ホワイトボード",
+    "word": "ホワイトボード",
+    "romaji": "howaito boodo",
+    "meaning": "Whiteboard",
+    "meaning_id": "Papan Tulis Putih",
+    "type": "kotoba",
+    "category": "Classroom"
+  },
+  {
+    "id": "v_kokubankeshi",
+    "char": "こくばんけし",
+    "word": "こくばんけし",
+    "romaji": "kokuban keshi",
+    "meaning": "Blackboard eraser",
+    "meaning_id": "Penghapus Papan Tulis",
+    "type": "kotoba",
+    "category": "Classroom"
+  },
+  {
+    "id": "v_chooku",
+    "char": "チョーク",
+    "word": "チョーク",
+    "romaji": "chooku",
+    "meaning": "Chalk",
+    "meaning_id": "Kapur Tulis",
+    "type": "kotoba",
+    "category": "Classroom"
+  },
+  {
+    "id": "v_purojekutaa",
+    "char": "プロジェクター",
+    "word": "プロジェクター",
+    "romaji": "purojekutaa",
+    "meaning": "Projector",
+    "meaning_id": "Proyektor",
+    "type": "kotoba",
+    "category": "Classroom"
+  },
+  {
+    "id": "v_dentou",
+    "char": "でんとう",
+    "word": "でんとう",
+    "romaji": "dentou",
+    "meaning": "Electric light / Lamp",
+    "meaning_id": "Lampu Listrik",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_kabin",
+    "char": "かびん",
+    "word": "かびん",
+    "romaji": "kabin",
+    "meaning": "Flower vase",
+    "meaning_id": "Vas Bunga",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_chikyuugi",
+    "char": "ちきゅうぎ",
+    "word": "ちきゅうぎ",
+    "romaji": "chikyuugi",
+    "meaning": "Globe",
+    "meaning_id": "Bola Dunia (Globe)",
+    "type": "kotoba",
+    "category": "Classroom"
+  },
+  {
+    "id": "v_tana",
+    "char": "たな",
+    "word": "たな",
+    "romaji": "tana",
+    "meaning": "Shelf / Rack",
+    "meaning_id": "Rak / Lemari",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_houki",
+    "char": "ほうき",
+    "word": "ほうき",
+    "romaji": "houki",
+    "meaning": "Broom",
+    "meaning_id": "Sapu",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_chiritori",
+    "char": "ちりとり",
+    "word": "ちりとり",
+    "romaji": "chiritori",
+    "meaning": "Dustpan",
+    "meaning_id": "Pengki / Serokan Sampah",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_moppu",
+    "char": "モップ",
+    "word": "モップ",
+    "romaji": "moppu",
+    "meaning": "Mop",
+    "meaning_id": "Pel",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_zoukin",
+    "char": "ぞうきん",
+    "word": "ぞうきん",
+    "romaji": "zoukin",
+    "meaning": "Cleaning rag / Dustcloth",
+    "meaning_id": "Kain Lap",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_baketsu",
+    "char": "バケツ",
+    "word": "バケツ",
+    "romaji": "baketsu",
+    "meaning": "Bucket / Pail",
+    "meaning_id": "Ember",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_kouchoushitsu",
+    "char": "こうちょうしつ",
+    "word": "こうちょうしつ",
+    "romaji": "kouchoushitsu",
+    "meaning": "Principal's office",
+    "meaning_id": "Ruang Kepala Sekolah",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_shokuinshitsu",
+    "char": "しょくいんしつ",
+    "word": "しょくいんしつ",
+    "romaji": "shokuinshitsu",
+    "meaning": "Staff room / Teachers' room",
+    "meaning_id": "Ruang Guru / Staf",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_hokenshitsu",
+    "char": "ほけんしつ",
+    "word": "ほけんしつ",
+    "romaji": "hokenshitsu",
+    "meaning": "School infirmary / Nurse's office",
+    "meaning_id": "Ruang UKS",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_toshoshitsu",
+    "char": "としょしつ",
+    "word": "としょしつ",
+    "romaji": "toshoshitsu",
+    "meaning": "Library room (in school)",
+    "meaning_id": "Ruang Perpustakaan",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_jimushitsu",
+    "char": "じむしつ",
+    "word": "じむしつ",
+    "romaji": "jimushitsu",
+    "meaning": "Administrative office",
+    "meaning_id": "Ruang Tata Usaha",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_soudanshitsu",
+    "char": "そうだんしつ",
+    "word": "そうだんしつ",
+    "romaji": "soudanshitsu",
+    "meaning": "Counseling room",
+    "meaning_id": "Ruang Konseling (BK)",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_ongakushitsu",
+    "char": "おんがくしつ",
+    "word": "おんがくしつ",
+    "romaji": "ongakushitsu",
+    "meaning": "Music room",
+    "meaning_id": "Ruang Musik",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_bijutsushitsu",
+    "char": "びじゅつしつ",
+    "word": "びじゅつしつ",
+    "romaji": "bijutsushitsu",
+    "meaning": "Art room",
+    "meaning_id": "Ruang Seni",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_konpyuutaashitsu",
+    "char": "コンピューターしつ",
+    "word": "コンピューターしつ",
+    "romaji": "konpyuutaashitsu",
+    "meaning": "Computer room / lab",
+    "meaning_id": "Ruang Komputer",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_undoujou",
+    "char": "うんどうじょう",
+    "word": "うんどうじょう",
+    "romaji": "undoujou",
+    "meaning": "Athletic field / Sports ground",
+    "meaning_id": "Lapangan Olahraga",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_rouka",
+    "char": "ろうか",
+    "word": "ろうか",
+    "romaji": "rouka",
+    "meaning": "Corridor / Hallway",
+    "meaning_id": "Koridor / Lorong",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_koudou",
+    "char": "こうどう",
+    "word": "こうどう",
+    "romaji": "koudou",
+    "meaning": "Auditorium / Assembly hall",
+    "meaning_id": "Aula / Auditorium",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_koutei",
+    "char": "こうてい",
+    "word": "こうてい",
+    "romaji": "koutei",
+    "meaning": "Schoolyard / School grounds",
+    "meaning_id": "Halaman Sekolah",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_sumi",
+    "char": "すみ",
+    "word": "すみ",
+    "romaji": "sumi",
+    "meaning": "Corner (interior / indoor corner)",
+    "meaning_id": "Pojok / Sudut",
+    "type": "kotoba",
+    "category": "Positions"
+  },
+  {
+    "id": "v_shirabemasu",
+    "char": "しらべます",
+    "word": "しらべます",
+    "romaji": "shirabemasu",
+    "meaning": "To investigate / check / survey",
+    "meaning_id": "Menyelidiki / Menyurvei",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_nangatsu",
+    "char": "なんがつ",
+    "word": "なんがつ",
+    "romaji": "nangatsu",
+    "meaning": "What month",
+    "meaning_id": "Bulan apa",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_juuichinichi",
+    "char": "じゅういちにち",
+    "word": "じゅういちにち",
+    "romaji": "juuichinichi",
+    "meaning": "11th day of the month",
+    "meaning_id": "Tanggal 11",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_juuninichi",
+    "char": "じゅうににち",
+    "word": "じゅうににち",
+    "romaji": "juuninichi",
+    "meaning": "12th day of the month",
+    "meaning_id": "Tanggal 12",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_juusannichi",
+    "char": "じゅうさんにち",
+    "word": "じゅうさんにち",
+    "romaji": "juusannichi",
+    "meaning": "13th day of the month",
+    "meaning_id": "Tanggal 13",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_juugonichi",
+    "char": "じゅうごにち",
+    "word": "じゅうごにち",
+    "romaji": "juugonichi",
+    "meaning": "15th day of the month",
+    "meaning_id": "Tanggal 15",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_juurokunichi",
+    "char": "じゅうろくにち",
+    "word": "じゅうろくにち",
+    "romaji": "juurokunichi",
+    "meaning": "16th day of the month",
+    "meaning_id": "Tanggal 16",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_juushichinichi",
+    "char": "じゅうしちにち",
+    "word": "じゅうしちにち",
+    "romaji": "juushichinichi",
+    "meaning": "17th day of the month",
+    "meaning_id": "Tanggal 17",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_juuhachinichi",
+    "char": "じゅうはちにち",
+    "word": "じゅうはちにち",
+    "romaji": "juuhachinichi",
+    "meaning": "18th day of the month",
+    "meaning_id": "Tanggal 18",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_juukunichi",
+    "char": "じゅうくにち",
+    "word": "じゅうくにち",
+    "romaji": "juukunichi",
+    "meaning": "19th day of the month",
+    "meaning_id": "Tanggal 19",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nijuuichinichi",
+    "char": "にじゅういちにち",
+    "word": "にじゅういちにち",
+    "romaji": "nijuuichinichi",
+    "meaning": "21st day of the month",
+    "meaning_id": "Tanggal 21",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nijuuninichi",
+    "char": "にじゅうににち",
+    "word": "にじゅうににち",
+    "romaji": "nijuuninichi",
+    "meaning": "22nd day of the month",
+    "meaning_id": "Tanggal 22",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nijuusannichi",
+    "char": "にじゅうさんにち",
+    "word": "にじゅうさんにち",
+    "romaji": "nijuusannichi",
+    "meaning": "23rd day of the month",
+    "meaning_id": "Tanggal 23",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nijuugonichi",
+    "char": "にじゅうごにち",
+    "word": "にじゅうごにち",
+    "romaji": "nijuugonichi",
+    "meaning": "25th day of the month",
+    "meaning_id": "Tanggal 25",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nijuurokunichi",
+    "char": "にじゅうろくにち",
+    "word": "にじゅうろくにち",
+    "romaji": "nijuurokunichi",
+    "meaning": "26th day of the month",
+    "meaning_id": "Tanggal 26",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nijuushichinichi",
+    "char": "にじゅうしちにち",
+    "word": "にじゅうしちにち",
+    "romaji": "nijuushichinichi",
+    "meaning": "27th day of the month",
+    "meaning_id": "Tanggal 27",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nijuuhachinichi",
+    "char": "にじゅうはちにち",
+    "word": "にじゅうはちにち",
+    "romaji": "nijuuhachinichi",
+    "meaning": "28th day of the month",
+    "meaning_id": "Tanggal 28",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nijuukunichi",
+    "char": "にじゅうくにち",
+    "word": "にじゅうくにち",
+    "romaji": "nijuukunichi",
+    "meaning": "29th day of the month",
+    "meaning_id": "Tanggal 29",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_sanjuunichi",
+    "char": "さんじゅうにち",
+    "word": "さんじゅうにち",
+    "romaji": "sanjuunichi",
+    "meaning": "30th day of the month",
+    "meaning_id": "Tanggal 30",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_sanjuuichinichi",
+    "char": "さんじゅういちにち",
+    "word": "さんじゅういちにち",
+    "romaji": "sanjuuichinichi",
+    "meaning": "31st day of the month",
+    "meaning_id": "Tanggal 31",
+    "type": "kotoba",
+    "category": "Dates"
+  },
+  {
+    "id": "v_nannichi",
+    "char": "なんにち",
+    "word": "なんにち",
+    "romaji": "nannichi",
+    "meaning": "What day of the month / which date",
+    "meaning_id": "Tanggal berapa",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_nanyoubi",
+    "char": "なんようび",
+    "word": "なんようび",
+    "romaji": "nanyoubi",
+    "meaning": "What day of the week",
+    "meaning_id": "Hari apa",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_kengakuryokou",
+    "char": "けんがくりょこう",
+    "word": "けんがくりょこう",
+    "romaji": "kengaku ryokou",
+    "meaning": "Study tour / Field trip",
+    "meaning_id": "Karyawisata / Study Tour",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_supiichikontesuto",
+    "char": "スピーチコンテスト",
+    "word": "スピーチコンテスト",
+    "romaji": "supiichi kontesuto",
+    "meaning": "Speech contest",
+    "meaning_id": "Lomba Pidato",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_chuukanshiken",
+    "char": "ちゅうかんしけん",
+    "word": "ちゅうかんしけん",
+    "romaji": "chuukan shiken",
+    "meaning": "Midterm examination",
+    "meaning_id": "Ujian Tengah Semester (UTS)",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_kimatsushiken",
+    "char": "きまつしけん",
+    "word": "きまつしけん",
+    "romaji": "kimatsu shiken",
+    "meaning": "Final examination",
+    "meaning_id": "Ujian Akhir Semester (UAS)",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_jitsugishiken",
+    "char": "じつぎしけん",
+    "word": "じつぎしけん",
+    "romaji": "jitsugi shiken",
+    "meaning": "Practical examination",
+    "meaning_id": "Ujian Praktik",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_bunkasai",
+    "char": "ぶんかさい",
+    "word": "ぶんかさい",
+    "romaji": "bunkasai",
+    "meaning": "Cultural festival",
+    "meaning_id": "Festival Budaya",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_kokkikeiyoushiki",
+    "char": "こっきけいようしき",
+    "word": "こっきけいようしき",
+    "romaji": "kokki keiyoushiki",
+    "meaning": "Flag-raising ceremony",
+    "meaning_id": "Upacara Bendera",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_sotsugyoushiki",
+    "char": "そつぎょうしき",
+    "word": "そつぎょうしき",
+    "romaji": "sotsugyoushiki",
+    "meaning": "Graduation ceremony",
+    "meaning_id": "Upacara Kelulusan",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_kyoushinohi",
+    "char": "きょうしのひ",
+    "word": "きょうしのひ",
+    "romaji": "kyoushi no hi",
+    "meaning": "Teachers' Day",
+    "meaning_id": "Hari Guru",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_kaishahoumon",
+    "char": "かいしゃほうもん",
+    "word": "かいしゃほうもん",
+    "romaji": "kaisha houmon",
+    "meaning": "Company visit / Factory tour",
+    "meaning_id": "Kunjungan Perusahaan / Industri",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_seisekiomorau",
+    "char": "せいせきをもらう",
+    "word": "せいせきをもらう",
+    "romaji": "seiseki o morau",
+    "meaning": "To receive report card / grades",
+    "meaning_id": "Menerima Rapor / Nilai",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_taiikusai",
+    "char": "たいいくさい",
+    "word": "たいいくさい",
+    "romaji": "taiikusai",
+    "meaning": "Sports festival / Sports day",
+    "meaning_id": "Festival Olahraga (Porseni)",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_gakkounosoujinohi",
+    "char": "がっこうのそうじのひ",
+    "word": "がっこうのそうじのひ",
+    "romaji": "gakkou no souji no hi",
+    "meaning": "School cleaning day",
+    "meaning_id": "Hari Bersih-bersih Sekolah",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_ichigakki",
+    "char": "いちがっき",
+    "word": "いちがっき",
+    "romaji": "ichigakki",
+    "meaning": "First semester / Term 1",
+    "meaning_id": "Semester 1",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_nigakki",
+    "char": "にがっき",
+    "word": "にがっき",
+    "romaji": "nigakki",
+    "meaning": "Second semester / Term 2",
+    "meaning_id": "Semester 2",
+    "type": "kotoba",
+    "category": "School"
+  },
+  {
+    "id": "v_ichiji",
+    "char": "いちじ",
+    "word": "いちじ",
+    "romaji": "ichiji",
+    "meaning": "1 o'clock",
+    "meaning_id": "Jam 1",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_niji",
+    "char": "にじ",
+    "word": "にじ",
+    "romaji": "niji",
+    "meaning": "2 o'clock",
+    "meaning_id": "Jam 2",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_sanji",
+    "char": "さんじ",
+    "word": "さんじ",
+    "romaji": "sanji",
+    "meaning": "3 o'clock",
+    "meaning_id": "Jam 3",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_yoji",
+    "char": "よじ",
+    "word": "よじ",
+    "romaji": "yoji",
+    "meaning": "4 o'clock",
+    "meaning_id": "Jam 4",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_goji",
+    "char": "ごじ",
+    "word": "ごじ",
+    "romaji": "goji",
+    "meaning": "5 o'clock",
+    "meaning_id": "Jam 5",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_rokuji",
+    "char": "ろくじ",
+    "word": "ろくじ",
+    "romaji": "rokuji",
+    "meaning": "6 o'clock",
+    "meaning_id": "Jam 6",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_shichiji",
+    "char": "しちじ",
+    "word": "しちじ",
+    "romaji": "shichiji",
+    "meaning": "7 o'clock",
+    "meaning_id": "Jam 7",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_hachiji",
+    "char": "はちじ",
+    "word": "はちじ",
+    "romaji": "hachiji",
+    "meaning": "8 o'clock",
+    "meaning_id": "Jam 8",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_kuji",
+    "char": "くじ",
+    "word": "くじ",
+    "romaji": "kuji",
+    "meaning": "9 o'clock",
+    "meaning_id": "Jam 9",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_juuji",
+    "char": "じゅうじ",
+    "word": "じゅうじ",
+    "romaji": "juuji",
+    "meaning": "10 o'clock",
+    "meaning_id": "Jam 10",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_juuichiji",
+    "char": "じゅういちじ",
+    "word": "じゅういちじ",
+    "romaji": "juuichiji",
+    "meaning": "11 o'clock",
+    "meaning_id": "Jam 11",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_juuniji",
+    "char": "じゅうにじ",
+    "word": "じゅうにじ",
+    "romaji": "juuniji",
+    "meaning": "12 o'clock",
+    "meaning_id": "Jam 12",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_nanji",
+    "char": "なんじ",
+    "word": "なんじ",
+    "romaji": "nanji",
+    "meaning": "What time",
+    "meaning_id": "Jam berapa",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_ippun",
+    "char": "いっぷん",
+    "word": "いっぷん",
+    "romaji": "ippun",
+    "meaning": "1 minute",
+    "meaning_id": "1 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_nifun",
+    "char": "にふん",
+    "word": "にふん",
+    "romaji": "nifun",
+    "meaning": "2 minutes",
+    "meaning_id": "2 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_sanpun",
+    "char": "さんぷん",
+    "word": "さんぷん",
+    "romaji": "sanpun",
+    "meaning": "3 minutes",
+    "meaning_id": "3 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_yonpun",
+    "char": "よんぷん",
+    "word": "よんぷん",
+    "romaji": "yonpun",
+    "meaning": "4 minutes",
+    "meaning_id": "4 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_gofun",
+    "char": "ごふん",
+    "word": "ごふん",
+    "romaji": "gofun",
+    "meaning": "5 minutes",
+    "meaning_id": "5 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_roppun",
+    "char": "ろっぷん",
+    "word": "ろっぷん",
+    "romaji": "roppun",
+    "meaning": "6 minutes",
+    "meaning_id": "6 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_nanafun",
+    "char": "ななふん",
+    "word": "ななふん",
+    "romaji": "nanafun",
+    "meaning": "7 minutes",
+    "meaning_id": "7 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_happun",
+    "char": "はっぷん",
+    "word": "はっぷん",
+    "romaji": "happun",
+    "meaning": "8 minutes",
+    "meaning_id": "8 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_kyuufun",
+    "char": "きゅうふん",
+    "word": "きゅうふん",
+    "romaji": "kyuufun",
+    "meaning": "9 minutes",
+    "meaning_id": "9 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_juppun",
+    "char": "じゅっぷん",
+    "word": "じゅっぷん",
+    "romaji": "juppun",
+    "meaning": "10 minutes",
+    "meaning_id": "10 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_juuippun",
+    "char": "じゅういっぷん",
+    "word": "じゅういっぷん",
+    "romaji": "juuippun",
+    "meaning": "11 minutes",
+    "meaning_id": "11 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_juugofun",
+    "char": "じゅうごふん",
+    "word": "じゅうごふん",
+    "romaji": "juugofun",
+    "meaning": "15 minutes",
+    "meaning_id": "15 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_juuroppun",
+    "char": "じゅうろっぷん",
+    "word": "じゅうろっぷん",
+    "romaji": "juuroppun",
+    "meaning": "16 minutes",
+    "meaning_id": "16 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_nijuppun",
+    "char": "にじゅっぷん",
+    "word": "にじゅっぷん",
+    "romaji": "nijuppun",
+    "meaning": "20 minutes",
+    "meaning_id": "20 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_nijuugofun",
+    "char": "にじゅうごふん",
+    "word": "にじゅうごふん",
+    "romaji": "nijuugofun",
+    "meaning": "25 minutes",
+    "meaning_id": "25 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_sanjuppun",
+    "char": "さんじゅっぷん",
+    "word": "さんじゅっぷん",
+    "romaji": "sanjuppun",
+    "meaning": "30 minutes",
+    "meaning_id": "30 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_sanjuugofun",
+    "char": "さんじゅうごふん",
+    "word": "さんじゅうごふん",
+    "romaji": "sanjuugofun",
+    "meaning": "35 minutes",
+    "meaning_id": "35 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_yonjuppun",
+    "char": "よんじゅっぷん",
+    "word": "よんじゅっぷん",
+    "romaji": "yonjuppun",
+    "meaning": "40 minutes",
+    "meaning_id": "40 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_yonjuugofun",
+    "char": "よんじゅうごふん",
+    "word": "よんじゅうごふん",
+    "romaji": "yonjuugofun",
+    "meaning": "45 minutes",
+    "meaning_id": "45 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_gojuppun",
+    "char": "ごじゅっぷん",
+    "word": "ごじゅっぷん",
+    "romaji": "gojuppun",
+    "meaning": "50 minutes",
+    "meaning_id": "50 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_gojuugofun",
+    "char": "ごじゅうごふん",
+    "word": "ごじゅうごふん",
+    "romaji": "gojuugofun",
+    "meaning": "55 minutes",
+    "meaning_id": "55 Menit",
+    "type": "kotoba",
+    "category": "TimeDuration"
+  },
+  {
+    "id": "v_nanpun",
+    "char": "なんぷん",
+    "word": "なんぷん",
+    "romaji": "nanpun",
+    "meaning": "How many minutes",
+    "meaning_id": "Berapa Menit",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_gozen",
+    "char": "ごぜん",
+    "word": "ごぜん",
+    "romaji": "gozen",
+    "meaning": "Morning / A.M.",
+    "meaning_id": "Pagi (A.M.)",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_gogo",
+    "char": "ごご",
+    "word": "ごご",
+    "romaji": "gogo",
+    "meaning": "Afternoon / P.M.",
+    "meaning_id": "Sore / Malam (P.M.)",
+    "type": "kotoba",
+    "category": "Time"
+  },
+  {
+    "id": "v_hokkaidou",
+    "char": "ほっかいどう",
+    "word": "ほっかいどう",
+    "romaji": "hokkaidou",
+    "meaning": "Hokkaido",
+    "meaning_id": "Hokkaido",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_toukyou",
+    "char": "とうきょう",
+    "word": "とうきょう",
+    "romaji": "toukyou",
+    "meaning": "Tokyo",
+    "meaning_id": "Tokyo",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_budapesuto",
+    "char": "ブダペスト",
+    "word": "ブダペスト",
+    "romaji": "budapesuto",
+    "meaning": "Budapest",
+    "meaning_id": "Budapest",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_seouru",
+    "char": "ソウル",
+    "word": "ソウル",
+    "romaji": "seouru",
+    "meaning": "Seoul",
+    "meaning_id": "Seoul",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_nyuuderii",
+    "char": "ニューデリー",
+    "word": "ニューデリー",
+    "romaji": "nyuuderii",
+    "meaning": "New Delhi",
+    "meaning_id": "New Delhi",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_jakaruta",
+    "char": "ジャカルタ",
+    "word": "ジャカルタ",
+    "romaji": "jakaruta",
+    "meaning": "Jakarta",
+    "meaning_id": "Jakarta",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_bandon",
+    "char": "バンドン",
+    "word": "バンドン",
+    "romaji": "bandon",
+    "meaning": "Bandung",
+    "meaning_id": "Bandung",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_kuararunpuuru",
+    "char": "クアラルンプール",
+    "word": "クアラルンプール",
+    "romaji": "kuararunpuuru",
+    "meaning": "Kuala Lumpur",
+    "meaning_id": "Kuala Lumpur",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_shingapooru",
+    "char": "シンガポール",
+    "word": "シンガポール",
+    "romaji": "shingapooru",
+    "meaning": "Singapore",
+    "meaning_id": "Singapura",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_pekin",
+    "char": "ペキン",
+    "word": "ペキン",
+    "romaji": "pekin",
+    "meaning": "Beijing",
+    "meaning_id": "Beijing",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_bankoku",
+    "char": "バンコク",
+    "word": "バンコク",
+    "romaji": "bankoku",
+    "meaning": "Bangkok",
+    "meaning_id": "Bangkok",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_risubon",
+    "char": "リスボン",
+    "word": "リスボン",
+    "romaji": "risubon",
+    "meaning": "Lisbon",
+    "meaning_id": "Lisbon",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_kairo",
+    "char": "カイロ",
+    "word": "カイロ",
+    "romaji": "kairo",
+    "meaning": "Cairo",
+    "meaning_id": "Kairo",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_mosukuwa",
+    "char": "モスクワ",
+    "word": "モスクワ",
+    "romaji": "mosukuwa",
+    "meaning": "Moscow",
+    "meaning_id": "Moskow",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_rondon",
+    "char": "ロンドン",
+    "word": "ロンドン",
+    "romaji": "rondon",
+    "meaning": "London",
+    "meaning_id": "London",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_rooma",
+    "char": "ローマ",
+    "word": "ローマ",
+    "romaji": "rooma",
+    "meaning": "Rome",
+    "meaning_id": "Roma",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_nairobi",
+    "char": "ナイロビ",
+    "word": "ナイロビ",
+    "romaji": "nairobi",
+    "meaning": "Nairobi",
+    "meaning_id": "Nairobi",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_berurin",
+    "char": "ベルリン",
+    "word": "ベルリン",
+    "romaji": "berurin",
+    "meaning": "Berlin",
+    "meaning_id": "Berlin",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_baruserona",
+    "char": "バルセロナ",
+    "word": "バルセロナ",
+    "romaji": "baruserona",
+    "meaning": "Barcelona",
+    "meaning_id": "Barcelona",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_manchesutaa",
+    "char": "マンチェスター",
+    "word": "マンチェスター",
+    "romaji": "manchesutaa",
+    "meaning": "Manchester",
+    "meaning_id": "Manchester",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_madoriido",
+    "char": "マドリード",
+    "word": "マドリード",
+    "romaji": "madoriido",
+    "meaning": "Madrid",
+    "meaning_id": "Madrid",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_sanpauro",
+    "char": "サンパウロ",
+    "word": "サンパウロ",
+    "romaji": "sanpauro",
+    "meaning": "Sao Paulo",
+    "meaning_id": "Sao Paulo",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_isutanbuuru",
+    "char": "イスタンブール",
+    "word": "イスタンブール",
+    "romaji": "isutanbuuru",
+    "meaning": "Istanbul",
+    "meaning_id": "Istanbul",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_dobai",
+    "char": "ドバイ",
+    "word": "ドバイ",
+    "romaji": "dobai",
+    "meaning": "Dubai",
+    "meaning_id": "Dubai",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_nyuuyooku",
+    "char": "ニューヨーク",
+    "word": "ニューヨーク",
+    "romaji": "nyuuyooku",
+    "meaning": "New York",
+    "meaning_id": "New York",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_buenosuairesu",
+    "char": "ブエノスアイレス",
+    "word": "ブエノスアイレス",
+    "romaji": "buenosuairesu",
+    "meaning": "Buenos Aires",
+    "meaning_id": "Buenos Aires",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_honoruru",
+    "char": "ホノルル",
+    "word": "ホノルル",
+    "romaji": "honoruru",
+    "meaning": "Honolulu",
+    "meaning_id": "Honolulu",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_shidonii",
+    "char": "シドニー",
+    "word": "シドニー",
+    "romaji": "shidonii",
+    "meaning": "Sydney",
+    "meaning_id": "Sydney",
+    "type": "kotoba",
+    "category": "PlacesTourism"
+  },
+  {
+    "id": "v_ootobaiku",
+    "char": "オートバイ",
+    "word": "オートバイ",
+    "romaji": "ootobaiku",
+    "meaning": "Motorcycle / Motorbike",
+    "meaning_id": "Sepeda Motor",
+    "type": "kotoba",
+    "category": "Transport"
+  },
+  {
+    "id": "v_aruiteikimasu",
+    "char": "あるいていきます",
+    "word": "あるいていきます",
+    "romaji": "aruite ikimasu",
+    "meaning": "To walk / go on foot",
+    "meaning_id": "Pergi Jalan Kaki",
+    "type": "kotoba",
+    "category": "VerbsAction"
+  },
+  {
+    "id": "v_donogurai",
+    "char": "どのぐらい",
+    "word": "どのぐらい",
+    "romaji": "dono gurai",
+    "meaning": "About how long / how much",
+    "meaning_id": "Berapa lama / Berapa banyak",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_douyatte",
+    "char": "どうやって",
+    "word": "どうやって",
+    "romaji": "douyatte",
+    "meaning": "How / In what way",
+    "meaning_id": "Bagaimana caranya",
+    "type": "kotoba",
+    "category": "Questions"
+  },
+  {
+    "id": "v_taihendesune",
+    "char": "たいへんですね",
+    "word": "たいへんですね",
+    "romaji": "taihen desu ne",
+    "meaning": "That's tough / That sounds difficult",
+    "meaning_id": "Berat ya / Repot ya",
+    "type": "kotoba",
+    "category": "Phrases"
+  },
+  {
+    "id": "v_benkyoushimasu",
+    "char": "べんきょうします",
+    "word": "べんきょうします",
+    "romaji": "benkyoushimasu",
+    "meaning": "To study",
+    "meaning_id": "Belajar",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_supootsuoshimasu",
+    "char": "スポーツをします",
+    "word": "スポーツをします",
+    "romaji": "supootsu o shimasu",
+    "meaning": "To play sports",
+    "meaning_id": "Berolahraga",
+    "type": "kotoba",
+    "category": "Verbs"
+  },
+  {
+    "id": "v_bideo",
+    "char": "ビデオ",
+    "word": "ビデオ",
+    "romaji": "bideo",
+    "meaning": "Video",
+    "meaning_id": "Video",
+    "type": "kotoba",
+    "category": "Entertainment"
+  },
+  {
+    "id": "v_ebi",
+    "char": "エビ",
+    "word": "エビ",
+    "romaji": "ebi",
+    "meaning": "Shrimp / Prawn",
+    "meaning_id": "Udang",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_tabemono",
+    "char": "たべもの",
+    "word": "たべもの",
+    "romaji": "tabemono",
+    "meaning": "Food",
+    "meaning_id": "Makanan",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_nomimono",
+    "char": "のみもの",
+    "word": "のみもの",
+    "romaji": "nomimono",
+    "meaning": "Beverage / Drink",
+    "meaning_id": "Minuman",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_budou",
+    "char": "ぶどう",
+    "word": "ぶどう",
+    "romaji": "budou",
+    "meaning": "Grapes",
+    "meaning_id": "Anggur",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_suika",
+    "char": "すいか",
+    "word": "すいか",
+    "romaji": "suika",
+    "meaning": "Watermelon",
+    "meaning_id": "Semangka",
+    "type": "kotoba",
+    "category": "Food"
+  },
+  {
+    "id": "v_supuun",
+    "char": "スプーン",
+    "word": "スプーン",
+    "romaji": "supuun",
+    "meaning": "Spoon",
+    "meaning_id": "Sendok",
+    "type": "kotoba",
+    "category": "Dining"
+  },
+  {
+    "id": "v_uchi",
+    "char": "うち",
+    "word": "うち",
+    "romaji": "uchi",
+    "meaning": "Home / House",
+    "meaning_id": "Rumah",
+    "type": "kotoba",
+    "category": "House"
+  },
+  {
+    "id": "v_konbini",
+    "char": "コンビニ",
+    "word": "コンビニ",
+    "romaji": "konbini",
+    "meaning": "Convenience store",
+    "meaning_id": "Minimarket (Konbini)",
+    "type": "kotoba",
+    "category": "Places"
+  },
+  {
+    "id": "v_koujou",
+    "char": "こうじょう",
+    "word": "こうじょう",
+    "romaji": "koujou",
+    "meaning": "Factory / Plant",
+    "meaning_id": "Pabrik",
+    "type": "kotoba",
+    "category": "Places"
+  },
+  {
+    "id": "v_suupaa",
+    "char": "スーパー",
+    "word": "スーパー",
+    "romaji": "suupaa",
+    "meaning": "Supermarket",
+    "meaning_id": "Supermarket",
+    "type": "kotoba",
+    "category": "Places"
+  },
+  {
+    "id": "v_ichiba",
+    "char": "いちば",
+    "word": "いちば",
+    "romaji": "ichiba",
+    "meaning": "Market / Marketplace",
+    "meaning_id": "Pasar",
+    "type": "kotoba",
+    "category": "Places"
+  },
+  {
+    "id": "v_honya",
+    "char": "ほんや",
+    "word": "ほんや",
+    "romaji": "honya",
+    "meaning": "Bookstore / Bookshop",
+    "meaning_id": "Toko Buku",
+    "type": "kotoba",
+    "category": "Places"
+  },
+  {
+    "id": "v_hanaya",
+    "char": "はなや",
+    "word": "はなや",
+    "romaji": "hanaya",
+    "meaning": "Flower shop / Florist",
+    "meaning_id": "Toko Bunga",
+    "type": "kotoba",
+    "category": "Places"
+  },
+  {
+    "id": "v_kissaten",
+    "char": "きっさてん",
+    "word": "きっさてん",
+    "romaji": "kissaten",
+    "meaning": "Coffee shop / Cafe / Tea room",
+    "meaning_id": "Kafe / Kedai Kopi",
+    "type": "kotoba",
+    "category": "Places"
+  },
+  {
+    "id": "v_dokomo",
+    "char": "どこも",
+    "word": "どこも",
+    "romaji": "dokomo",
+    "meaning": "Anywhere / Nowhere (with neg.)",
+    "meaning_id": "Ke mana pun (tidak ke mana-mana)",
+    "type": "kotoba",
+    "category": "PronounsExt"
+  },
+  {
+    "id": "v_repooto",
+    "char": "レポート",
+    "word": "レポート",
+    "romaji": "repooto",
+    "meaning": "Report / Paper",
+    "meaning_id": "Laporan",
+    "type": "kotoba",
+    "category": "School"
   }
 ]
