@@ -120,6 +120,7 @@ export function Practice() {
   const [difficulty, setDifficulty] = useState('Medium');
   const [quizStarted, setQuizStarted] = useState(false);
   const [activeKanaType, setActiveKanaType] = useState('hiragana');
+  const [activeKanaSubtype, setActiveKanaSubtype] = useState('all');
   const [mixedPools, setMixedPools] = useState(['hiragana', 'katakana', 'kotoba', 'grammar', 'kanji']);
   const navigate = useNavigate();
   const timerRef = useRef(null);
@@ -148,7 +149,11 @@ export function Practice() {
           : kotobaData;
 
 
-
+  const filteredData = activeData.filter(item => {
+    if (activeKanaType !== 'hiragana' && activeKanaType !== 'katakana') return true;
+    if (activeKanaSubtype === 'all') return true;
+    return item.type === activeKanaSubtype;
+  });
   const {
     initializeQuiz,
     currentQuestion,
@@ -199,13 +204,14 @@ export function Practice() {
   };
 
   const allRows = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
-    ? [...new Set(activeData.map(item => item.category))]
-    : [...new Set(activeData.map(item => item.row))];
+    ? [...new Set(filteredData.map(item => item.category))]
+    : [...new Set(filteredData.map(item => item.row))];
   const difficulties = ['Easy', 'Medium', 'Hard'];
 
   const handleKanaTypeChange = (type) => {
     setActiveKanaType(type);
     setSelectedRows([]); // reset selection when switching type
+    setActiveKanaSubtype('all');
   };
 
   const toggleRow = (row) => {
@@ -242,8 +248,8 @@ export function Practice() {
       initializeQuiz({ mode: 'mixed', pools: ['hiragana', 'katakana', 'kotoba', 'grammar', 'kanji'], difficulty: 'Hard' });
     } else {
       const allRowNames = (activeKanaType === 'kotoba' || activeKanaType === 'kanji')
-        ? [...new Set(activeData.map(item => item.category))]
-        : [...new Set(activeData.map(item => item.row))];
+        ? [...new Set(filteredData.map(item => item.category))]
+        : [...new Set(filteredData.map(item => item.row))];
       setSelectedRows(allRowNames);
       setDifficulty('Hard');
       initializeQuiz({ rows: allRowNames, difficulty: 'Hard', sourceData: activeData });
@@ -739,6 +745,31 @@ export function Practice() {
       <div className="space-y-16">
         {/* Kana Type Toggle */}
         <KanaTypeToggle active={activeKanaType} onChange={handleKanaTypeChange} />
+
+        {/* Kana Subtype Filter */}
+        {['hiragana', 'katakana'].includes(activeKanaType) && (
+          <div className="flex gap-2 sm:gap-4 mb-8 overflow-x-auto no-scrollbar pb-2">
+            {[
+              { id: 'all', label: language === 'id' ? 'Semua' : 'All' },
+              { id: 'seion', label: 'Seion (Basic)' },
+              { id: 'dakuon', label: 'Dakuon (゛)' },
+              { id: 'handakuon', label: 'Handakuon (゜)' },
+              { id: 'yoon', label: 'Yoon (ゃゅょ)' }
+            ].map(type => (
+              <button
+                key={type.id}
+                onClick={() => { setActiveKanaSubtype(type.id); setSelectedRows([]); }}
+                className={`px-4 py-2 text-xs font-bold tracking-widest uppercase border-[2px] transition-colors whitespace-nowrap ${
+                  activeKanaSubtype === type.id
+                    ? 'bg-sumi text-kinari-light border-sumi'
+                    : 'bg-kinari-light text-sumi/60 border-sumi/20 hover:border-sumi/50'
+                }`}
+              >
+                {type.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Row Selection / Mixed Pool Selection */}
         <section>

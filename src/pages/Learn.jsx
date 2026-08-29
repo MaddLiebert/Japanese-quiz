@@ -50,6 +50,7 @@ export function Learn() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeKanaSubtype, setActiveKanaSubtype] = useState('all');
 
   const activeData = activeKanaType === 'hiragana'
     ? hiraganaData
@@ -61,10 +62,15 @@ export function Learn() {
           ? grammarData
           : kotobaData;
 
+  const filteredData = activeData.filter(item => {
+    if (activeKanaType !== 'hiragana' && activeKanaType !== 'katakana') return true;
+    if (activeKanaSubtype === 'all') return true;
+    return item.type === activeKanaSubtype;
+  });
 
   const rows = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
-    ? [...new Set(activeData.map(kana => kana.category))]
-    : [...new Set(activeData.map(kana => kana.row))];
+    ? [...new Set(filteredData.map(kana => kana.category))]
+    : [...new Set(filteredData.map(kana => kana.row))];
 
   const filteredRows = rows.filter(row => {
     if (!searchTerm) return true;
@@ -78,6 +84,7 @@ export function Learn() {
     setSelectedRow(null);
     setCurrentCardIndex(0);
     setSearchTerm('');
+    setActiveKanaSubtype('all');
   };
 
   const handleRowSelect = (row) => {
@@ -117,6 +124,31 @@ export function Learn() {
 
         <KanaTypeToggle active={activeKanaType} onChange={handleKanaTypeChange} />
 
+        {/* Kana Subtype Filter */}
+        {['hiragana', 'katakana'].includes(activeKanaType) && (
+          <div className="flex gap-2 sm:gap-4 mb-8 overflow-x-auto no-scrollbar pb-2">
+            {[
+              { id: 'all', label: language === 'id' ? 'Semua' : 'All' },
+              { id: 'seion', label: 'Seion (Basic)' },
+              { id: 'dakuon', label: 'Dakuon (゛)' },
+              { id: 'handakuon', label: 'Handakuon (゜)' },
+              { id: 'yoon', label: 'Yoon (ゃゅょ)' }
+            ].map(type => (
+              <button
+                key={type.id}
+                onClick={() => { setActiveKanaSubtype(type.id); setSelectedRow(null); }}
+                className={`px-4 py-2 text-xs font-bold tracking-widest uppercase border-[2px] transition-colors whitespace-nowrap ${
+                  activeKanaSubtype === type.id
+                    ? 'bg-sumi text-kinari-light border-sumi'
+                    : 'bg-kinari-light text-sumi/60 border-sumi/20 hover:border-sumi/50'
+                }`}
+              >
+                {type.label}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* Search Bar */}
         <div className="mb-8 max-w-md relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-sumi/40">
@@ -141,7 +173,7 @@ export function Learn() {
           {filteredRows.map(row => {
             const rowItems = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
               ? activeData.filter(k => k.category === row)
-              : activeData.filter(k => k.row === row);
+              : filteredData.filter(k => k.row === row);
             const masteredCount = rowItems.filter(k => itemProgress[k.id]?.status === 'mastered').length;
             const progress = (masteredCount / rowItems.length) * 100;
             
@@ -189,7 +221,7 @@ export function Learn() {
   // ── Flashcard View ────────────────────────────────────────────────────────────
   const rowKana = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
     ? activeData.filter(k => k.category === selectedRow)
-    : activeData.filter(k => k.row === selectedRow);
+    : activeData.filter(k => k.row === selectedRow && (activeKanaSubtype === 'all' || k.type === activeKanaSubtype));
   const currentKana = rowKana[currentCardIndex];
   const isMastered = itemProgress[currentKana?.id]?.status === 'mastered';
 
