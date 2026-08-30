@@ -34,8 +34,8 @@ function pickDistractors(item, quizPool, optionCount) {
   const groupKey = (item.type === 'kotoba' || item.type === 'grammar' || item.type === 'kanji')
     ? 'category' : 'row';
 
-  // Tier 1 & 2: from the user's quiz pool (excluding the current item)
-  const poolWithoutSelf = quizPool.filter(d => d.id !== item.id);
+  // Tier 1 & 2: from the user's quiz pool (excluding the current item, strictly matching the same item type)
+  const poolWithoutSelf = quizPool.filter(d => d.id !== item.id && d.type === item.type);
   const sameGroup  = shuffle(poolWithoutSelf.filter(d => d[groupKey] === item[groupKey]));
   const otherGroup = shuffle(poolWithoutSelf.filter(d => d[groupKey] !== item[groupKey]));
 
