@@ -123,10 +123,13 @@ export function useQuizSession() {
   }, []);
 
   const initializeQuiz = useCallback((config) => {
-    const { mode, pools, rows, difficulty, sourceData = hiraganaData } = config;
+    const { mode, pools, rows, difficulty, sourceData = hiraganaData, itemIds } = config;
 
     let availableItems = [];
-    if (mode === 'mixed') {
+    if (itemIds) {
+      const allData = [...hiraganaData, ...katakanaData, ...kotobaData, ...grammarData, ...kanjiData];
+      availableItems = allData.filter(item => itemIds.includes(item.id));
+    } else if (mode === 'mixed') {
       if (pools.includes('hiragana')) availableItems.push(...hiraganaData);
       if (pools.includes('katakana')) availableItems.push(...katakanaData);
       if (pools.includes('kotoba')) availableItems.push(...kotobaData);

@@ -3,6 +3,7 @@
     "id": "hira_a",
     "char": "あ",
     "romaji": "a",
+    "script": "hiragana",
     "type": "seion",
     "row": "a"
   },
@@ -10,6 +11,7 @@
     "id": "hira_i",
     "char": "い",
     "romaji": "i",
+    "script": "hiragana",
     "type": "seion",
     "row": "a"
   },
@@ -17,6 +19,7 @@
     "id": "hira_u",
     "char": "う",
     "romaji": "u",
+    "script": "hiragana",
     "type": "seion",
     "row": "a"
   },
@@ -24,6 +27,7 @@
     "id": "hira_e",
     "char": "え",
     "romaji": "e",
+    "script": "hiragana",
     "type": "seion",
     "row": "a"
   },
@@ -31,6 +35,7 @@
     "id": "hira_o",
     "char": "お",
     "romaji": "o",
+    "script": "hiragana",
     "type": "seion",
     "row": "a"
   },
@@ -38,6 +43,7 @@
     "id": "hira_ka",
     "char": "か",
     "romaji": "ka",
+    "script": "hiragana",
     "type": "seion",
     "row": "ka"
   },
@@ -45,6 +51,7 @@
     "id": "hira_ki",
     "char": "き",
     "romaji": "ki",
+    "script": "hiragana",
     "type": "seion",
     "row": "ka"
   },
@@ -52,6 +59,7 @@
     "id": "hira_ku",
     "char": "く",
     "romaji": "ku",
+    "script": "hiragana",
     "type": "seion",
     "row": "ka"
   },
@@ -59,6 +67,7 @@
     "id": "hira_ke",
     "char": "け",
     "romaji": "ke",
+    "script": "hiragana",
     "type": "seion",
     "row": "ka"
   },
@@ -66,6 +75,7 @@
     "id": "hira_ko",
     "char": "こ",
     "romaji": "ko",
+    "script": "hiragana",
     "type": "seion",
     "row": "ka"
   },
@@ -73,6 +83,7 @@
     "id": "hira_sa",
     "char": "さ",
     "romaji": "sa",
+    "script": "hiragana",
     "type": "seion",
     "row": "sa"
   },
@@ -80,6 +91,7 @@
     "id": "hira_shi",
     "char": "し",
     "romaji": "shi",
+    "script": "hiragana",
     "type": "seion",
     "row": "sa"
   },
@@ -87,6 +99,7 @@
     "id": "hira_su",
     "char": "す",
     "romaji": "su",
+    "script": "hiragana",
     "type": "seion",
     "row": "sa"
   },
@@ -94,6 +107,7 @@
     "id": "hira_se",
     "char": "せ",
     "romaji": "se",
+    "script": "hiragana",
     "type": "seion",
     "row": "sa"
   },
@@ -101,6 +115,7 @@
     "id": "hira_so",
     "char": "そ",
     "romaji": "so",
+    "script": "hiragana",
     "type": "seion",
     "row": "sa"
   },
@@ -108,6 +123,7 @@
     "id": "hira_ta",
     "char": "た",
     "romaji": "ta",
+    "script": "hiragana",
     "type": "seion",
     "row": "ta"
   },
@@ -115,6 +131,7 @@
     "id": "hira_chi",
     "char": "ち",
     "romaji": "chi",
+    "script": "hiragana",
     "type": "seion",
     "row": "ta"
   },
@@ -122,6 +139,7 @@
     "id": "hira_tsu",
     "char": "つ",
     "romaji": "tsu",
+    "script": "hiragana",
     "type": "seion",
     "row": "ta"
   },
@@ -129,6 +147,7 @@
     "id": "hira_te",
     "char": "て",
     "romaji": "te",
+    "script": "hiragana",
     "type": "seion",
     "row": "ta"
   },
@@ -136,6 +155,7 @@
     "id": "hira_to",
     "char": "と",
     "romaji": "to",
+    "script": "hiragana",
     "type": "seion",
     "row": "ta"
   },
@@ -143,6 +163,7 @@
     "id": "hira_na",
     "char": "な",
     "romaji": "na",
+    "script": "hiragana",
     "type": "seion",
     "row": "na"
   },
@@ -150,6 +171,7 @@
     "id": "hira_ni",
     "char": "に",
     "romaji": "ni",
+    "script": "hiragana",
     "type": "seion",
     "row": "na"
   },
@@ -157,6 +179,7 @@
     "id": "hira_nu",
     "char": "ぬ",
     "romaji": "nu",
+    "script": "hiragana",
     "type": "seion",
     "row": "na"
   },
@@ -164,6 +187,7 @@
     "id": "hira_ne",
     "char": "ね",
     "romaji": "ne",
+    "script": "hiragana",
     "type": "seion",
     "row": "na"
   },
@@ -171,6 +195,7 @@
     "id": "hira_no",
     "char": "の",
     "romaji": "no",
+    "script": "hiragana",
     "type": "seion",
     "row": "na"
   },
@@ -178,6 +203,7 @@
     "id": "hira_ha",
     "char": "は",
     "romaji": "ha",
+    "script": "hiragana",
     "type": "seion",
     "row": "ha"
   },
@@ -185,6 +211,7 @@
     "id": "hira_hi",
     "char": "ひ",
     "romaji": "hi",
+    "script": "hiragana",
     "type": "seion",
     "row": "ha"
   },
@@ -192,6 +219,7 @@
     "id": "hira_fu",
     "char": "ふ",
     "romaji": "fu",
+    "script": "hiragana",
     "type": "seion",
     "row": "ha"
   },
@@ -199,6 +227,7 @@
     "id": "hira_he",
     "char": "へ",
     "romaji": "he",
+    "script": "hiragana",
     "type": "seion",
     "row": "ha"
   },
@@ -206,6 +235,7 @@
     "id": "hira_ho",
     "char": "ほ",
     "romaji": "ho",
+    "script": "hiragana",
     "type": "seion",
     "row": "ha"
   },
@@ -213,6 +243,7 @@
     "id": "hira_ma",
     "char": "ま",
     "romaji": "ma",
+    "script": "hiragana",
     "type": "seion",
     "row": "ma"
   },
@@ -220,6 +251,7 @@
     "id": "hira_mi",
     "char": "み",
     "romaji": "mi",
+    "script": "hiragana",
     "type": "seion",
     "row": "ma"
   },
@@ -227,6 +259,7 @@
     "id": "hira_mu",
     "char": "む",
     "romaji": "mu",
+    "script": "hiragana",
     "type": "seion",
     "row": "ma"
   },
@@ -234,6 +267,7 @@
     "id": "hira_me",
     "char": "め",
     "romaji": "me",
+    "script": "hiragana",
     "type": "seion",
     "row": "ma"
   },
@@ -241,6 +275,7 @@
     "id": "hira_mo",
     "char": "も",
     "romaji": "mo",
+    "script": "hiragana",
     "type": "seion",
     "row": "ma"
   },
@@ -248,6 +283,7 @@
     "id": "hira_ya",
     "char": "や",
     "romaji": "ya",
+    "script": "hiragana",
     "type": "seion",
     "row": "ya"
   },
@@ -255,6 +291,7 @@
     "id": "hira_yu",
     "char": "ゆ",
     "romaji": "yu",
+    "script": "hiragana",
     "type": "seion",
     "row": "ya"
   },
@@ -262,6 +299,7 @@
     "id": "hira_yo",
     "char": "よ",
     "romaji": "yo",
+    "script": "hiragana",
     "type": "seion",
     "row": "ya"
   },
@@ -269,6 +307,7 @@
     "id": "hira_ra",
     "char": "ら",
     "romaji": "ra",
+    "script": "hiragana",
     "type": "seion",
     "row": "ra"
   },
@@ -276,6 +315,7 @@
     "id": "hira_ri",
     "char": "り",
     "romaji": "ri",
+    "script": "hiragana",
     "type": "seion",
     "row": "ra"
   },
@@ -283,6 +323,7 @@
     "id": "hira_ru",
     "char": "る",
     "romaji": "ru",
+    "script": "hiragana",
     "type": "seion",
     "row": "ra"
   },
@@ -290,6 +331,7 @@
     "id": "hira_re",
     "char": "れ",
     "romaji": "re",
+    "script": "hiragana",
     "type": "seion",
     "row": "ra"
   },
@@ -297,6 +339,7 @@
     "id": "hira_ro",
     "char": "ろ",
     "romaji": "ro",
+    "script": "hiragana",
     "type": "seion",
     "row": "ra"
   },
@@ -304,6 +347,7 @@
     "id": "hira_wa",
     "char": "わ",
     "romaji": "wa",
+    "script": "hiragana",
     "type": "seion",
     "row": "wa"
   },
@@ -311,6 +355,7 @@
     "id": "hira_wo",
     "char": "を",
     "romaji": "wo",
+    "script": "hiragana",
     "type": "seion",
     "row": "wa"
   },
@@ -318,6 +363,7 @@
     "id": "hira_n",
     "char": "ん",
     "romaji": "n",
+    "script": "hiragana",
     "type": "seion",
     "row": "n"
   },
@@ -325,6 +371,7 @@
     "id": "hira_ga",
     "char": "が",
     "romaji": "ga",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ga"
   },
@@ -332,6 +379,7 @@
     "id": "hira_gi",
     "char": "ぎ",
     "romaji": "gi",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ga"
   },
@@ -339,6 +387,7 @@
     "id": "hira_gu",
     "char": "ぐ",
     "romaji": "gu",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ga"
   },
@@ -346,6 +395,7 @@
     "id": "hira_ge",
     "char": "げ",
     "romaji": "ge",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ga"
   },
@@ -353,6 +403,7 @@
     "id": "hira_go",
     "char": "ご",
     "romaji": "go",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ga"
   },
@@ -360,6 +411,7 @@
     "id": "hira_za",
     "char": "ざ",
     "romaji": "za",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "za"
   },
@@ -367,6 +419,7 @@
     "id": "hira_ji",
     "char": "じ",
     "romaji": "ji",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "za"
   },
@@ -374,6 +427,7 @@
     "id": "hira_zu",
     "char": "ず",
     "romaji": "zu",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "za"
   },
@@ -381,6 +435,7 @@
     "id": "hira_ze",
     "char": "ぜ",
     "romaji": "ze",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "za"
   },
@@ -388,6 +443,7 @@
     "id": "hira_zo",
     "char": "ぞ",
     "romaji": "zo",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "za"
   },
@@ -395,6 +451,7 @@
     "id": "hira_da",
     "char": "だ",
     "romaji": "da",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "da"
   },
@@ -402,6 +459,7 @@
     "id": "hira_di",
     "char": "ぢ",
     "romaji": "ji",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "da"
   },
@@ -409,6 +467,7 @@
     "id": "hira_du",
     "char": "づ",
     "romaji": "zu",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "da"
   },
@@ -416,6 +475,7 @@
     "id": "hira_de",
     "char": "で",
     "romaji": "de",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "da"
   },
@@ -423,6 +483,7 @@
     "id": "hira_do",
     "char": "ど",
     "romaji": "do",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "da"
   },
@@ -430,6 +491,7 @@
     "id": "hira_ba",
     "char": "ば",
     "romaji": "ba",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ba"
   },
@@ -437,6 +499,7 @@
     "id": "hira_bi",
     "char": "び",
     "romaji": "bi",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ba"
   },
@@ -444,6 +507,7 @@
     "id": "hira_bu",
     "char": "ぶ",
     "romaji": "bu",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ba"
   },
@@ -451,6 +515,7 @@
     "id": "hira_be",
     "char": "べ",
     "romaji": "be",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ba"
   },
@@ -458,6 +523,7 @@
     "id": "hira_bo",
     "char": "ぼ",
     "romaji": "bo",
+    "script": "hiragana",
     "type": "dakuon",
     "row": "ba"
   },
@@ -465,6 +531,7 @@
     "id": "hira_pa",
     "char": "ぱ",
     "romaji": "pa",
+    "script": "hiragana",
     "type": "handakuon",
     "row": "pa"
   },
@@ -472,6 +539,7 @@
     "id": "hira_pi",
     "char": "ぴ",
     "romaji": "pi",
+    "script": "hiragana",
     "type": "handakuon",
     "row": "pa"
   },
@@ -479,6 +547,7 @@
     "id": "hira_pu",
     "char": "ぷ",
     "romaji": "pu",
+    "script": "hiragana",
     "type": "handakuon",
     "row": "pa"
   },
@@ -486,6 +555,7 @@
     "id": "hira_pe",
     "char": "ぺ",
     "romaji": "pe",
+    "script": "hiragana",
     "type": "handakuon",
     "row": "pa"
   },
@@ -493,6 +563,7 @@
     "id": "hira_po",
     "char": "ぽ",
     "romaji": "po",
+    "script": "hiragana",
     "type": "handakuon",
     "row": "pa"
   },
@@ -500,6 +571,7 @@
     "id": "hira_kya",
     "char": "きゃ",
     "romaji": "kya",
+    "script": "hiragana",
     "type": "yoon",
     "row": "kya"
   },
@@ -507,6 +579,7 @@
     "id": "hira_kyu",
     "char": "きゅ",
     "romaji": "kyu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "kya"
   },
@@ -514,6 +587,7 @@
     "id": "hira_kyo",
     "char": "きょ",
     "romaji": "kyo",
+    "script": "hiragana",
     "type": "yoon",
     "row": "kya"
   },
@@ -521,6 +595,7 @@
     "id": "hira_sha",
     "char": "しゃ",
     "romaji": "sha",
+    "script": "hiragana",
     "type": "yoon",
     "row": "sha"
   },
@@ -528,6 +603,7 @@
     "id": "hira_shu",
     "char": "しゅ",
     "romaji": "shu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "sha"
   },
@@ -535,6 +611,7 @@
     "id": "hira_sho",
     "char": "しょ",
     "romaji": "sho",
+    "script": "hiragana",
     "type": "yoon",
     "row": "sha"
   },
@@ -542,6 +619,7 @@
     "id": "hira_cha",
     "char": "ちゃ",
     "romaji": "cha",
+    "script": "hiragana",
     "type": "yoon",
     "row": "cha"
   },
@@ -549,6 +627,7 @@
     "id": "hira_chu",
     "char": "ちゅ",
     "romaji": "chu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "cha"
   },
@@ -556,6 +635,7 @@
     "id": "hira_cho",
     "char": "ちょ",
     "romaji": "cho",
+    "script": "hiragana",
     "type": "yoon",
     "row": "cha"
   },
@@ -563,6 +643,7 @@
     "id": "hira_nya",
     "char": "にゃ",
     "romaji": "nya",
+    "script": "hiragana",
     "type": "yoon",
     "row": "nya"
   },
@@ -570,6 +651,7 @@
     "id": "hira_nyu",
     "char": "にゅ",
     "romaji": "nyu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "nya"
   },
@@ -577,6 +659,7 @@
     "id": "hira_nyo",
     "char": "にょ",
     "romaji": "nyo",
+    "script": "hiragana",
     "type": "yoon",
     "row": "nya"
   },
@@ -584,6 +667,7 @@
     "id": "hira_hya",
     "char": "ひゃ",
     "romaji": "hya",
+    "script": "hiragana",
     "type": "yoon",
     "row": "hya"
   },
@@ -591,6 +675,7 @@
     "id": "hira_hyu",
     "char": "ひゅ",
     "romaji": "hyu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "hya"
   },
@@ -598,6 +683,7 @@
     "id": "hira_hyo",
     "char": "ひょ",
     "romaji": "hyo",
+    "script": "hiragana",
     "type": "yoon",
     "row": "hya"
   },
@@ -605,6 +691,7 @@
     "id": "hira_mya",
     "char": "みゃ",
     "romaji": "mya",
+    "script": "hiragana",
     "type": "yoon",
     "row": "mya"
   },
@@ -612,6 +699,7 @@
     "id": "hira_myu",
     "char": "みゅ",
     "romaji": "myu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "mya"
   },
@@ -619,6 +707,7 @@
     "id": "hira_myo",
     "char": "みょ",
     "romaji": "myo",
+    "script": "hiragana",
     "type": "yoon",
     "row": "mya"
   },
@@ -626,6 +715,7 @@
     "id": "hira_rya",
     "char": "りゃ",
     "romaji": "rya",
+    "script": "hiragana",
     "type": "yoon",
     "row": "rya"
   },
@@ -633,6 +723,7 @@
     "id": "hira_ryu",
     "char": "りゅ",
     "romaji": "ryu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "rya"
   },
@@ -640,6 +731,7 @@
     "id": "hira_ryo",
     "char": "りょ",
     "romaji": "ryo",
+    "script": "hiragana",
     "type": "yoon",
     "row": "rya"
   },
@@ -647,6 +739,7 @@
     "id": "hira_gya",
     "char": "ぎゃ",
     "romaji": "gya",
+    "script": "hiragana",
     "type": "yoon",
     "row": "gya"
   },
@@ -654,6 +747,7 @@
     "id": "hira_gyu",
     "char": "ぎゅ",
     "romaji": "gyu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "gya"
   },
@@ -661,6 +755,7 @@
     "id": "hira_gyo",
     "char": "ぎょ",
     "romaji": "gyo",
+    "script": "hiragana",
     "type": "yoon",
     "row": "gya"
   },
@@ -668,6 +763,7 @@
     "id": "hira_ja",
     "char": "じゃ",
     "romaji": "ja",
+    "script": "hiragana",
     "type": "yoon",
     "row": "ja"
   },
@@ -675,6 +771,7 @@
     "id": "hira_ju",
     "char": "じゅ",
     "romaji": "ju",
+    "script": "hiragana",
     "type": "yoon",
     "row": "ja"
   },
@@ -682,6 +779,7 @@
     "id": "hira_jo",
     "char": "じょ",
     "romaji": "jo",
+    "script": "hiragana",
     "type": "yoon",
     "row": "ja"
   },
@@ -689,6 +787,7 @@
     "id": "hira_bya",
     "char": "びゃ",
     "romaji": "bya",
+    "script": "hiragana",
     "type": "yoon",
     "row": "bya"
   },
@@ -696,6 +795,7 @@
     "id": "hira_byu",
     "char": "びゅ",
     "romaji": "byu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "bya"
   },
@@ -703,6 +803,7 @@
     "id": "hira_byo",
     "char": "びょ",
     "romaji": "byo",
+    "script": "hiragana",
     "type": "yoon",
     "row": "bya"
   },
@@ -710,6 +811,7 @@
     "id": "hira_pya",
     "char": "ぴゃ",
     "romaji": "pya",
+    "script": "hiragana",
     "type": "yoon",
     "row": "pya"
   },
@@ -717,6 +819,7 @@
     "id": "hira_pyu",
     "char": "ぴゅ",
     "romaji": "pyu",
+    "script": "hiragana",
     "type": "yoon",
     "row": "pya"
   },
@@ -724,6 +827,7 @@
     "id": "hira_pyo",
     "char": "ぴょ",
     "romaji": "pyo",
+    "script": "hiragana",
     "type": "yoon",
     "row": "pya"
   }

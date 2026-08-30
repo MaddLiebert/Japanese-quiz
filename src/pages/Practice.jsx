@@ -10,6 +10,7 @@ import katakanaData from "../data/katakana.json";
 import kotobaData from "../data/kotoba.json";
 import grammarData from "../data/grammar.json";
 import kanjiData from "../data/kanji.json";
+import syllabusData from "../data/syllabus.json";
 import { useQuizSession } from "../features/quiz/useQuizSession";
 import { Button } from "../components/ui/Button";
 import { categoryTranslations } from "../utils/translations";
@@ -22,7 +23,7 @@ function KanaTypeToggle({ active, onChange }) {
     { id: 'kotoba', label: 'Kotoba', jp: '言葉' },
     { id: 'kanji', label: 'Kanji', jp: '漢字' },
     { id: 'grammar', label: 'Grammar', jp: '文法' },
-    { id: 'mixed', label: 'Mixed', jp: '混合' }
+    { id: 'kurikulum', label: 'Kurikulum MNN', jp: 'カリキュラム' }
   ];
   return (
     <div className="flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 pb-0 mb-8 sm:mb-12 overflow-x-auto no-scrollbar flex-nowrap">
@@ -231,29 +232,18 @@ export function Practice() {
   };
 
   const handleStartQuiz = () => {
-    if (activeKanaType === 'mixed') {
-      if (mixedPools.length === 0) return;
-      initializeQuiz({ mode: 'mixed', pools: mixedPools, difficulty });
-    } else {
-      if (selectedRows.length === 0) return;
-      initializeQuiz({ rows: selectedRows, difficulty, sourceData: activeData });
-    }
+    if (selectedRows.length === 0) return;
+    initializeQuiz({ rows: selectedRows, difficulty, sourceData: activeData });
     setQuizStarted(true);
   };
 
   const handleFullChallenge = () => {
-    if (activeKanaType === 'mixed') {
-      setMixedPools(['hiragana', 'katakana', 'kotoba', 'grammar', 'kanji']);
-      setDifficulty('Hard');
-      initializeQuiz({ mode: 'mixed', pools: ['hiragana', 'katakana', 'kotoba', 'grammar', 'kanji'], difficulty: 'Hard' });
-    } else {
-      const allRowNames = (activeKanaType === 'kotoba' || activeKanaType === 'kanji')
-        ? [...new Set(filteredData.map(item => item.category))]
-        : [...new Set(filteredData.map(item => item.row))];
-      setSelectedRows(allRowNames);
-      setDifficulty('Hard');
-      initializeQuiz({ rows: allRowNames, difficulty: 'Hard', sourceData: activeData });
-    }
+    const allRowNames = (activeKanaType === 'kotoba' || activeKanaType === 'kanji')
+      ? [...new Set(filteredData.map(item => item.category))]
+      : [...new Set(filteredData.map(item => item.row))];
+    setSelectedRows(allRowNames);
+    setDifficulty('Hard');
+    initializeQuiz({ rows: allRowNames, difficulty: 'Hard', sourceData: activeData });
     setQuizStarted(true);
   };
 
@@ -771,102 +761,115 @@ export function Practice() {
           </div>
         )}
 
-        {/* Row Selection / Mixed Pool Selection */}
-        <section>
-          <div className="flex items-center gap-4 mb-8">
-            <h2 className="text-2xl font-serif font-bold text-sumi">
-              {activeKanaType === 'mixed'
-                ? (language === 'id' ? 'Pilih Konten' : 'Include Content')
-                : (language === 'id' ? 'Pilih Target' : `Target ${activeKanaType === 'kotoba' || activeKanaType === 'grammar' ? 'Categories' : 'Rows'}`)}
-            </h2>
-            <div className="h-[2px] flex-1 bg-sumi/10"></div>
+        {/* Row Selection / Kurikulum MNN Selection */}
+        {activeKanaType === 'kurikulum' ? (
+          <div className="flex flex-col gap-4 sm:gap-6">
+            {syllabusData.map(chapter => (
+              <motion.div
+                key={chapter.chapter}
+                whileHover={{ x: 4 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  const combinedIds = [...chapter.grammar_ids, ...chapter.kotoba_ids];
+                  if (combinedIds.length === 0) return;
+                  initializeQuiz({ itemIds: combinedIds, difficulty: difficulty || 'Medium' });
+                  setQuizStarted(true);
+                }}
+                className="bg-kinari border-[3px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] hover:shadow-[2px_2px_0_0_#1a1a1a] transition-all cursor-pointer p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between relative overflow-hidden group gap-4"
+              >
+                <div className="absolute inset-0 bg-seigaiha opacity-[0.03] group-hover:opacity-10 transition-opacity"></div>
+                <div className="relative z-10 flex flex-col gap-2">
+                  <div className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-shu bg-shu/10 px-3 py-1 w-fit border-[2px] border-shu/20">
+                    {language === 'id' ? 'Bab' : 'Chapter'} {chapter.chapter}
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-serif font-black text-sumi">
+                    {chapter.title}
+                  </h2>
+                  <p className="text-sm font-medium text-sumi/70">
+                    {language === 'id' ? chapter.description_id : chapter.description_en}
+                  </p>
+                </div>
+                <div className="relative z-10 text-[10px] font-bold tracking-widest uppercase text-sumi/40 group-hover:text-ai transition-colors whitespace-nowrap text-left sm:text-right mt-4 sm:mt-0">
+                  {chapter.grammar_ids.length} {language === 'id' ? 'Tata Bahasa' : 'Grammar'} • {chapter.kotoba_ids.length} {language === 'id' ? 'Kosakata' : 'Kotoba'}
+                </div>
+              </motion.div>
+            ))}
           </div>
+        ) : (
+          <>
+            <section>
+              <div className="flex items-center gap-4 mb-8">
+                <h2 className="text-2xl font-serif font-bold text-sumi">
+                  {language === 'id' ? 'Pilih Target' : `Target ${activeKanaType === 'kotoba' || activeKanaType === 'grammar' ? 'Categories' : 'Rows'}`}
+                </h2>
+                <div className="h-[2px] flex-1 bg-sumi/10"></div>
+              </div>
 
-          {activeKanaType === 'mixed' ? (
-            <div className="flex flex-wrap gap-4">
-              {['hiragana', 'katakana', 'kotoba', 'grammar', 'kanji'].map(pool => {
-                const isSelected = mixedPools.includes(pool);
-                return (
-                  <button
-                    key={pool}
-                    onClick={() => toggleMixedPool(pool)}
-                    className={`px-8 py-4 border-[3px] border-sumi font-bold text-sm tracking-widest uppercase transition-all shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] ${isSelected
-                      ? 'bg-sumi text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
-                      : 'bg-kinari text-sumi hover:bg-kinari-light'
-                      }`}
-                  >
-                    {pool}
-                  </button>
-                );
-              })}
+              <div className="flex flex-wrap gap-4">
+                {allRows.map(row => {
+                  const isSelected = selectedRows.includes(row);
+                  return (
+                    <button
+                      key={row}
+                      onClick={() => toggleRow(row)}
+                      className={`px-8 py-4 border-[3px] border-sumi font-bold text-sm tracking-widest uppercase transition-all shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] ${isSelected
+                        ? 'bg-sumi text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
+                        : 'bg-kinari text-sumi hover:bg-kinari-light'
+                        }`}
+                    >
+                      {getTranslatedRow(row)} {(activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji') ? '' : (language === 'id' ? 'Baris' : 'Row')}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Difficulty Selection */}
+            <section>
+              <div className="flex items-center gap-4 mb-8">
+                <h2 className="text-2xl font-serif font-bold text-sumi">
+                  {language === 'id' ? 'Tingkat Kesulitan' : 'Difficulty'}
+                </h2>
+                <div className="h-[2px] flex-1 bg-sumi/10"></div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                {difficulties.map(diff => {
+                  const isSelected = difficulty === diff;
+                  return (
+                    <button
+                      key={diff}
+                      onClick={() => setDifficulty(diff)}
+                      className={`flex-1 py-4 border-[3px] border-sumi font-bold text-sm tracking-widest uppercase transition-all shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] ${isSelected
+                        ? 'bg-ai text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
+                        : 'bg-kinari text-sumi hover:bg-kinari-light'
+                        }`}
+                    >
+                      {language === 'id'
+                        ? (diff === 'Easy' ? 'Gampang' : diff === 'Medium' ? 'Lumayan' : 'Susah')
+                        : diff
+                      }
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Start Button */}
+            <div className="pt-8">
+              <Button
+                onClick={handleStartQuiz}
+                disabled={selectedRows.length === 0}
+                className={`w-full py-6 sm:py-8 text-xl sm:text-2xl tracking-[0.3em] font-black uppercase border-[4px] border-sumi rounded-none shadow-[8px_8px_0_0_#1a1a1a] transition-all ${selectedRows.length === 0
+                  ? '!bg-kinari !text-sumi/30 cursor-not-allowed !shadow-none !border-sumi/30 hover:translate-x-0 hover:translate-y-0'
+                  : '!bg-shu !text-kinari-light hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[4px_4px_0_0_#1a1a1a]'
+                  }`}
+              >
+                {language === 'id' ? 'Mulai Kuis' : 'Start Quiz'}
+              </Button>
             </div>
-          ) : (
-            <div className="flex flex-wrap gap-4">
-              {allRows.map(row => {
-                const isSelected = selectedRows.includes(row);
-                return (
-                  <button
-                    key={row}
-                    onClick={() => toggleRow(row)}
-                    className={`px-8 py-4 border-[3px] border-sumi font-bold text-sm tracking-widest uppercase transition-all shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] ${isSelected
-                      ? 'bg-sumi text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
-                      : 'bg-kinari text-sumi hover:bg-kinari-light'
-                      }`}
-                  >
-                    {getTranslatedRow(row)} {(activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji') ? '' : (language === 'id' ? 'Baris' : 'Row')}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </section>
 
-        {/* Difficulty Selection */}
-        <section>
-          <div className="flex items-center gap-4 mb-8">
-            <h2 className="text-2xl font-serif font-bold text-sumi">
-              {language === 'id' ? 'Tingkat Kesulitan' : 'Difficulty'}
-            </h2>
-            <div className="h-[2px] flex-1 bg-sumi/10"></div>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4">
-            {difficulties.map(diff => {
-              const isSelected = difficulty === diff;
-              return (
-                <button
-                  key={diff}
-                  onClick={() => setDifficulty(diff)}
-                  className={`flex-1 py-4 border-[3px] border-sumi font-bold text-sm tracking-widest uppercase transition-all shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] ${isSelected
-                    ? 'bg-ai text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
-                    : 'bg-kinari text-sumi hover:bg-kinari-light'
-                    }`}
-                >
-                  {language === 'id'
-                    ? (diff === 'Easy' ? 'Gampang' : diff === 'Medium' ? 'Lumayan' : 'Susah')
-                    : diff
-                  }
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Start Button */}
-        <div className="pt-8">
-          <Button
-            onClick={handleStartQuiz}
-            disabled={activeKanaType === 'mixed' ? mixedPools.length === 0 : selectedRows.length === 0}
-            className={`w-full py-6 sm:py-8 text-xl sm:text-2xl tracking-[0.3em] font-black uppercase border-[4px] border-sumi rounded-none shadow-[8px_8px_0_0_#1a1a1a] transition-all ${(activeKanaType === 'mixed' ? mixedPools.length === 0 : selectedRows.length === 0)
-              ? '!bg-kinari !text-sumi/30 cursor-not-allowed !shadow-none !border-sumi/30 hover:translate-x-0 hover:translate-y-0'
-              : '!bg-shu !text-kinari-light hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[4px_4px_0_0_#1a1a1a]'
-              }`}
-          >
-            {language === 'id' ? 'Mulai Kuis' : 'Start Quiz'}
-          </Button>
-        </div>
-
-        {/* Full Hiragana Challenge */}
-        <div className="border-t-[4px] border-sumi pt-12 mt-4 relative">
+            {/* Full Hiragana Challenge */}
+            <div className="border-t-[4px] border-sumi pt-12 mt-4 relative">
           <div className="absolute inset-0 bg-seigaiha opacity-[0.025] pointer-events-none rounded-sm"></div>
           <div className="flex items-center gap-4 mb-6 relative z-10">
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-shu">
@@ -899,6 +902,8 @@ export function Practice() {
             </div>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import katakanaData from "../data/katakana.json";
 import kotobaData from "../data/kotoba.json";
 import grammarData from "../data/grammar.json";
 import kanjiData from "../data/kanji.json";
+import syllabusData from "../data/syllabus.json";
 import { useItemProgress } from "../features/progress/ProgressContext";
 import { Flashcard } from "../features/learn/Flashcard";
 import { Button } from "../components/ui/Button";
@@ -21,6 +22,7 @@ function KanaTypeToggle({ active, onChange }) {
     { id: 'kotoba', label: 'Kotoba', jp: '言葉' },
     { id: 'kanji', label: 'Kanji', jp: '漢字' },
     { id: 'grammar', label: 'Grammar', jp: '文法' },
+    { id: 'kurikulum', label: 'Kurikulum MNN', jp: 'カリキュラム' },
   ];
   return (
     <div className="flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 pb-0 mb-8 sm:mb-12 overflow-x-auto no-scrollbar flex-nowrap">
@@ -114,6 +116,7 @@ export function Learn() {
                 : activeKanaType === 'katakana' ? 'Katakana'
                 : activeKanaType === 'kanji' ? '漢字 Kanji'
                 : activeKanaType === 'grammar' ? 'Grammar'
+                : activeKanaType === 'kurikulum' ? 'Kurikulum MNN'
                 : 'Kotoba'}
             </span>
           </h1>
@@ -149,9 +152,39 @@ export function Learn() {
           </div>
         )}
 
-        {/* Search Bar */}
-        <div className="mb-8 max-w-md relative">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-sumi/40">
+        {activeKanaType === 'kurikulum' ? (
+          <div className="flex flex-col gap-4 sm:gap-6">
+            {syllabusData.map(chapter => (
+              <motion.div
+                key={chapter.chapter}
+                whileHover={{ x: 4 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => handleRowSelect(chapter.chapter)}
+                className="bg-kinari border-[3px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] hover:shadow-[2px_2px_0_0_#1a1a1a] transition-all cursor-pointer p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between relative overflow-hidden group gap-4"
+              >
+                <div className="absolute inset-0 bg-seigaiha opacity-[0.03] group-hover:opacity-10 transition-opacity"></div>
+                <div className="relative z-10 flex flex-col gap-2">
+                  <div className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-shu bg-shu/10 px-3 py-1 w-fit border-[2px] border-shu/20">
+                    {language === 'id' ? 'Bab' : 'Chapter'} {chapter.chapter}
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-serif font-black text-sumi">
+                    {chapter.title}
+                  </h2>
+                  <p className="text-sm font-medium text-sumi/70">
+                    {language === 'id' ? chapter.description_id : chapter.description_en}
+                  </p>
+                </div>
+                <div className="relative z-10 text-[10px] font-bold tracking-widest uppercase text-sumi/40 group-hover:text-ai transition-colors whitespace-nowrap text-left sm:text-right mt-4 sm:mt-0">
+                  {chapter.grammar_ids.length} {language === 'id' ? 'Tata Bahasa' : 'Grammar'} • {chapter.kotoba_ids.length} {language === 'id' ? 'Kosakata' : 'Kotoba'}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <>
+            {/* Search Bar */}
+            <div className="mb-8 max-w-md relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-sumi/40">
             <Search size={20} />
           </div>
           <input
@@ -214,14 +247,26 @@ export function Learn() {
             );
           })}
         </div>
+          </>
+        )}
       </div>
     );
   }
 
   // ── Flashcard View ────────────────────────────────────────────────────────────
-  const rowKana = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
-    ? activeData.filter(k => k.category === selectedRow)
-    : activeData.filter(k => k.row === selectedRow && (activeKanaSubtype === 'all' || k.type === activeKanaSubtype));
+  const isKurikulum = activeKanaType === 'kurikulum';
+  let rowKana = [];
+  if (isKurikulum && selectedRow) {
+    const chapter = syllabusData.find(c => c.chapter === selectedRow);
+    const combinedIds = [...(chapter?.grammar_ids || []), ...(chapter?.kotoba_ids || [])];
+    const allData = [...kotobaData, ...grammarData];
+    rowKana = allData.filter(item => combinedIds.includes(item.id));
+  } else {
+    rowKana = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
+      ? activeData.filter(k => k.category === selectedRow)
+      : activeData.filter(k => k.row === selectedRow && (activeKanaSubtype === 'all' || k.type === activeKanaSubtype));
+  }
+  
   const currentKana = rowKana[currentCardIndex];
   const isMastered = itemProgress[currentKana?.id]?.status === 'mastered';
 
@@ -245,9 +290,9 @@ export function Learn() {
             <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali ke Kategori' : 'Back to Rows'}
           </button>
           <h1 className="text-4xl sm:text-5xl font-serif font-black text-sumi capitalize flex items-center gap-4">
-            {(language === 'id' && categoryTranslations[selectedRow]) ? categoryTranslations[selectedRow] : selectedRow}{' '}
-            {(activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji') ? '' : 'Row'}{' '}
-            {(activeKanaType !== 'kotoba' && activeKanaType !== 'grammar' && activeKanaType !== 'kanji') && <span className="text-xl sm:text-2xl text-sumi/40 font-normal">({selectedRow}行)</span>}
+            {isKurikulum ? `${language === 'id' ? 'Bab' : 'Chapter'} ${selectedRow}` : ((language === 'id' && categoryTranslations[selectedRow]) ? categoryTranslations[selectedRow] : selectedRow)}{' '}
+            {(!isKurikulum && activeKanaType !== 'kotoba' && activeKanaType !== 'grammar' && activeKanaType !== 'kanji') ? 'Row' : ''}{' '}
+            {(!isKurikulum && activeKanaType !== 'kotoba' && activeKanaType !== 'grammar' && activeKanaType !== 'kanji') && <span className="text-xl sm:text-2xl text-sumi/40 font-normal">({selectedRow}行)</span>}
           </h1>
         </div>
         <div className="text-sm font-bold tracking-[0.3em] text-sumi bg-kinari border-[3px] border-sumi px-6 py-2 shadow-[4px_4px_0_0_#1a1a1a] relative z-10">
