@@ -34,8 +34,14 @@ function pickDistractors(item, quizPool, optionCount) {
   const groupKey = (item.type === 'kotoba' || item.type === 'grammar' || item.type === 'kanji')
     ? 'category' : 'row';
 
-  // Tier 1 & 2: from the user's quiz pool (excluding the current item, strictly matching the same item type)
-  const poolWithoutSelf = quizPool.filter(d => d.id !== item.id && d.type === item.type);
+  // Tier 1 & 2: from the user's quiz pool (excluding the current item, strictly matching the same item type & script)
+  const poolWithoutSelf = quizPool.filter(d => {
+    if (d.id === item.id) return false;
+    if (item.script || d.script) {
+      return d.script === item.script && d.type === item.type;
+    }
+    return d.type === item.type;
+  });
   const sameGroup  = shuffle(poolWithoutSelf.filter(d => d[groupKey] === item[groupKey]));
   const otherGroup = shuffle(poolWithoutSelf.filter(d => d[groupKey] !== item[groupKey]));
 
@@ -44,13 +50,15 @@ function pickDistractors(item, quizPool, optionCount) {
   // Tier 3: if the user's pool is too small, pull from the global dataset
   if (picked.length < needed) {
     const usedIds = new Set([item.id, ...picked.map(d => d.id)]);
-    const targetDataset = item.id?.startsWith('hira_') ? hiraganaData
-      : item.id?.startsWith('kata_') ? katakanaData
+    const isHiragana = item.id?.startsWith('hira_') || item.script === 'hiragana';
+    const isKatakana = item.id?.startsWith('kata_') || item.script === 'katakana';
+    const targetDataset = isHiragana ? hiraganaData
+      : isKatakana ? katakanaData
       : GLOBAL_DATA_BY_TYPE[item.type] || [];
     const globalPool = targetDataset.filter(d => {
       if (usedIds.has(d.id)) return false;
       // For kana: match the same type (e.g. seion, dakuon, handakuon, yoon) when possible
-      if (item.id?.startsWith('hira_') || item.id?.startsWith('kata_')) {
+      if (isHiragana || isKatakana) {
         return d.type === item.type;
       }
       // For kotoba/grammar/kanji: match type (already guaranteed by GLOBAL_DATA_BY_TYPE key)
@@ -212,6 +220,11 @@ export function useQuizSession() {
     if (isAnsweredRef.current) return; // prevent double-click via ref (always fresh)
     isAnsweredRef.current = true;
 
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     setAnsweredId(selectedOptionId);
     setIsAnswered(true);
 
@@ -236,6 +249,11 @@ export function useQuizSession() {
 
   // advanceQuestion: moves to next question. Uses refs.
   const advanceQuestion = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     isAnsweredRef.current = false;
     setAnsweredId(null);
     setIsAnswered(false);
@@ -252,13 +270,13 @@ export function useQuizSession() {
     }
   }, []); // no deps needed — reads from refs
 
-  // Legacy shim for kana mode: select + auto-advance after 800ms
+  // Legacy shim for kana mode: select + auto-advance after 1500ms
   const answerQuestion = useCallback((selectedOptionId) => {
     selectAnswer(selectedOptionId);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       advanceQuestion();
-    }, 800);
+    }, 1500);
   }, [selectAnswer, advanceQuestion]);
 
   const currentQ = questions[currentIndex] || null;

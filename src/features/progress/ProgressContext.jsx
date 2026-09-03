@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -238,17 +238,33 @@ export const ProgressProvider = ({ children }) => {
 
   const forceMasterItem = useCallback((itemId) => {
      const today = getLocalDateString();
-     setItemProgress(prev => ({
-        ...prev,
-        [itemId]: {
-          correctCount: (prev[itemId]?.correctCount || 0) + 3,
-          incorrectCount: prev[itemId]?.incorrectCount || 0,
-          streak: 3,
-          lastReviewed: today,
-          nextReview: getLocalDateString(new Date(Date.now() + 86400000 * 8)), // 8 hari lagi
-          status: 'mastered'
+     setItemProgress(prev => {
+        const current = prev[itemId];
+        if (current?.status === 'mastered') {
+          return {
+            ...prev,
+            [itemId]: {
+              correctCount: current.correctCount || 0,
+              incorrectCount: current.incorrectCount || 0,
+              streak: 0,
+              lastReviewed: today,
+              nextReview: today,
+              status: 'learning'
+            }
+          };
         }
-     }));
+        return {
+          ...prev,
+          [itemId]: {
+            correctCount: (current?.correctCount || 0) + 3,
+            incorrectCount: current?.incorrectCount || 0,
+            streak: 3,
+            lastReviewed: today,
+            nextReview: getLocalDateString(new Date(Date.now() + 86400000 * 8)),
+            status: 'mastered'
+          }
+        };
+     });
   }, []);
 
   const resetProgress = useCallback(() => {

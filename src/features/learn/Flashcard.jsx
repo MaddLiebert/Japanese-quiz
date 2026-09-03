@@ -5,7 +5,7 @@ import { Button } from "../../components/ui/Button";
 import { playDramaticAudio } from "../../utils/audio";
 import { useLanguage } from "../../context/LanguageContext";
 
-export function Flashcard({ kana, isMastered, onToggleMastery, difficulty = 'Easy' }) {
+export function Flashcard({ kana, isMastered, onToggleMastery, showAudio = true }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const { language } = useLanguage();
   const isKotoba = kana.type === 'kotoba';
@@ -33,7 +33,7 @@ export function Flashcard({ kana, isMastered, onToggleMastery, difficulty = 'Eas
         >
           <div className="absolute inset-0 bg-asanoha opacity-5 pointer-events-none"></div>
 
-          {difficulty === 'Easy' && (
+          {showAudio && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -130,14 +130,13 @@ export function Flashcard({ kana, isMastered, onToggleMastery, difficulty = 'Eas
             <Button 
               onClick={(e) => {
                 e.stopPropagation();
-                if (!isMastered) onToggleMastery();
+                onToggleMastery();
               }}
-              disabled={isMastered}
-              className={`w-full uppercase tracking-widest font-bold text-sm py-4 border-[3px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] rounded-none ${isMastered ? '!bg-ai !text-kinari-light cursor-not-allowed hover:translate-x-0 hover:translate-y-0 hover:shadow-[4px_4px_0_0_#1a1a1a]' : '!bg-kinari !text-sumi hover:!bg-kinari-light'}`}
+              className={`w-full uppercase tracking-widest font-bold text-sm py-4 border-[3px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] rounded-none ${isMastered ? '!bg-ai !text-kinari-light hover:!bg-ai/90' : '!bg-kinari !text-sumi hover:!bg-kinari-light'}`}
             >
               {isMastered 
-                ? (language === 'id' ? 'Telah Dikuasai (SRS)' : 'Mastered (SRS)') 
-                : (language === 'id' ? 'Paksa Dikuasai (Test)' : 'Force Master (Test)')
+                ? (language === 'id' ? '✓ Dikuasai (Klik untuk Batal)' : '✓ Mastered (Click to Undo)') 
+                : (language === 'id' ? 'Tandai Dikuasai' : 'Mark as Mastered')
               }
             </Button>
           </div>

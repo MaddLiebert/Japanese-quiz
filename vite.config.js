@@ -15,7 +15,7 @@ export default defineConfig({
         name: 'Japanese Quiz',
         short_name: 'JLPT N5',
         description: 'Offline capable Japanese Quiz app',
-        theme_color: '#ffffff',
+        theme_color: '#182b49',
         icons: [
           {
             src: 'pwa-192x192.png',

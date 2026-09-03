@@ -14,35 +14,8 @@ import syllabusData from "../data/syllabus.json";
 import { useQuizSession } from "../features/quiz/useQuizSession";
 import { Button } from "../components/ui/Button";
 import { categoryTranslations } from "../utils/translations";
-
-// ─── Editorial Kana Type Toggle ──────────────────────────────────────────────
-function KanaTypeToggle({ active, onChange }) {
-  const tabs = [
-    { id: 'hiragana', label: 'Hiragana', jp: 'ひらがな' },
-    { id: 'katakana', label: 'Katakana', jp: 'カタカナ' },
-    { id: 'kotoba', label: 'Kotoba', jp: '言葉' },
-    { id: 'kanji', label: 'Kanji', jp: '漢字' },
-    { id: 'grammar', label: 'Grammar', jp: '文法' },
-    { id: 'kurikulum', label: 'Kurikulum MNN', jp: 'カリキュラム' }
-  ];
-  return (
-    <div className="flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 pb-0 mb-8 sm:mb-12 overflow-x-auto no-scrollbar flex-nowrap">
-      {tabs.map(tab => (
-        <button
-          key={tab.id}
-          onClick={() => onChange(tab.id)}
-          className={`pb-4 flex flex-col items-start gap-1 transition-colors border-b-[4px] -mb-[2px] shrink-0 ${active === tab.id
-            ? 'border-ai text-ai'
-            : 'border-transparent text-sumi/40 hover:text-sumi/70'
-            }`}
-        >
-          <span className="text-[10px] font-bold tracking-[0.3em] uppercase">{tab.label}</span>
-          <span className="text-lg font-serif font-black">{tab.jp}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
+import { KanaTypeToggle } from "../components/KanaTypeToggle";
+import { KanaQuiz } from "../features/quiz/KanaQuiz";
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
   const { language } = useLanguage();
@@ -203,6 +176,53 @@ export function Practice() {
   const handleNext = () => {
     advanceQuestion();
   };
+
+  // Keyboard navigation: 1-6 for option selection, Space/Enter to advance
+  useEffect(() => {
+    if (!quizStarted || isFinished || !currentQuestion) return;
+
+    const handleKeyDown = (e) => {
+      const target = e.target;
+      const activeTag = document.activeElement?.tagName;
+      if (
+        ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag) ||
+        (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) ||
+        target?.isContentEditable
+      ) {
+        return;
+      }
+
+      if (!isAnswered && e.key >= '1' && e.key <= '6') {
+        const index = parseInt(e.key, 10) - 1;
+        if (index >= 0 && index < options.length) {
+          e.preventDefault();
+          const targetOption = options[index];
+          const isKotobaOrKanji = currentQuestion.type === 'kotoba' || currentQuestion.type === 'kanji';
+          if (isKotobaOrKanji) {
+            handleKotobaOptionClick(targetOption);
+          } else {
+            handleKanaOptionClick(targetOption);
+          }
+        }
+      }
+
+      if (isAnswered && (e.key === ' ' || e.key === 'Enter')) {
+        e.preventDefault();
+        handleNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    quizStarted,
+    isFinished,
+    currentQuestion,
+    isAnswered,
+    options,
+    handleKanaOptionClick,
+    handleKotobaOptionClick,
+  ]);
 
   const allRows = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
     ? [...new Set(filteredData.map(item => item.category))]
@@ -604,112 +624,23 @@ export function Practice() {
         );
       }
 
-      // ── Kana / Grammar Quiz UI (existing) ────────────────────────────────────
+      // ── Kana / Grammar Quiz UI ──────────────────────────────────────────────
       return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
-
-          <button
-            onClick={() => setQuizStarted(false)}
-            className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit"
-          >
-            <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
-          </button>
-          <header className="flex justify-between items-end mb-16 border-b-[4px] border-sumi pb-6 relative z-10">
-            <div className="text-xs sm:text-sm uppercase tracking-[0.3em] font-bold text-sumi/60">
-              {language === 'id' ? 'Soal' : 'Question'} <span className="text-ai text-lg sm:text-xl">{currentIndex + 1}</span> {language === 'id' ? 'dari' : 'of'} {totalQuestions}
-            </div>
-            <div className="flex items-center gap-4">
-              {difficulty === 'Hard' && timeLeft !== null && (
-                <span className="text-xs font-bold tracking-widest uppercase text-shu">
-                  {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
-                </span>
-              )}
-              <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
-                {language === 'id' ? 'Skor' : 'Score'}: <span className="text-ai">{score}</span>
-              </span>
-            </div>
-          </header>
-
-          <div className="flex-1 flex flex-col items-center justify-center relative z-10 pb-16">
-            <motion.div
-              key={currentQuestion.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ type: "spring", stiffness: 200, damping: 20 }}
-              className="mb-16 sm:mb-24 flex flex-col items-center gap-6"
-            >
-              {difficulty === 'Easy' && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const textToSpeak = isGrammarMode
-                      ? (currentQuestion.question || currentQuestion.char).replace('___', currentQuestion.char)
-                      : currentQuestion.char;
-                    playDramaticAudio(textToSpeak);
-                  }}
-                  className="w-10 h-10 rounded-full border-[3px] border-sumi text-sumi flex items-center justify-center bg-kinari-light/80 shadow-[2px_2px_0_0_#1a1a1a] z-20 hover:bg-sumi hover:text-kinari-light hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
-                >
-                  <Volume2 size={20} />
-                </button>
-              )}
-              {isGrammarMode ? (
-                <h2 className="text-3xl sm:text-5xl font-serif font-black text-sumi leading-normal select-none drop-shadow-sm px-2 sm:px-4 text-center break-words max-w-full">
-                  {currentQuestion.question}
-                </h2>
-              ) : (
-                <h2 className="text-7xl sm:text-9xl md:text-[11rem] lg:text-[13rem] font-serif font-black text-sumi leading-none select-none drop-shadow-sm text-center break-words max-w-full">
-                  {currentQuestion.char}
-                </h2>
-              )}
-            </motion.div>
-
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full max-w-lg">
-              {options.map((option) => {
-                const isThisSelected = answeredId === option.id;
-                const isThisCorrect = option.id === currentQuestion.id;
-                const showCorrect = isAnswered && isThisCorrect;
-                const showWrong = isThisSelected && !isCurrentAnswerCorrect;
-
-                let btnClass = "bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] transition-all p-4 sm:p-6 font-bold text-sumi flex items-center justify-center rounded-none ";
-                if (isGrammarMode) {
-                  btnClass += " text-3xl sm:text-4xl font-serif tracking-wider";
-                } else {
-                  btnClass += " tracking-widest text-2xl sm:text-3xl";
-                }
-
-                if (!isAnswered) {
-                  btnClass += " hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_0_#1a1a1a] hover:bg-kinari-light active:bg-ai active:text-kinari-light active:translate-x-[6px] active:translate-y-[6px] active:shadow-none cursor-pointer";
-                } else {
-                  if (showCorrect) {
-                    btnClass += " !bg-matcha !text-white translate-x-[2px] translate-y-[2px] !shadow-[4px_4px_0_0_#1a1a1a]";
-                  } else if (showWrong) {
-                    btnClass += " !bg-shu !text-white translate-x-[2px] translate-y-[2px] !shadow-[4px_4px_0_0_#1a1a1a]";
-                  } else {
-                    btnClass += " opacity-50";
-                  }
-                }
-
-                return (
-                  <motion.button
-                    key={option.id}
-                    onClick={() => handleKanaOptionClick(option)}
-                    animate={
-                      showCorrect && isThisSelected ? { scale: [1, 1.05, 1] }
-                        : showWrong ? { x: [0, -10, 10, -10, 10, 0] }
-                          : {}
-                    }
-                    transition={{ duration: 0.4 }}
-                    className={btnClass}
-                    disabled={isAnswered}
-                  >
-                    {isGrammarMode ? option.char : option.romaji}
-                  </motion.button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        <KanaQuiz
+          currentQuestion={currentQuestion}
+          currentIndex={currentIndex}
+          totalQuestions={totalQuestions}
+          difficulty={difficulty}
+          timeLeft={timeLeft}
+          score={score}
+          options={options}
+          answeredId={answeredId}
+          isAnswered={isAnswered}
+          isCurrentAnswerCorrect={isCurrentAnswerCorrect}
+          onOptionClick={handleKanaOptionClick}
+          onBack={() => setQuizStarted(false)}
+          isGrammarMode={isGrammarMode}
+        />
       );
     }
   }

@@ -40,9 +40,22 @@ body {
 
 /* Smooth synchronized theme transition */
 html, body, div, header, main, section, footer, article, nav, aside, button, input, span, h1, h2, h3, h4, p, a {
-  transition-property: background-color, border-color, color, fill, stroke;
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
   transition-duration: 200ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark mode shadow overrides */
+.dark [class*="shadow-[1px_1px_0_0_#1a1a1a]"], [data-theme="dark"] [class*="shadow-[1px_1px_0_0_#1a1a1a]"] { box-shadow: 1px 1px 0 0 rgba(243, 239, 230, 0.2) !important; }
+.dark [class*="shadow-[2px_2px_0_0_#1a1a1a]"], [data-theme="dark"] [class*="shadow-[2px_2px_0_0_#1a1a1a]"] { box-shadow: 2px 2px 0 0 rgba(243, 239, 230, 0.2) !important; }
+.dark [class*="shadow-[3px_3px_0_0_#1a1a1a]"], [data-theme="dark"] [class*="shadow-[3px_3px_0_0_#1a1a1a]"] { box-shadow: 3px 3px 0 0 rgba(243, 239, 230, 0.2) !important; }
+.dark [class*="shadow-[4px_4px_0_0_#1a1a1a]"], [data-theme="dark"] [class*="shadow-[4px_4px_0_0_#1a1a1a]"] { box-shadow: 4px 4px 0 0 rgba(243, 239, 230, 0.2) !important; }
+.dark [class*="shadow-[5px_5px_0_0_#1a1a1a]"], [data-theme="dark"] [class*="shadow-[5px_5px_0_0_#1a1a1a]"] { box-shadow: 5px 5px 0 0 rgba(243, 239, 230, 0.2) !important; }
+.dark [class*="shadow-[6px_6px_0_0_#1a1a1a]"], [data-theme="dark"] [class*="shadow-[6px_6px_0_0_#1a1a1a]"] { box-shadow: 6px 6px 0 0 rgba(243, 239, 230, 0.2) !important; }
+.dark [class*="shadow-[8px_8px_0_0_#1a1a1a]"], [data-theme="dark"] [class*="shadow-[8px_8px_0_0_#1a1a1a]"] { box-shadow: 8px 8px 0 0 rgba(243, 239, 230, 0.2) !important; }
+.dark [class*="shadow-[12px_12px_0_0_#1a1a1a]"], [data-theme="dark"] [class*="shadow-[12px_12px_0_0_#1a1a1a]"] { box-shadow: 12px 12px 0 0 rgba(243, 239, 230, 0.2) !important; }
+.dark [class*="rgba(26,26,26"], [data-theme="dark"] [class*="rgba(26,26,26"] {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(243, 239, 230, 0.1) !important;
 }
 
 .font-serif {

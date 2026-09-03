@@ -43,7 +43,7 @@ export function Home() {
   const navigate = useNavigate();
   const { language } = useLanguage();
 
-  const progressPercentage = (progress.xp % 100);
+  const progressPercentage = (progress.xp > 0 && progress.xp % 100 === 0) ? 100 : (progress.xp % 100);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
@@ -83,7 +83,7 @@ export function Home() {
                 required
                 value={inputName}
                 onChange={(e) => setInputName(e.target.value)}
-                placeholder="Masukkan Nickname-mu..."
+                placeholder={language === 'id' ? "Masukkan Nickname-mu..." : "Enter your nickname..."}
                 className="w-full border-[3px] border-sumi bg-kinari px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none focus:bg-kinari-light transition-colors"
                 autoFocus
               />
@@ -92,6 +92,13 @@ export function Home() {
                 className="w-full bg-ai text-kinari-light rounded-none border-[3px] border-sumi text-xs py-3.5 uppercase font-bold tracking-widest shadow-[4px_4px_0_0_#1a1a1a] hover:shadow-[1px_1px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
               >
                 {language === 'id' ? 'Masuk' : 'Submit'}
+              </Button>
+              <Button
+                type="button"
+                onClick={() => setUsername("Guest")}
+                className="w-full bg-kinari text-sumi rounded-none border-[3px] border-sumi text-xs py-3 uppercase font-bold tracking-widest shadow-[3px_3px_0_0_#1a1a1a] hover:shadow-[1px_1px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              >
+                {language === 'id' ? 'Lanjut sebagai Tamu (Skip)' : 'Continue as Guest (Skip)'}
               </Button>
             </form>
           </motion.div>

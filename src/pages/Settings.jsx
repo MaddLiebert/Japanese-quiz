@@ -73,7 +73,7 @@ export function Settings() {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Masukkan Nickname-mu..."
+                  placeholder={language === 'id' ? "Masukkan Nickname-mu..." : "Enter your nickname..."}
                   className="w-full border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none focus:border-ai transition-colors"
                 />
               </div>

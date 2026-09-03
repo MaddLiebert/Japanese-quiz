@@ -23,8 +23,13 @@ const allData = [
   ...kanjiData
 ];
 
-function shuffle(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 export function Review() {
@@ -57,8 +62,8 @@ export function Review() {
   useEffect(() => {
     if (isReviewing && currentWeakChar) {
       let pool = [];
-      if (currentWeakChar.id?.startsWith('hira_') || currentWeakChar.type === 'hiragana') pool = hiraganaData;
-      else if (currentWeakChar.id?.startsWith('kata_') || currentWeakChar.type === 'katakana') pool = katakanaData;
+      if (currentWeakChar.script === 'hiragana' || currentWeakChar.id?.startsWith('hira_') || currentWeakChar.type === 'hiragana') pool = hiraganaData;
+      else if (currentWeakChar.script === 'katakana' || currentWeakChar.id?.startsWith('kata_') || currentWeakChar.type === 'katakana') pool = katakanaData;
       else if (currentWeakChar.type === 'kotoba') pool = kotobaData;
       else if (currentWeakChar.type === 'grammar') pool = grammarData;
       else if (currentWeakChar.type === 'kanji') pool = kanjiData;
@@ -99,7 +104,7 @@ export function Review() {
     }
 
     // For kana, auto-advance. For others, let them click Next.
-    const isKana = currentWeakChar.id?.startsWith('hira_') || currentWeakChar.id?.startsWith('kata_') || currentWeakChar.type === 'hiragana' || currentWeakChar.type === 'katakana' || ['seion', 'dakuon', 'handakuon', 'yoon'].includes(currentWeakChar.type);
+    const isKana = currentWeakChar.script === 'hiragana' || currentWeakChar.script === 'katakana' || currentWeakChar.id?.startsWith('hira_') || currentWeakChar.id?.startsWith('kata_') || currentWeakChar.type === 'hiragana' || currentWeakChar.type === 'katakana' || ['seion', 'dakuon', 'handakuon', 'yoon'].includes(currentWeakChar.type);
 
     if (isKana) {
       timerRef.current = setTimeout(() => {
@@ -113,6 +118,39 @@ export function Review() {
     // kita cukup maju ke soal berikutnya di antrean review.
     setCurrentIndex(prev => prev + 1);
   };
+
+  // Keyboard navigation for Review session
+  useEffect(() => {
+    if (!isReviewing || !currentWeakChar) return;
+
+    const handleKeyDown = (e) => {
+      const target = e.target;
+      const activeTag = document.activeElement?.tagName;
+      if (
+        ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag) ||
+        (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) ||
+        target?.isContentEditable
+      ) {
+        return;
+      }
+
+      if (!isAnswered && e.key >= '1' && e.key <= '6') {
+        const index = parseInt(e.key, 10) - 1;
+        if (index >= 0 && index < options.length) {
+          e.preventDefault();
+          handleOptionClick(options[index]);
+        }
+      }
+
+      if (isAnswered && (e.key === ' ' || e.key === 'Enter')) {
+        e.preventDefault();
+        handleNextQuestion();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isReviewing, currentWeakChar, isAnswered, options]);
 
   // Check end of review session
   useEffect(() => {
