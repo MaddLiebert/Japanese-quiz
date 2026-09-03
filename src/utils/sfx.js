@@ -32,10 +32,10 @@ export const playCorrectSound = () => {
   osc.frequency.setValueAtTime(523.25, t);
   osc.frequency.exponentialRampToValueAtTime(659.25, t + 0.1);
 
-  // Soft fade out
+  // Bright fade out
   gainNode.gain.setValueAtTime(0, t);
-  gainNode.gain.linearRampToValueAtTime(0.3, t + 0.05);
-  gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+  gainNode.gain.linearRampToValueAtTime(0.8, t + 0.03);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
 
   osc.start(t);
   osc.stop(t + 0.6);
@@ -64,8 +64,8 @@ export const playWrongSound = () => {
   osc.frequency.exponentialRampToValueAtTime(80, t + 0.15);
 
   gainNode.gain.setValueAtTime(0, t);
-  gainNode.gain.linearRampToValueAtTime(0.4, t + 0.02);
-  gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+  gainNode.gain.linearRampToValueAtTime(0.8, t + 0.02);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
 
   osc.start(t);
   osc.stop(t + 0.25);
