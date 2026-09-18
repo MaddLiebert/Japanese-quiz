@@ -20,7 +20,7 @@ const HankoStamp = ({ text, label, delay = 0.5 }) => (
 );
 
 // Achievement stamp component
-const AchievementStamp = ({ id, meta, index }) => (
+const AchievementStamp = ({ meta, index }) => (
   <motion.div
     initial={{ scale: 2, opacity: 0, rotate: 15 }}
     animate={{ scale: 1, opacity: 1, rotate: (index % 2 === 0 ? -6 : 4) }}
