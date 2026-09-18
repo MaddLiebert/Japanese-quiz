@@ -131,7 +131,7 @@ export function Learn() {
                 whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleRowSelect(chapter.chapter)}
-                className="bg-kinari border-[3px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] hover:shadow-[2px_2px_0_0_#1a1a1a] transition-all cursor-pointer p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between relative overflow-hidden group gap-4"
+                className="bg-kinari border-[3px] border-sumi shadow-[6px_6px_0_0_rgba(var(--sumi-val),1)] hover:shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)] transition-all cursor-pointer p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between relative overflow-hidden group gap-4"
               >
                 <div className="absolute inset-0 bg-seigaiha opacity-[0.03] group-hover:opacity-10 transition-opacity"></div>
                 <div className="relative z-10 flex flex-col gap-2">
@@ -187,7 +187,7 @@ export function Learn() {
                 whileHover={{ y: -4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleRowSelect(row)}
-                className="bg-kinari border-[3px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] hover:shadow-[2px_2px_0_0_#1a1a1a] transition-all cursor-pointer p-8 flex flex-col relative overflow-hidden group min-h-[200px]"
+                className="bg-kinari border-[3px] border-sumi shadow-[6px_6px_0_0_rgba(var(--sumi-val),1)] hover:shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)] transition-all cursor-pointer p-8 flex flex-col relative overflow-hidden group min-h-[200px]"
               >
                 <div className="absolute inset-0 bg-seigaiha opacity-[0.03] group-hover:opacity-10 transition-opacity"></div>
                 <div className="relative z-10 flex items-start justify-between w-full mb-8">
@@ -266,7 +266,7 @@ export function Learn() {
             {(!isKurikulum && activeKanaType !== 'kotoba' && activeKanaType !== 'grammar' && activeKanaType !== 'kanji') && <span className="text-xl sm:text-2xl text-sumi/40 font-normal">({selectedRow}行)</span>}
           </h1>
         </div>
-        <div className="text-sm font-bold tracking-[0.3em] text-sumi bg-kinari border-[3px] border-sumi px-6 py-2 shadow-[4px_4px_0_0_#1a1a1a] relative z-10">
+        <div className="text-sm font-bold tracking-[0.3em] text-sumi bg-kinari border-[3px] border-sumi px-6 py-2 shadow-[4px_4px_0_0_rgba(var(--sumi-val),1)] relative z-10">
           <span className="text-ai">{currentCardIndex + 1}</span> / {rowKana.length}
         </div>
       </header>
@@ -283,7 +283,7 @@ export function Learn() {
           <Button 
             onClick={handlePrev} 
             disabled={currentCardIndex === 0}
-            className={`w-32 sm:w-40 border-[3px] border-sumi bg-kinari text-sumi font-bold uppercase tracking-widest text-[10px] sm:text-xs shadow-[4px_4px_0_0_#1a1a1a] rounded-none ${currentCardIndex === 0 ? 'opacity-30 cursor-not-allowed shadow-none hover:translate-x-0 hover:translate-y-0 hover:shadow-none' : 'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a]'}`}
+            className={`w-32 sm:w-40 border-[3px] border-sumi bg-kinari text-sumi font-bold uppercase tracking-widest text-[10px] sm:text-xs shadow-[4px_4px_0_0_rgba(var(--sumi-val),1)] rounded-none ${currentCardIndex === 0 ? 'opacity-30 cursor-not-allowed shadow-none hover:translate-x-0 hover:translate-y-0 hover:shadow-none' : 'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)]'}`}
           >
             Previous
           </Button>
@@ -291,7 +291,7 @@ export function Learn() {
           <Button 
             onClick={handleNext}
             disabled={currentCardIndex === rowKana.length - 1}
-            className={`w-32 sm:w-40 border-[3px] border-sumi bg-sumi text-kinari-light font-bold uppercase tracking-widest text-[10px] sm:text-xs shadow-[4px_4px_0_0_#1a1a1a] rounded-none ${currentCardIndex === rowKana.length - 1 ? 'opacity-30 cursor-not-allowed shadow-none hover:translate-x-0 hover:translate-y-0 hover:shadow-none' : 'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light'}`}
+            className={`w-32 sm:w-40 border-[3px] border-sumi bg-ai text-kinari-light font-bold uppercase tracking-widest text-[10px] sm:text-xs shadow-[4px_4px_0_0_rgba(var(--sumi-val),1)] rounded-none ${currentCardIndex === rowKana.length - 1 ? 'opacity-30 cursor-not-allowed shadow-none hover:translate-x-0 hover:translate-y-0 hover:shadow-none' : 'hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)]'}`}
           >
             Next
           </Button>
