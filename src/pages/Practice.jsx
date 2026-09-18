@@ -95,7 +95,6 @@ export function Practice() {
   const [quizStarted, setQuizStarted] = useState(false);
   const [activeKanaType, setActiveKanaType] = useState('hiragana');
   const [activeKanaSubtype, setActiveKanaSubtype] = useState('all');
-  const [mixedPools, setMixedPools] = useState(['hiragana', 'katakana', 'kotoba', 'grammar', 'kanji']);
   const navigate = useNavigate();
   const timerRef = useRef(null);
 
@@ -225,39 +224,31 @@ export function Practice() {
   ]);
 
   const allRows = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')
-    ? [...new Set(filteredData.map(item => item.category))]
-    : [...new Set(filteredData.map(item => item.row))];
-  const difficulties = ['Easy', 'Medium', 'Hard'];
+      ? [...new Set(filteredData.map(item => item.category))]
+      : [...new Set(filteredData.map(item => item.row))];
+    const difficulties = ['Easy', 'Medium', 'Hard'];
 
-  const handleKanaTypeChange = (type) => {
-    setActiveKanaType(type);
-    setSelectedRows([]); // reset selection when switching type
-    setActiveKanaSubtype('all');
-  };
+    const handleKanaTypeChange = (type) => {
+      setActiveKanaType(type);
+      setSelectedRows([]); // reset selection when switching type
+      setActiveKanaSubtype('all');
+    };
 
-  const toggleRow = (row) => {
-    setSelectedRows(prev =>
-      prev.includes(row)
-        ? prev.filter(r => r !== row)
-        : [...prev, row]
-    );
-  };
+    const toggleRow = (row) => {
+      setSelectedRows(prev =>
+        prev.includes(row)
+          ? prev.filter(r => r !== row)
+          : [...prev, row]
+      );
+    };
 
-  const toggleMixedPool = (pool) => {
-    setMixedPools(prev =>
-      prev.includes(pool)
-        ? prev.filter(p => p !== pool)
-        : [...prev, pool]
-    );
-  };
+    const handleStartQuiz = () => {
+      if (selectedRows.length === 0) return;
+      initializeQuiz({ rows: selectedRows, difficulty, sourceData: activeData });
+      setQuizStarted(true);
+    };
 
-  const handleStartQuiz = () => {
-    if (selectedRows.length === 0) return;
-    initializeQuiz({ rows: selectedRows, difficulty, sourceData: activeData });
-    setQuizStarted(true);
-  };
-
-  const handleFullChallenge = () => {
+    const handleFullChallenge = () => {
     const allRowNames = (activeKanaType === 'kotoba' || activeKanaType === 'kanji')
       ? [...new Set(filteredData.map(item => item.category))]
       : [...new Set(filteredData.map(item => item.row))];
@@ -281,10 +272,9 @@ export function Practice() {
     }
 
     if (currentQuestion) {
-      const isKotobaMode = currentQuestion.type === 'kotoba';
-      const isKanjiMode = currentQuestion.type === 'kanji';
-      const isGrammarMode = currentQuestion.type === 'grammar';
-      const isKanaMode = !isKotobaMode && !isKanjiMode && !isGrammarMode;
+          const isKotobaMode = currentQuestion.type === 'kotoba';
+          const isKanjiMode = currentQuestion.type === 'kanji';
+          const isGrammarMode = currentQuestion.type === 'grammar';
 
       // ── Kanji Quiz UI ────────────────────────────────────────────────────────
       if (isKanjiMode) {

@@ -113,7 +113,7 @@ export function Review() {
     }
   };
 
-  const handleNextQuestion = (wasCorrect = isCorrect) => {
+  const handleNextQuestion = () => {
     // Apapun yang terjadi (mau bener atau salah), 
     // kita cukup maju ke soal berikutnya di antrean review.
     setCurrentIndex(prev => prev + 1);
