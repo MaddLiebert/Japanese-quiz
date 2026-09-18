@@ -1,0 +1,97 @@
+[
+  {
+    "id": "m01",
+    "chapter": 1,
+    "title": "Dai 1 Ka - Mondai 1",
+    "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
+    "questionText": "Pertanyaan 1: Dengarkan audio berikut dan pilih jawaban yang paling tepat.",
+    "options": [
+      "はい、わたしはがくせいです。",
+      "いいえ、いしゃではありません。",
+      "はじめまして、マイク・ミラーです。",
+      "アメリカからきました。"
+    ],
+    "correctIndex": 2,
+    "explanation": "Pada percakapan audio pertama, pembicara memperkenalkan diri dengan salam 'Hajimemashite, Maiku Miraa desu'.",
+    "dialogScript": [
+      { "speaker": "男", "text": "はじめまして、マイク・ミラーです。アメリカから来ました。" },
+      { "speaker": "女", "text": "はじめまして。私は田中です。よろしくお願いします。" }
+    ]
+  },
+  {
+    "id": "m02",
+    "chapter": 1,
+    "title": "Dai 1 Ka - Mondai 2",
+    "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
+    "questionText": "Pertanyaan 2: Apa yang dikatakan pria tersebut?",
+    "options": [
+      "わたし は がくせい です。",
+      "わたし は せんせい です。",
+      "わたし は かいしゃいん です。",
+      "わたし は いしゃ です。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pria tersebut menyatakan 'Watashi wa gakusei desu' (Saya adalah mahasiswa).",
+    "dialogScript": [
+      { "speaker": "女", "text": "ミラーさんは、学生ですか。" },
+      { "speaker": "男", "text": "はい、私は学生です。" }
+    ]
+  },
+  {
+    "id": "m03",
+    "chapter": 1,
+    "title": "Dai 1 Ka - Mondai 3",
+    "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
+    "questionText": "Pertanyaan 3: Siapa nama pria tersebut?",
+    "options": [
+      "たなか さん",
+      "まいく・みらー さん",
+      "さとう さん",
+      "すずき さん"
+    ],
+    "correctIndex": 1,
+    "explanation": "Nama pria tersebut adalah Maiku Miraa (Mike Miller) seperti yang diperkenalkannya.",
+    "dialogScript": [
+      { "speaker": "女", "text": "ミラーさん、お国はどちらですか。" },
+      { "speaker": "男", "text": "アメリカです。" }
+    ]
+  },
+  {
+    "id": "m04",
+    "chapter": 1,
+    "title": "Dai 1 Ka - Mondai 4",
+    "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
+    "questionText": "Pertanyaan 4: Dari mana asal pria tersebut?",
+    "options": [
+      "イギリス から きました。",
+      "アメリカ から きました。",
+      "オーストラリア から きました。",
+      "カナダ から きました。"
+    ],
+    "correctIndex": 1,
+    "explanation": "Pria tersebut menjawab 'Amerika desu' ketika ditanya asal negaranya.",
+    "dialogScript": [
+      { "speaker": "女", "text": "ミラーさん、お国はどちらですか。" },
+      { "speaker": "男", "text": "アメリカです。" }
+    ]
+  },
+  {
+    "id": "m05",
+    "chapter": 1,
+    "title": "Dai 1 Ka - Mondai 5",
+    "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
+    "questionText": "Pertanyaan 5: Apa pekerjaan wanita tersebut?",
+    "options": [
+      "せんせい です。",
+      "かいしゃいん です。",
+      "がくせい です。",
+      "いしゃ です。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Wanita tersebut memperkenalkan diri sebagai sensei (guru).",
+    "dialogScript": [
+      { "speaker": "男", "text": "田中さんは、お仕事は何ですか。" },
+      { "speaker": "女", "text": "私は先生です。" }
+    ]
+  }
+]

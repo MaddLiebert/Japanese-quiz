@@ -53,3 +53,19 @@ export const playDramaticAudio = (text) => {
 
   window.speechSynthesis.speak(utterance);
 };
+
+// Play audio file from static path (e.g. /audio/filename.mp3)
+export const playAudioFile = (audioPath) => {
+  if (typeof window === 'undefined') return null;
+
+  // Stop Web Speech Synthesis if playing
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+
+  const audio = new Audio(audioPath);
+  audio.play().catch((err) => {
+    console.warn('Audio play error:', err);
+  });
+  return audio;
+};

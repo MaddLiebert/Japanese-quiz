@@ -279,17 +279,31 @@ export function Home() {
             {/* Actions */}
             <div className="flex-1 grid grid-rows-2">
               <motion.div onClick={() => navigate('/practice')} whileHover={{ backgroundColor: "rgba(24, 43, 73, 0.05)" }} className="p-6 sm:p-8 border-b-[4px] border-sumi cursor-pointer flex items-center justify-between group transition-colors">
-                <div className="flex flex-col gap-2">
-                  <h4 className="text-xl sm:text-2xl font-serif font-bold text-sumi group-hover:text-ai transition-colors">
-                    {language === 'id' ? 'Kuis Latihan' : 'Practice Quiz'}
-                  </h4>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
-                    {language === 'id' ? 'Latihan Berulang' : 'Configurable Repetition'}
-                  </p>
-                </div>
-                <div className="w-14 h-14 rounded-full border-[3px] border-sumi flex items-center justify-center group-hover:bg-ai group-hover:border-ai group-hover:text-kinari-light transition-all flex-shrink-0">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </div>
+              <div className="flex flex-col gap-2">
+              <h4 className="text-xl sm:text-2xl font-serif font-bold text-sumi group-hover:text-ai transition-colors">
+                {language === 'id' ? 'Kuis Latihan' : 'Practice Quiz'}
+              </h4>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                {language === 'id' ? 'Latihan Berulang' : 'Configurable Repetition'}
+              </p>
+              </div>
+              <div className="w-14 h-14 rounded-full border-[3px] border-sumi flex items-center justify-center group-hover:bg-ai group-hover:border-ai group-hover:text-kinari-light transition-all flex-shrink-0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </div>
+              </motion.div>
+
+              <motion.div onClick={() => navigate('/mondai')} whileHover={{ backgroundColor: "rgba(230, 0, 18, 0.05)" }} className="p-6 sm:p-8 border-b-[4px] border-sumi cursor-pointer flex items-center justify-between group transition-colors">
+              <div className="flex flex-col gap-2">
+              <h4 className="text-xl sm:text-2xl font-serif font-bold text-sumi group-hover:text-[#E60012] transition-colors">
+                {language === 'id' ? 'Mondai (Listening)' : 'Mondai Listening'}
+              </h4>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                {language === 'id' ? 'Kuis Audio Bab 1' : 'Choukai Audio Quiz'}
+              </p>
+              </div>
+              <div className="w-14 h-14 rounded-full border-[3px] border-sumi flex items-center justify-center group-hover:bg-[#E60012] group-hover:border-[#E60012] group-hover:text-kinari-light transition-all flex-shrink-0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </div>
               </motion.div>
 
               <motion.div onClick={() => navigate('/review')} whileHover={{ backgroundColor: "rgba(211, 56, 47, 0.05)" }} className="p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors relative overflow-hidden bg-kinari-light">
