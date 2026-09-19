@@ -2,7 +2,7 @@
   {
     "id": "m01",
     "chapter": 1,
-    "title": "Dai 1 Ka - Mondai 1",
+    "title": "Dai 1 Ka - Kaiwa",
     "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
     "questionText": "Pertanyaan 1: Dengarkan audio berikut dan pilih jawaban yang paling tepat.",
     "options": [
@@ -14,84 +14,2164 @@
     "correctIndex": 2,
     "explanation": "Pada percakapan audio pertama, pembicara memperkenalkan diri dengan salam 'Hajimemashite, Maiku Miraa desu'.",
     "dialogScript": [
-      { "speaker": "男", "text": "はじめまして、マイク・ミラーです。アメリカから来ました。" },
-      { "speaker": "女", "text": "はじめまして。私は田中です。よろしくお願いします。" }
+      {
+        "speaker": "男",
+        "text": "はじめまして、マイク・ミラーです。アメリカから来ました。"
+      },
+      {
+        "speaker": "女",
+        "text": "はじめまして。私は田中です。よろしくお願いします。"
+      }
     ]
   },
   {
     "id": "m02",
     "chapter": 1,
-    "title": "Dai 1 Ka - Mondai 2",
-    "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
-    "questionText": "Pertanyaan 2: Apa yang dikatakan pria tersebut?",
+    "title": "Dai 1 Ka - Mondai 1",
+    "audio": "/audio/02 Dai 1 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 1): Dengarkan audio dan pilih jawaban yang sesuai.",
     "options": [
-      "わたし は がくせい です。",
-      "わたし は せんせい です。",
-      "わたし は かいしゃいん です。",
-      "わたし は いしゃ です。"
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
     ],
     "correctIndex": 0,
-    "explanation": "Pria tersebut menyatakan 'Watashi wa gakusei desu' (Saya adalah mahasiswa).",
+    "explanation": "Pembahasan untuk latihan listening Bab 1 (Mondai 1).",
     "dialogScript": [
-      { "speaker": "女", "text": "ミラーさんは、学生ですか。" },
-      { "speaker": "男", "text": "はい、私は学生です。" }
+      {
+        "speaker": "男",
+        "text": "第1課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
     ]
   },
   {
     "id": "m03",
     "chapter": 1,
-    "title": "Dai 1 Ka - Mondai 3",
-    "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
-    "questionText": "Pertanyaan 3: Siapa nama pria tersebut?",
+    "title": "Dai 1 Ka - Mondai 2",
+    "audio": "/audio/03 Dai 1 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 1): Dengarkan audio dan pilih jawaban yang sesuai.",
     "options": [
-      "たなか さん",
-      "まいく・みらー さん",
-      "さとう さん",
-      "すずき さん"
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
     ],
-    "correctIndex": 1,
-    "explanation": "Nama pria tersebut adalah Maiku Miraa (Mike Miller) seperti yang diperkenalkannya.",
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 1 (Mondai 2).",
     "dialogScript": [
-      { "speaker": "女", "text": "ミラーさん、お国はどちらですか。" },
-      { "speaker": "男", "text": "アメリカです。" }
+      {
+        "speaker": "男",
+        "text": "第1課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
     ]
   },
   {
     "id": "m04",
     "chapter": 1,
-    "title": "Dai 1 Ka - Mondai 4",
-    "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
-    "questionText": "Pertanyaan 4: Dari mana asal pria tersebut?",
+    "title": "Dai 1 Ka - Mondai 3",
+    "audio": "/audio/04 Dai 1 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 1): Dengarkan audio dan pilih jawaban yang sesuai.",
     "options": [
-      "イギリス から きました。",
-      "アメリカ から きました。",
-      "オーストラリア から きました。",
-      "カナダ から きました。"
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
     ],
-    "correctIndex": 1,
-    "explanation": "Pria tersebut menjawab 'Amerika desu' ketika ditanya asal negaranya.",
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 1 (Mondai 3).",
     "dialogScript": [
-      { "speaker": "女", "text": "ミラーさん、お国はどちらですか。" },
-      { "speaker": "男", "text": "アメリカです。" }
+      {
+        "speaker": "男",
+        "text": "第1課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
     ]
   },
   {
     "id": "m05",
-    "chapter": 1,
-    "title": "Dai 1 Ka - Mondai 5",
-    "audio": "/audio/01 Dai 1 Ka - Kaiwa.mp3",
-    "questionText": "Pertanyaan 5: Apa pekerjaan wanita tersebut?",
+    "chapter": 2,
+    "title": "Dai 2 Ka - Kaiwa",
+    "audio": "/audio/05 Dai 2 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 2: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
     "options": [
-      "せんせい です。",
-      "かいしゃいん です。",
-      "がくせい です。",
-      "いしゃ です。"
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
     ],
     "correctIndex": 0,
-    "explanation": "Wanita tersebut memperkenalkan diri sebagai sensei (guru).",
+    "explanation": "Pembahasan untuk latihan listening Bab 2 (Kaiwa).",
     "dialogScript": [
-      { "speaker": "男", "text": "田中さんは、お仕事は何ですか。" },
-      { "speaker": "女", "text": "私は先生です。" }
+      {
+        "speaker": "男",
+        "text": "第2課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m06",
+    "chapter": 2,
+    "title": "Dai 2 Ka - Mondai 1",
+    "audio": "/audio/06 Dai 2 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 2): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 2 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第2課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m07",
+    "chapter": 2,
+    "title": "Dai 2 Ka - Mondai 2",
+    "audio": "/audio/07 Dai 2 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 2): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 2 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第2課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m08",
+    "chapter": 2,
+    "title": "Dai 2 Ka - Mondai 3",
+    "audio": "/audio/08 Dai 2 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 2): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 2 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第2課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m09",
+    "chapter": 3,
+    "title": "Dai 3 Ka - Kaiwa",
+    "audio": "/audio/09 Dai 3 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 3: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 3 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第3課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m10",
+    "chapter": 3,
+    "title": "Dai 3 Ka - Mondai 1",
+    "audio": "/audio/10 Dai 3 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 3): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 3 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第3課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m11",
+    "chapter": 3,
+    "title": "Dai 3 Ka - Mondai 2",
+    "audio": "/audio/11 Dai 3 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 3): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 3 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第3課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m12",
+    "chapter": 4,
+    "title": "Dai 4 Ka - Kaiwa",
+    "audio": "/audio/12 Dai 4 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 4: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 4 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第4課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m13",
+    "chapter": 4,
+    "title": "Dai 4 Ka - Mondai 1",
+    "audio": "/audio/13 Dai 4 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 4): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 4 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第4課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m14",
+    "chapter": 4,
+    "title": "Dai 4 Ka - Mondai 2",
+    "audio": "/audio/14 Dai 4 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 4): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 4 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第4課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m15",
+    "chapter": 4,
+    "title": "Dai 4 Ka - Mondai 3",
+    "audio": "/audio/15 Dai 4 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 4): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 4 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第4課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m16",
+    "chapter": 4,
+    "title": "Dai 4 Ka - Mondai 4",
+    "audio": "/audio/16 Dai 4 Ka - Mondai 4.mp3",
+    "questionText": "Soal Mondai 4 (Bab 4): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 4 (Mondai 4).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第4課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m17",
+    "chapter": 5,
+    "title": "Dai 5 Ka - Kaiwa",
+    "audio": "/audio/17 Dai 5 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 5: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 5 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第5課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m18",
+    "chapter": 5,
+    "title": "Dai 5 Ka - Mondai 1",
+    "audio": "/audio/18 Dai 5 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 5): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 5 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第5課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m19",
+    "chapter": 5,
+    "title": "Dai 5 Ka - Mondai 2",
+    "audio": "/audio/19 Dai 5 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 5): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 5 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第5課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m20",
+    "chapter": 5,
+    "title": "Dai 5 Ka - Mondai 3",
+    "audio": "/audio/20 Dai 5 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 5): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 5 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第5課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m21",
+    "chapter": 6,
+    "title": "Dai 6 Ka - Kaiwa",
+    "audio": "/audio/21 Dai 6 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 6: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 6 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第6課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m22",
+    "chapter": 6,
+    "title": "Dai 6 Ka - Mondai 1",
+    "audio": "/audio/22 Dai 6 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 6): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 6 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第6課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m23",
+    "chapter": 6,
+    "title": "Dai 6 Ka - Mondai 2",
+    "audio": "/audio/23 Dai 6 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 6): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 6 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第6課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m24",
+    "chapter": 7,
+    "title": "Dai 7 Ka - Kaiwa",
+    "audio": "/audio/24 Dai 7 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 7: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 7 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第7課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m25",
+    "chapter": 7,
+    "title": "Dai 7 Ka - Mondai 1",
+    "audio": "/audio/25 Dai 7 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 7): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 7 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第7課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m26",
+    "chapter": 7,
+    "title": "Dai 7 Ka - Mondai 2",
+    "audio": "/audio/26 Dai 7 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 7): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 7 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第7課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m27",
+    "chapter": 7,
+    "title": "Dai 7 Ka - Mondai 3",
+    "audio": "/audio/27 Dai 7 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 7): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 7 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第7課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m28",
+    "chapter": 8,
+    "title": "Dai 8 Ka - Kaiwa",
+    "audio": "/audio/28 Dai 8 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 8: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 8 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第8課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m29",
+    "chapter": 8,
+    "title": "Dai 8 Ka - Mondai 1",
+    "audio": "/audio/29 Dai 8 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 8): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 8 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第8課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m30",
+    "chapter": 8,
+    "title": "Dai 8 Ka - Mondai 2",
+    "audio": "/audio/30 Dai 8 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 8): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 8 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第8課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m31",
+    "chapter": 8,
+    "title": "Dai 8 Ka - Mondai 3",
+    "audio": "/audio/31 Dai 8 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 8): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 8 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第8課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m32",
+    "chapter": 9,
+    "title": "Dai 9 Ka - Kaiwa",
+    "audio": "/audio/32 Dai 9 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 9: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 9 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第9課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m33",
+    "chapter": 9,
+    "title": "Dai 9 Ka - Mondai 1",
+    "audio": "/audio/33 Dai 9 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 9): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 9 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第9課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m34",
+    "chapter": 9,
+    "title": "Dai 9 Ka - Mondai 2",
+    "audio": "/audio/34 Dai 9 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 9): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 9 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第9課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m35",
+    "chapter": 10,
+    "title": "Dai 10 Ka - Kaiwa",
+    "audio": "/audio/35 Dai 10 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 10: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 10 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第10課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m36",
+    "chapter": 10,
+    "title": "Dai 10 Ka - Mondai 1",
+    "audio": "/audio/36 Dai 10 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 10): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 10 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第10課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m37",
+    "chapter": 10,
+    "title": "Dai 10 Ka - Mondai 2",
+    "audio": "/audio/37 Dai 10 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 10): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 10 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第10課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m38",
+    "chapter": 10,
+    "title": "Dai 10 Ka - Mondai 3",
+    "audio": "/audio/38 Dai 10 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 10): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 10 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第10課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m39",
+    "chapter": 11,
+    "title": "Dai 11 Ka - Kaiwa",
+    "audio": "/audio/39 Dai 11 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 11: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 11 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第11課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m40",
+    "chapter": 11,
+    "title": "Dai 11 Ka - Mondai 1",
+    "audio": "/audio/40 Dai 11 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 11): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 11 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第11課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m41",
+    "chapter": 11,
+    "title": "Dai 11 Ka - Mondai 2",
+    "audio": "/audio/41 Dai 11 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 11): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 11 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第11課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m42",
+    "chapter": 11,
+    "title": "Dai 11 Ka - Mondai 3",
+    "audio": "/audio/42 Dai 11 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 11): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 11 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第11課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m43",
+    "chapter": 12,
+    "title": "Dai 12 Ka - Kaiwa",
+    "audio": "/audio/43 Dai 12 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 12: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 12 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第12課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m44",
+    "chapter": 12,
+    "title": "Dai 12 Ka - Mondai 1",
+    "audio": "/audio/44 Dai 12 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 12): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 12 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第12課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m45",
+    "chapter": 12,
+    "title": "Dai 12 Ka - Mondai 2",
+    "audio": "/audio/45 Dai 12 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 12): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 12 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第12課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m46",
+    "chapter": 13,
+    "title": "Dai 13 Ka - Kaiwa",
+    "audio": "/audio/46 Dai 13 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 13: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 13 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第13課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m47",
+    "chapter": 13,
+    "title": "Dai 13 Ka - Mondai 1",
+    "audio": "/audio/47 Dai 13 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 13): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 13 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第13課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m48",
+    "chapter": 13,
+    "title": "Dai 13 Ka - Mondai 2",
+    "audio": "/audio/48 Dai 13 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 13): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 13 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第13課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m49",
+    "chapter": 14,
+    "title": "Dai 14 Ka - Kaiwa",
+    "audio": "/audio/49 Dai 14 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 14: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 14 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第14課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m50",
+    "chapter": 14,
+    "title": "Dai 14 Ka - Mondai 1",
+    "audio": "/audio/50 Dai 14 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 14): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 14 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第14課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m51",
+    "chapter": 14,
+    "title": "Dai 14 Ka - Mondai 2",
+    "audio": "/audio/51 Dai 14 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 14): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 14 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第14課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m52",
+    "chapter": 14,
+    "title": "Dai 14 Ka - Mondai 3",
+    "audio": "/audio/52 Dai 14 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 14): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 14 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第14課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m53",
+    "chapter": 15,
+    "title": "Dai 15 Ka - Kaiwa",
+    "audio": "/audio/53 Dai 15 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 15: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 15 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第15課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m54",
+    "chapter": 15,
+    "title": "Dai 15 Ka - Mondai 1",
+    "audio": "/audio/54 Dai 15 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 15): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 15 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第15課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m55",
+    "chapter": 15,
+    "title": "Dai 15 Ka - Mondai 2",
+    "audio": "/audio/55 Dai 15 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 15): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 15 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第15課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m56",
+    "chapter": 16,
+    "title": "Dai 16 Ka - Kaiwa",
+    "audio": "/audio/56 Dai 16 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 16: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 16 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第16課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m57",
+    "chapter": 16,
+    "title": "Dai 16 Ka - Mondai 1",
+    "audio": "/audio/57 Dai 16 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 16): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 16 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第16課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m58",
+    "chapter": 16,
+    "title": "Dai 16 Ka - Mondai 2",
+    "audio": "/audio/58 Dai 16 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 16): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 16 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第16課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m59",
+    "chapter": 16,
+    "title": "Dai 16 Ka - Mondai 3",
+    "audio": "/audio/59 Dai 16 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 16): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 16 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第16課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m60",
+    "chapter": 17,
+    "title": "Dai 17 Ka - Kaiwa",
+    "audio": "/audio/60 Dai 17 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 17: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 17 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第17課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m61",
+    "chapter": 17,
+    "title": "Dai 17 Ka - Mondai 1",
+    "audio": "/audio/61 Dai 17 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 17): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 17 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第17課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m62",
+    "chapter": 17,
+    "title": "Dai 17 Ka - Mondai 2",
+    "audio": "/audio/62 Dai 17 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 17): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 17 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第17課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m63",
+    "chapter": 18,
+    "title": "Dai 18 Ka - Kaiwa",
+    "audio": "/audio/63 Dai 18 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 18: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 18 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第18課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m64",
+    "chapter": 18,
+    "title": "Dai 18 Ka - Mondai 1",
+    "audio": "/audio/64 Dai 18 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 18): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 18 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第18課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m65",
+    "chapter": 18,
+    "title": "Dai 18 Ka - Mondai 2",
+    "audio": "/audio/65 Dai 18 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 18): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 18 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第18課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m66",
+    "chapter": 19,
+    "title": "Dai 19 Ka - Kaiwa",
+    "audio": "/audio/66 Dai 19 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 19: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 19 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第19課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m67",
+    "chapter": 19,
+    "title": "Dai 19 Ka - Mondai 1",
+    "audio": "/audio/67 Dai 19 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 19): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 19 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第19課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m68",
+    "chapter": 19,
+    "title": "Dai 19 Ka - Mondai 2",
+    "audio": "/audio/68 Dai 19 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 19): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 19 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第19課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m69",
+    "chapter": 20,
+    "title": "Dai 20 Ka - Kaiwa",
+    "audio": "/audio/69 Dai 20 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 20: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 20 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第20課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m70",
+    "chapter": 20,
+    "title": "Dai 20 Ka - Mondai 1",
+    "audio": "/audio/70 Dai 20 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 20): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 20 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第20課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m71",
+    "chapter": 20,
+    "title": "Dai 20 Ka - Mondai 2",
+    "audio": "/audio/71 Dai 20 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 20): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 20 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第20課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m72",
+    "chapter": 21,
+    "title": "Dai 21 Ka - Kaiwa",
+    "audio": "/audio/72 Dai 21 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 21: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 21 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第21課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m73",
+    "chapter": 21,
+    "title": "Dai 21 Ka - Mondai 1",
+    "audio": "/audio/73 Dai 21 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 21): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 21 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第21課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m74",
+    "chapter": 21,
+    "title": "Dai 21 Ka - Mondai 2",
+    "audio": "/audio/74 Dai 21 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 21): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 21 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第21課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m75",
+    "chapter": 22,
+    "title": "Dai 22 Ka - Kaiwa",
+    "audio": "/audio/75 Dai 22 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 22: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 22 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第22課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m76",
+    "chapter": 22,
+    "title": "Dai 22 Ka - Mondai 1",
+    "audio": "/audio/76 Dai 22 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 22): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 22 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第22課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m77",
+    "chapter": 22,
+    "title": "Dai 22 Ka - Mondai 2",
+    "audio": "/audio/77 Dai 22 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 22): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 22 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第22課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m78",
+    "chapter": 23,
+    "title": "Dai 23 Ka - Kaiwa",
+    "audio": "/audio/78 Dai 23 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 23: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 23 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第23課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m79",
+    "chapter": 23,
+    "title": "Dai 23 Ka - Mondai 1",
+    "audio": "/audio/79 Dai 23 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 23): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 23 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第23課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m80",
+    "chapter": 23,
+    "title": "Dai 23 Ka - Mondai 2",
+    "audio": "/audio/80 Dai 23 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 23): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 23 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第23課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m81",
+    "chapter": 23,
+    "title": "Dai 23 Ka - Mondai 3",
+    "audio": "/audio/81 Dai 23 Ka - Mondai 3.mp3",
+    "questionText": "Soal Mondai 3 (Bab 23): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 23 (Mondai 3).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第23課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m82",
+    "chapter": 24,
+    "title": "Dai 24 Ka - Kaiwa",
+    "audio": "/audio/82 Dai 24 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 24: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 24 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第24課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m83",
+    "chapter": 24,
+    "title": "Dai 24 Ka - Mondai 1",
+    "audio": "/audio/83 Dai 24 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 24): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 24 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第24課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m84",
+    "chapter": 24,
+    "title": "Dai 24 Ka - Mondai 2",
+    "audio": "/audio/84 Dai 24 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 24): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 24 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第24課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m85",
+    "chapter": 25,
+    "title": "Dai 25 Ka - Kaiwa",
+    "audio": "/audio/85 Dai 25 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan Bab 25: Dengarkan audio berikut dan tentukan isi percakapan yang tepat.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 25 (Kaiwa).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第25課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m86",
+    "chapter": 25,
+    "title": "Dai 25 Ka - Mondai 1",
+    "audio": "/audio/86 Dai 25 Ka - Mondai 1.mp3",
+    "questionText": "Soal Mondai 1 (Bab 25): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 25 (Mondai 1).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第25課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
+    ]
+  },
+  {
+    "id": "m87",
+    "chapter": 25,
+    "title": "Dai 25 Ka - Mondai 2",
+    "audio": "/audio/87 Dai 25 Ka - Mondai 2.mp3",
+    "questionText": "Soal Mondai 2 (Bab 25): Dengarkan audio dan pilih jawaban yang sesuai.",
+    "options": [
+      "はい、そうです。",
+      "いいえ、ちがいます。",
+      "わかりました。",
+      "どうぞよろしくおねがいします。"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembahasan untuk latihan listening Bab 25 (Mondai 2).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第25課のリスニング問題です。"
+      },
+      {
+        "speaker": "女",
+        "text": "はい、わかりました。"
+      }
     ]
   }
 ]
