@@ -71,23 +71,21 @@ const Quiz = ({ chapter, onComplete }) => {
   if (!currentQuestion) return null;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 min-h-screen flex flex-col">
+    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none"></div>
+
       {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-bold text-gray-800">
-            Bab {chapter.chapter}: {chapter.title}
-          </h2>
-          <span className="text-sm font-bold text-red-600 bg-red-100 px-3 py-1 rounded-full">
-            Soal {currentQuestionIndex + 1}/{questions.length}
+      <div className="mb-8 relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-[4px] border-sumi pb-6">
+        <div>
+          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-shu bg-shu/10 px-3 py-1 w-fit border-[2px] border-shu/20 inline-block mb-2">
+            {language === 'id' ? 'Bab' : 'Chapter'} {chapter.chapter}
           </span>
+          <h2 className="text-2xl sm:text-3xl font-serif font-black text-sumi">
+            {chapter.title}
+          </h2>
         </div>
-        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            className="h-full bg-red-600"
-          />
+        <div className="text-sm font-bold tracking-[0.3em] text-sumi bg-kinari border-[3px] border-sumi px-6 py-2 shadow-[4px_4px_0_0_rgba(26,26,26,1)]">
+          <span className="text-ai">{currentQuestionIndex + 1}</span> / {questions.length}
         </div>
       </div>
 
@@ -96,109 +94,115 @@ const Quiz = ({ chapter, onComplete }) => {
         key={currentQuestionIndex}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="border-[4px] border-sumi bg-kinari-light p-6 sm:p-10 shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] relative"
+        className="border-[4px] border-sumi bg-kinari-light p-6 sm:p-12 shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] relative z-10 flex-1 flex flex-col justify-between"
       >
-        {/* Audio Section */}
-        <div className="mb-8">
-          <AudioPlayer
-            audioSrc={currentQuestion.audio}
-            onPlay={handlePlayAudio}
-            onPause={handlePauseAudio}
-          />
-        </div>
+        <div>
+          {/* Audio Section */}
+          <div className="mb-8">
+            <AudioPlayer
+              audioSrc={currentQuestion.audio}
+              onPlay={handlePlayAudio}
+              onPause={handlePauseAudio}
+            />
+          </div>
 
-        {/* Question Text */}
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
-          {currentQuestion.questionText}
-        </h3>
+          {/* Question Text */}
+          <h3 className="text-xl sm:text-2xl font-bold text-sumi mb-8">
+            {currentQuestion.questionText}
+          </h3>
 
-        {/* Options */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          {currentQuestion.options.map((option, index) => {
-            const isSelected = selectedOption === index;
-            const isCorrect = index === currentQuestion.correctIndex;
-            const showResult = isAnswered;
+          {/* Options */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            {currentQuestion.options.map((option, index) => {
+              const isSelected = selectedOption === index;
+              const isCorrect = index === currentQuestion.correctIndex;
+              const showResult = isAnswered;
 
-            let buttonClass = "bg-white border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 ";
-            let icon = "";
+              let buttonClass = "bg-kinari-light border-sumi text-sumi hover:bg-sumi/5 ";
+              let icon = "";
 
-            if (showResult) {
-              if (isCorrect) {
-                buttonClass = "bg-green-100 border-2 border-green-500 text-green-800 ";
-                icon = "✓ ";
-              } else if (isSelected && !isCorrect) {
-                buttonClass = "bg-red-100 border-2 border-red-500 text-red-800 ";
-                icon = "✕ ";
-              } else {
-                buttonClass = "bg-gray-100 border-2 border-gray-200 opacity-50 ";
+              if (showResult) {
+                if (isCorrect) {
+                  buttonClass = "bg-matcha/10 border-matcha text-matcha font-bold ";
+                  icon = "✓ ";
+                } else if (isSelected && !isCorrect) {
+                  buttonClass = "bg-shu/10 border-shu text-shu font-bold ";
+                  icon = "✕ ";
+                } else {
+                  buttonClass = "bg-sumi/5 border-sumi/20 text-sumi/40 opacity-50 ";
+                }
+              } else if (isSelected) {
+                buttonClass = "bg-shu/10 border-shu text-shu font-bold ";
               }
-            } else if (isSelected) {
-              buttonClass = "bg-red-100 border-2 border-red-500 ";
-            }
 
-            return (
-              <button
-                key={index}
-                onClick={() => handleSelectOption(index)}
-                disabled={isAnswered || isPlaying}
-                className={`
-                  p-4 rounded-xl text-left font-medium transition-all
-                  border-2 shadow-sm hover:shadow-md active:scale-98
-                  ${buttonClass}
-                `}
-              >
-                <span className="font-bold mr-2 text-red-600">
-                  {String.fromCharCode(65 + index)}.
-                </span>
-                <span>{icon}</span>
-                {option}
-              </button>
-            );
-          })}
+              return (
+                <motion.button
+                  key={index}
+                  whileHover={!isAnswered ? { scale: 1.01 } : {}}
+                  whileTap={!isAnswered ? { scale: 0.99 } : {}}
+                  onClick={() => handleSelectOption(index)}
+                  disabled={isAnswered || isPlaying}
+                  className={`
+                    p-4 sm:p-6 text-left font-bold transition-all
+                    border-[3px] shadow-[4px_4px_0_0_rgba(26,26,26,1)] hover:shadow-[2px_2px_0_0_rgba(26,26,26,1)] active:translate-x-[2px] active:translate-y-[2px] rounded-none
+                    ${buttonClass}
+                  `}
+                >
+                  <span className="font-mono text-sumi/60 mr-3">
+                    {String.fromCharCode(65 + index)}.
+                  </span>
+                  <span className="mr-2">{icon}</span>
+                  <span>{option}</span>
+                </motion.button>
+              );
+            })}
+          </div>
+
+          {/* Explanation */}
+          {isAnswered && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="mt-6 p-6 bg-kinari border-[3px] border-sumi/20"
+            >
+              <span className="font-bold text-sumi uppercase tracking-widest text-xs block mb-2">
+                {language === 'id' ? 'Penjelasan:' : 'Explanation:'}
+              </span>
+              <p className="text-sumi/80 font-medium">{currentQuestion.explanation}</p>
+            </motion.div>
+          )}
         </div>
-
-        {/* Explanation */}
-        {isAnswered && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200"
-          >
-            <span className="font-bold text-gray-700">Penjelasan:</span>
-            <p className="text-gray-600 mt-1">{currentQuestion.explanation}</p>
-          </motion.div>
-        )}
 
         {/* Navigation */}
-        <div className="mt-8 flex items-center justify-between">
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10 flex items-center justify-between">
           <button
             onClick={handlePrev}
             disabled={currentQuestionIndex === 0}
             className={`
-              px-6 py-3 rounded-xl font-bold transition-all
+              px-6 py-3 font-bold uppercase tracking-widest text-xs transition-all border-[3px] rounded-none
               ${currentQuestionIndex === 0 
-                ? "opacity-50 cursor-not-allowed bg-gray-200 text-gray-500" 
-                : "bg-gray-600 text-white hover:bg-gray-700 hover:shadow-lg active:scale-95"
+                ? "opacity-30 cursor-not-allowed bg-kinari border-sumi/20 text-sumi/40" 
+                : "bg-kinari border-sumi text-sumi shadow-[4px_4px_0_0_rgba(26,26,26,1)] hover:shadow-[2px_2px_0_0_rgba(26,26,26,1)] active:translate-x-[2px] active:translate-y-[2px]"
               }
             `}
           >
-            ← Sebelumnya
+            {language === 'id' ? '← Sebelumnya' : '← Previous'}
           </button>
 
           <button
             onClick={handleNext}
             disabled={!isAnswered}
             className={`
-              px-6 py-3 rounded-xl font-bold text-lg transition-all
+              px-8 py-4 font-bold text-sm uppercase tracking-widest transition-all border-[3px] rounded-none
               ${!isAnswered
-                ? "opacity-50 cursor-not-allowed bg-gray-200 text-gray-500" 
-                : "bg-red-600 text-white hover:bg-red-700 hover:shadow-xl active:scale-95"
+                ? "opacity-30 cursor-not-allowed bg-kinari border-sumi/20 text-sumi/40" 
+                : "bg-sumi border-sumi text-kinari-light shadow-[4px_4px_0_0_rgba(26,26,26,1)] hover:shadow-[2px_2px_0_0_rgba(26,26,26,1)] active:translate-x-[2px] active:translate-y-[2px]"
               }
             `}
           >
             {currentQuestionIndex === questions.length - 1 
-              ? "Selesai" 
-              : "Selanjutnya →"
+              ? (language === 'id' ? 'Selesai' : 'Finish') 
+              : (language === 'id' ? 'Selanjutnya →' : 'Next →')
             }
           </button>
         </div>
