@@ -1,0 +1,898 @@
+[
+  {
+    "id": "m01",
+    "title": "Dai 1 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 2,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": false,
+    "transcript": "第1か 買いははじめましておはようございますおはようございます佐藤さん こちらは マイクミラさんですはじめまして マイクミラーですアメリカから来ましたどうぞよろしく佐藤ケーコですどうぞよろしく"
+  },
+  {
+    "id": "m02",
+    "title": "Dai 1 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第1か。問題。一番。例。あなたは先生ですか?一。あなたは三都さんですか?二。お名前は?三。何歳ですか?四。アメリカ人ですか?五。会社員ですか?"
+  },
+  {
+    "id": "m03",
+    "title": "Dai 1 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番でおはようございますおはようございます1こちらはパワー電気のシミットさんですはじめましてシミットですどうぞよろしく2お名前は1ですあんさんですかいや、1です何歳ですか?29歳です"
+  },
+  {
+    "id": "m04",
+    "title": "Dai 1 Ka - Mondai 3",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "3番0 1タローちゃんは何歳ですか?8歳ですタローちゃんは10歳です0 23と3は先生ですか?いいえ、先生じゃありません会社員です3と3は会社員です1始めましてミラーですアメリカから来ましたどうぞよろしく佐藤ですどうぞよろしくミラーさんはアメリカ人です2あの方はどなたですか?カリナさんです先生ですか?いいえ、不自大学の学生ですカリナさんは不自大学の先生です3いいさんは研究者ですか?はいワンさんも研究者ですか?いいえ、ワンさんは一者ですワンさんは研究者じゃありません"
+  },
+  {
+    "id": "m05",
+    "title": "Dai 2 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第2か、かいは、これからお世話になります。はい、どうなったですか?4,8のサントスです。こんにちは、サントスです。これからお世話になります。どうぞよろしくお願いします。こちらこそよろしくお願いします。あのー、これコーヒーです。どうぞ。どうもありがとうございます。"
+  },
+  {
+    "id": "m06",
+    "title": "Dai 2 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第2か。問題。一番。一。これは手長ですか?二。これはあですか?王ですか?三。これは何ですか?四。これは何の雑誌ですか?五。このカバンはあなたのですか?"
+  },
+  {
+    "id": "m07",
+    "title": "Dai 2 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1はいどなたですか?5マルゴのミラーですミラーですこれからお世話になりますどうぞよろしくお願いします田中ですこちらこそよろしくお願いします2あのーこれどうぞえ?何ですか?チョコレートですどうもありがとうございます"
+  },
+  {
+    "id": "m08",
+    "title": "Dai 2 Ka - Mondai 3",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 0,
+    "matching_options": [
+      "はい、そうです。"
+    ],
+    "placeholder_script": true,
+    "transcript": "3番1それは鉄長ですか?いえ、違います何ですか?実証ですこれは鉄長です2キムラさん、あの車はキムラさんのですか?はい、そうです私のですあの車はキムラさんのです3それはコンピューターの雑誌ですか?いえ、カメラの雑誌ですそうですかこれはコンピューターの雑誌じゃありません"
+  },
+  {
+    "id": "m09",
+    "title": "Dai 3 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第3か 買いはこれをくださいいらっしゃいますすみませんワイングリバはどこですか近いっかいですどうもすみませんそのワインを見せてくださいはい どうぞこれはどこのワインですか日本のですいくらですか2500円ですじゃあこれをください"
+  },
+  {
+    "id": "m10",
+    "title": "Dai 3 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第3か。問題。一番。一。奥にはどちらですか?二。内はどちらですか?三。あなたの時計はどこの時計ですか?四。あなたのカメラは日本のですか?五。あなたのカメラはいくらですか?"
+  },
+  {
+    "id": "m11",
+    "title": "Dai 3 Ka - Mondai 2",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 0,
+    "matching_options": [
+      "はい、そうです。"
+    ],
+    "placeholder_script": true,
+    "transcript": "2番1すみません 事務所はどこですか?あそこです食堂はそこですどうも食堂はあそこです2すみません 佐藤さんはどちらですか?佐藤さんは会議室ですミラーさんも会議室ですか?はい そうですどうもミラーさんは会議室です3会社はどちらですか?パワー電気です何の会社ですか?コンピューターの会社ですそうですかパワー電気はコンピューターの会社です4すみません 時計売り場はどこですか?発体ですどうも時計売り場は一回です5すみません この時計はいくらですか?23600円ですじゃあこれをくださいこの時計は23800円です"
+  },
+  {
+    "id": "m12",
+    "title": "Dai 4 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第4か 買いはそちらは何時までですかすみません アスカの電話番号は何番ですかアスカですか527号の 272号ですどうもありがとうございますはい アスカですすみません そちらは何時までですか10時までですやすみは何曜日ですか日曜日ですそうですかどうも"
+  },
+  {
+    "id": "m13",
+    "title": "Dai 4 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第4か。問題。一番。一。今何時ですか?二。あなたの国の銀行は何時から何時までですか?三。毎日何時におきますか?四。昨日勉強しましたか?五。あなたの電話番号は何番ですか?"
+  },
+  {
+    "id": "m14",
+    "title": "Dai 4 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1今は何時ですか?4時半ですロンドンは何時ですか?午前7時半です2昨日何時に寝ましたか?12時に寝ましたけさ何時におきましたか?6時半におきました"
+  },
+  {
+    "id": "m15",
+    "title": "Dai 4 Ka - Mondai 3",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 0,
+    "matching_options": [
+      "はい、そうです。"
+    ],
+    "placeholder_script": true,
+    "transcript": "3番1ミラーさん 昨日何時まで働きましたか?10時まで働きました今日も10時まで働きますか?いえ 五時に終わりますミラーさんは今日10時まで働きます2緑と所管ですか?はい そうですすみません 休みは何曜日ですか?月曜日ですどうも月曜日と所管は休みです3カリナさん 大学は何時からですか?9時からです何時に終わりますか?4時に終わりますカリナさんは9時から50まで勉強します"
+  },
+  {
+    "id": "m16",
+    "title": "Dai 4 Ka - Mondai 4",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "4番レー今、9時半です1けさ7時半におきました2会社は朝8時20分からです3毎日9時から6時まで働きます4昼休みは12時15分から1時15分までです5田中さんのうちの電話番号は349の785です6美術館の電話番号は075の138の6697です7この本は3650円です8あのコンピューターは20万8000円です"
+  },
+  {
+    "id": "m17",
+    "title": "Dai 5 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第5か 会話この電車は 公視園へ行きますかすみません 公視園までいくらですか350円です350円ですね ありがとうございましたどういたしましてすみません 公視園は何番線ですか5番線ですどうも あのこの電車は公視園へ行きますかいえ 次の普通ですよそうですか どうも"
+  },
+  {
+    "id": "m18",
+    "title": "Dai 5 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第5か。問題。一番。一。日曜日どこへ行きますか?二。なんでスーパーへ行きますか?三。誰とスーパーへ行きますか?四。昨日どこへ行きましたか?が。誕生日は何月何日ですか?"
+  },
+  {
+    "id": "m19",
+    "title": "Dai 5 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1みらさんは日曜日どこへ行きましたか?ならへ行きました佐藤さんは?どこも行きませんでした2今日は何日ですか?4月曜日です何曜日ですか?火曜日です"
+  },
+  {
+    "id": "m20",
+    "title": "Dai 5 Ka - Mondai 3",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "3番1ミラさん いつ名古屋行きますか挟って行きます1人で行きますかいいえ 山田さんと行きますミラさんは挟って山田さんと名古屋行きます2いいさん お国はどちらですか韓国ですいつ2本へ行きましたか去年の6月に来ましたいいさんは去年6月に韓国から来ました3この電車は京都へ行きますかいいえ 行きません次の電車ですよそうですか ども次の電車は京都へ行きます"
+  },
+  {
+    "id": "m21",
+    "title": "Dai 6 Ka - Kaiwa",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "第6か、会話、一緒に行きませんか?ミラーさん、何ですか?明日、友達とお話みをします。ミラーさんも一緒に行きませんか?いいですね。どこへ行きますか?大阪城です。何時に行きますか?十字に大阪駅で会いましょう。わかりました。じゃあ、また明日。"
+  },
+  {
+    "id": "m22",
+    "title": "Dai 6 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第6か。問題。一番。1。あなたはタバコをすいますか?2。マイアさ新聞を読みますか?3。けさ何を飲みましたか?4。明日何をしますか?5。いつもどこで昼ご飯を食べますか?"
+  },
+  {
+    "id": "m23",
+    "title": "Dai 6 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1山田さんはお酒を飲みますか?はい、飲みますいつもどこで飲みますか?うちで飲みます山田さんはお酒を飲みません2ミラーさん、けさあ朝ごはんを食べましたか?はい、食べました何を食べましたか?パントたまごを食べましたミラーさんはけさパントたまごを食べました3ミラーさん、土曜日何をしましたか?朝と所管で勉強しました5号何をしましたか?校部で映画を見ましたミラーさんは土曜日の5号、校部で映画を見ました4いいさん、昨日どこへ行きましたか?京都へ行きました京都で何をしましたか?お花見をしましたいいさんは昨日京都でお花見をしました5ミラーさん、土曜日一緒に手にそうしませんか?はい、いいですねどこでしますか?富士大学でしましょうミラーさんは土曜日、富士大学へ行きます"
+  },
+  {
+    "id": "m24",
+    "title": "Dai 7 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第7か、会話、イラッシャイ。はい、サントスです。イラッシャイ。どうぞお上がりください。失礼します。コーヒーはいかがですか?ありがとうございます。どうぞ、いただきます。このスプーン素敵ですね。えー、会社の人にもらいました。メキシコのお見上げです。"
+  },
+  {
+    "id": "m25",
+    "title": "Dai 7 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第7か。問題。一番。一。もう番ごはんを食べましたか?二。なんでごはんを食べますか?三。去年の誕生日にプレゼントをもらいましたか?四。お母さんの誕生日に何をあげますか?五。選挙は日本語で何ですか?"
+  },
+  {
+    "id": "m26",
+    "title": "Dai 7 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1みらさん コーヒーはいかがですか?ありがとうございますどうぞいただきます2その猫体素敵ですねこれですか?誕生日に母にもらいましたそうですか"
+  },
+  {
+    "id": "m27",
+    "title": "Dai 7 Ka - Mondai 3",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "3番1カリナさん、もう昼ごはんを食べましたか?いいえ、またです。じゃあ、一緒に食べませんか?ええ、いきましょう。カリナさんは一人で昼ごはんを食べます。2ミラさん、もう東京にレポートを送りましたか?はい、送りました。なんで送りましたか?メールで送りました。ミラさんはメールで東京にレポートを送りました。3ミラさん、その本はミラさんのですか?いいえ、年間からかりました。もう読みましたか?いいえ、まだです。こんばん読みます。ミラさんは年間の本をもう読みました。"
+  },
+  {
+    "id": "m28",
+    "title": "Dai 8 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第8か、会話。そろそろ失礼します。マリアさん、日本の生活はどうですか?毎日とても楽しいです。そうですか。サンドスさん、お仕事はどうですか?そうですね。忙しいですが、面白いです。コーヒー、もういっぱいいかがですか?いえ、結構です。あ、もう6時ですね。そろそろ失礼します。そうですか。今日はどうもありがとうございました。いえ、またいらっしゃってください。"
+  },
+  {
+    "id": "m29",
+    "title": "Dai 8 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第8か。問題。一番。一。家族は元気ですか?二。あなたの国は今暑いですか?三。仕事は面白いですか?四。あなたの国はどんな国ですか?五。日本語はどうですか?"
+  },
+  {
+    "id": "m30",
+    "title": "Dai 8 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1そのシャツはいくらですか?これですか?いえ、その白いシャツですこれは3500円です2今日はどうもありがとうございましたいえ、またいらっしゃってくださいじゃあおやすみなさい"
+  },
+  {
+    "id": "m31",
+    "title": "Dai 8 Ka - Mondai 3",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "3番1暑いですね冷たいお茶はいかがですか?はい、ありがとうございますこれから冷たいお茶を飲みます2カリナさん、明日何をしますか?友達と大阪所へ行きますそうですか、私は先週に行きましたどんなところですか?とても綺麗なところですよそして静かです大阪所は綺麗ですそしてニミアカです3日本の生活はどうですか?毎日楽しいです日本の食べ物はどうですか?そうですねおいしいですが高いです日本の食べ物はおいしいですそして安いです"
+  },
+  {
+    "id": "m32",
+    "title": "Dai 9 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第9か 買いは 残念ですがはいキムラさんですか ミラーですあ ミラーさん こんばんは お元気ですかはい 元気ですあの キムラさん クラシックのコンサート 一緒にいかがですかいいですね いつですか来週の金曜日の番です金曜日ですか 金曜日の番はちょっとダメですか残念ですが 友達と約束がありますからそうですかまた 今度お願いします"
+  },
+  {
+    "id": "m33",
+    "title": "Dai 9 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第9か。問題。一番。1。お母さんは料理が上手ですか?2。どんなスポーツが好きですか?3。こんばん約束がありますか?4。感じがわかりますか?5。どうして日本語を勉強しますか?"
+  },
+  {
+    "id": "m34",
+    "title": "Dai 9 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1マリアさんのご主人はどんなスポーズが好きですか?サッカーが好きですマリアさんは私はテニスが好きですマリアさんのご主人はテニスが好きです2さんとさんは日本語が上手ですねありがとうございます感じはどうですか?少しわかりますが難しいですさんとさんは感じが全然わかりません3ミラーさん料理が上手ですねうちでいつも料理をしますから誰に習いましたか?母にならいましたミラーさんはお母さんに料理を習いました4キムラさん映画のチケットがあります一緒に行きませんか?いつですか?明日です明日ですか残念ですが友達と約束がありますからちょっとキムラさんは明日日までですから映画を見ます5ビールいかがですか?いえ、結構ですミラーさんはビールが嫌いですか?いえ、好きですが車できましたからそうですかミラーさんは車できましたからビールを飲みません"
+  },
+  {
+    "id": "m35",
+    "title": "Dai 10 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第10か 買いはナンプラーありますかすみません アジアストアはどこですかアジアストアですかあそこに白いビルがありますねあのビルの中ですそうですか どうもすみませんいいえあのナンプラーありますかはい あちらに大量りのコーナーがありますナンプラーは一番したです分かりました どうも"
+  },
+  {
+    "id": "m36",
+    "title": "Dai 10 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第10か問題一番1あなたは今どこにいますか2あなたのうちにいるがいますか3あなたの部屋にとけがありますか4日本語の実証はどこにありますか5うちの近くに何がありますか"
+  },
+  {
+    "id": "m37",
+    "title": "Dai 10 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1あの、すみません、トイレはどこですか?あそこに階段がありますね?えお手洗いはあの階段の後ろですどうも2すみません、実証はどこですか?あの電話の左ですよありませんよそうですか、あ、あそこえ?あの上ですあ、どうも3佐藤さんですか?ミラーですあ、ミラーさん?今、どこにいますか?駅の前ですそうですか、じゃあ、今いきますはい"
+  },
+  {
+    "id": "m38",
+    "title": "Dai 10 Ka - Mondai 3",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "3番1こんにちは、テレーザちゃんはいますか?いえ、テレーザは公園行きましたよ?そうですかテレーザちゃんは公園にいます2グプタさん、奥にはどちらですか?インドですそうですか、家族と一緒に日本行きましたか?いえ、一人できました家族は国にいますそうですかグプタさんは家族と日本行きました"
+  },
+  {
+    "id": "m39",
+    "title": "Dai 11 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第11か 買いはこれお願いしますいい天気ですね おでかけですかえ ちょっと有名曲までそうですか 行ってらっしゃい行ってきますこれオストラリアまでお願いしますはい 船輪ですか 航空輪ですか航空輪はいくらですか7600円です船輪は34550円ですどのくらいかかりますか航空輪でなのか 船輪で2ヶ月ぐらいですじゃあ 船輪でお願いします"
+  },
+  {
+    "id": "m40",
+    "title": "Dai 11 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第11か。問題。1番。1。家族は何人ですか?2。あなたのうちに部屋がいくつありますか?3。あなたの国から日本まで飛行機で何時間かかりますか?4。今までどのくらい日本語を勉強しましたか?5。1ヶ月に何回ぐらい映画を見ますか?"
+  },
+  {
+    "id": "m41",
+    "title": "Dai 11 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1巨大がいますか?はい妹が1人います 学生です2いらっしゃいませコーヒーを2つとアイスクリームを1つお願いしますかしこまりました"
+  },
+  {
+    "id": "m42",
+    "title": "Dai 11 Ka - Mondai 3",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "3番180円の切っておじゅうまいと 50円の切っておじゅうまいくださいはい、全部で1300円ですはいどうもありがとうございました女の人は切っておにじゅうまい買いました2この手紙、エアメールでお願いしますはい、インドですね 90円ですどのくらいかかりますか?よーかぐらいです手紙はインドまでエアメールでよっかかかります3どこで日本語を勉強しましたか?国で日本人の先生にならいました毎日勉強しましたか?いいえ、水曜日と土曜日に勉強しました国で一週間に1回日本語を勉強しました"
+  },
+  {
+    "id": "m43",
+    "title": "Dai 12 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第12か 買いはギオン祭りはどうでしたかただいまお帰りのさいこれ 京都のお見上げですどうもすみませんギオン祭りはどうでしたか面白かったですとても逃げやかでしたギオン祭りは 京都の祭りで一番有名ですからねそうですか写真をたくさんとりましたこれですすごい人ですねちょっと疲れました"
+  },
+  {
+    "id": "m44",
+    "title": "Dai 12 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第12か。問題。一番。一。機能の天気はどうでしたか?二。選手は忙しかったですか?三。あなたの国と日本とどちらが人が多いですか?四。一年でいつが一番好きですか?五。あなたの国でどこが一番有名ですか?"
+  },
+  {
+    "id": "m45",
+    "title": "Dai 12 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1田中さん 新しい車ですねえー 戦列買いました山田さんの車より大きいですねえー 少し大きいです男の人の車は山田さんの車より大きいです2みらさんは海と山田どちらが好きですか?海の方が好きですカリナさんはどちらが好きですか?そうですね私はどちらも好きですカリナさんは海の方が好きです3日本は寒いですねそうですねでも来月の方が寒いですよ1年で1月が1番寒いですから12月は1月より寒いです4戦終京都で友達とギオマツリを見ましたどうでしたか?面白かったです人がとても多かったですよそうですかギオマツリはとてもニニアカでした5昨日初めて日本料理を食べましたとても美味しかったです何を食べましたか?さしみやテンプラやすしを食べました何が一番美味しかったですか?そうですねテンプラが一番美味しかったです日本料理でテンプラが一番美味しかったです"
+  },
+  {
+    "id": "m46",
+    "title": "Dai 13 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第13か 会話別々にお願いしますもう12時ですよ 昼ごはんを食べに行きませんかええ どこへ行きますかそうですね 今日は日本料理が食べたいですねじゃあ スリアへ行きましょうご注文は私はテンプラ定食私は牛ドンテンプラ定食と牛ドンですね 少々お待ちください1680円でございますすみません 別々にお願いしますはい テンプラ定食は980円牛ドンは700円です"
+  },
+  {
+    "id": "m47",
+    "title": "Dai 13 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第13か。問題。1番。1。今何が一番欲しいですか?2。明日何をしたいですか?3。今誰に一番会いたいですか?4。週末はどこへ遊びに行きたいですか?が。飛行機のキップをあなたにあげます。どこへ何をしに行きますか?"
+  },
+  {
+    "id": "m48",
+    "title": "Dai 13 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1佐藤さん、今何が一番欲しいですか?そうですね、新しいパソコンが欲しいですパソコンですか?山田さんは?私は毎日忙しいですから時間が欲しいです男の人は忙しいですから時間がありません2お腹が好きましたねえ、何か食べたいですねできの前にいいレストランがありますそうですか、じゃあ行きましょう男の人と女の人はレストランが食事に行きます3山田さん、夏休みはどこか行きますか?いいええ、どうしたですか?休みはよっかだけですから、うちで休みたいです男の人は夏休みにどこも行きません4こんばんはこんばんはおでかけですか?え、駅まで子どもを迎えに行きますそうですか、言ってらっしゃい男の人は駅で子どもに会います5カリナさんは日本へ何の勉強に来ましたか?美術の勉強に来ましたそうですか、勉強はどうですか?日本語がよくわかりませんから、大変ですカリナさんは日本へ日本語の勉強に来ました"
+  },
+  {
+    "id": "m49",
+    "title": "Dai 14 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第14か 買いは緑町までお願いします緑町までお願いしますはいすみませんあの信号を右へ曲がってください右ですねえまっすぐですかえまっすぐいってくださいあの花屋の前で止めてくださいはい1800円ですこれでお願いします3200円のお釣りですありがとうございました"
+  },
+  {
+    "id": "m50",
+    "title": "Dai 14 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第14か。問題。一番。一。今雨が降っていますか?二。今何をしていますか?三。今何か飲んでいますか?四。今家族は何をしていますか?五。あなたのうちの住所を書いてください。"
+  },
+  {
+    "id": "m51",
+    "title": "Dai 14 Ka - Mondai 2",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "2番1佐藤さんはどこにいますか?1回でコピーしています。呼びましょうか?え、すぐ呼んでください。はい、わかりました。2。新王さかまでお願いします。はい。あの信号を右へ曲がってください。はい。あの白いビルの前で止めてください。"
+  },
+  {
+    "id": "m52",
+    "title": "Dai 14 Ka - Mondai 3",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "3番1雨が降っていますね一緒にたくしで帰りませんかあのー 今日は車できましたから一緒にいかがですかああ そうですか じゃあお願いします男の人と女の人は一緒に車で帰ります2山田です こんにちは今週の土曜日にうちでパーティーをしますみらさんも来てくださいきむらさんも来ますよまた後で電話をかけます土曜日にきむらさんのうちでパーティーをします3カリナさん その実証をちょっと貸してくださいすみません 今使っていますじゃあ後でお願いします男の人は後で実証をかります"
+  },
+  {
+    "id": "m53",
+    "title": "Dai 15 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第15か 買いはご家族は?良い笑顔でしたねええ 私は家族を思い出しましたそうですか ミラーさんのご家族は?両親と アネが一人いますどちらにいらっしゃいますか?両親はニューヨークの近くに住んでいますアネはロンドンで働いていますキムラさんのご家族は?3人です父は銀行員です母は高校で英語を教えています"
+  },
+  {
+    "id": "m54",
+    "title": "Dai 15 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第15か。問題。一番。一。美術館で写真をとってもいいですか?二。あなたの国でどんな日本の製品を売っていますか?三。日本で一番高い山を知っていますか?四。家族はどこに住んでいますか?五。お仕事は何ですか?"
+  },
+  {
+    "id": "m55",
+    "title": "Dai 15 Ka - Mondai 2",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "2番1ここでたばこをすってもいいですか?すみません、あちらのロビーでお願いします。ロビーでたばこをすってもいいです。2ここに車を止めてもいいですか?すみません、あちらに止めてください。わかりました。ここに車を止めてはいけません。3良心とアニが一人います。良心は韓国に住んでいますがアニはアメリカの大学で教えています。良心の家族はみんなアメリカに住んでいます。4失礼ですがお仕事はパワー電気で働いています。独心ですか?いえ、つまわ大学でドイツ語を教えています。男の人の奥さんはドイツ語の先生です。5佐藤さん、パワー電気の電話番号を教えていますか?はい、9348567です。住所はちょっと待ってください。はい、これです。どうも。女の人はパワー電気の電話番号を教っていますが住所を教りません。"
+  },
+  {
+    "id": "m56",
+    "title": "Dai 16 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第16か 階は 使い方を教えてくださいすみませんが ちょっと使い方を教えてくださいお引き出しですかそうですじゃあ まずここをしてくださいはい次に キャッシュカードをここに入れて 安処番号をしてくださいはい 押しましたじゃあ 金額をしてください5万円ですが 5この 万円を押しますそれから この確認ボタンをしてくださいはい どうもありがとうございました"
+  },
+  {
+    "id": "m57",
+    "title": "Dai 16 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第16日。問題。一番。一。朝起きて何をしますか?二。昨日番ご飯を食べてから何をしましたか?三。あなたの打ちから空港までどうやっていきますか?三。日本の食べ物はどうですか?が。お母さんはどんな人ですか?"
+  },
+  {
+    "id": "m58",
+    "title": "Dai 16 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1会社までいつもどうやっていきますか?GRで大阪まで行って、近鉄に乗り変えて、日本橋でおります。それから会社まで歩いていきます。そうですか?2すみません。カリナさんはどの人ですか?あの人ですよ?え?あの世が高くて髪が短い人です。どうも。"
+  },
+  {
+    "id": "m59",
+    "title": "Dai 16 Ka - Mondai 3",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "3番1勉強は何時に終わりますか?3時に終わりますじゃあ勉強が終わってからテニスをしませんか?いいですねじゃあ3時半ごろロビで待っています女の人は3時まで勉強してそれからテニスをします2料はどうですか?静かで綺麗です液から何分ぐらいかかりますか?バスで20分ぐらいですそうですか少し遠いですね男の人の料は液から近くて静かで綺麗です3料交はどうでしたか?疲れました土曜日に広島を見て日曜日に長さきへ行きましたそうですか忙しかったですね男の人は週末に料交をしました"
+  },
+  {
+    "id": "m60",
+    "title": "Dai 17 Ka - Kaiwa",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "第17か 会話 どうしましたかどうしましたか 昨日からのどがいたくて熱も少しありますそうですか ちょっと口を開けてください 風ですね二三日ゆっくり休んだください あのー明日から東京へ出張しなければなりませんじゃあ 今日は薬を飲んで早く寝てください はい それからこんばんはお風呂に入らないでくださいねはいわかりました じゃあ大事に どうもありがとうございました"
+  },
+  {
+    "id": "m61",
+    "title": "Dai 17 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第17か。問題。一番。一。外国旅行に何を持っていかなければなりませんか?二。あなたの国で子どもは何歳から学校へ行かなければなりませんか?三。毎朝何時に起きなければなりませんか?四。明日出かけなければなりませんか?が。毎日日本語を話さなければなりませんか?"
+  },
+  {
+    "id": "m62",
+    "title": "Dai 17 Ka - Mondai 2",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "2番1綺麗ですねーあの花の前で写真を取りましょうあ、すみませんそこに入らないでくださいあ、すみません花の写真を取ってはいけません2こんばん一緒に食事に行きませんか?すみません今日は早く変わらなければなりませんそうですか残念ですねまた今度お願いします今日男の人と女の人は一緒に食事に行きません3こんばんお風呂に入ってもいいですか?いや、今日は入らないでくださいそれから23日スポーツはしないでくださいはい、わかりました今日男の人はスポーツをしてはいけません4この薬は朝と番ご飯を食べてから飲んでください昼は飲まなくてもいいですか?はい、飲まなくてもいいですわかりました男の人は一日に2階薬を飲まなければなりません5明日の朝は何も食べないでくださいね食事までに病院へ来てくださいあの、飲み物は飲んでもいいですか?いいえ、水も飲まないでくださいわかりました男の人は明日の朝何も食べてはいけませんが水は飲んでもいいです"
+  },
+  {
+    "id": "m63",
+    "title": "Dai 18 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第18か 会話趣味は何ですかさんとさんの趣味は何ですか写真ですどんな写真をとりますか動物の写真です特にうまが好きですえぇ それは面白いですね日本へ来てからうまの写真をとりましたかいえ日本ではなかなかうまを見ることができません北海道にうまがたくさんいますよ本当ですかじゃあナシアスミにぜひ行きたいです"
+  },
+  {
+    "id": "m64",
+    "title": "Dai 18 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第18か。問題。一番。一。ダンスができますか?二。何メートルぐらいをよくことができますか?三。あなたの国で何歳から車を運転することができますか?四。趣味は何ですか?五。毎晩寝る前に何をしますか?"
+  },
+  {
+    "id": "m65",
+    "title": "Dai 18 Ka - Mondai 2",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "2番1趣味は何ですか?いろいろな国の料理を作ることです今までにどんな国の料理を作りましたか?タイヤーインドやメキシコやすごいですね男の人の趣味はいろいろな国の料理を食べることです2いらっしゃいませコーヒーとサンド1をお願いしますすみませんが、まずあちらでチケットを買ってくださいあ、そうですか食べる前にチケットを買わなければなりません3こちらは一番新しい製品です軽いですね使い方も簡単ですよちょっと高いですねカードを使うことができますかはい、できますよこの店で現金で払わなければなりません4来週のパーティーに行きますかええ、何か手伝えましょうかじゃあ、すみませんがお願いします何時に行きましょうかパーティーは6時からです30分ぐらい前に行きてください女の人は6時にパーティーに行きます5はい、緑と所管ですそちらまでどうやって行きますか?50番のバスに乗って、都所管前で降りてください車で行ってもいいですか近くに止めることができませんからバスでお願いしますはい、わかりました女の人は車で都所管へ行きます"
+  },
+  {
+    "id": "m66",
+    "title": "Dai 19 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第19か 買いはダイエットは明日からしますおばーいマリアさんあまり食べませんねえー 昨日からダイエットをしていますそうですか 私もダイエットしたことがありますどんなダイエットですか?毎日リンゴだけ食べたり 水をたくさん飲んだりしましたでも無理なダイエットは 体によくないですねそうですねマリアさん このアイスクリーム美味しいですよそうですか ダイエットはまた明日からします"
+  },
+  {
+    "id": "m67",
+    "title": "Dai 19 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第19か 問題一番1スモーを見たことがありますか2日曜日何をしますか3日本で何をしたいですか4次の誕生日に何歳になりますか"
+  },
+  {
+    "id": "m68",
+    "title": "Dai 19 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1お父さんはお元気ですか?え、父はもう81歳になりましたが、母とりをこうしたり、野菜を作ったりしていますそうですか?女の人の良心は元気です2、風ですか?え、のどが痛いですから何も食べたくないですそうですか、病院へ行きましたか?いえ、くすりやでくすりを買いましたおとこの人はなかなか元気になりませんから病院へ行きました3あの、失礼ですがはいどこかであったことがありますねえ?1ヶ月ぐらい前に飛行機で隣に座りましたねああ、そうでしたね女の人はおとこの人にあったことがあります4このリンゴ、いくらですか?1つ180円ですもう少しやすくなりますか?じゃあ、2つ300円じゃあ、4つ下さいリンゴは全部で600円です5山田さん、富士さんに登ったことがありますか?え、1回だけあります雪がありましたか?え、夏でしたがありましたおとこの人は夏に富士さんで雪を見たことがあります"
+  },
+  {
+    "id": "m69",
+    "title": "Dai 20 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第20か会話一緒に行かない?夏休みは国へ帰る?うん帰りたいけどそうターポンくん富士さんに登ったことある?うんないじゃあよかったら一緒に行かない?うんいつ頃?8月の初めごろはどう?いいよじゃあいろいろ調べてまた電話するよありがとう待ってるよ"
+  },
+  {
+    "id": "m70",
+    "title": "Dai 20 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第20か。問題。一番。一。日曜日何をする?二。くだもので何が一番好き?三。漢字がいくつわかる?四。あなたの国と日本とどっちが人が多い?五。日本の笑顔を見たことがある?"
+  },
+  {
+    "id": "m71",
+    "title": "Dai 20 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1あ、雨え?カサ、持ってる?うん、田中さんは?僕も持ってない男の人と女の人はカサを持っていません2昨日初めて近隠時へ行ったよいったことある?うん、一度もないどうだった?きれいだったよまた行きたいじゃあ来月一緒に行かない?いいね男の人と女の人は一緒に近隠時へ行きました3明日の番日は?韓国の映画のキップを2枚もらったけど見に行かない?いいねどこで会う?そうですね6時に埋めた駅でわかったじゃあまた明日男の人と女の人は明日6時に会います4明日宇治へ遊びに来ない?行きたいけど要事があるからそう、じゃあまた今度明日女の人は男の人のうちへ行きません5中村さん、趣味は?スポーツよテニス、ゴルフ、スキ僕もスポーツが好きだけど忙しいからテレビのスポーツは毎日見るけどそう男の人は毎日スポーツをします"
+  },
+  {
+    "id": "m72",
+    "title": "Dai 21 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第21か 買いは私もそう思いますあ サントスさん 久しぶりですねあ 松々さん お元気ですか?ええ ちょっとビールでも飲みませんかいいですね 今晩10時から日本とブラジルのサッカーの支援がありますねああ そうですね サントスさんはどちらが勝つと思いますかもちろんブラジルですよそうですね でも最近日本も強くなりましたよええ 私もそう思いますがあ もう帰らないとええ 帰りましょう"
+  },
+  {
+    "id": "m73",
+    "title": "Dai 21 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第21か。問題。1番。1。明日は天気がいいと思いますか。2。日本についてどう思いますか。3。日本人はあなたの国についてよく知っていると思いますか。4。日本人はご飯を食べる前に何と言いますか。5。東京は有名でしょう。"
+  },
+  {
+    "id": "m74",
+    "title": "Dai 21 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1家庁は2階の会議室です今会議をしています何事頃終わりますか3時頃だと思いますがそうですかじゃあまた後できます女の人はこれから会議室へ行きます2次の作家の試合は大阪でありますねえ?日本が勝つと思いますかそうですねどちらも強いですからね男の人は日本が勝つと言いました3今放送がありましたねなんと言いましたか3階にきさてがあると言いましたよそうですかちょっと疲れましたねコーヒーを飲みに行きませんかええそうしましょう男の人と女の人はきさてんで休みます47月に共同で有名なお祭りがあるでしょうああ議論祭りですねいったことがありますかいえいありませんじゃあ今年一緒に行きませんかええ女の人は議論祭りに行きます5そのカバンを思いでしょう持ちましょうかありがとうございますでもそんなに思くないですから大丈夫ですそうですか男の人は女の人のカバンを持ちます"
+  },
+  {
+    "id": "m75",
+    "title": "Dai 22 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第22か 買いはどんな部屋をお探しですかどんな部屋をお探しですかそうですねやちんは8万円ぐらいで駅から遠くないところがいいですでは こちらはいかがですか駅から10分でやちんは8万3000円ですダイニングキッチンとはしつですねすみません ここは何ですかおしいれです 普通を入れるところですよそうですか この部屋きょう見ることができますかえー 今から行きましょうかえー お願いします"
+  },
+  {
+    "id": "m76",
+    "title": "Dai 22 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第22か。問題。一番。一。あなたが生まれたところはどこですか?二。今一番欲しいものは何ですか?三。家族でメガネをかけている人がいますか?四。今車を買うお金がありますか?五。レストランで食べる料理とうちで食べる料理とどちらが好きですか?"
+  },
+  {
+    "id": "m77",
+    "title": "Dai 22 Ka - Mondai 2",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "2番1これ、私が作ったケーキですけど、いかがですか?チョコレートケーキですね。いただきます。おいしいですね。女の人はチョコレートケーキを作りました。2あ、そこにカサをおかないでください。すみません。カサを置くところはどこですか?階段の後ろにおいてください。わかりました。カサは階段の後ろにおかなければなりません。3みらさん、ここにあった新聞は?山田さんが持っていきましたよ。あ、そうですか。みらさんは今新聞を読んでいます。4山田さん、明日テニスに行きませんか?明日ですか。明日はちょっと、子どもと遊びに行く約束がありますから。そうですか。じゃあまた今度。男の人は明日、子どもと遊びますから、テニスに行きません。5旅行の写真ですね。この人は誰ですか?どの人ですか?佐藤さんの後ろにいる神が短い人です。あ、カリナさんです。カリナさんは神が短いです。"
+  },
+  {
+    "id": "m78",
+    "title": "Dai 23 Ka - Kaiwa",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "第23か 買いはどうやっていきますか?はい 緑と書館ですあのー そちらまでどうやっていきますか?本題期から 12番のバスになって都書館前でおりてください3つ目です3つ目ですねえー 降りると前に公園があります都書館は公園の中の白い建物ですわかりましたそれから 本も書かれるとき何か入りますか?お名前と50所がわかるものを持ってきてくださいはい どうもありがとうございました"
+  },
+  {
+    "id": "m79",
+    "title": "Dai 23 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第23か 問題1番1子供の時 どこに住んでいましたか2外国へ行って 道側分からない時 どうしますか3暇な時 何をしますか4どんな時 タクシーに乗りますか5たくさんお酒を飲むと どうなりますか"
+  },
+  {
+    "id": "m80",
+    "title": "Dai 23 Ka - Mondai 2",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "2番1すみません、アメリカの友達に電話をかけるとき、どうしますか?まず 001を押して、次にアメリカの国の番号を1を押します。それから友達の番号を押します。わかりました。どうもありがとうございました。2すみません、緑図書館はどこですか?駅の前の道をまっすぐ行くと走があります。橋ですね?橋を当たって100mぐらいいくと左にあります。"
+  },
+  {
+    "id": "m81",
+    "title": "Dai 23 Ka - Mondai 3",
+    "status": "MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": 2,
+    "matching_options": [
+      "わかりました。"
+    ],
+    "placeholder_script": true,
+    "transcript": "3番1すみませんちょっと使い方教えてくださいはいまずここにお金を入れてください次にこのボタンを押すとカードがありますこのボタンですねわかりましたありがとうございましたボタンを押してからお金を入れるとカードが出ます2明日から主張ですねこの資料が入りますかお願いしますそれからパソコンも持っていかないと男の人は主張の時資料とパソコンを持っていきます3山田さんそれは何ですか中国のお茶です体の調子が悪いとき飲みますそれもお茶ですかいいえこれは薬ですお酒を飲んだとき飲みます男の人はお酒を飲んだとき中国のお茶を飲みます"
+  },
+  {
+    "id": "m82",
+    "title": "Dai 24 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第24か、会話、手伝いに行きましょうか?わんさん、日曜日引っ越しですね。手伝いに行きましょうか?ありがとうございます。じゃあ、すみませんが、9時ごろお願いします。他に誰が手伝いに行きますか?山田さんとみらさんが来てくれます。車は?山田さんに貸してもらいます。昼ごはんはどうしますか?私がお弁当を持っていきましょうか?すみません。お願いします。じゃあ、日曜日に。"
+  },
+  {
+    "id": "m83",
+    "title": "Dai 24 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第24か。問題。一番。一。子供の時、お母さんは甘いおかしをくれましたか?二。あなたは今、お母さんに何をしてあげたいですか?三。日本人の友達にあなたの国の料理を作ってあげたことがありますか?四。お金がない時、誰にかしてもらいますか?が。子供の時、お父さんはよく遊んでくれましたか?"
+  },
+  {
+    "id": "m84",
+    "title": "Dai 24 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1良い時計ですねどこで買いましたか?これですか?誕生日にアニがくれましたそうですか男の人はお兄さんの誕生日に時計をあげました2雨ですねミラさんカソン持っていますか?いいえじゃあ、私のおかしましょうかえ、でも、佐藤さんはどうしますか?お姉が車で向かえに来てくれますから大丈夫です女の人は車で帰ります3すみませんが写真を取ってくださいいいですよじゃあ、取りますよどうもありがとうございましたいいえ、どういたしまして女の人は男の人に写真を取ってもらいました4すみません、この近くに有名曲がありますか?え、ありますよ私も近くまで行きますから一緒に行きましょうすみません女の人は有名曲の近くまで男の人と一緒に行ってあげます5昨日は私の誕生日でしたそうですかおめでとうございますパーティーをしましたか?いいえ公平職人に行きました友達が連れて行ってくれました女の人は機能友達と公平行きました"
+  },
+  {
+    "id": "m85",
+    "title": "Dai 25 Ka - Kaiwa",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第25日、会話、いろいろお世話になりました。天気読めるとございます。ありがとうございます。みなさんが東京へ行ったら寂しくなりますね。そうですね。東京へ行っても大阪のことを忘れないでくださいね。もちろん、みなさん暇があったらぜひ東京へ遊びに来てください。みなさんも大阪へ来たら電話をください。一緒に飲みましょう。えー、ぜひ。みなさん、本当にいろいろお世話になりました。頑張ってください。お体に気をつけて。はい。みなさんもどうぞ、お元気で。"
+  },
+  {
+    "id": "m86",
+    "title": "Dai 25 Ka - Mondai 1",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "第25か。問題。一番。一。もし、一千万円あったら何をしたいですか?二。日曜日以転期だったらどこへ遊びに行きたいですか?三。体の調子が悪かったらどうしますか?四。第25かの問題が終わったら何をしますか?が。年をとっても働きたいですか?"
+  },
+  {
+    "id": "m87",
+    "title": "Dai 25 Ka - Mondai 2",
+    "status": "NO_MATCH",
+    "correctIndex_now": 0,
+    "correctIndex_should": null,
+    "matching_options": [],
+    "placeholder_script": true,
+    "transcript": "2番1カリナさん、1年休みをもらったら何をしたいですか?いろいろな国の美術会へ絵を見に行きたいです。みなさんは?私はいろいろな国へビールを飲みに行きたいです。長い休みがあったら、カリナさんは絵をかけに行きます。2明日暇だったら京都へ行きませんか?有名なお祭りがあります。いいですね。雨が降ってもありますか?雨だったらありません。そうですか。明日雨が降ったらお祭りがありません。3いつインドへ旅行に行きますか?夏休みになったらすぐ行きます。いつ帰りますか?そうですね。お金を全部使ったら帰ります。そうですか。気をつけてくださいね。男の人は旅行から帰ったらお金がありません。4吉田さん、車を持っていますか?いいえ。車があったら便利ですよ。そうですか。あっても無駄だと思います。どうしてですか?大阪の街は車が多いですから、自転車の方が早いですよ。男の人は車がありますが、自転車に乗ります。5お釣りが出ません。このボタンを押しましたか?え、押しても出ません。じゃあ故障ですね。店の人にいましょう。ボタンを押しましたが、お釣りが出ませんでした。"
+  }
+]
