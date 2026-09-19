@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { QuizHeader, AudioPlayer, ExplanationBox, MondaiQuizResult } from "../../components/MondaiComponents";
 import { playCorrectSound, playWrongSound } from "../../utils/sfx";
-import { useUserStats } from "../progress/ProgressContext";
+import { useUserStats, useItemProgress } from "../progress/ProgressContext";
 import mondaiData from "../../data/mondai.json";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
@@ -15,7 +15,8 @@ export function MondaiQuiz() {
   const [score, setScore] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
-  const { addXp, incrementStreak, progress } = useUserStats();
+  const { progress } = useUserStats();
+  const { recordAnswer } = useItemProgress();
   const navigate = useNavigate();
   const { language } = useLanguage();
 
@@ -30,15 +31,16 @@ export function MondaiQuiz() {
   };
 
   const handleSelectOption = (index) => {
-    if (isAnswered) return;
+    if (isAnswered || isPlaying) return;
 
     setSelectedOption(index);
     setIsAnswered(true);
 
-    if (index === currentItem.correctIndex) {
+    const isCorrect = index === currentItem.correctIndex;
+    recordAnswer(currentItem.id, isCorrect, 15);
+
+    if (isCorrect) {
       playCorrectSound();
-      addXp(15);
-      incrementStreak();
       setScore((prev) => prev + 1);
     } else {
       playWrongSound();
@@ -134,13 +136,16 @@ export function MondaiQuiz() {
               else if (idx === selectedOption) buttonStyle = "bg-shu text-kinari-light border-sumi font-bold";
               else buttonStyle = "bg-kinari/50 text-sumi/40 border-sumi/40";
             }
+            const isLocked = isAnswered || isPlaying;
             return (
               <motion.button
                 key={idx}
-                disabled={isAnswered}
+                disabled={isLocked}
                 onClick={() => handleSelectOption(idx)}
-                whileHover={!isAnswered ? { y: -2 } : {}}
-                className={`p-4 border-[3px] text-left text-sm sm:text-base font-serif font-bold transition-all shadow-[4px_4px_0_0_#1a1a1a] ${buttonStyle}`}
+                whileHover={!isLocked ? { y: -2 } : {}}
+                className={`p-4 border-[3px] text-left text-sm sm:text-base font-serif font-bold transition-all shadow-[4px_4px_0_0_rgba(var(--sumi-val),1)] ${buttonStyle} ${
+                  isPlaying && !isAnswered ? "opacity-60 cursor-not-allowed" : ""
+                }`}
               >
                 <span className="inline-block w-6 text-xs font-sans text-sumi/60 mr-2">
                   {String.fromCharCode(65 + idx)}.
