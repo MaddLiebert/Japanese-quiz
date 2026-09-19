@@ -11,6 +11,10 @@ export function AudioPlayer({
 }) {
   const [internalIsPlaying, setInternalIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0); // 0 sampai 100
+  const [playbackRate, setPlaybackRate] = useState(1.0);
+  const [_volume, _setVolume] = useState(1.0);
+  const [isMuted, setIsMuted] = useState(false);
+  const [currentTimestamp, setCurrentTimestamp] = useState(0);
   const audioRef = useRef(null);
 
   const isControlled = typeof externalIsPlaying === "boolean";
@@ -41,6 +45,10 @@ export function AudioPlayer({
   const handleTimeUpdate = () => {
     if (audioRef.current && audioRef.current.duration) {
       const current = (audioRef.current.currentTime / audioRef.current.duration) * 100;
+      const seconds = Math.floor(audioRef.current.currentTime);
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      setCurrentTimestamp(`${mins}:${secs.toString().padStart(2, "0")}`);
       setProgress(current);
     }
   };
@@ -49,6 +57,7 @@ export function AudioPlayer({
     if (!isControlled) setInternalIsPlaying(false);
     onPause?.();
     setProgress(0);
+    setCurrentTimestamp("0:00");
   };
 
   // Sync audio play state if controlled from outside
@@ -62,6 +71,47 @@ export function AudioPlayer({
     }
   }, [externalIsPlaying, isControlled]);
 
+  // Speed & Volume Handlers
+  const handleSpeedChange = (rate) => {
+    setPlaybackRate(rate);
+    if (audioRef.current) audioRef.current.playbackRate = rate;
+  };
+
+  const handleVolumeToggle = () => {
+    if (!audioRef.current) return;
+    const newMuted = !isMuted;
+    setIsMuted(newMuted);
+    audioRef.current.muted = newMuted;
+  };
+
+  // Waveform Seek Handler
+  const handleWaveformClick = (e) => {
+    if (!audioRef.current || !audioRef.current.duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+    const newTime = ratio * audioRef.current.duration;
+    audioRef.current.currentTime = newTime;
+    setProgress(ratio * 100);
+  };
+
+  // Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.code === "ArrowLeft") {
+        if (audioRef.current) audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 3);
+      } else if (e.code === "ArrowRight") {
+        if (audioRef.current) audioRef.current.currentTime = Math.min(audioRef.current.duration || 0, audioRef.current.currentTime + 3);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <div className="w-full bg-kinari border-sumi p-6 sm:p-8 shadow-[6px_6px_0_0_rgba(var(--sumi-val),1)] flex flex-col items-center">
       <audio
@@ -74,12 +124,14 @@ export function AudioPlayer({
       {/* Tombol Bulat Besar dengan Outer Ring Brutalis */}
       <div className="relative group mb-5">
         <div className="absolute -inset-1 rounded-full bg-sumi opacity-20 group-hover:opacity-40 transition-opacity"></div>
-        <button
+        <motion.button
           onClick={togglePlay}
           aria-label={isPlaying ? "Jeda Audio" : "Putar Audio"}
-          className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-full border-[4px] border-sumi flex flex-col items-center justify-center transition-all duration-200 active:translate-x-[2px] active:translate-y-[2px] shadow-[4px_4px_0_0_rgba(var(--sumi-val),1)] ${
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-full border-[4px] border-sumi flex flex-col items-center justify-center transition-all shadow-[4px_4px_0_0_rgba(var(--sumi-val),1)] ${
             isPlaying
-              ? "bg-shu text-kinari-light animate-pulse"
+              ? "bg-shu text-kinari-light"
               : "bg-kinari-light text-sumi hover:bg-kinari"
           }`}
         >
@@ -101,22 +153,33 @@ export function AudioPlayer({
               <polygon points="5,3 19,12 5,21" />
             </svg>
           )}
-          <span className="font-mono text-[9px] uppercase tracking-widest font-bold mt-1">
+          <motion.span
+            animate={isPlaying ? { opacity: [1, 0.7, 1] } : { opacity: 1 }}
+            transition={{ duration: 1, repeat: Infinity }}
+            className="font-mono text-[9px] uppercase tracking-widest font-bold mt-1"
+          >
             {isPlaying ? "PAUSE" : "AUDIO PLAY"}
-          </span>
-        </button>
+          </motion.span>
+        </motion.button>
       </div>
 
       {/* Waveform Bar Visualizer */}
       <div className="w-full max-w-md bg-kinari-light border-[2px] border-sumi p-3 shadow-[3px_3px_0_0_rgba(var(--sumi-val),1)] mt-2">
-        <div className="flex items-end justify-between h-10 px-2 gap-1 mb-2">
+        <div className="flex items-end justify-between h-10 px-2 gap-1 mb-2" onClick={handleWaveformClick}>
           {waveformHeights.map((h, i) => {
             const isFilled = (i / waveformHeights.length) * 100 <= progress;
             return (
-              <div
+              <motion.div
                 key={i}
-                style={{ height: `${h}%` }}
-                className={`flex-1 transition-all duration-150 ${
+                animate={isPlaying ? {
+                  height: [`${h}%`, `${Math.min(100, h + 25)}%`, `${Math.max(20, h - 20)}%`, `${h}%`]
+                } : { height: `${h}%` }}
+                transition={isPlaying ? {
+                  duration: 0.4 + (i % 5) * 0.1,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                } : { duration: 0.2 }}
+                className={`flex-1 rounded-xs cursor-pointer transition-colors ${
                   isFilled
                     ? "bg-shu"
                     : i % 3 === 0
@@ -130,19 +193,50 @@ export function AudioPlayer({
 
         {/* Garis Progress Bar & Penanda Waktu */}
         <div className="relative w-full h-2 bg-kinari border border-sumi overflow-hidden mb-1">
-          <div
+          <motion.div
             className="h-full bg-shu transition-all duration-100"
             style={{ width: `${progress}%` }}
+            animate={{ scale: [1, 1.02, 1] }}
+            transition={{ duration: 0.2, repeat: Infinity }}
           />
         </div>
         <div className="flex justify-between font-mono text-[10px] text-sumi font-bold">
-          <span>0:00</span>
+          <span>{currentTimestamp}</span>
           <span>{duration}</span>
         </div>
       </div>
 
+      {/* Controls Bar - Speed & Volume */}
+      <div className="flex flex-wrap items-center justify-center gap-3 mt-4 w-full max-w-md">
+        {/* Speed Controls */}
+        {[0.8, 1.0, 1.25].map((rate) => (
+          <button
+            key={rate}
+            onClick={() => handleSpeedChange(rate)}
+            className={`border-2 border-sumi bg-kinari-light px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-all active:translate-x-[2px] active:translate-y-[2px] ${
+              playbackRate === rate
+                ? "bg-shu text-kinari-light shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)]"
+                : "bg-kinari shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)]"
+            }`}
+          >
+            {rate}x
+          </button>
+        ))}
+
+        {/* Volume Toggle */}
+        <button
+          onClick={handleVolumeToggle}
+          className="border-2 border-sumi bg-kinari-light px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-all active:translate-x-[2px] active:translate-y-[2px] shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)]"
+        >
+          {isMuted ? "VOL: MUTE" : "VOL: ON"}
+        </button>
+      </div>
+
       <p className="font-mono text-[10px] tracking-wider uppercase font-bold text-sumi/70 mt-3">
         [ KLIK UNTUK MEMUTAR REKAMAN PERCAKAPAN (JEPANG ALAMI) ]
+      </p>
+      <p className="font-mono text-[9px] text-sumi/50">
+        [ KONTROL: SPACE=Play/Pause | ←/→=Seek ±3s | Speed: 0.8x/1x/1.25x ]
       </p>
     </div>
   );
