@@ -99,7 +99,7 @@ const MondaiChapterFlow = () => {
                 </div>
                 <div className="relative z-10 flex flex-col sm:items-end gap-2 mt-4 sm:mt-0">
                   <div className="text-[10px] font-bold tracking-widest uppercase text-sumi/40 whitespace-nowrap">
-                    {chapter.grammar_ids.length} {language === 'id' ? 'Tata Bahasa' : 'Grammar'} • {chapter.kotoba_ids.length} {language === 'id' ? 'Kosakata' : 'Kotoba'}
+                    {chapter.questions?.length || 0} {language === 'id' ? 'Soal' : 'Questions'}
                   </div>
                   {isCompleted && (
                     <div className="flex items-center gap-2">
