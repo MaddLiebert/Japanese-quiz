@@ -4,7 +4,7 @@ import { Learn } from "./pages/Learn";
 import { Practice } from "./pages/Practice";
 import { Review } from "./pages/Review";
 import { Settings } from "./pages/Settings";
-import { MondaiQuiz } from "./features/quiz/MondaiQuiz";
+import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
 import { ProgressProvider } from "./features/progress/ProgressContext";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
@@ -66,7 +66,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/learn" element={<Learn />} />
                   <Route path="/practice" element={<Practice />} />
-                  <Route path="/mondai" element={<MondaiQuiz />} />
+                  <Route path="/mondai" element={<MondaiChapterFlow />} />
                   <Route path="/review" element={<Review />} />
                   <Route path="/settings" element={<Settings />} />
                 </Routes>
