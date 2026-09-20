@@ -182,12 +182,12 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
         </div>
 
         {/* Navigation */}
-        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10 flex items-center justify-between">
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <button
             onClick={handlePrev}
             disabled={currentQuestionIndex === 0}
             className={`
-              px-6 py-3 font-bold uppercase tracking-widest text-xs transition-all border-[3px] rounded-none
+              w-full sm:w-auto px-6 py-3.5 font-bold uppercase tracking-widest text-xs transition-all border-[3px] rounded-none flex items-center justify-center
               ${currentQuestionIndex === 0 
                 ? "opacity-30 cursor-not-allowed bg-kinari border-sumi/20 text-sumi/40" 
                 : "bg-kinari border-sumi text-sumi shadow-[4px_4px_0_0_rgba(26,26,26,1)] hover:shadow-[2px_2px_0_0_rgba(26,26,26,1)] active:translate-x-[2px] active:translate-y-[2px]"
@@ -201,7 +201,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
             onClick={handleNext}
             disabled={!isAnswered}
             className={`
-              px-8 py-4 font-bold text-sm uppercase tracking-widest transition-all border-[3px] rounded-none
+              w-full sm:w-auto px-6 py-3.5 font-bold uppercase tracking-widest text-xs transition-all border-[3px] rounded-none flex items-center justify-center
               ${!isAnswered
                 ? "opacity-30 cursor-not-allowed bg-kinari border-sumi/20 text-sumi/40" 
                 : "bg-sumi border-sumi text-kinari-light shadow-[4px_4px_0_0_rgba(26,26,26,1)] hover:shadow-[2px_2px_0_0_rgba(26,26,26,1)] active:translate-x-[2px] active:translate-y-[2px]"

@@ -382,10 +382,10 @@ export function ExplanationBox({
       )}
 
       {/* Tombol Aksi Bawah */}
-      <div className="flex justify-between items-center pt-2">
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 pt-2">
         <button
           onClick={onRetry}
-          className="border-[3px] border-sumi bg-kinari-light font-mono text-xs font-bold uppercase tracking-wider px-4 py-2.5 shadow-[3px_3px_0_0_rgba(var(--sumi-val),1)] hover:bg-kinari active:translate-x-[2px] active:translate-y-[2px]"
+          className="w-full sm:w-auto border-[3px] border-sumi bg-kinari-light font-mono text-xs font-bold uppercase tracking-wider px-6 py-3.5 shadow-[3px_3px_0_0_rgba(var(--sumi-val),1)] hover:bg-kinari active:translate-x-[2px] active:translate-y-[2px] flex items-center justify-center"
         >
           ↺ ULANGI SOAL
         </button>
@@ -393,7 +393,7 @@ export function ExplanationBox({
         <button
           onClick={onNext}
           disabled={isPlaying}
-          className={`border-[3px] border-sumi font-mono text-xs font-bold uppercase tracking-wider px-6 py-2.5 shadow-[4px_4px_0_0_rgba(var(--sumi-val),1)] hover:bg-opacity-90 active:translate-x-[2px] active:translate-y-[2px] transition-opacity ${
+          className={`w-full sm:w-auto border-[3px] border-sumi font-mono text-xs font-bold uppercase tracking-wider px-6 py-3.5 shadow-[4px_4px_0_0_rgba(var(--sumi-val),1)] hover:bg-opacity-90 active:translate-x-[2px] active:translate-y-[2px] transition-opacity flex items-center justify-center ${
             isPlaying ? "opacity-50 cursor-not-allowed bg-ai/50" : "bg-ai text-kinari-light"
           }`}
         >
