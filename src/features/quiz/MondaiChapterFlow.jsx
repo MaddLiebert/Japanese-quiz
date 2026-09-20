@@ -178,6 +178,7 @@ const MondaiChapterFlow = () => {
         <Quiz
           chapter={selectedChapter}
           onComplete={handleQuizComplete}
+          onBack={() => setView("intro")}
         />
       </div>
     );

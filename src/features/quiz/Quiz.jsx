@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { AudioPlayer } from "../../components/MondaiComponents";
 import { playCorrectSound, playWrongSound } from "../../utils/sfx";
 import { useItemProgress } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 
-const Quiz = ({ chapter, onComplete }) => {
+const Quiz = ({ chapter, onComplete, onBack }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -17,7 +17,6 @@ const Quiz = ({ chapter, onComplete }) => {
 
   const questions = chapter.questions;
   const currentQuestion = questions[currentQuestionIndex];
-  const audioRef = useRef(null);
 
   const handlePlayAudio = () => {
     setIsPlaying(true);
@@ -73,6 +72,15 @@ const Quiz = ({ chapter, onComplete }) => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
       <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none"></div>
+
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit cursor-pointer"
+        >
+          <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
+        </button>
+      )}
 
       {/* Header */}
       <div className="mb-8 relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-[4px] border-sumi pb-6">
