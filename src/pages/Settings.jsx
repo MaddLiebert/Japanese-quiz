@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useUserStats } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
+import { DevPanel } from "../features/dev/DevPanel"; // DEV-ONLY — hapus baris ini untuk membuang panel cheat
 
 export function Settings() {
-  const { resetProgress, username, setUsername } = useUserStats();
+  const { resetProgress } = useUserStats();
   const { language } = useLanguage();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
@@ -53,37 +54,31 @@ export function Settings() {
 
         <div className="p-6 sm:p-12 relative z-10 space-y-16">
 
-          {/* Profile / General Settings */}
+          {/* DEV-ONLY — hapus baris ini untuk membuang panel cheat */}
+          {import.meta.env.DEV && <DevPanel />}
+
+          {/* Appearance Settings */}
           <section>
             <div className="flex items-center gap-4 mb-8">
               <h2 className="text-2xl font-serif font-bold text-sumi">
-                {language === 'id' ? 'Profil & Tampilan' : 'Profile & Appearance'}
+                {language === 'id' ? 'Tampilan' : 'Appearance'}
               </h2>
               <div className="h-[2px] flex-1 bg-sumi/10"></div>
               <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">設定</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Nickname Input */}
-              <div className="border-[3px] border-sumi/20 bg-kinari p-6 flex flex-col justify-between">
-                <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-3">
-                  {language === 'id' ? 'Nama Panggilan / Nickname' : 'Nickname'}
-                </label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder={language === 'id' ? "Masukkan Nickname-mu..." : "Enter your nickname..."}
-                  className="w-full border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none focus:border-ai transition-colors"
-                />
-              </div>
-
+            <div className="grid grid-cols-1 gap-6">
               {/* Theme Mode Toggle */}
-              <div className="border-[3px] border-sumi/20 bg-kinari p-6 flex flex-col justify-between">
-                <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-3">
-                  {language === 'id' ? 'Tema Tampilan' : 'Theme Mode'}
-                </label>
-                <div className="grid grid-cols-2 gap-3">
+              <div className="border-[3px] border-sumi/20 bg-kinari p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-1">
+                    {language === 'id' ? 'Tema Tampilan' : 'Theme Mode'}
+                  </label>
+                  <p className="text-xs text-sumi/70 font-semibold">
+                    {language === 'id' ? 'Pilih mode terang atau gelap untuk aplikasi.' : 'Choose light or dark mode for the app.'}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 min-w-[240px]">
                   <button
                     type="button"
                     onClick={() => setTheme('light')}

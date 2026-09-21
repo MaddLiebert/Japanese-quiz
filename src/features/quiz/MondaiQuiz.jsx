@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
+import { Furigana } from "../../components/Furigana";
 import { QuizHeader, AudioPlayer, ExplanationBox, MondaiQuizResult } from "../../components/MondaiComponents";
-import { playCorrectSound, playWrongSound } from "../../utils/sfx";
 import { useUserStats, useItemProgress } from "../progress/ProgressContext";
 import mondaiData from "../../data/mondai.json";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
+import { useEffectLayer } from "../effects/EffectContext";
 
 export function MondaiQuiz() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -15,10 +16,13 @@ export function MondaiQuiz() {
   const [score, setScore] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
-  const { progress } = useUserStats();
+  const { progress, completeQuiz } = useUserStats();
   const { recordAnswer } = useItemProgress();
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const { triggerEffect, resetEffectStreak } = useEffectLayer();
+
+  useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
 
   const currentItem = mondaiData[currentIndex];
 
@@ -38,24 +42,31 @@ export function MondaiQuiz() {
 
     const isCorrect = index === currentItem.correctIndex;
     recordAnswer(currentItem.id, isCorrect, 15);
+    const newScore = isCorrect ? score + 1 : score;
 
     if (isCorrect) {
-      playCorrectSound();
-      setScore((prev) => prev + 1);
+      triggerEffect('correct');
+      setScore(newScore);
     } else {
-      playWrongSound();
+      triggerEffect('wrong');
       setWrongAnswers((prev) => [...prev, currentIndex]);
+    }
+
+    if (currentIndex === mondaiData.length - 1) {
+      const total = mondaiData.length;
+      const wrongCount = total - newScore;
+      const isWin = newScore >= Math.ceil(total / 2);
+      completeQuiz(isWin, 'medium', currentItem.chapter || 1, wrongCount, total);
     }
   };
 
   const handleNext = () => {
     setIsPlaying(false);
+    setSelectedOption(null);
+    setIsAnswered(false);
 
     if (currentIndex < mondaiData.length - 1) {
       setCurrentIndex((prev) => prev + 1);
-      setSelectedOption(null);
-      setIsAnswered(false);
-      setIsPlaying(false);
     } else {
       setIsFinished(true);
     }
@@ -84,6 +95,7 @@ export function MondaiQuiz() {
         wrongAnswers={wrongAnswers}
         mondaiData={mondaiData}
         onPlayAgain={() => {
+          resetEffectStreak();
           setCurrentIndex(0);
           setScore(0);
           setWrongAnswers([]);
@@ -127,7 +139,7 @@ export function MondaiQuiz() {
           className="mb-16 sm:mb-24 flex flex-col items-center gap-6 w-full"
         >
           <h2 className="text-lg sm:text-xl font-serif font-bold text-sumi mb-6 text-center">
-            {currentItem.questionText}
+            <Furigana text={currentItem.questionText} />
           </h2>
 
           <AudioPlayer
@@ -177,7 +189,7 @@ export function MondaiQuiz() {
                 <span className="inline-block w-6 text-xs font-sans text-sumi/60 mr-2">
                   {String.fromCharCode(65 + idx)}.
                 </span>
-                {option}
+                <Furigana text={option} />
               </motion.button>
             );
           })}
