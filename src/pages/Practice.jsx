@@ -3,7 +3,6 @@ import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { Volume2 } from "lucide-react";
 import { playDramaticAudio } from "../utils/audio";
-import { playCorrectSound, playWrongSound } from "../utils/sfx";
 import { useLanguage } from "../context/LanguageContext";
 import hiraganaData from "../data/hiragana.json";
 import katakanaData from "../data/katakana.json";
@@ -16,6 +15,7 @@ import { Button } from "../components/ui/Button";
 import { categoryTranslations } from "../utils/translations";
 import { KanaTypeToggle } from "../components/KanaTypeToggle";
 import { KanaQuiz } from "../features/quiz/KanaQuiz";
+import { useEffectLayer } from "../features/effects/EffectContext";
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
   const { language } = useLanguage();
@@ -106,6 +106,7 @@ export function Practice() {
   }, []);
 
   const { language } = useLanguage();
+  const { triggerEffect, resetEffectStreak } = useEffectLayer();
 
   const getTranslatedRow = (row) => {
     return (language === 'id' && categoryTranslations[row]) ? categoryTranslations[row] : row;
@@ -151,9 +152,9 @@ export function Practice() {
 
     const correct = option.id === currentQuestion.id;
     if (correct) {
-      playCorrectSound();
+      triggerEffect('correct');
     } else {
-      playWrongSound();
+      triggerEffect('wrong');
     }
 
     answerQuestion(option.id);
@@ -165,9 +166,9 @@ export function Practice() {
     const correct = option.id === currentQuestion.id;
 
     if (correct) {
-      playCorrectSound();
+      triggerEffect('correct');
     } else {
-      playWrongSound();
+      triggerEffect('wrong');
     }
     selectAnswer(option.id);
   };
@@ -244,6 +245,7 @@ export function Practice() {
 
     const handleStartQuiz = () => {
       if (selectedRows.length === 0) return;
+      resetEffectStreak();
       initializeQuiz({ rows: selectedRows, difficulty, sourceData: activeData });
       setQuizStarted(true);
     };
@@ -254,6 +256,7 @@ export function Practice() {
       : [...new Set(filteredData.map(item => item.row))];
     setSelectedRows(allRowNames);
     setDifficulty('Hard');
+    resetEffectStreak();
     initializeQuiz({ rows: allRowNames, difficulty: 'Hard', sourceData: activeData });
     setQuizStarted(true);
   };

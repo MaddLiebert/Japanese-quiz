@@ -740,26 +740,26 @@
     ]
   },
   {
-      "id": "m21",
-      "chapter": 6,
-      "title": "Dai 6 Ka - Kaiwa",
-      "audio": "/audio/21 Dai 6 Ka - Kaiwa.mp3",
-      "questionText": "Percakapan mengajak hanami: Pergi melihat bunga bersama teman besok. Di mana dan jam berapa bertemu?",
-      "options": [
-        "大阪駅 10:00 (Stasiun Osaka jam 10)",
-        "大阪城 10:00 (Kastil Osaka jam 10)",
-        "大阪駅 11:00 (Stasiun Osaka jam 11)",
-        "大阪城 9:00 (Kastil Osaka jam 9)"
-      ],
-      "correctIndex": 0,
-      "explanation": "Pembicara mengajak: '明日、友達とお話みをします。ミラーさんも一緒に行きませんか?... 十字に大阪駅で会いましょう' (bertemu di Stasiun Osaka jam 10:00, pergi ke Osaka-jo).",
-      "dialogScript": [
-        {
-          "speaker": "男",
-          "text": "第6か、会話、一緒に行きませんか?ミラーさん、何ですか?明日、友達とお話みをします。ミラーさんも一緒に行きませんか?いいですね。どこへ行きますか?大阪城です。何時に行きますか?十字に大阪駅で会いましょう。わかりました。じゃあ、また明日。"
-        }
-      ]
-    },
+    "id": "m21",
+    "chapter": 6,
+    "title": "Dai 6 Ka - Kaiwa",
+    "audio": "/audio/21 Dai 6 Ka - Kaiwa.mp3",
+    "questionText": "Percakapan mengajak hanami: Pergi melihat bunga bersama teman besok. Di mana dan jam berapa bertemu?",
+    "options": [
+      "大阪駅 10:00 (Stasiun Osaka jam 10)",
+      "大阪城 10:00 (Kastil Osaka jam 10)",
+      "大阪駅 11:00 (Stasiun Osaka jam 11)",
+      "大阪城 9:00 (Kastil Osaka jam 9)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Pembicara mengajak: '明日、友達とお話みをします。ミラーさんも一緒に行きませんか?... 十字に大阪駅で会いましょう' (bertemu di Stasiun Osaka jam 10:00, pergi ke Osaka-jo).",
+    "dialogScript": [
+      {
+        "speaker": "男",
+        "text": "第6か、会話、一緒に行きませんか?ミラーさん、何ですか?明日、友達とお話みをします。ミラーさんも一緒に行きませんか?いいですね。どこへ行きますか?大阪城です。何時に行きますか?十字に大阪駅で会いましょう。わかりました。じゃあ、また明日。"
+      }
+    ]
+  },
   {
     "id": "m22",
     "chapter": 6,
@@ -1796,15 +1796,15 @@
     "chapter": 16,
     "title": "Dai 16 Ka - Mondai 1",
     "audio": "/audio/57 Dai 16 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第16日",
+    "questionText": "Audio berisi daftar pertanyaan latihan. Pertanyaan ke-5 (go) adalah apa?",
     "options": [
-      "第16日",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "お母さんはどんな人ですか？",
+      "朝起きて何をしますか？",
+      "日本の食べ物はどうですか？",
+      "あなたのうちから空港までどうやっていきますか？"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第16日",
+    "explanation": "Audio menyebutkan '五。お母さんはどんな人ですか？' sebagai pertanyaan ke-5.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -1817,15 +1817,15 @@
     "chapter": 16,
     "title": "Dai 16 Ka - Mondai 2",
     "audio": "/audio/58 Dai 16 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1会社までいつもどうやっていきますか",
+    "questionText": "Percakapan 1: Pria ditanya cara ke kantor. Bagaimana dia pergi ke kantor?",
     "options": [
-      "2番1会社までいつもどうやっていきますか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "近鉄に乗り換えて、日本橋で降りる",
+      "車で直接会社まで行く",
+      "飛行機で大阪まで行く",
+      "電車で一冊で行く"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1会社までいつもどうやっていきますか",
+    "explanation": "Pria menjawab: 'GRで大阪まで行って、近鉄に乗り換えて、日本橋で降りて、それから歩いていきます'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -1838,15 +1838,15 @@
     "chapter": 16,
     "title": "Dai 16 Ka - Mondai 3",
     "audio": "/audio/59 Dai 16 Ka - Mondai 3.mp3",
-    "questionText": "Berdasarkan audio: 3番1勉強は何時に終わりますか",
+    "questionText": "Percakapan 2: Ditanya jarak stasiun ke apartemen. Berapa lama dari stasiun ke apartemennya?",
     "options": [
-      "3番1勉強は何時に終わりますか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "バスで20分ぐらい",
+      "車で10分ぐらい",
+      "歩いて5分",
+      "電車で20分"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 3番1勉強は何時に終わりますか",
+    "explanation": "Pembicara menjawab 'バスで20分ぐらいです' saat ditanya jarak dari stasiun.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -1871,15 +1871,15 @@
     "chapter": 17,
     "title": "Dai 17 Ka - Kaiwa",
     "audio": "/audio/60 Dai 17 Ka - Kaiwa.mp3",
-    "questionText": "Berdasarkan audio: 第17か 会話 どうしましたかどうしましたか 昨日からのどがいたくて熱も少しありますそうですか ちょっと口を開けてください 風ですね二三日ゆっくり休んだください あのー明日から東京へ出張しなければなりませんじゃあ 今日は薬を飲んで早く...",
+    "questionText": "患者[かんじゃ]は明日[あした]から東京[とうきょう]へ行[い]きます。今日[きょう]は何[なに]をしますか？",
     "options": [
-      "第17か 会話 どうしましたかどうしましたか 昨日からのどがいたくて熱も少しありますそうですか ちょっと口を開けてください 風ですね二三日ゆっくり休んだください あのー明日から東京へ出張しなければなりませんじゃあ 今日は薬を飲んで早く寝てください はい それからこんばんはお風呂に入らないでくださいねはいわかりました じゃあ大事に どうもありがとうございました",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "薬[くすり]を飲[の]んで、早[はや]く寝[ね]てください",
+      "明日[あした]から何[なに]も食[た]べないでください",
+      "今夜[こんや]もお風呂[ふろ]に入[はい]ってください",
+      "明日[あした]から残業[ざんぎょう]を続[つづ]けてください"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第17か 会話 どうしましたかどうしましたか 昨日からのどがいたくて熱も少しありますそうですか ちょっと口を開けてください 風ですね二三日ゆっくり休んだください あのー明日から東京へ出張しなければなりませんじゃあ 今日は薬を飲んで早く寝てください はい それからこんばんはお風呂に入らないでくださいねはいわかりました じゃあ大事に どうもありがとうございました",
+    "explanation": "Karena pasien harus berangkat ke Tokyo besok, dokter berkata '今日は薬を飲んで早く寝てください'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -1892,15 +1892,15 @@
     "chapter": 17,
     "title": "Dai 17 Ka - Mondai 1",
     "audio": "/audio/61 Dai 17 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第17か",
+    "questionText": "毎朝[まいあさ]何時[なんじ]に起[お]きなければなりませんか？",
     "options": [
-      "第17か",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "毎朝何時に起きなければなりませんか？",
+      "外国旅行に何を持っていかなければなりませんか？",
+      "明日出かけなければなりませんか？",
+      "毎日日本語を話さなければなりませんか？"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第17か",
+    "explanation": "Audio: '三。毎朝何時に起きなければなりませんか？' adalah pertanyaan ke-3.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -1913,15 +1913,15 @@
     "chapter": 17,
     "title": "Dai 17 Ka - Mondai 2",
     "audio": "/audio/62 Dai 17 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1綺麗ですねーあの花の前で写真を取りましょうあ、すみませんそこに入らないでくださいあ、すみません花の写真を取ってはいけません2こんばん一緒に食事に行きませんか",
+    "questionText": "花[はな]の写真[しゃしん]を撮[と]ってはいけません",
     "options": [
-      "2番1綺麗ですねーあの花の前で写真を取りましょうあ、すみませんそこに入らないでくださいあ、すみません花の写真を取ってはいけません2こんばん一緒に食事に行きませんか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "花の写真を撮ってはいけません",
+      "花の前に立ってはいけません",
+      "花の声をしてはいけません",
+      "花を植えるのはだめです"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1綺麗ですねーあの花の前で写真を取りましょうあ、すみませんそこに入らないでくださいあ、すみません花の写真を取ってはいけません2こんばん一緒に食事に行きませんか",
+    "explanation": "Petugas berkata: 'あ、すみません。花の写真を撮ってはいけません' saat dua orang hendak memotret bunga.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -1954,15 +1954,15 @@
     "chapter": 18,
     "title": "Dai 18 Ka - Kaiwa",
     "audio": "/audio/63 Dai 18 Ka - Kaiwa.mp3",
-    "questionText": "Berdasarkan audio: 第18か 会話趣味は何ですかさんとさんの趣味は何ですか写真ですどんな写真をとりますか動物の写真です特にうまが好きですえぇ それは面白いですね日本へ来てからうまの写真をとりましたかいえ日本ではなかなかうまを見ることができません北海道にう...",
+    "questionText": "Santo-san ditanya hobi. Foto apa yang paling dia suka?",
     "options": [
-      "第18か 会話趣味は何ですかさんとさんの趣味は何ですか写真ですどんな写真をとりますか動物の写真です特にうまが好きですえぇ それは面白いですね日本へ来てからうまの写真をとりましたかいえ日本ではなかなかうまを見ることができません北海道にうまがたくさんいますよ本当ですかじゃあナシアスミにぜひ行きたいです",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "動物の写真、特に馬",
+      "街並みの写真",
+      "家族の写真",
+      "食べ物の写真"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第18か 会話趣味は何ですかさんとさんの趣味は何ですか写真ですどんな写真をとりますか動物の写真です特にうまが好きですえぇ それは面白いですね日本へ来てからうまの写真をとりましたかいえ日本ではなかなかうまを見ることができません北海道にうまがたくさんいますよ本当ですかじゃあナシアスミにぜひ行きたいです",
+    "explanation": "Santo-san menjawab: '写真です。動物の写真です。特に馬が好きです'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -1975,15 +1975,15 @@
     "chapter": 18,
     "title": "Dai 18 Ka - Mondai 1",
     "audio": "/audio/64 Dai 18 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第18か",
+    "questionText": "Audio berisi daftar pertanyaan latihan. Pertanyaan ke-4 (yon) adalah apa?",
     "options": [
-      "第18か",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "趣味は何ですか？",
+      "ダンスができますか？",
+      "毎晩寝る前に何をしますか？",
+      "あなたの国で何歳から車を運転することができますか？"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第18か",
+    "explanation": "Audio: '四。趣味は何ですか？' adalah pertanyaan ke-4.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -1996,15 +1996,15 @@
     "chapter": 18,
     "title": "Dai 18 Ka - Mondai 2",
     "audio": "/audio/65 Dai 18 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1趣味は何ですか",
+    "questionText": "Percakapan 4: Soal pesta minggu depan. Kira-kira jam berapa dia harus datang ke pesta?",
     "options": [
-      "2番1趣味は何ですか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "5時半ごろ",
+      "6時ちょうど",
+      "5時",
+      "6時半"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1趣味は何ですか",
+    "explanation": "Pesta dimulai jam 6 dan dia diminta datang '30分ぐらい前に行ってください', sehingga sekitar pukul 5.30.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2029,15 +2029,15 @@
     "chapter": 19,
     "title": "Dai 19 Ka - Kaiwa",
     "audio": "/audio/66 Dai 19 Ka - Kaiwa.mp3",
-    "questionText": "Berdasarkan audio: 第19か 買いはダイエットは明日からしますおばーいマリアさんあまり食べませんねえー 昨日からダイエットをしていますそうですか 私もダイエットしたことがありますどんなダイエットですか",
+    "questionText": "Mendengar cerita diet pria tersebut, seperti apa diet yang pernah dia lakukan?",
     "options": [
-      "第19か 買いはダイエットは明日からしますおばーいマリアさんあまり食べませんねえー 昨日からダイエットをしていますそうですか 私もダイエットしたことがありますどんなダイエットですか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "毎日リンゴだけを食べたり、水をたくさん飲んだりした",
+      "毎日ごはんをたくさん食べた",
+      "毎日スポーツをした",
+      "一週間何も食べなかった"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第19か 買いはダイエットは明日からしますおばーいマリアさんあまり食べませんねえー 昨日からダイエットをしていますそうですか 私もダイエットしたことがありますどんなダイエットですか",
+    "explanation": "Pria berkata: '毎日リンゴだけを食べたり、水をたくさん飲んだりしました'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2050,15 +2050,15 @@
     "chapter": 19,
     "title": "Dai 19 Ka - Mondai 1",
     "audio": "/audio/67 Dai 19 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第19か 問題一番1スモーを見たことがありますか2日曜日何をしますか3日本で何をしたいですか4次の誕生日に何歳になりますか",
+    "questionText": "Audio berisi daftar pertanyaan latihan. Pertanyaan ke-2 (ni) adalah apa?",
     "options": [
-      "第19か 問題一番1スモーを見たことがありますか2日曜日何をしますか3日本で何をしたいですか4次の誕生日に何歳になりますか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "日曜日何をしますか？",
+      "スモーを見たことがありますか？",
+      "日本で何をしたいですか？",
+      "次の誕生日に何歳になりますか？"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第19か 問題一番1スモーを見たことがありますか2日曜日何をしますか3日本で何をしたいですか4次の誕生日に何歳になりますか",
+    "explanation": "Audio: '二。日曜日何をしますか？' adalah pertanyaan ke-2.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2071,15 +2071,15 @@
     "chapter": 19,
     "title": "Dai 19 Ka - Mondai 2",
     "audio": "/audio/68 Dai 19 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1お父さんはお元気ですか",
+    "questionText": "Percakapan 4: Pria membeli apel. Berapa total harga untuk 4 buah apel?",
     "options": [
-      "2番1お父さんはお元気ですか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "600円",
+      "720円",
+      "480円",
+      "300円"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1お父さんはお元気ですか",
+    "explanation": "Harga apel 180 yen per buah, tapi penjual memberi harga 4 buah 'じゃあ、4つください' dengan total 'リンゴは全部で600円です'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2100,15 +2100,15 @@
     "chapter": 20,
     "title": "Dai 20 Ka - Kaiwa",
     "audio": "/audio/69 Dai 20 Ka - Kaiwa.mp3",
-    "questionText": "Berdasarkan audio: 第20か会話一緒に行かない",
+    "questionText": "Dua teman berencana mendaki gunung Fuji. Kapan mereka akan mendaki?",
     "options": [
-      "第20か会話一緒に行かない",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "8月の初めごろ",
+      "夏休みの最後に",
+      "7月の初めごろ",
+      "来月の月曜日"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第20か会話一緒に行かない",
+    "explanation": "Salah satu teman bertanya '8月の初めごろはどう？' dan temannya menyetujui 'いいよ'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2121,15 +2121,15 @@
     "chapter": 20,
     "title": "Dai 20 Ka - Mondai 1",
     "audio": "/audio/70 Dai 20 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第20か",
+    "questionText": "Audio berisi daftar pertanyaan latihan. Pertanyaan ke-2 (ni) adalah apa?",
     "options": [
-      "第20か",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "くだもので何が一番好き？",
+      "日曜日何をする？",
+      "漢字がいくつわかる？",
+      "日本の笑顔を見たことがある？"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第20か",
+    "explanation": "Audio: '二。くだもので何が一番好き？' adalah pertanyaan ke-2.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2142,15 +2142,15 @@
     "chapter": 20,
     "title": "Dai 20 Ka - Mondai 2",
     "audio": "/audio/71 Dai 20 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1あ、雨え",
+    "questionText": "Percakapan 3: Mendapat 2 tiket film. Di mana dan jam berapa mereka bertemu?",
     "options": [
-      "2番1あ、雨え",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "6時に駅で",
+      "5時に映画館の前で",
+      "6時に公園で",
+      "7時に学校の入口で"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1あ、雨え",
+    "explanation": "Pria berkata: '6時に駅で会おう' untuk menonton film Korea bersama.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2199,15 +2199,15 @@
     "chapter": 21,
     "title": "Dai 21 Ka - Kaiwa",
     "audio": "/audio/72 Dai 21 Ka - Kaiwa.mp3",
-    "questionText": "Berdasarkan audio: 第21か 買いは私もそう思いますあ サントスさん 久しぶりですねあ 松々さん お元気ですか",
+    "questionText": "Santos dan Matsuo akan menonton pertandingan sepak bola. Kapan pertandingannya?",
     "options": [
-      "第21か 買いは私もそう思いますあ サントスさん 久しぶりですねあ 松々さん お元気ですか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "今晩10時から",
+      "明日10時から",
+      "今晩9時から",
+      "土曜日の夜"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第21か 買いは私もそう思いますあ サントスさん 久しぶりですねあ 松々さん お元気ですか",
+    "explanation": "Matsuo berkata: '今晩10時から日本とブラジルのサッカーの試合がありますね'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2220,15 +2220,15 @@
     "chapter": 21,
     "title": "Dai 21 Ka - Mondai 1",
     "audio": "/audio/73 Dai 21 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第21か",
+    "questionText": "Audio berisi daftar pertanyaan latihan. Pertanyaan ke-4 (yon) adalah apa?",
     "options": [
-      "第21か",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "日本人はご飯を食べる前に何と言いますか。",
+      "明日は天気がいいと思いますか。",
+      "東京は有名でしょう。",
+      "日本人はあなたの国についてよく知っていると思いますか。"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第21か",
+    "explanation": "Audio: '四。日本人はご飯を食べる前に何と言いますか。' adalah pertanyaan ke-4.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2241,15 +2241,15 @@
     "chapter": 21,
     "title": "Dai 21 Ka - Mondai 2",
     "audio": "/audio/74 Dai 21 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1家庁は2階の会議室です今会議をしています何事頃終わりますか3時頃だと思いますがそうですかじゃあまた後できます女の人はこれから会議室へ行きます2次の作家の試合は大阪でありますねえ",
+    "questionText": "Percakapan 1: Ditanya lokasi ruang rapat. Di mana ruang rapat tersebut?",
     "options": [
-      "2番1家庁は2階の会議室です今会議をしています何事頃終わりますか3時頃だと思いますがそうですかじゃあまた後できます女の人はこれから会議室へ行きます2次の作家の試合は大阪でありますねえ",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "2階の会議室",
+      "1階の会議室",
+      "3階の会議室",
+      "地下の会議室"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1家庁は2階の会議室です今会議をしています何事頃終わりますか3時頃だと思いますがそうですかじゃあまた後できます女の人はこれから会議室へ行きます2次の作家の試合は大阪でありますねえ",
+    "explanation": "Petugas menjawab: '会議室は2階の会議室です'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2290,15 +2290,15 @@
     "chapter": 22,
     "title": "Dai 22 Ka - Kaiwa",
     "audio": "/audio/75 Dai 22 Ka - Kaiwa.mp3",
-    "questionText": "Berdasarkan audio: 第22か 買いはどんな部屋をお探しですかどんな部屋をお探しですかそうですねやちんは8万円ぐらいで駅から遠くないところがいいですでは こちらはいかがですか駅から10分でやちんは8万3000円ですダイニングキッチンとはしつですねすみません...",
+    "questionText": "Pelanggan mencari apartemen. Berapa lama dari stasiun ke apartemen yang disarankan?",
     "options": [
-      "第22か 買いはどんな部屋をお探しですかどんな部屋をお探しですかそうですねやちんは8万円ぐらいで駅から遠くないところがいいですでは こちらはいかがですか駅から10分でやちんは8万3000円ですダイニングキッチンとはしつですねすみません ここは何ですかおしいれです 普通を入れるところですよそうですか この部屋きょう見ることができますかえー 今から行きましょうかえー お願いします",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "10分",
+      "5分",
+      "15分",
+      "30分"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第22か 買いはどんな部屋をお探しですかどんな部屋をお探しですかそうですねやちんは8万円ぐらいで駅から遠くないところがいいですでは こちらはいかがですか駅から10分でやちんは8万3000円ですダイニングキッチンとはしつですねすみません ここは何ですかおしいれです 普通を入れるところですよそうですか この部屋きょう見ることができますかえー 今から行きましょうかえー お願いします",
+    "explanation": "Pemandu berkata: '駅から10分で、家賃は8万3000円です'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2311,15 +2311,15 @@
     "chapter": 22,
     "title": "Dai 22 Ka - Mondai 1",
     "audio": "/audio/76 Dai 22 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第22か",
+    "questionText": "Audio berisi daftar pertanyaan latihan. Pertanyaan ke-3 (san) adalah apa?",
     "options": [
-      "第22か",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "家族でメガネをかけている人がいますか？",
+      "あなたが生まれたところはどこですか？",
+      "今車を買うお金がありますか？",
+      "今一番欲しいものは何ですか？"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第22か",
+    "explanation": "Audio: '三。家族でメガネをかけている人がいますか？' adalah pertanyaan ke-3.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2332,15 +2332,15 @@
     "chapter": 22,
     "title": "Dai 22 Ka - Mondai 2",
     "audio": "/audio/77 Dai 22 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1これ、私が作ったケーキですけど、いかがですか",
+    "questionText": "Percakapan 2: Di mana jas hujan (kasu) harus diletakkan?",
     "options": [
-      "2番1これ、私が作ったケーキですけど、いかがですか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "階段の後ろ",
+      "階段の前",
+      "廊下の端",
+      "エントランス"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1これ、私が作ったケーキですけど、いかがですか",
+    "explanation": "Petugas berkata: 'カサは階段の後ろにおいてください'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2361,15 +2361,15 @@
     "chapter": 23,
     "title": "Dai 23 Ka - Kaiwa",
     "audio": "/audio/78 Dai 23 Ka - Kaiwa.mp3",
-    "questionText": "Berdasarkan audio: 第23か 買いはどうやっていきますか",
+    "questionText": "Petugas ditanya cara ke perpustakaan. Bagaimana cara pergi ke perpustakaan?",
     "options": [
-      "第23か 買いはどうやっていきますか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "12番のバスに乗って、都書館前で降りる",
+      "電車で都書館駅まで行く",
+      "歩いて30分歩く",
+      "タクシーで12分かかる"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第23か 買いはどうやっていきますか",
+    "explanation": "Petugas menjawab: '12番のバスに乗って、都書館前で降りてください。3つ目です'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2382,15 +2382,15 @@
     "chapter": 23,
     "title": "Dai 23 Ka - Mondai 1",
     "audio": "/audio/79 Dai 23 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第23か 問題1番1子供の時 どこに住んでいましたか2外国へ行って 道側分からない時 どうしますか3暇な時 何をしますか4どんな時 タクシーに乗りますか5たくさんお酒を飲むと どうなりますか",
+    "questionText": "Audio berisi daftar pertanyaan latihan. Pertanyaan ke-5 (go) adalah apa?",
     "options": [
-      "第23か 問題1番1子供の時 どこに住んでいましたか2外国へ行って 道側分からない時 どうしますか3暇な時 何をしますか4どんな時 タクシーに乗りますか5たくさんお酒を飲むと どうなりますか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "たくさんお酒を飲むとどうなりますか？",
+      "暇な時、何をしますか？",
+      "子供の時、どこに住んでいましたか？",
+      "どんな時にタクシーに乗りますか？"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第23か 問題1番1子供の時 どこに住んでいましたか2外国へ行って 道側分からない時 どうしますか3暇な時 何をしますか4どんな時 タクシーに乗りますか5たくさんお酒を飲むと どうなりますか",
+    "explanation": "Audio: '五。たくさんお酒を飲むとどうなりますか？' adalah pertanyaan ke-5.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2403,15 +2403,15 @@
     "chapter": 23,
     "title": "Dai 23 Ka - Mondai 2",
     "audio": "/audio/80 Dai 23 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1すみません、アメリカの友達に電話をかけるとき、どうしますか",
+    "questionText": "Percakapan 2: Kiri-chan ditanya lokasi perpustakaan. Di mana perpustakaan tersebut?",
     "options": [
-      "2番1すみません、アメリカの友達に電話をかけるとき、どうしますか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "橋を渡って左に100メートル",
+      "駅の前の道の右に50メートル",
+      "橋を渡る前の左",
+      "橋を渡って右に100メートル"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1すみません、アメリカの友達に電話をかけるとき、どうしますか",
+    "explanation": "Petugas menjawab: '橋を渡って100メートルぐらい行くと、左にあります'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2424,15 +2424,15 @@
     "chapter": 23,
     "title": "Dai 23 Ka - Mondai 3",
     "audio": "/audio/81 Dai 23 Ka - Mondai 3.mp3",
-    "questionText": "Berdasarkan audio: 3番1すみませんちょっと使い方教えてくださいはいまずここにお金を入れてください次にこのボタンを押すとカードがありますこのボタンですねわかりましたありがとうございましたボタンを押してからお金を入れるとカードが出ます2明日から主張ですねこ...",
+    "questionText": "Percakapan 3: Yamada-san minum teh Tiongkok. Kapan dia meminumnya?",
     "options": [
-      "3番1すみませんちょっと使い方教えてくださいはいまずここにお金を入れてください次にこのボタンを押すとカードがありますこのボタンですねわかりましたありがとうございましたボタンを押してからお金を入れるとカードが出ます2明日から主張ですねこの資料が入りますかお願いしますそれからパソコンも持っていかないと男の人は主張の時資料とパソコンを持っていきます3山田さんそれは何ですか中国のお茶です体の調子が悪いとき飲みますそれもお茶ですかいいえこれは薬ですお酒を飲んだとき飲みます男の人はお酒を飲んだとき中国のお茶を飲みます",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "体の調子が悪いとき",
+      "お酒を飲んだとき",
+      "毎朝ごはんの前",
+      "スポーツをしたとき"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 3番1すみませんちょっと使い方教えてくださいはいまずここにお金を入れてください次にこのボタンを押すとカードがありますこのボタンですねわかりましたありがとうございましたボタンを押してからお金を入れるとカードが出ます2明日から主張ですねこの資料が入りますかお願いしますそれからパソコンも持っていかないと男の人は主張の時資料とパソコンを持っていきます3山田さんそれは何ですか中国のお茶です体の調子が悪いとき飲みますそれもお茶ですかいいえこれは薬ですお酒を飲んだとき飲みます男の人はお酒を飲んだとき中国のお茶を飲みます",
+    "explanation": "Yamada-san berkata: '中国のお茶です。体の調子が悪いとき飲みます'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2453,15 +2453,15 @@
     "chapter": 24,
     "title": "Dai 24 Ka - Kaiwa",
     "audio": "/audio/82 Dai 24 Ka - Kaiwa.mp3",
-    "questionText": "Berdasarkan audio: 第24か、会話、手伝いに行きましょうか",
+    "questionText": "Rencana membantu pindah rumah. Jam berapa mereka akan datang di hari Minggu?",
     "options": [
-      "第24か、会話、手伝いに行きましょうか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "9時ごろ",
+      "10時ごろ",
+      "11時ごろ",
+      "12時ごろ"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第24か、会話、手伝いに行きましょうか",
+    "explanation": "Pemilik rumah berkata: 'じゃあ、すみませんが、9時ごろお願いします'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2474,15 +2474,15 @@
     "chapter": 24,
     "title": "Dai 24 Ka - Mondai 1",
     "audio": "/audio/83 Dai 24 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第24か",
+    "questionText": "Audio berisi daftar pertanyaan latihan. Pertanyaan ke-4 (yon) adalah apa?",
     "options": [
-      "第24か",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "お金がない時、誰に借りるんですか？",
+      "子供の時、お母さんは甘いおかしをくれましたか？",
+      "日本人の友達にあなたの国の料理を作ってあげたことがありますか？",
+      "子供の時、お父さんはよく遊んでくれましたか？"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第24か",
+    "explanation": "Pertanyaan ke-4 dalam audio adalah soal siapa yang bisa diminta bantuan saat tidak punya uang.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2495,15 +2495,15 @@
     "chapter": 24,
     "title": "Dai 24 Ka - Mondai 2",
     "audio": "/audio/84 Dai 24 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1良い時計ですねどこで買いましたか",
+    "questionText": "Percakapan 2: Hujan turun. Bagaimana Sato-san akan pulang?",
     "options": [
-      "2番1良い時計ですねどこで買いましたか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "車で",
+      "バスで",
+      "電車で",
+      "傘を持って歩いて"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1良い時計ですねどこで買いましたか",
+    "explanation": "Sato-san menjawab: '姉が車で迎えに来てくれますから大丈夫です'.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2544,15 +2544,15 @@
     "chapter": 25,
     "title": "Dai 25 Ka - Kaiwa",
     "audio": "/audio/85 Dai 25 Ka - Kaiwa.mp3",
-    "questionText": "Berdasarkan audio: 第25日、会話、いろいろお世話になりました",
+    "questionText": "Percakapan perpisahan. Ke mana pembicara akan pindah?",
     "options": [
-      "第25日、会話、いろいろお世話になりました",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "東京",
+      "大阪",
+      "京都",
+      "札幌"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第25日、会話、いろいろお世話になりました",
+    "explanation": "Pembicara berkata: 'みなさんが東京へ行ったら寂しくなりますね' — dia akan berangkat ke Tokyo.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2565,15 +2565,15 @@
     "chapter": 25,
     "title": "Dai 25 Ka - Mondai 1",
     "audio": "/audio/86 Dai 25 Ka - Mondai 1.mp3",
-    "questionText": "Berdasarkan audio: 第25か",
+    "questionText": "Audio berisi daftar pertanyaan latihan. Pertanyaan ke-1 (ichi) adalah apa?",
     "options": [
-      "第25か",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "もし、一千万円あったら何をしたいですか？",
+      "体の調子が悪かったらどうしますか？",
+      "年をとっても働きたいですか？",
+      "日曜日が雨だったらどこへ遊びに行きたいですか？"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 第25か",
+    "explanation": "Audio: '一。もし、一千万円あったら何をしたいですか？' adalah pertanyaan pertama.",
     "dialogScript": [
       {
         "speaker": "男",
@@ -2586,15 +2586,15 @@
     "chapter": 25,
     "title": "Dai 25 Ka - Mondai 2",
     "audio": "/audio/87 Dai 25 Ka - Mondai 2.mp3",
-    "questionText": "Berdasarkan audio: 2番1カリナさん、1年休みをもらったら何をしたいですか",
+    "questionText": "Percakapan 3: Pria akan ke India. Kapan dia akan pulang?",
     "options": [
-      "2番1カリナさん、1年休みをもらったら何をしたいですか",
-      "Tidak ada informasi tersebut",
-      "Topik lain",
-      "Tidak disebutkan"
+      "お金を全部使ったら",
+      "夏休みが終わり次第",
+      "一週間後",
+      "お金が半分になったら"
     ],
     "correctIndex": 0,
-    "explanation": "Audio mengandung: 2番1カリナさん、1年休みをもらったら何をしたいですか",
+    "explanation": "Pria menjawab: 'お金を全部使ったら帰ります' saat ditanya kapan pulang dari India.",
     "dialogScript": [
       {
         "speaker": "男",

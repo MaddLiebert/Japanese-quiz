@@ -295,8 +295,6 @@ All data is stored in browser `localStorage`.
 * **Phase 7:** Grammar (Particles, basic verbs, sentence structure).
 * **Phase 8:** Reading (Sentence to paragraph progression).
 * **Phase 9:** Listening (Character to sentence audio comprehension).
-* **Phase 10:** N5 Challenge (Comprehensive exam mode).
-* **Phase 11 (Future):** Accounts, backend infrastructure, cloud sync, multiplayer, and leaderboards (only after singleplayer maturity).
 
 ## 24. Acceptance Criteria (MVP Phase 1 & 2)
 

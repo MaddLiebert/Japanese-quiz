@@ -1,21 +1,45 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Learn } from "./pages/Learn";
 import { Practice } from "./pages/Practice";
 import { Review } from "./pages/Review";
 import { Settings } from "./pages/Settings";
+import Profile from "./features/profile/Profile";
 import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
-import { ProgressProvider } from "./features/progress/ProgressContext";
+import Shop from "./features/shop/Shop";
+import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
+import { EffectProvider } from "./features/effects/EffectContext";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
-// Floating top controls (Theme + Language) — shown on every page
+// Floating top controls (Theme + Language + Profile) — shown on every page
 function TopControls() {
   const { language, toggleLanguage } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const { progress } = useUserStats();
+  const navigate = useNavigate();
 
   return (
     <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+      {/* Shop / Medaru chip */}
+      <button
+        onClick={() => navigate('/shop')}
+        className="flex items-center gap-1.5 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all px-3 h-8 cursor-pointer select-none"
+        title="Warung Kakek"
+      >
+        <span className="text-xs">🏪</span>
+        <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()}</span>
+      </button>
+
+      {/* Profile button */}
+      <button
+        onClick={() => navigate('/profile')}
+        className="flex items-center justify-center w-8 h-8 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all text-xs cursor-pointer select-none font-black"
+        title="Player Profile"
+      >
+        👺
+      </button>
+
       {/* Theme toggle */}
       <button
         onClick={toggleTheme}
@@ -44,7 +68,8 @@ function App() {
     <ThemeProvider>
       <LanguageProvider>
         <ProgressProvider>
-          <BrowserRouter>
+          <EffectProvider>
+            <BrowserRouter>
             <div className="min-h-screen relative font-sans selection:bg-ai/20 overflow-x-hidden bg-[var(--backdrop-val)]">
           
               {/* 1. Global Washi Texture overlay */}
@@ -69,10 +94,13 @@ function App() {
                   <Route path="/mondai" element={<MondaiChapterFlow />} />
                   <Route path="/review" element={<Review />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/shop" element={<Shop />} />
+                  <Route path="/profile" element={<Profile />} />
                 </Routes>
               </main>
             </div>
           </BrowserRouter>
+          </EffectProvider>
         </ProgressProvider>
       </LanguageProvider>
     </ThemeProvider>

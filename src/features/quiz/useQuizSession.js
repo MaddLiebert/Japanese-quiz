@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useItemProgress } from '../progress/ProgressContext';
+import { useItemProgress, useUserStats } from '../progress/ProgressContext';
 import hiraganaData from '../../data/hiragana.json';
 import katakanaData from '../../data/katakana.json';
 import kotobaData from '../../data/kotoba.json';
@@ -121,8 +121,10 @@ export function useQuizSession() {
   const currentIndexRef = useRef(0);
   const isAnsweredRef = useRef(false);
   const timeoutRef = useRef(null);
+  const scoreRef = useRef(0);
   
   const { recordAnswer } = useItemProgress();
+  const { completeQuiz } = useUserStats();
 
   useEffect(() => {
     return () => {
@@ -173,6 +175,7 @@ export function useQuizSession() {
     questionsRef.current = generatedQuestions;
     currentIndexRef.current = 0;
     isAnsweredRef.current = false;
+    scoreRef.current = 0;
 
     setQuestions(generatedQuestions);
     setCurrentIndex(0);
@@ -204,7 +207,7 @@ export function useQuizSession() {
       
       const currentQ = questionsRef.current[currentIndexRef.current];
       if (currentQ) {
-        recordAnswer(currentQ.target.id, false, 0); // 0 XP for timeout
+    recordAnswer(currentQ.target.id, false, 0); // 0 XP for timeout
         setWrongAnswers(prev => [...prev, currentQ.target.id]);
         
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -241,6 +244,7 @@ export function useQuizSession() {
     recordAnswer(currentQ.target.id, correct, xpReward);
 
     if (correct) {
+      scoreRef.current += 1;
       setScore(prev => prev + 1);
     } else {
       setWrongAnswers(prev => [...prev, currentQ.target.id]);
@@ -267,8 +271,13 @@ export function useQuizSession() {
       }
     } else {
       setIsFinished(true);
+      const total = questionsRef.current.length;
+      const finalScore = scoreRef.current;
+      const wrongCount = total - finalScore;
+      const isWin = finalScore >= Math.ceil(total / 2);
+      completeQuiz(isWin, difficultyRef.current, 1, wrongCount, total);
     }
-  }, []); // no deps needed — reads from refs
+  }, [completeQuiz]); // reads from refs except for completeQuiz
 
   // Legacy shim for kana mode: select + auto-advance after 1500ms
   const answerQuestion = useCallback((selectedOptionId) => {

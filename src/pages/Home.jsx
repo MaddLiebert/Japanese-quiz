@@ -5,6 +5,7 @@ import { useUserStats, useItemProgress, useAchievements, getRank } from "../feat
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 
+import { StreakIndicator } from "../components/StreakIndicator";
 // Hanko Stamp component — reused for level and achievements
 const HankoStamp = ({ text, label, delay = 0.5 }) => (
   <motion.div
@@ -27,7 +28,7 @@ const AchievementStamp = ({ meta, index }) => (
     transition={{ type: "spring", stiffness: 160, damping: 10, delay: 0.1 * index }}
     className="flex flex-col items-center gap-3"
   >
-    <div className="relative flex flex-col items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full border-[5px] border-shu text-shu overflow-hidden bg-kinari-light shadow-md">
+    <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full border-[5px] border-shu text-shu overflow-hidden bg-kinari-light shadow-md">
       <div className="absolute inset-0 border-[2px] border-shu opacity-50 m-1.5 rounded-full"></div>
       <span className="text-3xl sm:text-4xl font-serif font-black leading-none z-10">{meta.label}</span>
     </div>
@@ -267,9 +268,7 @@ export function Home() {
                 <h4 className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold mb-3">
                   {language === 'id' ? 'Streak Belajar' : 'Study Streak'}
                 </h4>
-                <div className="text-4xl sm:text-5xl font-serif text-sumi font-bold flex items-center gap-2">
-                  {progress.streak} <span className="text-2xl sm:text-3xl">🔥</span>
-                </div>
+                <StreakIndicator count={progress.streak} isActive={progress.streak > 0} />
                 <div className="mt-4 text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1 bg-sumi text-kinari-light inline-block w-max">
                   {language === 'id' ? '+5% Bonus Aktif' : '+5% Bonus Active'}
                 </div>

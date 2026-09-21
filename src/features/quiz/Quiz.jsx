@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
+import { Furigana } from "../../components/Furigana";
 import { AudioPlayer } from "../../components/MondaiComponents";
-import { playCorrectSound, playWrongSound } from "../../utils/sfx";
-import { useItemProgress } from "../progress/ProgressContext";
+import { useItemProgress, useUserStats } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
+import { useEffectLayer } from "../effects/EffectContext";
 
 const Quiz = ({ chapter, onComplete, onBack }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -13,7 +14,11 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
   const [wrongAnswers, setWrongAnswers] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const { recordAnswer } = useItemProgress();
+  const { completeQuiz } = useUserStats();
   const { language } = useLanguage();
+  const { triggerEffect, resetEffectStreak } = useEffectLayer();
+
+  useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
 
   const questions = chapter.questions;
   const currentQuestion = questions[currentQuestionIndex];
@@ -34,13 +39,21 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
 
     const isCorrect = index === currentQuestion.correctIndex;
     recordAnswer(currentQuestion.id, isCorrect, 15);
+    const newScore = isCorrect ? score + 1 : score;
 
     if (isCorrect) {
-      playCorrectSound();
-      setScore((prev) => prev + 1);
+      triggerEffect('correct');
+      setScore(newScore);
     } else {
-      playWrongSound();
+      triggerEffect('wrong');
       setWrongAnswers((prev) => [...prev, currentQuestion.id]);
+    }
+
+    if (currentQuestionIndex === questions.length - 1) {
+      const total = questions.length;
+      const wrongCount = total - newScore;
+      const isWin = newScore >= Math.ceil(total / 2);
+      completeQuiz(isWin, 'medium', chapter.chapter || 1, wrongCount, total);
     }
   };
 
@@ -116,7 +129,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
 
           {/* Question Text */}
           <h3 className="text-xl sm:text-2xl font-bold text-sumi mb-8">
-            {currentQuestion.questionText}
+            <Furigana text={currentQuestion.questionText} />
           </h3>
 
           {/* Options */}
@@ -160,7 +173,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
                     {String.fromCharCode(65 + index)}.
                   </span>
                   <span className="mr-2">{icon}</span>
-                  <span>{option}</span>
+                  <Furigana text={option} />
                 </motion.button>
               );
             })}
