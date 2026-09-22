@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useCallback, useRef, useEffect, us
 import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
 import { playCorrectSound, playWrongSound, playStreakSound } from '../../utils/sfx';
+import { getPack } from '../packs/packs';
+import { getVisual } from './visuals';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Kotodama Burst — efek tinta (ink) ala washi/hanko/ensō.
@@ -21,8 +23,6 @@ export const useEffectLayer = () => {
   if (!ctx) throw new Error('useEffectLayer must be used within an EffectProvider');
   return ctx;
 };
-
-export const EFFECT_ID = 'kotodama_burst';
 
 // Milestone streak: 3, 5, lalu setiap kelipatan 10 sampai 100.
 // Level = indeks milestone tertinggi yang sudah dilewati (1..12).
@@ -107,7 +107,10 @@ export function EffectProvider({ children }) {
     timersRef.current = [];
   }, []);
 
-  const active = progress.activeEffect === EFFECT_ID;
+  // Visual aktif hanya kalau activePack punya visual yang terdaftar.
+  const activePack = getPack(progress.activePack);
+  const activeVisual = activePack?.visual || null;
+  const active = Boolean(getVisual(activeVisual));
 
   // Splash: tinta terlempar ke luar, memanjang searah gerak, lalu jatuh.
   const spawnInk = useCallback((kind, cfg = BASE_INTENSITY.correct) => {
@@ -190,13 +193,13 @@ export function EffectProvider({ children }) {
   return (
     <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, active }}>
       {children}
-      <EffectLayer fx={fx} drops={drops} />
+      <EffectLayer fx={fx} drops={drops} visual={activeVisual} />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops }) {
+function EffectLayer({ fx, drops, visual }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -214,85 +217,103 @@ function EffectLayer({ fx, drops }) {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
-      {/* Filter tinta — tepi bergerigi organik */}
-      <svg width="0" height="0" className="absolute" aria-hidden="true">
-        <defs>
-          <filter id={`${fid}-rough`} x="-25%" y="-35%" width="150%" height="170%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.022 0.06" numOctaves="3" seed={fx?.seed || 7} result="n" />
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="10" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-          <filter id={`${fid}-bleed`} x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4.2" />
-          </filter>
-        </defs>
-      </svg>
+      {/* Visual tinta (pack 'ink') */}
+      {visual === 'ink' && (
+        <>
+          {/* Filter tinta — tepi bergerigi organik */}
+          <svg width="0" height="0" className="absolute" aria-hidden="true">
+            <defs>
+              <filter id={`${fid}-rough`} x="-25%" y="-35%" width="150%" height="170%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.022 0.06" numOctaves="3" seed={fx?.seed || 7} result="n" />
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="10" xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+              <filter id={`${fid}-bleed`} x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="4.2" />
+              </filter>
+            </defs>
+          </svg>
 
-      <motion.div
-        className="absolute inset-0"
-        animate={
-          kind === 'wrong'
-            ? { x: [0, -11, 9, -6, 4, 0], y: [0, 3, -3, 2, -1, 0] }
-            : fx?.signature === 'zenith100'
-              ? { x: [0, -16, 14, -10, 8, -4, 0], y: [0, -8, 7, -6, 5, -3, 0] }
-              : (kind === 'streak' && fx?.onMilestone && fx.level >= 5)
-                ? { x: [0, -7, 6, -4, 3, 0], y: [0, -4, 4, -3, 2, 0] }
-                : { x: 0, y: 0 }
-        }
-        transition={{ duration: fx?.signature === 'zenith100' ? 0.7 : 0.5, ease: 'easeOut' }}
-      >
-        {/* Wash tint (radial, lembut) */}
-        <AnimatePresence>
-          {kind && (
-            <motion.div
-              key={`wash-${fx.id}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.34, ease: 'easeOut' }}
-              className="absolute inset-0"
-              style={{ background: wash }}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Ink splash */}
-        {drops.map(d => (
           <motion.div
-            key={d.id}
-            className="absolute left-1/2 top-1/2"
-            initial={{ x: 0, y: 0, opacity: 0.95 }}
-            animate={{ x: d.dx, y: d.dy, opacity: 0 }}
-            transition={{ duration: d.dur, ease: [0.06, 0.72, 0.14, 1], delay: d.delay }}
-            style={{
-              width: d.size,
-              height: d.size,
-              marginLeft: -d.size / 2,
-              marginTop: -d.size / 2,
-              filter: d.soft ? 'blur(1.1px)' : undefined,
-            }}
+            className="absolute inset-0"
+            animate={
+              kind === 'wrong'
+                ? { x: [0, -11, 9, -6, 4, 0], y: [0, 3, -3, 2, -1, 0] }
+                : fx?.signature === 'zenith100'
+                  ? { x: [0, -16, 14, -10, 8, -4, 0], y: [0, -8, 7, -6, 5, -3, 0] }
+                  : (kind === 'streak' && fx?.onMilestone && fx.level >= 5)
+                    ? { x: [0, -7, 6, -4, 3, 0], y: [0, -4, 4, -3, 2, 0] }
+                    : { x: 0, y: 0 }
+            }
+            transition={{ duration: fx?.signature === 'zenith100' ? 0.7 : 0.5, ease: 'easeOut' }}
           >
-            <svg width={d.size} height={d.size} viewBox="0 0 16 12"
-              style={{ transform: `rotate(${d.deg}deg) scaleX(${d.stretch})`, transformOrigin: '0% 50%' }}>
-              <path d={TEARDROP} style={{ fill: ink }} />
-            </svg>
-          </motion.div>
-        ))}
-      </motion.div>
+            {/* Wash tint (radial, lembut) */}
+            <AnimatePresence>
+              {kind && (
+                <motion.div
+                  key={`wash-${fx.id}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.34, ease: 'easeOut' }}
+                  className="absolute inset-0"
+                  style={{ background: wash }}
+                />
+              )}
+            </AnimatePresence>
 
-      <AnimatePresence>
-        {kind === 'correct' && <HankoStamp key={`h-${fx.id}`} fid={fid} />}
-        {kind === 'wrong' && <BrushSlash key={`b-${fx.id}`} fid={fid} angle={fx.angle} y={fx.y} />}
-        {kind === 'streak' && (
-          <StreakSigil
-            key={`s-${fx.id}`}
-            fid={fid}
-            level={fx.level}
-            milestone={fx.milestone}
-            signature={fx.signature}
-            streak={fx.streak}
-          />
-        )}
-      </AnimatePresence>
+            {/* Ink splash */}
+            {drops.map(d => (
+              <motion.div
+                key={d.id}
+                className="absolute left-1/2 top-1/2"
+                initial={{ x: 0, y: 0, opacity: 0.95 }}
+                animate={{ x: d.dx, y: d.dy, opacity: 0 }}
+                transition={{ duration: d.dur, ease: [0.06, 0.72, 0.14, 1], delay: d.delay }}
+                style={{
+                  width: d.size,
+                  height: d.size,
+                  marginLeft: -d.size / 2,
+                  marginTop: -d.size / 2,
+                  filter: d.soft ? 'blur(1.1px)' : undefined,
+                }}
+              >
+                <svg width={d.size} height={d.size} viewBox="0 0 16 12"
+                  style={{ transform: `rotate(${d.deg}deg) scaleX(${d.stretch})`, transformOrigin: '0% 50%' }}>
+                  <path d={TEARDROP} style={{ fill: ink }} />
+                </svg>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <AnimatePresence>
+            {kind === 'correct' && <HankoStamp key={`h-${fx.id}`} fid={fid} />}
+            {kind === 'wrong' && <BrushSlash key={`b-${fx.id}`} fid={fid} angle={fx.angle} y={fx.y} />}
+            {kind === 'streak' && (
+              <StreakSigil
+                key={`s-${fx.id}`}
+                fid={fid}
+                level={fx.level}
+                milestone={fx.milestone}
+                signature={fx.signature}
+                streak={fx.streak}
+              />
+            )}
+          </AnimatePresence>
+        </>
+      )}
+
+      {/* Visual dummy (pack placeholder) — kanji 仮 samar */}
+      {visual === 'dummy' && fx && (
+        <motion.div
+          key={`dummy-${fx.id}`}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: [0, 0.9, 0], scale: [0.9, 1.05, 1] }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <span className="text-[18vw] font-serif font-black text-sumi/25 select-none">仮</span>
+        </motion.div>
+      )}
     </div>
   );
 }

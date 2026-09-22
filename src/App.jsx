@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Home } from "./pages/Home";
 import { Learn } from "./pages/Learn";
 import { Practice } from "./pages/Practice";
@@ -9,6 +10,8 @@ import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
 import Shop from "./features/shop/Shop";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
 import { EffectProvider } from "./features/effects/EffectContext";
+import { getPack } from "./features/packs/packs";
+import { setActiveVoice } from "./utils/sfx";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
@@ -63,11 +66,22 @@ function TopControls() {
   );
 }
 
+// Sinkronkan voice aktif ke sfx.js setiap activePack berubah.
+function VoiceSync() {
+  const { progress } = useUserStats();
+  useEffect(() => {
+    const pack = getPack(progress.activePack);
+    setActiveVoice(pack?.voice || null);
+  }, [progress.activePack]);
+  return null;
+}
+
 function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
         <ProgressProvider>
+          <VoiceSync />
           <EffectProvider>
             <BrowserRouter>
             <div className="min-h-screen relative font-sans selection:bg-ai/20 overflow-x-hidden bg-[var(--backdrop-val)]">
