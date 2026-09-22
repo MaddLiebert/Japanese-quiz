@@ -452,7 +452,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   // Pakai barang (kurangi 1). Return: 'used' | 'empty' | 'invalid'.
-  const useItem = useCallback((itemId) => {
+  const consumeItem = useCallback((itemId) => {
     const item = getItem(itemId);
     if (!item) return 'invalid';
     const have = progressRef.current?.ownedItems?.[itemId] || 0;
@@ -538,7 +538,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyItem, useItem, buyPack, togglePack, rollGacha, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyItem, consumeItem, buyPack, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META }}>
           {children}
