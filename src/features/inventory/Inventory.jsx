@@ -25,6 +25,8 @@ export function Inventory() {
   const totalItems = countItems(progress.ownedItems);
 
   const packs = PACKS.filter((p) => ownedPacks.includes(p.id) && isPackReady(p));
+  // Total isi tas = pack + barang (angka di badge harus mencerminkan keduanya).
+  const totalSlots = packs.length + totalItems;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
@@ -83,11 +85,11 @@ export function Inventory() {
             </div>
             <div className="relative flex flex-col items-center justify-center w-20 h-20 rounded-full border-[4px] border-ai text-ai overflow-hidden bg-kinari-light shadow-sm">
               <div className="absolute inset-0 border-[2px] border-ai opacity-60 m-1 rounded-full"></div>
-              <span className="text-[9px] uppercase font-bold tracking-[0.2em] mt-2 mb-0.5">{id ? 'Item' : 'Items'}</span>
-              <span className="text-2xl font-serif font-black leading-none">{totalItems}</span>
+              <span className="text-[9px] uppercase font-bold tracking-[0.2em] mt-2 mb-0.5">{id ? 'Isi' : 'Total'}</span>
+              <span className="text-2xl font-serif font-black leading-none">{totalSlots}</span>
             </div>
             <div className="mt-3 text-xs uppercase tracking-[0.2em] font-bold text-sumi/75">
-              {packs.length} {id ? 'pack' : 'packs'} · {items.length} {id ? 'jenis' : 'kinds'}
+              {packs.length} {id ? 'pack' : 'packs'} · {totalItems} {id ? 'barang' : 'items'}
             </div>
           </div>
         </header>
