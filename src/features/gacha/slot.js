@@ -3,9 +3,14 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const REEL_COUNT = 3;
-export const STRIP_LEN = 18;                  // jumlah simbol per strip
-export const REEL_MS = [1500, 2000, 2500];    // durasi spin tiap reel (ms)
-export const TICK_MS = 75;                    // interval bunyi tick (ms)
+export const STRIP_LEN = 24;                  // simbol per strip (cukup panjang agar tetap ngebut di durasi panjang)
+export const REEL_MS = [3000, 4000, 5000];    // durasi spin tiap reel (ms) — berhenti berurutan, total ~5.8s
+export const TICK_MS = 70;                    // interval bunyi tick (ms)
+// Easing ease-in-out: reel berakselerasi dari diam lalu melambat berhenti (mulus, tanpa lonjakan).
+export const REEL_EASE = [0.42, 0, 0.58, 1];
+// Tinggi fade gradien di tepi jendela reel (px) — memberi kesan kedalaman/kecepatan
+// TANPA filter blur animasi (blur per-frame pada strip panjang = berat, bikin patah-patah).
+export const REEL_FADE = 30;
 
 // Simbol acak yang dilewati saat reel muter (bukan ikon pack).
 export const SYMBOL_POOL = ['🍥', '🎴', '🏮', '⚡', '🌊', '🔥', '❄️', '🌸', '🎐', '🪷'];

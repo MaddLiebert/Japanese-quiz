@@ -10,6 +10,8 @@ import {
   reelTargetIcons,
   maxRarity,
   totalSpinMs,
+  REEL_EASE,
+  REEL_FADE,
 } from './slot.js';
 
 test('konstanta dasar masuk akal', () => {
@@ -17,6 +19,24 @@ test('konstanta dasar masuk akal', () => {
   assert.equal(REEL_MS.length, REEL_COUNT);
   assert.ok(STRIP_LEN >= 8);
   assert.ok(SYMBOL_POOL.length >= 4);
+});
+
+test('durasi spin panjang & reel berhenti berurutan', () => {
+  assert.ok(REEL_MS[0] >= 2500, 'reel pertama minimal 2.5s');
+  assert.ok(REEL_MS[REEL_COUNT - 1] >= 4000, 'reel terakhir minimal 4s');
+  for (let i = 1; i < REEL_MS.length; i++) {
+    assert.ok(REEL_MS[i] > REEL_MS[i - 1], 'tiap reel berhenti setelah reel sebelumnya');
+  }
+});
+
+test('strip cukup panjang untuk putaran mulus', () => {
+  assert.ok(STRIP_LEN >= 24, 'makin banyak simbol = gerak makin mengalir');
+});
+
+test('REEL_EASE & REEL_FADE valid', () => {
+  assert.equal(REEL_EASE.length, 4);
+  assert.ok(REEL_EASE.every((n) => Number.isFinite(n) && n >= 0 && n <= 1));
+  assert.ok(REEL_FADE > 0, 'fade tepi harus aktif untuk kesan kedalaman');
 });
 
 test('buildStrip: panjang benar & elemen terakhir = target', () => {

@@ -8,6 +8,8 @@ import {
   REEL_COUNT,
   REEL_MS,
   TICK_MS,
+  REEL_EASE,
+  REEL_FADE,
   buildStrips,
   reelTargetIcons,
   maxRarity,
@@ -62,7 +64,7 @@ export function GachaSlotOverlay({ result, onClose }) {
   useEffect(() => {
     if (reduced || !allStopped) return;
     playFanfare(rarity);
-    const t = setTimeout(() => setRevealed(true), 350);
+    const t = setTimeout(() => setRevealed(true), 700);
     return () => clearTimeout(t);
   }, [reduced, allStopped, rarity]);
 
@@ -80,7 +82,7 @@ export function GachaSlotOverlay({ result, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[300] bg-sumi/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6"
+      className="fixed inset-0 z-[300] bg-sumi/90 flex items-center justify-center p-3 sm:p-6"
     >
       <motion.div
         initial={{ scale: 0.9, y: 20 }}
@@ -128,8 +130,9 @@ export function GachaSlotOverlay({ result, onClose }) {
                   transition={
                     reduced
                       ? { duration: 0 }
-                      : { duration: REEL_MS[i] / 1000, ease: [0.16, 0.84, 0.24, 1] }
+                      : { duration: REEL_MS[i] / 1000, ease: REEL_EASE }
                   }
+                  style={{ willChange: 'transform' }}
                   onAnimationComplete={() => setStopped((s) => Math.max(s, i + 1))}
                 >
                   {strip.map((sym, j) => (
@@ -142,6 +145,15 @@ export function GachaSlotOverlay({ result, onClose }) {
                     </div>
                   ))}
                 </motion.div>
+                {/* fade tepi: kesan kedalaman/kecepatan tanpa filter blur (mahal) */}
+                <div
+                  className="absolute inset-x-0 top-0 pointer-events-none"
+                  style={{ height: REEL_FADE, background: 'linear-gradient(to bottom, var(--kinari-light-val), transparent)' }}
+                />
+                <div
+                  className="absolute inset-x-0 bottom-0 pointer-events-none"
+                  style={{ height: REEL_FADE, background: 'linear-gradient(to top, var(--kinari-light-val), transparent)' }}
+                />
                 {/* garis tengah (payline) */}
                 <div className="absolute inset-x-0 top-1/2 h-[3px] bg-shu/60 -translate-y-1/2 pointer-events-none" />
               </div>
