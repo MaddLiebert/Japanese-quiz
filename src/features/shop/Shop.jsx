@@ -16,15 +16,17 @@ const RARITY_STYLE = {
 };
 
 export function Shop() {
-  const { progress, buyItem, buyPack, togglePack, rollGacha } = useUserStats();
+  const { progress, buyItem, buyPack, rollGacha } = useUserStats();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [pullResult, setPullResult] = useState(null);
 
   const medaru = progress.medaru || 0;
   const ownedPacks = progress.ownedPacks || [];
-  const activePack = progress.activePack;
   const ownedItems = progress.ownedItems || {};
+
+  // Pack yang sudah dimiliki TIDAK tampil di Shop — pindah ke backpack (🎒).
+  const shopPacks = PACKS.filter((p) => !ownedPacks.includes(p.id));
 
   const handlePurchase = (item) => {
     const res = buyItem(item.id);
@@ -43,17 +45,12 @@ export function Shop() {
     setPullResult(res);
   };
 
-  const handlePackAction = (pack) => {
+  const handleBuyPack = (pack) => {
     if (!isPackReady(pack)) return;
-    const owned = ownedPacks.includes(pack.id);
-    if (!owned) {
-      const result = buyPack(pack.id);
-      if (result === 'poor') {
-        alert(language === 'id' ? `Medaru kurang! Butuh ${pack.price}, saldo kamu ${medaru}.` : `Not enough Medaru! Need ${pack.price}, you have ${medaru}.`);
-      }
-      return;
+    const result = buyPack(pack.id);
+    if (result === 'poor') {
+      alert(language === 'id' ? `Medaru kurang! Butuh ${pack.price}, saldo kamu ${medaru}.` : `Not enough Medaru! Need ${pack.price}, you have ${medaru}.`);
     }
-    togglePack(pack.id);
   };
 
   return (
@@ -162,6 +159,11 @@ export function Shop() {
                   ? 'Duplikat di-refund 50 🪙. Peluang: common 50% · rare 30% · legendary 20%.'
                   : 'Duplicates refund 50 🪙. Odds: common 50% · rare 30% · legendary 20%.'}
               </p>
+              <p className="text-[11px] font-bold mt-1 text-kinari-light/70">
+                {language === 'id'
+                  ? '📦 Hasil tarikan langsung masuk Tas Punggung 🎒'
+                  : '📦 Pulls go straight to your Backpack 🎒'}
+              </p>
             </div>
           </section>
 
@@ -175,54 +177,57 @@ export function Shop() {
               <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">品物</span>
             </div>
 
-            {/* Kartu Theme Pack */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-              {PACKS.map((pack) => {
-                const owned = ownedPacks.includes(pack.id);
-                const isActive = activePack === pack.id;
-                const ready = isPackReady(pack);
-                const affordable = medaru >= pack.price;
-                const rarity = PACK_RARITY[pack.rarity] || PACK_RARITY.common;
-                const st = RARITY_STYLE[pack.rarity] || RARITY_STYLE.common;
-                const label = !ready
-                  ? (language === 'id' ? 'SEGERA' : 'SOON')
-                  : !owned
-                    ? `BELI - ${pack.price} 🪙`
-                    : isActive ? 'AKTIF ✓' : (language === 'id' ? 'PAKAI' : 'USE');
-                const color = isActive
-                  ? 'bg-matcha text-kinari-light'
-                  : (!ready) ? 'bg-kinari-light text-sumi/40'
-                  : (owned || affordable) ? 'bg-ai text-kinari-light' : 'bg-kinari-light text-sumi/50';
-                return (
-                  <div
-                    key={pack.id}
-                    className={`${st.bg} border-[4px] ${st.border} shadow-[6px_6px_0_0_#1a1a1a] flex flex-col p-6 relative overflow-hidden ${st.text}`}
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="text-5xl">{pack.icon}</div>
-                      <span className="text-[10px] font-black uppercase tracking-[0.2em] px-2 py-1 border-[2px] border-current">
-                        {rarity.label} · {rarity.weight}%
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-serif font-black border-b-4 border-current pb-2 mb-2">
-                      {pack.name}
-                    </h3>
-                    <p className="text-sm font-bold mb-2 flex-grow opacity-90">{pack.desc}</p>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-4 opacity-70">
-                      🎨 {pack.visual} · 🎙️ {pack.voice}
-                    </p>
-                    <button
-                      type="button"
-                      disabled={!ready}
-                      onClick={() => handlePackAction(pack)}
-                      className={`py-3 font-black text-sm w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all disabled:opacity-60 disabled:cursor-not-allowed ${color}`}
+            {/* Kartu Theme Pack — hanya yang BELUM dimiliki */}
+            {shopPacks.length === 0 ? (
+              <p className="text-sm font-bold text-sumi/50 border-[3px] border-dashed border-sumi/20 p-6 text-center mb-10">
+                {language === 'id'
+                  ? 'Semua Theme Pack sudah kamu miliki! Buka Tas Punggung 🎒 untuk memakainya.'
+                  : 'You own every Theme Pack! Open the Backpack 🎒 to equip them.'}
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                {shopPacks.map((pack) => {
+                  const ready = isPackReady(pack);
+                  const affordable = medaru >= pack.price;
+                  const rarity = PACK_RARITY[pack.rarity] || PACK_RARITY.common;
+                  const st = RARITY_STYLE[pack.rarity] || RARITY_STYLE.common;
+                  const label = !ready
+                    ? (language === 'id' ? 'SEGERA' : 'SOON')
+                    : `BELI - ${pack.price} 🪙`;
+                  const color = !ready
+                    ? 'bg-kinari-light text-sumi/40'
+                    : affordable ? 'bg-ai text-kinari-light' : 'bg-kinari-light text-sumi/50';
+                  return (
+                    <div
+                      key={pack.id}
+                      className={`${st.bg} border-[4px] ${st.border} shadow-[6px_6px_0_0_#1a1a1a] flex flex-col p-6 relative overflow-hidden ${st.text}`}
                     >
-                      {label}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="text-5xl">{pack.icon}</div>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] px-2 py-1 border-[2px] border-current">
+                          {rarity.label} · {rarity.weight}%
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-serif font-black border-b-4 border-current pb-2 mb-2">
+                        {pack.name}
+                      </h3>
+                      <p className="text-sm font-bold mb-2 flex-grow opacity-90">{pack.desc}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-4 opacity-70">
+                        🎨 {pack.visual} · 🎙️ {pack.voice}
+                      </p>
+                      <button
+                        type="button"
+                        disabled={!ready}
+                        onClick={() => handleBuyPack(pack)}
+                        className={`py-3 font-black text-sm w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all disabled:opacity-60 disabled:cursor-not-allowed ${color}`}
+                      >
+                        {label}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Barang konsumsi */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
