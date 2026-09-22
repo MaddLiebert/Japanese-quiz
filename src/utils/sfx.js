@@ -71,70 +71,87 @@ export const playWrongSound = () => {
   osc.stop(t + 0.25);
 };
 
-// ── Gong bertingkat untuk streak — KONTINU (halus) ──────────────────────────
-// Level 1..12 (dari MILESTONES, boleh pecahan) dipetakan ke "panas" 0..1 yang
-// mulus, lalu tiap partial gong muncul bertahap. Jadi tiap kenaikan streak
-// mengubah suara sedikit-sedikit — bukan lompat 4 tangga.
-const GONG_RATIOS = [1, 1.51, 2.13, 2.74, 3.61, 4.29]; // partial inharmonik khas logam
+// ── Gong bertingkat untuk streak — KONTINU & AUDIBLE ────────────────────────
+// Catatan: gong versi lama pakai base 110-150Hz @ gain 0.05-0.15 → praktis
+// SENYAP di speaker laptop/HP (yang meredam < ~200Hz). Sekarang base dinaikkan
+// ke rentang audible, partial selalu menyertakan konten terang (>=500Hz),
+// total gain disetel setara chime, dan intensitas naik dari jumlah partial +
+// transient + durasi (bukan dari menurunkan frekuensi).
+const GONG_RATIOS = [1, 2.55, 3.8, 5.2, 6.9, 8.8]; // partial, rasio 2 pertama sudah terang
 const MAX_LEVEL = 12;
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const heatFor = (level) => clamp01(((level || 0) - 1) / (MAX_LEVEL - 1));
+
+// Murni (tanpa Web Audio) supaya bisa dites dengan `node --test`.
+// Mengembalikan parameter gong untuk sebuah level streak.
+export function streakGongParams(level = 0) {
+  const heat = heatFor(level);
+
+  const base = 200 + heat * 60;              // 200 -> 260 Hz (audible, naik ringan)
+  const dur = 1.0 + heat * 1.6;              // 1.0 -> 2.6 s
+  const partialLevel = 2 + heat * (GONG_RATIOS.length - 2); // 2 -> 6 partial
+  const weights = GONG_RATIOS.map((_, i) => clamp01(partialLevel - i));
+  const totalW = weights.reduce((a, b) => a + b, 0) || 1;
+  const peak = 0.85;                         // total energi (setara chime 0.8)
+
+  const partials = GONG_RATIOS
+    .map((ratio, i) => ({
+      freq: base * ratio,
+      gain: peak * (weights[i] / totalW),
+      weight: weights[i],
+    }))
+    .filter((p) => p.weight > 0.001);
+
+  const strike = {
+    freq: 2200 + heat * 1400,                 // 2200 -> 3600 Hz (terang, nembus)
+    gain: clamp01(heat * 1.6 - 0.3) * 0.18,   // muncul mulai tier menengah
+    dur: 0.06,
+  };
+
+  return { heat, base, dur, partials, strike };
+}
 
 export const playStreakSound = (level = 0) => {
   const ctx = initAudioContext();
   if (!ctx) return;
   if (ctx.state === 'suspended') ctx.resume();
 
-  const heat = heatFor(level);                 // 0..1 mulus
+  const { dur, partials, strike } = streakGongParams(level);
   const t = ctx.currentTime;
 
-  // Parameter kontinu: makin panas → makin panjang, dalam, dan kaya.
-  const dur = 1.2 + heat * 1.8;                // 1.2s → 3.0s
-  const base = 150 - heat * 40;                // 150Hz → 110Hz (makin dalam)
-  const partialLevel = 2 + heat * (GONG_RATIOS.length - 2); // 2 → 6 partial (pecahan)
-  const weights = GONG_RATIOS.map((_, i) => clamp01(partialLevel - i));
-  const totalW = weights.reduce((a, b) => a + b, 0) || 1;
-  const peak = 0.30;                           // total energi konstan → tidak clipping
-
-  GONG_RATIOS.forEach((ratio, i) => {
-    const w = weights[i];
-    if (w <= 0.001) return;
+  // Body gong: osilator sine, serangan cepat + ekor "mengendap".
+  partials.forEach((p) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(base * ratio, t);
-    // sedikit melengkung turun = karakter gong yang "mengendap"
-    osc.frequency.exponentialRampToValueAtTime(base * ratio * 0.94, t + dur);
+    osc.frequency.setValueAtTime(p.freq, t);
+    osc.frequency.exponentialRampToValueAtTime(p.freq * 0.96, t + dur);
 
-    const g = peak * (w / totalW);
     gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(g, t + 0.012);
+    gain.gain.linearRampToValueAtTime(p.gain, t + 0.008);
     gain.gain.exponentialRampToValueAtTime(0.0008, t + dur);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.start(t);
-    osc.stop(t + dur + 0.1);
+    osc.stop(t + dur + 0.05);
   });
 
-  // "Pukulan" stik menghantam logam: muncul mulus mulai panas menengah.
-  const strike = clamp01(heat * 1.8 - 0.5);    // 0 sampai 1, mulai ~heat 0.28
-  if (strike > 0.001) {
-    const len = Math.floor(ctx.sampleRate * 0.09);
-    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 2;
-    const noise = ctx.createBufferSource();
-    const nFilter = ctx.createBiquadFilter();
-    const nGain = ctx.createGain();
-    nFilter.type = 'bandpass';
-    nFilter.frequency.value = 1800 + heat * 900;
-    nGain.gain.setValueAtTime((0.08 + heat * 0.12) * strike, t);
-    noise.buffer = buf;
-    noise.connect(nFilter);
-    nFilter.connect(nGain);
-    nGain.connect(ctx.destination);
-    noise.start(t);
+  // Transient "stik menghantam logam": tinggi & pendek supaya jelas terdengar.
+  if (strike.gain > 0.001) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(strike.freq, t);
+
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(strike.gain, t + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0008, t + strike.dur);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + strike.dur + 0.02);
   }
 };
