@@ -156,3 +156,60 @@ export const playStreakSound = (level = 0) => {
   if (playFile(pickFile(voice.files?.streak))) return;
   synthGong(level);
 };
+
+// ── Suara mesin slot gacha ──────────────────────────────────────────────────
+// Parameter murni (dites di sfx.gacha.test.js).
+export function reelTickParams() {
+  return { freq: 1400, dur: 0.03, gain: 0.12 };
+}
+
+export function fanfareParams(rarity = 'common') {
+  const notes = rarity === 'legendary'
+    ? [523.25, 659.25, 783.99, 1046.5]   // C5 E5 G5 C6
+    : rarity === 'rare'
+      ? [523.25, 659.25, 783.99]         // C5 E5 G5
+      : [523.25, 659.25];                // C5 E5
+  return { notes, dur: 0.18, gap: 0.12, gain: 0.5 };
+}
+
+// Pemutar (butuh AudioContext; tidak dites di node).
+export const playReelTick = () => {
+  const ctx = initAudioContext();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume();
+  const { freq, dur, gain } = reelTickParams();
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(gain, t + 0.004);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + dur + 0.02);
+};
+
+export const playFanfare = (rarity = 'common') => {
+  const ctx = initAudioContext();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume();
+  const { notes, dur, gap, gain } = fanfareParams(rarity);
+  const start = ctx.currentTime;
+  notes.forEach((freq, i) => {
+    const t = start + i * gap;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(gain, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + dur + 0.05);
+  });
+};
