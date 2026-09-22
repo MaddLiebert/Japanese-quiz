@@ -5,6 +5,7 @@ import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { PACKS, PACK_RARITY, isPackReady } from "../packs/packs";
 import { SHOP_ITEMS } from "../items/items";
+import { GachaSlotOverlay } from "../gacha/GachaSlotOverlay";
 
 const GACHA_PRICE_1X = 100;
 const GACHA_PRICE_10X = 900;
@@ -266,62 +267,10 @@ export function Shop() {
         </div>
       </motion.div>
 
-      {/* Modal hasil gacha */}
+      {/* Layar gacha (mesin slot) */}
       <AnimatePresence>
         {pullResult && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-sumi/70 flex items-center justify-center p-4"
-            onClick={() => setPullResult(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.85, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-              className="bg-kinari-light border-[4px] border-sumi shadow-[10px_10px_0_0_#1a1a1a] max-w-lg w-full p-6 sm:p-8 max-h-[85vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3 className="text-2xl font-serif font-black text-sumi mb-1">
-                {language === 'id' ? 'Hasil Tarikan' : 'Pull Result'}
-              </h3>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sumi/50 mb-6">
-                {pullResult.results.length}x · {language === 'id' ? 'refund' : 'refund'} {pullResult.refunded} 🪙
-              </p>
-              <ul className="space-y-3 mb-6">
-                {pullResult.results.map((p, i) => {
-                  const pack = PACKS.find((x) => x.id === p.id);
-                  const st = RARITY_STYLE[pack?.rarity] || RARITY_STYLE.common;
-                  return (
-                    <li
-                      key={i}
-                      className={`${st.bg} ${st.text} border-[3px] border-sumi px-4 py-3 flex items-center gap-3`}
-                    >
-                      <span className="text-2xl">{pack?.icon || '📦'}</span>
-                      <span className="font-black flex-grow">{pack?.name || p.id}</span>
-                      <span className="text-[10px] font-black uppercase tracking-[0.15em]">
-                        {PACK_RARITY[pack?.rarity]?.label || 'COMMON'}
-                      </span>
-                      {!p.isNew && (
-                        <span className="text-[10px] font-black bg-sumi text-kinari-light px-2 py-1">
-                          DUP +50
-                        </span>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-              <button
-                type="button"
-                onClick={() => setPullResult(null)}
-                className="w-full py-3 bg-ai text-kinari-light font-black border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all"
-              >
-                {language === 'id' ? 'TUTUP' : 'CLOSE'}
-              </button>
-            </motion.div>
-          </motion.div>
+          <GachaSlotOverlay result={pullResult} onClose={() => setPullResult(null)} />
         )}
       </AnimatePresence>
     </div>
