@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { getPack, rollPackId, isPackReady } from '../packs/packs';
+import { getItem, addItem, removeItem } from '../items/items';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -37,6 +38,7 @@ const DEFAULT_PROGRESS = {
   maxStreak: 0,
   ownedPacks: [],
   activePack: null,
+  ownedItems: {},
   lastActiveDate: getLocalDateString()
 };
 
@@ -434,6 +436,35 @@ export const ProgressProvider = ({ children }) => {
     return true;
   }, []);
 
+  // Beli barang konsumsi. Return: 'bought' | 'poor' | 'invalid'.
+  const buyItem = useCallback((itemId, qty = 1) => {
+    const item = getItem(itemId);
+    if (!item || qty <= 0) return 'invalid';
+    const total = item.price * qty;
+    const balance = progressRef.current?.medaru || 0;
+    if (balance < total) return 'poor';
+    setProgress(prev => {
+      const bal = prev.medaru || 0;
+      if (bal < total) return prev;
+      return { ...prev, medaru: bal - total, ownedItems: addItem(prev.ownedItems, itemId, qty) };
+    });
+    return 'bought';
+  }, []);
+
+  // Pakai barang (kurangi 1). Return: 'used' | 'empty' | 'invalid'.
+  const useItem = useCallback((itemId) => {
+    const item = getItem(itemId);
+    if (!item) return 'invalid';
+    const have = progressRef.current?.ownedItems?.[itemId] || 0;
+    if (have <= 0) return 'empty';
+    setProgress(prev => {
+      const now = prev.ownedItems?.[itemId] || 0;
+      if (now <= 0) return prev;
+      return { ...prev, ownedItems: removeItem(prev.ownedItems, itemId) };
+    });
+    return 'used';
+  }, []);
+
   // Beli pack. Return: 'bought' | 'owned' | 'poor' | 'invalid'
   const buyPack = useCallback((packId) => {
     const pack = getPack(packId);
@@ -507,7 +538,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyPack, togglePack, rollGacha, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyItem, useItem, buyPack, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META }}>
           {children}
