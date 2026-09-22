@@ -1,0 +1,50 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Logika murni mesin slot gacha (tanpa React / DOM) → dites via `node --test`.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const REEL_COUNT = 3;
+export const STRIP_LEN = 18;                  // jumlah simbol per strip
+export const REEL_MS = [1500, 2000, 2500];    // durasi spin tiap reel (ms)
+export const TICK_MS = 75;                    // interval bunyi tick (ms)
+
+// Simbol acak yang dilewati saat reel muter (bukan ikon pack).
+export const SYMBOL_POOL = ['🍥', '🎴', '🏮', '⚡', '🌊', '🔥', '❄️', '🌸', '🎐', '🪷'];
+
+// Deretan simbol satu reel: acak dari pool, ELEMEN TERAKHIR = target.
+export function buildStrip(targetIcon, pool = SYMBOL_POOL, length = STRIP_LEN, rng = Math.random) {
+  if (length < 1) throw new Error('length minimal 1');
+  const strip = [];
+  for (let i = 0; i < length - 1; i++) {
+    strip.push(pool[Math.floor(rng() * pool.length)]);
+  }
+  strip.push(targetIcon);
+  return strip;
+}
+
+// Strip untuk SEMUA reel. targetIcons lebih sedikit → dipakai berulang (modulo).
+export function buildStrips(targetIcons, pool = SYMBOL_POOL, length = STRIP_LEN, rng = Math.random) {
+  return Array.from({ length: REEL_COUNT }, (_, i) =>
+    buildStrip(targetIcons[i % targetIcons.length], pool, length, rng)
+  );
+}
+
+// Ikon target per reel dari hasil gacha. `iconOf(result)` → string ikon.
+export function reelTargetIcons(results, iconOf) {
+  const list = Array.isArray(results) ? results : [];
+  if (list.length === 0) return Array(REEL_COUNT).fill(SYMBOL_POOL[0]);
+  return Array.from({ length: REEL_COUNT }, (_, i) => iconOf(list[i % list.length]));
+}
+
+// Rarity tertinggi dari daftar rarity (untuk menentukan fanfare).
+const RARITY_RANK = { common: 0, rare: 1, legendary: 2 };
+export function maxRarity(rarities) {
+  return (rarities || []).reduce(
+    (best, r) => ((RARITY_RANK[r] ?? 0) > (RARITY_RANK[best] ?? 0) ? r : best),
+    'common'
+  );
+}
+
+// Total durasi animasi spin (reel terakhir + jeda reveal).
+export function totalSpinMs() {
+  return REEL_MS[REEL_COUNT - 1] + 400;
+}
