@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { PACKS, PACK_RARITY, isPackReady } from "../packs/packs";
+import { SHOP_ITEMS } from "../items/items";
 
 const GACHA_PRICE_1X = 100;
 const GACHA_PRICE_10X = 900;
@@ -14,15 +15,8 @@ const RARITY_STYLE = {
   legendary: { bg: 'bg-shu',          text: 'text-kinari-light', border: 'border-sumi' },
 };
 
-// Barang generik (bukan pack) — tetap pakai spendMedaru.
-const GENERIC_ITEMS = [
-  { id: 1, icon: "☕", name: "Kopi Kaleng Boss", desc: "EXP x2 (30 Menit)", price: 500 },
-  { id: 2, icon: "📼", name: "Selotip Kaset", desc: "Sambung Streak Putus", price: 1200 },
-  { id: 3, icon: "🔌", name: "Kabel Jumper", desc: "1x Hidup (Death Quiz)", price: 800 },
-];
-
 export function Shop() {
-  const { progress, spendMedaru, buyPack, togglePack, rollGacha } = useUserStats();
+  const { progress, buyItem, buyPack, togglePack, rollGacha } = useUserStats();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [pullResult, setPullResult] = useState(null);
@@ -30,12 +24,13 @@ export function Shop() {
   const medaru = progress.medaru || 0;
   const ownedPacks = progress.ownedPacks || [];
   const activePack = progress.activePack;
+  const ownedItems = progress.ownedItems || {};
 
-  const handlePurchase = (price) => {
-    const ok = spendMedaru(price);
-    alert(ok
-      ? (language === 'id' ? "Transaksi diproses..." : "Transaction processed...")
-      : (language === 'id' ? `Medaru kurang! Butuh ${price}, saldo kamu ${medaru}.` : `Not enough Medaru! Need ${price}, you have ${medaru}.`));
+  const handlePurchase = (item) => {
+    const res = buyItem(item.id);
+    if (res === 'poor') {
+      alert(language === 'id' ? `Medaru kurang! Butuh ${item.price}, saldo kamu ${medaru}.` : `Not enough Medaru! Need ${item.price}, you have ${medaru}.`);
+    }
   };
 
   const handleRoll = (count) => {
@@ -229,29 +224,37 @@ export function Shop() {
               })}
             </div>
 
-            {/* Barang generik */}
+            {/* Barang konsumsi */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {GENERIC_ITEMS.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] flex flex-col text-center p-6 relative overflow-hidden"
-                >
-                  <div className="text-6xl mb-4">{item.icon}</div>
-                  <h3 className="text-xl font-serif font-black border-b-4 border-sumi pb-2 mb-2 text-sumi">
-                    {item.name}
-                  </h3>
-                  <p className="text-sm font-bold mb-6 flex-grow text-sumi/80">{item.desc}</p>
-                  <button
-                    type="button"
-                    onClick={() => handlePurchase(item.price)}
-                    className={`py-3 font-black text-lg w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all ${
-                      medaru >= item.price ? "bg-ai text-kinari-light" : "bg-kinari-light text-sumi/50"
-                    }`}
+              {SHOP_ITEMS.map((item) => {
+                const have = ownedItems[item.id] || 0;
+                return (
+                  <div
+                    key={item.id}
+                    className="bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] flex flex-col text-center p-6 relative overflow-hidden"
                   >
-                    BELI - {item.price} 🪙
-                  </button>
-                </div>
-              ))}
+                    {have > 0 && (
+                      <span className="absolute top-3 right-3 bg-matcha text-kinari-light text-[10px] font-black px-2 py-1 border-[2px] border-sumi">
+                        ×{have}
+                      </span>
+                    )}
+                    <div className="text-6xl mb-4">{item.icon}</div>
+                    <h3 className="text-xl font-serif font-black border-b-4 border-sumi pb-2 mb-2 text-sumi">
+                      {item.name}
+                    </h3>
+                    <p className="text-sm font-bold mb-6 flex-grow text-sumi/80">{item.desc}</p>
+                    <button
+                      type="button"
+                      onClick={() => handlePurchase(item)}
+                      className={`py-3 font-black text-lg w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all ${
+                        medaru >= item.price ? "bg-ai text-kinari-light" : "bg-kinari-light text-sumi/50"
+                      }`}
+                    >
+                      BELI - {item.price} 🪙
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </section>
 
