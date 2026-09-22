@@ -118,7 +118,15 @@ export const ProgressProvider = ({ children }) => {
   // 1. User Stats State
   const [progress, setProgress] = useState(() => {
     const saved = localStorage.getItem('user_progress_v2');
-    return saved ? JSON.parse(saved) : DEFAULT_PROGRESS;
+    if (!saved) return DEFAULT_PROGRESS;
+    try {
+      const parsed = JSON.parse(saved);
+      // Merge dengan default: data lama yang tidak punya field baru (mis. xp)
+      // akan di-backfill, jadi tidak ada `undefined` yang bikin crash.
+      return { ...DEFAULT_PROGRESS, ...(parsed || {}) };
+    } catch {
+      return DEFAULT_PROGRESS;
+    }
   });
 
   // Ref agar pembacaan saldo selalu fresh (mis. di spendMedaru)
