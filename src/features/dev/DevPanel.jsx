@@ -13,6 +13,7 @@
 
 import { useUserStats } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
+import { PACKS } from "../packs/packs";
 
 // Kunci localStorage yang dipakai ProgressContext
 const PROGRESS_KEY = "user_progress_v2";
@@ -57,7 +58,15 @@ export function DevPanel() {
   };
 
   const unlockEffect = () => {
-    writeProgress({ ownedEffects: ["kotodama_burst"], activeEffect: "kotodama_burst" });
+    writeProgress({ ownedPacks: ["kotodama_burst"], activePack: "kotodama_burst" });
+    reload();
+  };
+
+  const unlockAllPacks = () => {
+    writeProgress({
+      ownedPacks: PACKS.map((p) => p.id),
+      activePack: "kotodama_burst",
+    });
     reload();
   };
 
@@ -74,7 +83,7 @@ export function DevPanel() {
   const resetAndCheat = () => {
     localStorage.removeItem(PROGRESS_KEY);
     localStorage.removeItem(ACHIEVEMENTS_KEY);
-    writeProgress({ medaru: 999999, ownedEffects: ["kotodama_burst"], activeEffect: "kotodama_burst" });
+    writeProgress({ medaru: 999999, ownedPacks: PACKS.map((p) => p.id), activePack: "kotodama_burst" });
     localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(ALL_BADGES));
     reload();
   };
@@ -108,6 +117,9 @@ export function DevPanel() {
           <button type="button" onClick={unlockEffect} className={`${btn} bg-matcha text-kinari-light`}>
             ✨ {id ? "Buka & Pakai Efek" : "Unlock & Equip Effect"}
           </button>
+          <button type="button" onClick={unlockAllPacks} className={`${btn} bg-matcha text-kinari-light`}>
+            🎨 {id ? "Buka Semua Pack" : "Unlock All Packs"}
+          </button>
           <button type="button" onClick={unlockBadges} className={`${btn} bg-shu text-kinari-light`}>
             🏅 {id ? "Buka Semua Badge" : "Unlock All Badges"}
           </button>
@@ -120,7 +132,7 @@ export function DevPanel() {
         </div>
 
         <div className="mt-6 pt-6 border-t-[2px] border-sumi/10 text-[10px] font-mono text-sumi/50">
-          medaru: {progress.medaru || 0} · effects: {(progress.ownedEffects || []).join(", ") || "—"} · active: {progress.activeEffect || "—"}
+          medaru: {progress.medaru || 0} · packs: {(progress.ownedPacks || []).join(", ") || "—"} · active: {progress.activePack || "—"}
         </div>
       </div>
     </section>
