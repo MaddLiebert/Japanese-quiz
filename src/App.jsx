@@ -8,6 +8,7 @@ import { Settings } from "./pages/Settings";
 import Profile from "./features/profile/Profile";
 import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
 import Shop from "./features/shop/Shop";
+import Inventory from "./features/inventory/Inventory";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
 import { EffectProvider } from "./features/effects/EffectContext";
 import { getPack } from "./features/packs/packs";
@@ -32,6 +33,15 @@ function TopControls() {
       >
         <span className="text-xs">🏪</span>
         <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()}</span>
+      </button>
+
+      {/* Backpack / Inventory button */}
+      <button
+        onClick={() => navigate('/inventory')}
+        className="flex items-center justify-center w-8 h-8 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all text-xs cursor-pointer select-none"
+        title={language === 'id' ? 'Tas Punggung' : 'Backpack'}
+      >
+        🎒
       </button>
 
       {/* Profile button */}
@@ -109,6 +119,7 @@ function App() {
                   <Route path="/review" element={<Review />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/shop" element={<Shop />} />
+                  <Route path="/inventory" element={<Inventory />} />
                   <Route path="/profile" element={<Profile />} />
                 </Routes>
               </main>
