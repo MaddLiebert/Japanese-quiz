@@ -14,6 +14,7 @@
 import { useUserStats } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { PACKS } from "../packs/packs";
+import { SHOP_ITEMS, countItems } from "../items/items";
 
 // Kunci localStorage yang dipakai ProgressContext
 const PROGRESS_KEY = "user_progress_v2";
@@ -70,6 +71,13 @@ export function DevPanel() {
     reload();
   };
 
+  const unlockAllItems = () => {
+    const ownedItems = {};
+    SHOP_ITEMS.forEach((i) => { ownedItems[i.id] = 5; });
+    writeProgress({ ownedItems });
+    reload();
+  };
+
   const unlockBadges = () => {
     localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(ALL_BADGES));
     reload();
@@ -83,7 +91,9 @@ export function DevPanel() {
   const resetAndCheat = () => {
     localStorage.removeItem(PROGRESS_KEY);
     localStorage.removeItem(ACHIEVEMENTS_KEY);
-    writeProgress({ medaru: 999999, ownedPacks: PACKS.map((p) => p.id), activePack: "kotodama_burst" });
+    const ownedItems = {};
+    SHOP_ITEMS.forEach((i) => { ownedItems[i.id] = 5; });
+    writeProgress({ medaru: 999999, ownedPacks: PACKS.map((p) => p.id), activePack: "kotodama_burst", ownedItems });
     localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(ALL_BADGES));
     reload();
   };
@@ -120,6 +130,9 @@ export function DevPanel() {
           <button type="button" onClick={unlockAllPacks} className={`${btn} bg-matcha text-kinari-light`}>
             🎨 {id ? "Buka Semua Pack" : "Unlock All Packs"}
           </button>
+          <button type="button" onClick={unlockAllItems} className={`${btn} bg-matcha text-kinari-light`}>
+            🎒 {id ? "Buka Semua Barang" : "Unlock All Items"}
+          </button>
           <button type="button" onClick={unlockBadges} className={`${btn} bg-shu text-kinari-light`}>
             🏅 {id ? "Buka Semua Badge" : "Unlock All Badges"}
           </button>
@@ -132,7 +145,7 @@ export function DevPanel() {
         </div>
 
         <div className="mt-6 pt-6 border-t-[2px] border-sumi/10 text-[10px] font-mono text-sumi/50">
-          medaru: {progress.medaru || 0} · packs: {(progress.ownedPacks || []).join(", ") || "—"} · active: {progress.activePack || "—"}
+          medaru: {progress.medaru || 0} · packs: {(progress.ownedPacks || []).length} · items: {countItems(progress.ownedItems)} · active: {progress.activePack || "—"}
         </div>
       </div>
     </section>
