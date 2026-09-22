@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { getPack, rollPackId, isPackReady } from '../packs/packs';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -34,8 +35,8 @@ const DEFAULT_PROGRESS = {
   totalCorrect: 0,
   streak: 0,
   maxStreak: 0,
-  ownedEffects: [],
-  activeEffect: null,
+  ownedPacks: [],
+  activePack: null,
   lastActiveDate: getLocalDateString()
 };
 
@@ -45,8 +46,10 @@ const LOSS_RATE = 0.15;      // fraksi WR yang hilang saat kalah total
 const PER_WRONG_RATE = 0.02; // fraksi WR yang dipotong per jawaban salah (walau menang)
 const MEDARU_PER_CORRECT = 2; // medaru yang didapat tiap jawaban benar
 
-// Harga efek visual (permanen, bisa di-ON/OFF)
-export const EFFECT_PRICES = { kotodama_burst: 2500 };
+// Harga & refund gacha (mengikuti harga pack di registry PACKS).
+const GACHA_PRICE_1X = 100;
+const GACHA_PRICE_10X = 900;
+const DUPLICATE_REFUND = 50; // refund per duplikat (keputusan user #2)
 
 // --- ITEM PROGRESS CONTEXT ---
 const ItemProgressContext = createContext(null);
@@ -114,6 +117,19 @@ export const ACHIEVEMENT_META = {
   zenith: { label: '頂', title: 'The Zenith', desc: 'Level 1000 Achieved' },
 };
 
+// ── Migrasi state lama (ownedEffects/activeEffect) → packs ──────────────────
+const migratePacks = (p) => {
+  if (!p) return p;
+  const legacyOwned = Array.isArray(p.ownedEffects) ? p.ownedEffects : null;
+  if (legacyOwned) {
+    p.ownedPacks = [...new Set([...(p.ownedPacks || []), ...legacyOwned])];
+    if (p.activePack == null && p.activeEffect != null) p.activePack = p.activeEffect;
+    delete p.ownedEffects;
+    delete p.activeEffect;
+  }
+  return p;
+};
+
 export const ProgressProvider = ({ children }) => {
   // 1. User Stats State
   const [progress, setProgress] = useState(() => {
@@ -121,9 +137,8 @@ export const ProgressProvider = ({ children }) => {
     if (!saved) return DEFAULT_PROGRESS;
     try {
       const parsed = JSON.parse(saved);
-      // Merge dengan default: data lama yang tidak punya field baru (mis. xp)
-      // akan di-backfill, jadi tidak ada `undefined` yang bikin crash.
-      return { ...DEFAULT_PROGRESS, ...(parsed || {}) };
+      // Merge dengan default (backfill field hilang) + migrasi state pack.
+      return migratePacks({ ...DEFAULT_PROGRESS, ...(parsed || {}) });
     } catch {
       return DEFAULT_PROGRESS;
     }
@@ -419,39 +434,65 @@ export const ProgressProvider = ({ children }) => {
     return true;
   }, []);
 
-  // Beli efek permanen. Return: 'bought' | 'owned' | 'poor'
-  const buyEffect = useCallback((effectId) => {
-    const price = EFFECT_PRICES[effectId] || 0;
-    const owned = progressRef.current?.ownedEffects || [];
-    if (owned.includes(effectId)) return 'owned';
+  // Beli pack. Return: 'bought' | 'owned' | 'poor' | 'invalid'
+  const buyPack = useCallback((packId) => {
+    const pack = getPack(packId);
+    if (!pack || !isPackReady(pack)) return 'invalid';
+    const owned = progressRef.current?.ownedPacks || [];
+    if (owned.includes(packId)) return 'owned';
     const balance = progressRef.current?.medaru || 0;
-    if (balance < price) return 'poor';
+    if (balance < pack.price) return 'poor';
     setProgress(prev => {
-      const ownedNow = prev.ownedEffects || [];
-      if (ownedNow.includes(effectId)) return prev;
+      const ownedNow = prev.ownedPacks || [];
+      if (ownedNow.includes(packId)) return prev;
       const bal = prev.medaru || 0;
-      if (bal < price) return prev;
-      return {
-        ...prev,
-        medaru: bal - price,
-        ownedEffects: [...ownedNow, effectId],
-        activeEffect: effectId
-      };
+      if (bal < pack.price) return prev;
+      return { ...prev, medaru: bal - pack.price, ownedPacks: [...ownedNow, packId], activePack: packId };
     });
     return 'bought';
   }, []);
 
-  // ON/OFF efek. Return true kalau sekarang aktif.
-  const toggleEffect = useCallback((effectId) => {
+  // ON/OFF pack. Return true kalau sekarang aktif.
+  const togglePack = useCallback((packId) => {
     let nowActive = false;
     setProgress(prev => {
-      const ownedNow = prev.ownedEffects || [];
-      if (!ownedNow.includes(effectId)) return prev;
-      const willActivate = prev.activeEffect !== effectId;
+      const ownedNow = prev.ownedPacks || [];
+      if (!ownedNow.includes(packId)) return prev;
+      const willActivate = prev.activePack !== packId;
       nowActive = willActivate;
-      return { ...prev, activeEffect: willActivate ? effectId : null };
+      return { ...prev, activePack: willActivate ? packId : null };
     });
     return nowActive;
+  }, []);
+
+  // Undian gacha. count = 1 atau 10.
+  // Return { ok, results:[{id,isNew}], refunded }.
+  const rollGacha = useCallback((count = 1) => {
+    const price = count >= 10 ? GACHA_PRICE_10X : GACHA_PRICE_1X;
+    const balance = progressRef.current?.medaru || 0;
+    if (balance < price) return { ok: false, reason: 'poor', results: [], refunded: 0 };
+
+    const ownedNow = progressRef.current?.ownedPacks || [];
+    const seen = new Set(ownedNow);
+    const results = [];
+    for (let i = 0; i < count; i++) {
+      const id = rollPackId();
+      if (!id) break;
+      const isNew = !seen.has(id);
+      results.push({ id, isNew });
+      seen.add(id);
+    }
+    const refunded = results.filter((r) => !r.isNew).length * DUPLICATE_REFUND;
+
+    setProgress(prev => {
+      const bal = prev.medaru || 0;
+      if (bal < price) return prev;
+      const merged = [...(prev.ownedPacks || [])];
+      results.forEach((r) => { if (!merged.includes(r.id)) merged.push(r.id); });
+      return { ...prev, medaru: bal - price + refunded, ownedPacks: merged };
+    });
+
+    return { ok: true, results, refunded };
   }, []);
 
   const resetProgress = useCallback(() => {
@@ -466,7 +507,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyEffect, toggleEffect, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyPack, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META }}>
           {children}
