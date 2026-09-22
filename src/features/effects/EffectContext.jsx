@@ -42,6 +42,24 @@ function resolveStreak(streak) {
   return { level, milestone, signature };
 }
 
+// Level kontinu (boleh pecahan) dari streak, selaras MILESTONES.
+// Dipakai untuk suara: tiap jawaban benar menggeser level sedikit → gong
+// makin intens bertahap, bukan lompat tiap milestone.
+function streakSoundLevel(streak) {
+  if (streak < MILESTONES[0]) return 0;
+  let level = 1;
+  for (let i = 0; i < MILESTONES.length; i++) {
+    if (streak >= MILESTONES[i]) level = i + 1;
+  }
+  if (level < MILESTONES.length) {
+    const cur = MILESTONES[level - 1];
+    const next = MILESTONES[level];
+    const frac = (streak - cur) / (next - cur);
+    return level + Math.min(frac, 0.999);
+  }
+  return level; // sudah di puncak (100)
+}
+
 // Intensitas parametrik: naik mulus sesuai level (hybrid).
 function intensityFor(level) {
   const L = Math.max(1, level);
@@ -146,7 +164,7 @@ export function EffectProvider({ children }) {
     // Suara: streak menimpa suara dasar (keputusan user #3). Dipanggil di sini
     // karena hanya EffectContext yang tahu streak barunya (call site memanggil
     // triggerEffect SEBELUM streak naik, jadi tidak bisa memutuskan sendiri).
-    if (info) playStreakSound(info.level);
+    if (info) playStreakSound(streakSoundLevel(streakRef.current));
     else if (type === 'correct') playCorrectSound();
     else playWrongSound();
 

@@ -71,33 +71,35 @@ export const playWrongSound = () => {
   osc.stop(t + 0.25);
 };
 
-// ── Gong bertingkat untuk streak (keputusan user #2/#4/#6) ──────────────────
-// Lapisan bertambah sesuai tier: 1 nada (<3) → 2 (3-9) → 3 (10-49) → chord (50+).
-const STREAK_LAYERS = (level) => {
-  const L = level || 0;
-  if (L <= 0) return 1;   // dasar
-  if (L <= 2) return 2;   // streak 3-9
-  if (L <= 6) return 3;   // streak 10-49
-  return 6;               // streak 50+ = chord penuh
-};
+// ── Gong bertingkat untuk streak — KONTINU (halus) ──────────────────────────
+// Level 1..12 (dari MILESTONES, boleh pecahan) dipetakan ke "panas" 0..1 yang
+// mulus, lalu tiap partial gong muncul bertahap. Jadi tiap kenaikan streak
+// mengubah suara sedikit-sedikit — bukan lompat 4 tangga.
+const GONG_RATIOS = [1, 1.51, 2.13, 2.74, 3.61, 4.29]; // partial inharmonik khas logam
+const MAX_LEVEL = 12;
 
-// Rasio partial gong (inharmonik khas logam). Dipakai bertahap sesuai lapisan.
-const GONG_RATIOS = [1, 1.51, 2.13, 2.74, 3.61, 4.29];
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+const heatFor = (level) => clamp01(((level || 0) - 1) / (MAX_LEVEL - 1));
 
 export const playStreakSound = (level = 0) => {
   const ctx = initAudioContext();
   if (!ctx) return;
   if (ctx.state === 'suspended') ctx.resume();
 
-  const layers = STREAK_LAYERS(level);
+  const heat = heatFor(level);                 // 0..1 mulus
   const t = ctx.currentTime;
-  // Makin tinggi tier → makin panjang & makin dalam.
-  const dur = 1.2 + layers * 0.22;
-  const base = 150 - layers * 8;          // makin banyak lapisan, makin rendah/dalam
-  const peak = 0.30 / Math.sqrt(layers);  // bagi rata supaya tidak clipping
 
-  for (let i = 0; i < layers; i++) {
-    const ratio = GONG_RATIOS[i % GONG_RATIOS.length];
+  // Parameter kontinu: makin panas → makin panjang, dalam, dan kaya.
+  const dur = 1.2 + heat * 1.8;                // 1.2s → 3.0s
+  const base = 150 - heat * 40;                // 150Hz → 110Hz (makin dalam)
+  const partialLevel = 2 + heat * (GONG_RATIOS.length - 2); // 2 → 6 partial (pecahan)
+  const weights = GONG_RATIOS.map((_, i) => clamp01(partialLevel - i));
+  const totalW = weights.reduce((a, b) => a + b, 0) || 1;
+  const peak = 0.30;                           // total energi konstan → tidak clipping
+
+  GONG_RATIOS.forEach((ratio, i) => {
+    const w = weights[i];
+    if (w <= 0.001) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
@@ -105,18 +107,20 @@ export const playStreakSound = (level = 0) => {
     // sedikit melengkung turun = karakter gong yang "mengendap"
     osc.frequency.exponentialRampToValueAtTime(base * ratio * 0.94, t + dur);
 
+    const g = peak * (w / totalW);
     gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(peak / (i + 1), t + 0.012);
+    gain.gain.linearRampToValueAtTime(g, t + 0.012);
     gain.gain.exponentialRampToValueAtTime(0.0008, t + dur);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.start(t);
     osc.stop(t + dur + 0.1);
-  }
+  });
 
-  // Lapisan tinggi dapat "pukulan" noise (stik menghantam logam).
-  if (layers >= 3) {
+  // "Pukulan" stik menghantam logam: muncul mulus mulai panas menengah.
+  const strike = clamp01(heat * 1.8 - 0.5);    // 0 sampai 1, mulai ~heat 0.28
+  if (strike > 0.001) {
     const len = Math.floor(ctx.sampleRate * 0.09);
     const buf = ctx.createBuffer(1, len, ctx.sampleRate);
     const data = buf.getChannelData(0);
@@ -125,8 +129,8 @@ export const playStreakSound = (level = 0) => {
     const nFilter = ctx.createBiquadFilter();
     const nGain = ctx.createGain();
     nFilter.type = 'bandpass';
-    nFilter.frequency.value = 1800 + layers * 120;
-    nGain.gain.setValueAtTime(0.10 + layers * 0.02, t);
+    nFilter.frequency.value = 1800 + heat * 900;
+    nGain.gain.setValueAtTime((0.08 + heat * 0.12) * strike, t);
     noise.buffer = buf;
     noise.connect(nFilter);
     nFilter.connect(nGain);
