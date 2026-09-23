@@ -21,6 +21,21 @@ test('getPack fallback null', () => {
   assert.equal(getPack('kotodama_burst')?.name, 'Kotodama Burst');
 });
 
+test('kotodama_burst tetap pakai Hina (visual + voice)', () => {
+  const p = getPack('kotodama_burst');
+  assert.equal(p.visual, 'hina');
+  assert.equal(p.voice, 'hina');
+});
+
+test('pack_06 (dummy legendary) pakai efek tinta washi + sound default', () => {
+  // Efek tinta (hanko/ensō) & sound default (gong/thud) asli Kotodama Burst
+  // dipindah ke dummy legendary, karena pack #1 sekarang jadi Hina.
+  const p = getPack('pack_06');
+  assert.equal(p.rarity, 'legendary');
+  assert.equal(p.visual, 'ink');
+  assert.equal(p.voice, 'taiko');
+});
+
 test('rollPackId selalu mengembalikan id valid', () => {
   const ids = new Set(PACKS.map((p) => p.id));
   for (let i = 0; i < 200; i++) assert.ok(ids.has(rollPackId()), 'id tidak valid');
