@@ -62,11 +62,6 @@ test('feedbackFiles: voice kosong / taiko → [] (fallback synth)', () => {
   assert.deepEqual(feedbackFiles({ files: { correct: [] } }, 'correct'), []);
 });
 
-test('feedbackFiles: voice generic → hanya sound dasar (tanpa klip voice)', () => {
-  assert.deepEqual(feedbackFiles(VOICES.generic, 'correct', () => 0), ['/voices/generic/rightanswer.mp3']);
-  assert.deepEqual(feedbackFiles(VOICES.generic, 'wrong', () => 0), ['/voices/generic/wronganswer.mp3']);
-});
-
 test('streakPlaylist: HANYA klip voice Hina (tanpa base generik)', () => {
   const v = VOICES.hina;
   // milestone → klip streak Hina saja (base SFX generik TIDAK ikut, biar jelas Hina)
@@ -80,23 +75,14 @@ test('streakPlaylist: voice kosong → [] (fallback synth)', () => {
   assert.deepEqual(streakPlaylist(VOICES.taiko, 1), []);   // streak kosong → []
 });
 
-test('streakPlaylist: voice generic (tanpa klip streak) → pakai sound dasar', () => {
-  // pack dummy legendary: milestone tetap bunyi rightanswer (bukan synth gong)
-  assert.deepEqual(streakPlaylist(VOICES.generic, 1), ['/voices/generic/rightanswer.mp3']);
-});
-
 test('voiceFilePaths: kumpulkan SEMUA path file + overlay (untuk preload)', () => {
   const paths = voiceFilePaths(VOICES.hina);
-  assert.equal(paths.length, 9);   // 0 correct + 3 wrong + 6 streak (tanpa sound generik)
+  assert.equal(paths.length, 11);   // 0 correct + 3 wrong + 6 streak + rightanswer + wronganswer
+  assert.ok(paths.includes('/voices/hina/rightanswer.mp3'));
+  assert.ok(paths.includes('/voices/hina/wronganswer.mp3'));
   assert.ok(paths.includes('/voices/hina/wrong_1.mp3'));
   assert.ok(paths.includes('/voices/hina/streak_6.mp3'));
-  assert.ok(!paths.includes('/voices/hina/rightanswer.mp3'), 'sound generik bukan milik Hina');
   assert.equal(new Set(paths).size, paths.length, 'path unik');
-});
-
-test('voiceFilePaths: voice generic → 2 sound dasar', () => {
-  const paths = voiceFilePaths(VOICES.generic);
-  assert.deepEqual(paths, ['/voices/generic/rightanswer.mp3', '/voices/generic/wronganswer.mp3']);
 });
 
 test('voiceFilePaths: voice kosong → []', () => {

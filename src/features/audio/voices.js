@@ -32,9 +32,9 @@ export const VOICES = {
   // Pack #1 — suara Hina Chono (klip TTS).
   //   files    : klip VOICE Hina
   //              - correct: KOSONG → Hina tidak bunyi di jawaban benar biasa
-  //              - wrong  : bunyi tiap kali salah
-  //              - streak : bunyi tiap milestone
-  //   TANPA overlays: sound generik sudah dipindah ke voice 'generic' (pack_06).
+  //              - wrong  : bunyi tiap kali salah (bareng wronganswer)
+  //              - streak : bunyi tiap milestone (bareng rightanswer)
+  //   overlays : base SFX jawaban yang SELALU bunyi bareng klip voice
   hina: {
     files: {
       correct: [],
@@ -44,16 +44,9 @@ export const VOICES = {
                 '/voices/hina/streak_3.mp3',  '/voices/hina/streak_4.mp3',
                 '/voices/hina/streak_5.mp3',  '/voices/hina/streak_6.mp3'],
     },
-    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
-  },
-
-  // Voice sound dasar (generik) — dipakai pack dummy legendary (pack_06).
-  //   overlays : SFX jawaban yang SELALU bunyi (benar/salah), tanpa klip voice.
-  generic: {
-    files: { correct: [], wrong: [], streak: [] },
     overlays: {
-      correct: ['/voices/generic/rightanswer.mp3'],
-      wrong:   ['/voices/generic/wronganswer.mp3'],
+      correct: ['/voices/hina/rightanswer.mp3'],
+      wrong:   ['/voices/hina/wronganswer.mp3'],
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
