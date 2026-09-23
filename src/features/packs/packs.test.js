@@ -27,13 +27,19 @@ test('kotodama_burst tetap pakai Hina (visual + voice)', () => {
   assert.equal(p.voice, 'hina');
 });
 
-test('pack_06 (dummy legendary) pakai efek tinta washi + sound default', () => {
+test('pack_06 = "Sumi Taiko" (tinta washi + taiko), bukan dummy lagi', () => {
   // Efek tinta (hanko/ensō) & sound default (gong/thud) asli Kotodama Burst
-  // dipindah ke dummy legendary, karena pack #1 sekarang jadi Hina.
+  // dipindah ke pack legendary ini, karena pack #1 sekarang jadi Hina.
   const p = getPack('pack_06');
   assert.equal(p.rarity, 'legendary');
   assert.equal(p.visual, 'ink');
   assert.equal(p.voice, 'taiko');
+  assert.equal(p.name, 'Sumi Taiko');
+  assert.equal(p.kanji, '墨太鼓');
+  assert.ok(!/dummy/i.test(p.name), 'nama tidak boleh mengandung "dummy"');
+  assert.ok(!/dummy/i.test(p.desc), 'desc tidak boleh mengandung "dummy"');
+  assert.ok(!/dummy/i.test(p.desc_en), 'desc_en tidak boleh mengandung "dummy"');
+  assert.match(p.desc, /tinta|ink/i);
 });
 
 test('rollPackId selalu mengembalikan id valid', () => {
