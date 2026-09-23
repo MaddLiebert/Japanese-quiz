@@ -12,7 +12,7 @@ import Inventory from "./features/inventory/Inventory";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
 import { EffectProvider } from "./features/effects/EffectContext";
 import { getPack } from "./features/packs/packs";
-import { setActiveVoice, preloadVoice } from "./utils/sfx";
+import { setActiveVoice, preloadVoice, primeVoice } from "./utils/sfx";
 import { preloadHinaGifs } from "./features/effects/hinaGifs";
 import { getVoice } from "./features/audio/voices";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
@@ -86,6 +86,9 @@ function VoiceSync() {
     setActiveVoice(pack?.voice || null);
     // Preload klip pack aktif → hindari suara telat (fetch/decode ulang tiap jawaban).
     preloadVoice(pack ? getVoice(pack.voice) : null);
+    // Prime = unduh tiap klip sampai buffer penuh → klip baru (tier streak) tidak
+    // telat saat diputar (elemen <audio> preload='auto' saja cuma ambil metadata).
+    primeVoice(pack ? getVoice(pack.voice) : null);
     // Pack visual 'hina' → preload + decode GIF, supaya efek muncul TEPAT saat
     // suara Hina bunyi (bukan telat karena decode GIF 1.7MB).
     if (pack?.visual === 'hina') preloadHinaGifs();

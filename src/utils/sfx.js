@@ -73,6 +73,28 @@ export const preloadVoice = (voice) => {
   return paths.length;
 };
 
+// Prime = unduh TIAP klip sampai byte lengkap (buffer penuh), bukan cuma
+// metadata. Tanpa ini, klip baru (mis. tier streak) baru mulai fetch saat
+// dipanggil → terdengar telat beberapa ratus ms. `fetcher` bisa di-inject
+// untuk test; default fetch. Aman dipanggil berulang (browser cache).
+const primedPaths = new Set();
+export const primeVoice = (voice, fetcher) => {
+  if (typeof window === 'undefined' && !fetcher) return 0;
+  const paths = voiceFilePaths(voice);
+  const doFetch = fetcher || (typeof fetch === 'function' ? fetch : null);
+  if (!doFetch) return 0;
+  let n = 0;
+  for (const p of paths) {
+    if (primedPaths.has(p)) continue;
+    primedPaths.add(p);
+    n++;
+    try {
+      doFetch(p).then((r) => (r && typeof r.blob === 'function' ? r.blob() : r)).catch(() => {});
+    } catch { /* abaikan */ }
+  }
+  return n;
+};
+
 // ── Durasi tampil GIF Hina ──────────────────────────────────────────────────
 // GIF harus tampil SELAMA suara Hina bunyi. clipMs = durasi klip yang diputar
 // (dari elemen <audio>). Kalau tak diketahui → fallback per jenis, lalu di-clamp
@@ -252,16 +274,39 @@ export const streakTierIndex = (level = 0) => {
 
 // Daftar file untuk milestone streak: base overlay (mis. rightanswer) + klip Hina tier.
 // Dua-duanya diputar BARENG. Kalau tidak ada klip streak → [] (pemanggil fallback synth).
-export const streakPlaylist = (voice, level = 0, rng = Math.random) => {
+// Klip streak dipilih lewat pickStreakClip (50 & 100 tetap klip khusus, sisanya
+// ROTASI lewat kandidat umum pakai `cursor` → tidak pernah mengulang klip sama).
+// Kandidat umum: 0「いい調子」1「すごいすごい」2「止まらないね」4「もう誰も止められない」.
+// Sengaja BUKAN [0,0,1,1,2,2,...] (itu sebabnya dulu milestone 3 & 5 bunyi sama).
+export const STREAK_SPECIAL_INDEX = { 3: 3, 5: 5 };
+export const STREAK_COMMON_POOL = [0, 1, 2, 4];
+
+export const pickStreakClip = (streakFiles, level = 0, cursor = 0) => {
+  if (!Array.isArray(streakFiles) || streakFiles.length === 0) return { index: -1, path: null };
+  const cur = Math.abs(Math.floor(cursor)) || 0;
+  // Bukan 6 tier (daftar custom) → geser lurus, tetap tidak mengulang berturut.
+  if (streakFiles.length !== 6) {
+    const index = cur % streakFiles.length;
+    return { index, path: streakFiles[index] };
+  }
+  const tier = streakTierIndex(level);
+  if (tier === 3 || tier === 5) {                 // streak 50 / 100 → klip khusus
+    const index = STREAK_SPECIAL_INDEX[tier];
+    return { index, path: streakFiles[index] };
+  }
+  const index = STREAK_COMMON_POOL[cur % STREAK_COMMON_POOL.length];
+  return { index, path: streakFiles[index] };
+};
+
+let streakClipCursor = 0;   // rotasi klip streak antar milestone
+
+export const streakPlaylist = (voice, level = 0, rng = Math.random, cursor = streakClipCursor) => {
   const streakFiles = voice?.files?.streak;
   if (!Array.isArray(streakFiles) || streakFiles.length === 0) return [];
   const out = [];
   const ov = pickFile(voice?.overlays?.correct, rng);   // base jawaban benar
   if (ov) out.push(ov);
-  // 6 file = 6 tier → pilih sesuai milestone (bukan acak). Selain itu → acak.
-  const clip = (streakFiles.length === 6)
-    ? streakFiles[streakTierIndex(level)]
-    : pickFile(streakFiles, rng);
+  const clip = pickStreakClip(streakFiles, level, cursor).path;
   if (clip) out.push(clip);
   return out;
 };
@@ -269,6 +314,7 @@ export const streakPlaylist = (voice, level = 0, rng = Math.random) => {
 export const playStreakSound = (level = 0) => {
   if (!activeVoiceKey) { synthGong(level); return 0; }
   const paths = streakPlaylist(getVoice(activeVoiceKey), level);
+  streakClipCursor += 1;   // milestone berikutnya pakai klip berikutnya (variatif)
   if (paths.length) return playFiles(paths);
   synthGong(level);
   return 0;
