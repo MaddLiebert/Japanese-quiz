@@ -5,7 +5,7 @@ import { Volume2 } from "lucide-react";
 import { useItemProgress } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
 import { playDramaticAudio } from "../utils/audio";
-import { playCorrectSound, playWrongSound } from "../utils/sfx";
+import { useEffectLayer } from "../features/effects/EffectContext";
 
 import hiraganaData from "../data/hiragana.json";
 import katakanaData from "../data/katakana.json";
@@ -37,6 +37,10 @@ export function Review() {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const timerRef = useRef(null);
+  const { triggerEffect, resetEffectStreak } = useEffectLayer();
+
+  // Streak efek di-review mulai dari 0 setiap sesi.
+  useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
 
   useEffect(() => {
     return () => {
@@ -98,9 +102,9 @@ export function Review() {
     setIsAnswered(true);
 
     if (correct) {
-      playCorrectSound();
+      triggerEffect('correct');
     } else {
-      playWrongSound();
+      triggerEffect('wrong');
     }
 
     // For kana, auto-advance. For others, let them click Next.
