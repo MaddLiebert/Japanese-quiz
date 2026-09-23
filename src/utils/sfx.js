@@ -304,17 +304,12 @@ export const pickStreakClip = (streakFiles, level = 0, cursor = 0) => {
 
 let streakClipCursor = 0;   // rotasi klip streak antar milestone
 
-// Milestone: klip streak voice kalau ada (Hina) → kalau tidak, sound dasar
-// (rightanswer) untuk pack yang cuma punya overlay (mis. generic/pack_06).
+// Milestone = HANYA klip voice Hina (tanpa base generik) → bunyinya suara Hina.
 export const streakPlaylist = (voice, level = 0, cursor = streakClipCursor) => {
   const streakFiles = voice?.files?.streak;
-  if (Array.isArray(streakFiles) && streakFiles.length > 0) {
-    const clip = pickStreakClip(streakFiles, level, cursor).path;
-    return clip ? [clip] : [];
-  }
-  // Tidak ada klip streak → pakai sound dasar jawaban benar (kalau ada).
-  const base = pickFile(voice?.overlays?.correct);
-  return base ? [base] : [];
+  if (!Array.isArray(streakFiles) || streakFiles.length === 0) return [];
+  const clip = pickStreakClip(streakFiles, level, cursor).path;
+  return clip ? [clip] : [];
 };
 
 export const playStreakSound = (level = 0) => {
