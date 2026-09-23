@@ -5,6 +5,7 @@ import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, 
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
+import { hinaSparkles, hinaAnswerText } from './hinaFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Kotodama Burst — efek tinta (ink) ala washi/hanko/ensō.
@@ -180,9 +181,12 @@ export function EffectProvider({ children }) {
       : feedback === 'wrong' ? playWrongSound()
         : playCorrectSound();
 
-    // Lama tampil: kalau ada GIF → selama klip suara; kalau tidak → hold efek tinta.
-    const gifHoldMs = gifSrc ? hinaGifHoldMs(kind === 'streak' ? 'streak' : type, clipMs) : 0;
-    const holdMs = gifSrc ? gifHoldMs : cfg.hold;
+    // Lama tampil: pack 'hina' → ikuti durasi klip suara (min. 1.2s agar kilau/teks
+    // terlihat); pack lain (ink/dummy) → hold efek aslinya.
+    const holdMs = activeVisual === 'hina'
+      ? hinaGifHoldMs(kind === 'streak' ? 'streak' : type, clipMs)
+      : cfg.hold;
+    const gifHoldMs = holdMs;   // dipakai komponen GIF sebagai referensi (informatif)
 
     setFx({
       kind,
@@ -323,10 +327,12 @@ function EffectLayer({ fx, drops, visual }) {
         </>
       )}
 
-      {/* GIF Hina (pack 'hina') — HANYA saat suara Hina bunyi (salah / milestone) */}
+      {/* ── Vibe Hina Chono (pack 'hina') ──────────────────────────────────────
+          Kilau + teks reaksi anime muncul di SETIAP jawaban (benar maupun salah);
+          GIF Hina menyusul hanya saat suara Hina bunyi (salah / milestone). */}
       {visual === 'hina' && (
         <AnimatePresence>
-          {fx?.gifSrc && <HinaGif key={`g-${fx.id}`} src={fx.gifSrc} kind={kind} />}
+          {fx && <HinaBurst key={`hb-${fx.id}`} fx={fx} kind={kind} />}
         </AnimatePresence>
       )}
 
@@ -548,42 +554,90 @@ function StreakSigil({ fid, level, milestone, signature, streak }) {
   );
 }
 
-// ── GIF reaksi Hina (pack 'hina') ────────────────────────────────────────────
-// Muncul HANYA saat suara Hina bunyi: salah (HinaWrong*) & milestone streak
-// (HinaRight*). Kotak persegi seragam + object-contain → muka Hina selalu utuh,
-// GIF landscape (mis. 220×124) dapat bar kosong di dalam kotak (disengaja).
-// Durasi tampil mengikuti hold efek (salah 1.4s / streak 2.0s) via setTimeout
-// di triggerEffect + exit animasi — lihat BASE_INTENSITY / intensityFor.
-function HinaGif({ src, kind }) {
+// ── Vibe Hina Chono (pack 'hina') ────────────────────────────────────────────
+// Muncul di SETIAP jawaban:
+//   • kilau (✦ ★ ♡ ❀) melesat keluar  → selalu
+//   • teks reaksi anime 正解！/ドンマイ！/連続正解！ → selalu
+//   • GIF Hina (HinaRight* / HinaWrong*) → HANYA saat suara Hina bunyi
+//     (salah / milestone streak) — fx.gifSrc diisi oleh hinaGifForAnswer.
+function HinaBurst({ fx, kind }) {
   const wrong = kind === 'wrong';
+  const [sparks] = useState(() => hinaSparkles(fx.id));
+  const label = hinaAnswerText(kind);
+
+  const textColor = kind === 'wrong' ? 'text-shu' : kind === 'streak' ? 'text-[#d4af37]' : 'text-matcha';
+
   return (
-    // Wrapper: masuk (spring) + getar halus saat salah
     <motion.div
-      className="absolute left-1/2 top-1/2"
-      style={{ marginLeft: '-20vh', marginTop: '-20vh' }}
-      initial={{ opacity: 0, scale: 0.82, rotate: wrong ? 2.5 : -2 }}
-      animate={
-        wrong
-          ? { opacity: 1, scale: 1, rotate: -1.5, x: [0, -9, 8, -5, 3, 0] }
-          : { opacity: 1, scale: 1, rotate: 1.5, x: 0 }
-      }
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={
-        wrong
-          ? { duration: 0.5, ease: 'easeOut' }
-          : { type: 'spring', stiffness: 320, damping: 20, mass: 0.8 }
-      }
+      className="absolute inset-0 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.22, ease: 'easeOut' }}
     >
-      <div
-        className="w-[40vh] h-[40vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden"
-      >
-        <img
-          src={src}
-          alt="Hina Chono"
-          className="w-full h-full object-contain select-none"
-          draggable={false}
-        />
-      </div>
+      {/* Kilau melesat keluar dari tengah */}
+      {sparks.map(s => (
+        <motion.span
+          key={s.id}
+          className="absolute select-none"
+          style={{ fontSize: s.size, color: s.hue, textShadow: '0 2px 6px rgba(0,0,0,0.15)' }}
+          initial={{ opacity: 0, x: 0, y: 0, scale: 0.4, rotate: 0 }}
+          animate={{ opacity: [0, 1, 1, 0], x: s.dx, y: s.dy, scale: 1, rotate: s.rot }}
+          transition={{ duration: s.dur, delay: s.delay, ease: 'easeOut' }}
+        >
+          {s.char}
+        </motion.span>
+      ))}
+
+      {/* Teks reaksi anime (selalu ada, walau Hina diam) */}
+      {label && (
+        <motion.span
+          className={`relative z-10 font-serif font-black ${textColor} select-none`}
+          style={{
+            fontSize: 'clamp(40px, 9vw, 96px)',
+            WebkitTextStroke: '2px var(--kinari-light-val)',
+            paintOrder: 'stroke fill',
+          }}
+          initial={{ opacity: 0, scale: 0.5, y: 12 }}
+          animate={wrong ? { opacity: [0, 1, 1, 0], scale: 1, y: 0 } : { opacity: 1, scale: 1, y: 0 }}
+          transition={wrong
+            ? { duration: 1.1, times: [0, 0.15, 0.7, 1], ease: 'easeOut' }
+            : { type: 'spring', stiffness: 320, damping: 18 }}
+        >
+          {label}
+        </motion.span>
+      )}
+
+      {/* GIF Hina — hanya saat suara Hina bunyi */}
+      {fx.gifSrc && (
+        <motion.div
+          className="absolute left-1/2 top-1/2"
+          style={{ marginLeft: '-20vh', marginTop: '-20vh' }}
+          initial={{ opacity: 0, scale: 0.82, rotate: wrong ? 2.5 : -2 }}
+          animate={
+            wrong
+              ? { opacity: 1, scale: 1, rotate: -1.5, x: [0, -9, 8, -5, 3, 0] }
+              : { opacity: 1, scale: 1, rotate: 1.5, x: 0 }
+          }
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={
+            wrong
+              ? { duration: 0.5, ease: 'easeOut' }
+              : { type: 'spring', stiffness: 320, damping: 20, mass: 0.8 }
+          }
+        >
+          <div
+            className="w-[40vh] h-[40vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden"
+          >
+            <img
+              src={fx.gifSrc}
+              alt="Hina Chono"
+              className="w-full h-full object-contain select-none"
+              draggable={false}
+            />
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
