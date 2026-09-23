@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
-import { playCorrectSound, playWrongSound, playStreakSound } from '../../utils/sfx';
+import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind } from '../../utils/sfx';
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 
@@ -164,12 +164,16 @@ export function EffectProvider({ children }) {
     const cfg = info ? intensityFor(info.level) : BASE_INTENSITY[type];
     const onMilestone = info ? streakRef.current === info.milestone : false;
 
-    // Suara: streak menimpa suara dasar (keputusan user #3). Dipanggil di sini
-    // karena hanya EffectContext yang tahu streak barunya (call site memanggil
-    // triggerEffect SEBELUM streak naik, jadi tidak bisa memutuskan sendiri).
-    if (info) playStreakSound(streakSoundLevel(streakRef.current));
-    else if (type === 'correct') playCorrectSound();
-    else playWrongSound();
+    // Suara (keputusan desain):
+    //  - milestone streak (3,5,10,…,100) → klip voice Hina tier-nya
+    //  - jawaban salah                    → klip voice Hina wrong
+    //  - jawaban benar biasa              → chime dasar (Hina DIAM)
+    // Dipanggil di sini karena hanya EffectContext yang tahu streak barunya
+    // (call site memanggil triggerEffect SEBELUM streak naik).
+    const feedback = answerFeedbackKind(type, onMilestone);
+    if (feedback === 'streak') playStreakSound(streakSoundLevel(streakRef.current));
+    else if (feedback === 'wrong') playWrongSound();
+    else playCorrectSound();
 
     setFx({
       kind,

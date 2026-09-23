@@ -29,11 +29,12 @@ export const VOICES = {
   //   synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   // },
 
-  // Pack #1 — suara Hina Chono (klip TTS). 4 correct / 3 wrong / 6 streak tier.
+  // Pack #1 — suara Hina Chono (klip TTS). Dipakai: 3 wrong + 6 streak tier.
+  // `correct` sengaja KOSONG → jawaban benar biasa pakai chime dasar, bukan voice
+  // (keputusan desain: Hina hanya muncul di milestone streak & saat salah).
   hina: {
     files: {
-      correct: ['/voices/hina/correct_1.mp3', '/voices/hina/correct_2.mp3',
-                '/voices/hina/correct_3.mp3', '/voices/hina/correct_4.mp3'],
+      correct: [],
       wrong:   ['/voices/hina/wrong_1.mp3',   '/voices/hina/wrong_2.mp3',
                 '/voices/hina/wrong_3.mp3'],
       streak:  ['/voices/hina/streak_1.mp3',  '/voices/hina/streak_2.mp3',
