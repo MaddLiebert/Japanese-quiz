@@ -5,6 +5,7 @@ import {
   HINA_TEXT_COLOR, hinaTextColor, hinaGlow,
   HINA_SPARKLE_COUNT, hinaSparkleCount,
   HINA_SPARKLE_HUES, hinaSparkles,
+  HINA_POP_EASE, HINA_POP_TIMES,
 } from './hinaFx.js';
 
 test('hinaAnswerText: teks reaksi tiap jenis jawaban', () => {
@@ -33,25 +34,45 @@ test('hinaSparkleCount: dijaga sedang (<=14) supaya ringan', () => {
   for (const k of ['correct', 'wrong', 'streak']) assert.ok(hinaSparkleCount(k) <= 14, `${k} terlalu banyak`);
 });
 
-test('hinaGlow: pakai text-shadow (bukan filter), ada warna & bayangan', () => {
+test('hinaGlow: SATU lapis glow lembut + bayangan (hindari kesan berlebih)', () => {
   const g = hinaGlow('#ff4d94');
   assert.equal(typeof g, 'string');
   assert.ok(g.includes('#ff4d94'), 'harus menyertakan warna glow');
   assert.ok(!g.includes('drop-shadow'), 'TIDAK boleh drop-shadow (berat)');
-  assert.ok(g.split(',').length >= 3, 'butuh beberapa lapis glow + bayangan');
+  // Hitung lapis = jumlah token warna (tiap shadow punya 1 warna).
+  const layers = (g.match(/#[0-9a-fA-F]{3,8}|rgba?\(/g) || []).length;
+  assert.equal(layers, 2, 'harus 2 lapis: 1 glow + 1 bayangan (3+ = neon berlebih)');
+  // Warna glow hanya muncul SEKALI (bukan dobel glow).
+  assert.equal(g.split('#ff4d94').length - 1, 1, 'glow warna hanya satu lapis');
+  assert.ok(/0 0 7px/.test(g), 'blur glow lembut (7px)');
   assert.ok(hinaGlow().includes('#ff4d94'), 'default pink');
+});
+
+test('HINA_POP_EASE: cubic-bezier overshoot ala anime (bukan linear)', () => {
+  assert.equal(HINA_POP_EASE.length, 4);
+  assert.ok(HINA_POP_EASE[1] > 1, 'harus overshoot (>1) supaya tidak kaku');
+  assert.deepEqual(HINA_POP_TIMES, [0, 0.62, 1]);
 });
 
 test('hinaSparkles: jumlah default & deterministik (rng=0)', () => {
   const s = hinaSparkles(7);
   assert.equal(s.length, 14);
   const d = hinaSparkles(7, 14, () => 0);
-  assert.equal(d[0].dx, 80);          // cos(0)*80
-  assert.equal(d[0].dy, -30);         // sin(0)*80 - 30
+  assert.equal(d[0].dx, 90);          // cos(0)*90
+  assert.equal(d[0].dy, -34);         // sin(0)*90 - 34
   assert.equal(d[0].rot, -180);
-  assert.equal(d[0].size, 14);
+  assert.equal(d[0].spin, -220);
+  assert.equal(d[0].size, 12);
   assert.equal(d[0].char, '✦');
   assert.equal(d[0].hue, '#ff4d94');
+  assert.equal(d[0].delay, 0);        // stagger indeks 0
+});
+
+test('hinaSparkles: delay di-stagger (tidak serempak)', () => {
+  const s = hinaSparkles(5, 12, () => 0);
+  const delays = s.map(p => p.delay);
+  assert.ok(delays[0] < delays[11], 'kilau terakhir harus lebih lambat dari pertama');
+  assert.ok(new Set(delays).size > 1, 'delay harus bervariasi');
 });
 
 test('hinaSparkles: palet dibatasi pink/gold/putih (senada Hina)', () => {
@@ -64,7 +85,7 @@ test('hinaSparkles: id unik & semua field ada', () => {
   const s = hinaSparkles(3, 20);
   assert.equal(new Set(s.map(p => p.id)).size, 20);
   for (const p of s) {
-    for (const k of ['id', 'dx', 'dy', 'rot', 'size', 'delay', 'dur', 'char', 'hue']) {
+    for (const k of ['id', 'dx', 'dy', 'rot', 'spin', 'size', 'delay', 'dur', 'char', 'hue']) {
       assert.ok(k in p, `field ${k} hilang`);
     }
   }
