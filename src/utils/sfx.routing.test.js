@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist, voiceFilePaths } from './sfx.js';
+import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist, voiceFilePaths, hinaGifHoldMs } from './sfx.js';
 import { VOICES } from '../features/audio/voices.js';
 
 test('default tanpa pack: tidak ada voice (chime dasar)', () => {
@@ -92,4 +92,20 @@ test('voiceFilePaths: voice kosong → []', () => {
   assert.deepEqual(voiceFilePaths(VOICES.taiko), []);
   assert.deepEqual(voiceFilePaths(undefined), []);
   assert.deepEqual(voiceFilePaths(null), []);
+});
+
+test('hinaGifHoldMs: ikuti durasi klip Hina (fallback + clamp)', () => {
+  // durasi klip nyata (ms) dipakai apa adanya
+  assert.equal(hinaGifHoldMs('wrong', 1960), 1960);
+  assert.equal(hinaGifHoldMs('streak', 2980), 2980);
+  // tanpa info durasi → fallback per jenis
+  assert.equal(hinaGifHoldMs('wrong', 0), 2000);
+  assert.equal(hinaGifHoldMs('streak', 0), 2800);
+  assert.equal(hinaGifHoldMs('correct', 0), 1600);
+  // clamp: jangan kedip (<1200) & jangan nyangkut (>8000)
+  assert.equal(hinaGifHoldMs('wrong', 100), 1200);
+  assert.equal(hinaGifHoldMs('wrong', 99999), 8000);
+  // nilai tak valid → fallback
+  assert.equal(hinaGifHoldMs('wrong', NaN), 2000);
+  assert.equal(hinaGifHoldMs('wrong', -5), 2000);
 });

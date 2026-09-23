@@ -73,16 +73,40 @@ export const preloadVoice = (voice) => {
   return paths.length;
 };
 
+// ── Durasi tampil GIF Hina ──────────────────────────────────────────────────
+// GIF harus tampil SELAMA suara Hina bunyi. clipMs = durasi klip yang diputar
+// (dari elemen <audio>). Kalau tak diketahui → fallback per jenis, lalu di-clamp
+// supaya tidak kedip (<1.2s) dan tidak nyangkut (>8s).
+const GIF_HOLD_FALLBACK = { correct: 1600, wrong: 2000, streak: 2800 };
+const GIF_HOLD_MIN = 1200;
+const GIF_HOLD_MAX = 8000;
+
+export const hinaGifHoldMs = (kind, clipMs = 0) => {
+  const fb = GIF_HOLD_FALLBACK[kind] ?? 2000;
+  const ms = (typeof clipMs === 'number' && Number.isFinite(clipMs) && clipMs > 0) ? clipMs : fb;
+  return Math.min(GIF_HOLD_MAX, Math.max(GIF_HOLD_MIN, Math.round(ms)));
+};
+
 const playFile = (path) => {
-  if (typeof window === 'undefined' || !path) return false;
+  if (typeof window === 'undefined' || !path) return 0;
   try {
     const el = getAudio(path);
     el.currentTime = 0;                              // putar dari awal (reuse)
     el.play().catch((err) => console.warn('Voice play error:', err));
+    // Durasi klip (ms) → dipakai untuk menyelaraskan tampilnya GIF Hina.
+    const d = el.duration;
+    return (Number.isFinite(d) && d > 0) ? d * 1000 : 0;
   } catch (err) {
     console.warn('Voice play error:', err);
   }
-  return true;
+  return 0;
+};
+
+// Putar semua path BARENG, kembalikan durasi klip TERPANJANG (ms) — 0 kalau tak ada.
+const playFiles = (paths) => {
+  let maxMs = 0;
+  for (const p of paths) maxMs = Math.max(maxMs, playFile(p) || 0);
+  return maxMs;
 };
 
 // ── Suara dasar (tanpa pack): chime naik & thud turun ───────────────────────
@@ -193,21 +217,25 @@ const synthGong = (level = 0) => {
   }
 };
 
-// ── API publik (signature TIDAK berubah untuk 4 file pemanggil) ─────────────
+// ── API publik ──────────────────────────────────────────────────────────────
+// Semua mengembalikan durasi klip (ms) supaya efek visual (GIF Hina) bisa
+// tampil selama suaranya berbunyi. 0 = tak ada klip (synth / tanpa pack).
 export const playCorrectSound = () => {
   // Tanpa pack aktif → suara dasar (chime).
-  if (!activeVoiceKey) return synthChime();
+  if (!activeVoiceKey) { synthChime(); return 0; }
   const paths = feedbackFiles(getVoice(activeVoiceKey), 'correct');
   // Putar SEMUA (overlay + klip voice) bersamaan.
-  if (paths.length) { paths.forEach((p) => playFile(p)); return; }
+  if (paths.length) return playFiles(paths);
   synthChime();
+  return 0;
 };
 
 export const playWrongSound = () => {
-  if (!activeVoiceKey) return synthThud();
+  if (!activeVoiceKey) { synthThud(); return 0; }
   const paths = feedbackFiles(getVoice(activeVoiceKey), 'wrong');
-  if (paths.length) { paths.forEach((p) => playFile(p)); return; }
+  if (paths.length) return playFiles(paths);
   synthThud();
+  return 0;
 };
 
 // Voice khusus milestone streak (dipakai EffectContext saat pack aktif).
@@ -239,10 +267,11 @@ export const streakPlaylist = (voice, level = 0, rng = Math.random) => {
 };
 
 export const playStreakSound = (level = 0) => {
-  if (!activeVoiceKey) return synthGong(level);
+  if (!activeVoiceKey) { synthGong(level); return 0; }
   const paths = streakPlaylist(getVoice(activeVoiceKey), level);
-  if (paths.length) { paths.forEach((p) => playFile(p)); return; }
+  if (paths.length) return playFiles(paths);
   synthGong(level);
+  return 0;
 };
 
 // ── Suara mesin slot gacha ──────────────────────────────────────────────────
