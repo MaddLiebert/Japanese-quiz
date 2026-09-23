@@ -150,10 +150,27 @@ export const playWrongSound = () => {
 };
 
 // Voice khusus milestone streak (dipakai EffectContext saat pack aktif).
+// level milestone (1..12, boleh pecahan dari streakSoundLevel) → indeks tier streak (0..5).
+// 50 = tier 4 (indeks 3, sendiri), 100 = tier 6 (indeks 5, sendiri).
+// Sengaja pakai array, BUKAN pembagian rata: Math.floor((level-1)/2) menaruh streak 60
+// di tier yang sama dengan 50 → kalimat 「五十連続」 ikut keputar di 60.
+export const STREAK_TIER_BY_LEVEL = [0, 0, 1, 1, 2, 2, 3, 4, 4, 4, 4, 5];
+
+export const streakTierIndex = (level = 0) => {
+  const lvl = Math.min(12, Math.max(1, Math.floor(level))); // 1..12
+  return STREAK_TIER_BY_LEVEL[lvl - 1];
+};
+
 export const playStreakSound = (level = 0) => {
   if (!activeVoiceKey) return synthGong(level);
   const voice = getVoice(activeVoiceKey);
-  if (playFile(pickFile(voice.files?.streak))) return;
+  const streakFiles = voice.files?.streak;
+  // 6 file = 6 tier → pilih sesuai milestone (bukan acak).
+  if (Array.isArray(streakFiles) && streakFiles.length === 6) {
+    if (playFile(streakFiles[streakTierIndex(level)])) return;
+  }
+  // Selain itu (array kosong / bukan 6) → perilaku lama (acak → synth).
+  if (playFile(pickFile(streakFiles))) return;
   synthGong(level);
 };
 
