@@ -199,8 +199,10 @@ git commit -m "feat(effects): geometri pita senam Hina (pure helper + tes)"
 
 ## FASE 2 — `hinaChibi.js` (pure pixel) + tes (TDD)
 
+> **⚠️ CATATAN PENTING (ditemukan saat eksekusi):** modul pure **HARUS** bernama `hinaChibiPixels.js` (bukan `hinaChibi.js`), karena di filesystem Windows yang **case-insensitive**, `hinaChibi.js` bentrok dengan komponen `HinaChibi.jsx` → resolver Vite salah ambil file (`MISSING_EXPORT: "HinaChibi"`). Tes = `hinaChibiPixels.test.js`.
+
 ### Task 2.1 — Tulis tes yang GAGAL
-**File baru:** `src/features/effects/hinaChibi.test.js`
+**File baru:** `src/features/effects/hinaChibiPixels.test.js`
 
 ```js
 import test from 'node:test';

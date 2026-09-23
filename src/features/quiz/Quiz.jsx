@@ -5,6 +5,7 @@ import { AudioPlayer } from "../../components/MondaiComponents";
 import { useItemProgress, useUserStats } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { useEffectLayer } from "../effects/EffectContext";
+import { HinaCardFrame } from "../effects/HinaCardFrame";
 
 const Quiz = ({ chapter, onComplete, onBack }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -110,13 +111,14 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
         </div>
       </div>
 
-      {/* Question Card */}
-      <motion.div
-        key={currentQuestionIndex}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="border-[4px] border-sumi bg-kinari-light p-6 sm:p-12 shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] relative z-10 flex-1 flex flex-col justify-between"
-      >
+      {/* Question Card — diikat pita Hina + chibi di pojok */}
+      <HinaCardFrame className="flex-1 flex flex-col">
+        <motion.div
+          key={currentQuestionIndex}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="border-[4px] border-sumi bg-kinari-light p-6 sm:p-12 shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] relative z-10 flex-1 flex flex-col justify-between"
+        >
         <div>
           {/* Audio Section */}
           <div className="mb-8">
@@ -227,7 +229,8 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
             }
           </button>
         </div>
-      </motion.div>
+        </motion.div>
+      </HinaCardFrame>
     </div>
   );
 };

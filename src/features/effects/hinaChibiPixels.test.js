@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   HINA_CHIBI_PALETTE, HINA_CHIBI_PIXELS, hinaChibiRects,
   HINA_CHIBI_ROWS, HINA_CHIBI_COLS, HINA_CHIBI_PX, HINA_CHIBI_W, HINA_CHIBI_H,
-} from './hinaChibi.js';
+} from './hinaChibiPixels.js';
 
 test('grid: semua baris sama panjang & karakter dikenal palet', () => {
   assert.ok(HINA_CHIBI_ROWS >= 8, 'minimal 8 baris');

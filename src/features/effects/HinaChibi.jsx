@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { hinaChibiRects, HINA_CHIBI_W, HINA_CHIBI_H } from './hinaChibi';
+import { hinaChibiRects, HINA_CHIBI_W, HINA_CHIBI_H } from './hinaChibiPixels';
 
 // Pixel chibi Hina. Gating pack dilakukan oleh HinaCardFrame (bukan di sini).
 //   kind='correct' → lompat kecil; kind='wrong' → goyang; kind='streak' → lompat besar
