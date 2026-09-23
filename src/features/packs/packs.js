@@ -45,7 +45,7 @@ export const PACKS = [
   {
     id: 'pack_06', name: 'Dummy E', kanji: '仮', icon: '🎭',
     desc: 'Interaksi Dummy', desc_en: 'Dummy interaction',
-    price: 2500, rarity: 'legendary', visual: 'dummy', voice: 'dummy',
+    price: 2500, rarity: 'legendary', visual: 'dummy', voice: 'generic',
   },
 ];
 
