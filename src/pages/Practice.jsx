@@ -17,6 +17,7 @@ import { KanaTypeToggle } from "../components/KanaTypeToggle";
 import { KanaQuiz } from "../features/quiz/KanaQuiz";
 import { useEffectLayer } from "../features/effects/EffectContext";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
+import { HinaCardFrame } from "../features/effects/HinaCardFrame";
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
   const { language } = useLanguage();
@@ -325,7 +326,7 @@ export function Practice() {
                 />
               </div>
 
-              {/* Kanji question card */}
+              {/* Kanji question card — diikat pita Hina + chibi di pojok */}
               <motion.div
                 key={currentQuestion.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -333,7 +334,8 @@ export function Practice() {
                 transition={{ type: 'spring', stiffness: 220, damping: 22 }}
                 className="w-full max-w-lg mb-8"
               >
-                <div className="bg-kinari border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] p-8 sm:p-12 flex flex-col items-center gap-4 relative overflow-hidden">
+                <HinaCardFrame>
+                <div className="bg-kinari border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] p-8 sm:p-12 flex flex-col items-center gap-4 relative overflow-hidden z-10">
                   <div className="absolute inset-0 bg-[radial-gradient(circle,currentColor_1.5px,transparent_1.5px)] bg-[length:14px_14px] text-sumi/[0.03] pointer-events-none"></div>
                   {/* TTS */}
                   {difficulty === 'Easy' && (
@@ -393,6 +395,7 @@ export function Practice() {
                     </motion.div>
                   )}
                 </div>
+                </HinaCardFrame>
               </motion.div>
 
               {/* Meaning choice options */}
@@ -505,7 +508,7 @@ export function Practice() {
                 />
               </div>
 
-              {/* Question card */}
+              {/* Question card — diikat pita Hina + chibi di pojok */}
               <motion.div
                 key={currentQuestion.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -513,7 +516,8 @@ export function Practice() {
                 transition={{ type: 'spring', stiffness: 220, damping: 22 }}
                 className="w-full max-w-lg mb-8"
               >
-                <div className="bg-kinari border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] p-8 sm:p-12 flex flex-col items-center gap-4 relative overflow-hidden">
+                <HinaCardFrame>
+                <div className="bg-kinari border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] p-8 sm:p-12 flex flex-col items-center gap-4 relative overflow-hidden z-10">
                   <div className="absolute inset-0 bg-[radial-gradient(circle,currentColor_1.5px,transparent_1.5px)] bg-[length:14px_14px] text-sumi/[0.03] pointer-events-none"></div>
                   {/* TTS button */}
                   {difficulty === 'Easy' && (
@@ -551,6 +555,7 @@ export function Practice() {
                     </motion.div>
                   )}
                 </div>
+                </HinaCardFrame>
               </motion.div>
 
               {/* Answer options */}
