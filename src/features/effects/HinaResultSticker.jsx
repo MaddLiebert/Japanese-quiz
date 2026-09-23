@@ -10,7 +10,7 @@ import { hinaGlow } from './hinaFx';
 import { playClipFile } from '../../utils/sfx';
 
 // Stiker Hina di layar HASIL KUIS — hanya muncul kalau pack aktif pakai visual
-// 'hina' (Kotodama Burst). GIF dipilih sekali dari nilai akhir:
+// 'hina' (pack Hina Chono). GIF dipilih sekali dari nilai akhir:
 //   nilai bagus (>=80%) → Hina senang (GIF benar) + sorakan 「すごいすごい！」
 //   nilai kurang        → Hina menyemangati (GIF salah), tanpa sorakan
 // Teks sorakan DISAMAKAN dengan klip suara yang diputar (streak_2.mp3).
