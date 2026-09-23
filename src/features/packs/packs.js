@@ -19,7 +19,7 @@ export const PACKS = [
     desc_en: 'Washi ink: hanko seal, brush stroke & ensō',
     price: 2500,
     rarity: 'legendary',
-    visual: 'ink',      // → src/features/effects/visuals.js
+    visual: 'hina',     // → src/features/effects/visuals.js
     voice: 'hina',      // → src/features/audio/voices.js
   },
   {
