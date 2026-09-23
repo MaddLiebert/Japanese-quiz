@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   HINA_ANSWER_TEXT, hinaAnswerText,
-  HINA_TEXT_COLOR, hinaTextColor,
+  HINA_TEXT_COLOR, hinaTextColor, hinaGlow,
   HINA_SPARKLE_COUNT, hinaSparkleCount,
   HINA_SPARKLE_HUES, hinaSparkles,
 } from './hinaFx.js';
@@ -24,9 +24,22 @@ test('hinaTextColor: semua pink (Hina), fallback pink', () => {
 });
 
 test('hinaSparkleCount: benar & streak paling ramai', () => {
-  assert.deepEqual(HINA_SPARKLE_COUNT, { correct: 20, wrong: 10, streak: 24 });
+  assert.deepEqual(HINA_SPARKLE_COUNT, { correct: 12, wrong: 8, streak: 14 });
   assert.ok(hinaSparkleCount('correct') > hinaSparkleCount('wrong'));
   assert.equal(hinaSparkleCount('nope'), 14);
+});
+
+test('hinaSparkleCount: dijaga sedang (<=14) supaya ringan', () => {
+  for (const k of ['correct', 'wrong', 'streak']) assert.ok(hinaSparkleCount(k) <= 14, `${k} terlalu banyak`);
+});
+
+test('hinaGlow: pakai text-shadow (bukan filter), ada warna & bayangan', () => {
+  const g = hinaGlow('#ff4d94');
+  assert.equal(typeof g, 'string');
+  assert.ok(g.includes('#ff4d94'), 'harus menyertakan warna glow');
+  assert.ok(!g.includes('drop-shadow'), 'TIDAK boleh drop-shadow (berat)');
+  assert.ok(g.split(',').length >= 3, 'butuh beberapa lapis glow + bayangan');
+  assert.ok(hinaGlow().includes('#ff4d94'), 'default pink');
 });
 
 test('hinaSparkles: jumlah default & deterministik (rng=0)', () => {
