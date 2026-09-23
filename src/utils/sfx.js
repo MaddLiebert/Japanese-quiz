@@ -17,8 +17,8 @@ export const setActiveVoice = (key) => { activeVoiceKey = key || null; };
 export const getActiveVoiceKey = () => activeVoiceKey;
 
 // Jenis umpan balik suara untuk satu jawaban.
-// Voice Hina hanya dipakai di MILESTONE streak & saat SALAH.
-// Jawaban benar biasa → 'correct' (pakai suara dasar, bukan voice pack).
+// Milestone streak → 'streak' (klip Hina per-tier).
+// Selain itu → type apa adanya ('correct' / 'wrong'), yang memutar overlay + voice Hina.
 export const answerFeedbackKind = (type, onMilestone = false) =>
   (type === 'correct' && onMilestone) ? 'streak' : type;
 

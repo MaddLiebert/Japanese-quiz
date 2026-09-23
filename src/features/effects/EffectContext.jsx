@@ -165,9 +165,9 @@ export function EffectProvider({ children }) {
     const onMilestone = info ? streakRef.current === info.milestone : false;
 
     // Suara (keputusan desain):
-    //  - milestone streak (3,5,10,…,100) → klip voice Hina tier-nya
-    //  - jawaban salah                    → klip voice Hina wrong
-    //  - jawaban benar biasa              → chime dasar (Hina DIAM)
+    //  - milestone streak (3,5,10,…,100) → klip voice Hina streak (per-tier)
+    //  - jawaban salah                    → wronganswer.mp3 + voice Hina wrong
+    //  - jawaban benar biasa              → rightanswer.mp3 + voice Hina correct
     // Dipanggil di sini karena hanya EffectContext yang tahu streak barunya
     // (call site memanggil triggerEffect SEBELUM streak naik).
     const feedback = answerFeedbackKind(type, onMilestone);
