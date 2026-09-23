@@ -43,8 +43,9 @@ export const PACKS = [
     price: 2500, rarity: 'rare', visual: 'dummy', voice: 'dummy',
   },
   {
-    id: 'pack_06', name: 'Dummy E', kanji: '仮', icon: '🎭',
-    desc: 'Interaksi Dummy', desc_en: 'Dummy interaction',
+    id: 'pack_06', name: 'Sumi Taiko', kanji: '墨太鼓', icon: '🪘',
+    desc: 'Tinta sumi: cap hanko & ensō, dentum taiko',
+    desc_en: 'Sumi ink: hanko seal & ensō, taiko drum',
     price: 2500, rarity: 'legendary', visual: 'ink', voice: 'taiko',
   },
 ];
