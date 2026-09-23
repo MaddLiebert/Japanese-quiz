@@ -22,6 +22,18 @@ export const getActiveVoiceKey = () => activeVoiceKey;
 export const answerFeedbackKind = (type, onMilestone = false) =>
   (type === 'correct' && onMilestone) ? 'streak' : type;
 
+// Daftar file yang harus diputar untuk satu jenis umpan balik.
+// Bisa >1: overlay SFX dulu, lalu klip voice — dua-duanya diputar BARENG oleh pemanggil.
+// rng bisa di-inject untuk test.
+export const feedbackFiles = (voice, kind, rng = Math.random) => {
+  const out = [];
+  const ov = pickFile(voice?.overlays?.[kind], rng);
+  if (ov) out.push(ov);
+  const clip = pickFile(voice?.files?.[kind], rng);
+  if (clip) out.push(clip);
+  return out;
+};
+
 // ── Pemutar file mp3 (mode voice pack) ──────────────────────────────────────
 const playFile = (path) => {
   if (typeof window === 'undefined' || !path) return false;
@@ -141,18 +153,18 @@ const synthGong = (level = 0) => {
 
 // ── API publik (signature TIDAK berubah untuk 4 file pemanggil) ─────────────
 export const playCorrectSound = () => {
-  // Jawaban benar biasa → suara dasar (chime), BUKAN voice pack.
-  // Voice Hina hanya dipakai di milestone streak (playStreakSound).
+  // Tanpa pack aktif → suara dasar (chime).
   if (!activeVoiceKey) return synthChime();
-  const voice = getVoice(activeVoiceKey);
-  if (playFile(pickFile(voice.files?.correct))) return;
+  const paths = feedbackFiles(getVoice(activeVoiceKey), 'correct');
+  // Putar SEMUA (overlay + klip voice) bersamaan.
+  if (paths.length) { paths.forEach((p) => playFile(p)); return; }
   synthChime();
 };
 
 export const playWrongSound = () => {
   if (!activeVoiceKey) return synthThud();
-  const voice = getVoice(activeVoiceKey);
-  if (playFile(pickFile(voice.files?.wrong))) return;
+  const paths = feedbackFiles(getVoice(activeVoiceKey), 'wrong');
+  if (paths.length) { paths.forEach((p) => playFile(p)); return; }
   synthThud();
 };
 

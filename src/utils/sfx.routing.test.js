@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind } from './sfx.js';
+import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles } from './sfx.js';
+import { VOICES } from '../features/audio/voices.js';
 
 test('default tanpa pack: tidak ada voice (chime dasar)', () => {
   setActiveVoice(null);
@@ -38,9 +39,25 @@ test('streakTierIndex: level → indeks tier (clamp + pecahan)', () => {
   assert.equal(streakTierIndex(99), 5);    // clamp atas
 });
 
-test('answerFeedbackKind: voice Hina hanya di milestone & saat salah', () => {
+test('answerFeedbackKind: streak hanya tepat di milestone, sisanya type', () => {
   assert.equal(answerFeedbackKind('wrong', false), 'wrong');
   assert.equal(answerFeedbackKind('wrong', true), 'wrong');
   assert.equal(answerFeedbackKind('correct', true), 'streak');   // tepat di milestone
-  assert.equal(answerFeedbackKind('correct', false), 'correct'); // benar biasa → suara dasar
+  assert.equal(answerFeedbackKind('correct', false), 'correct'); // benar biasa
+});
+
+test('feedbackFiles: overlay + klip voice diputar DUA-DUANYA', () => {
+  const voice = { files: { correct: ['/a.mp3'] }, overlays: { correct: ['/ov.mp3'] } };
+  assert.deepEqual(feedbackFiles(voice, 'correct', () => 0), ['/ov.mp3', '/a.mp3']);
+});
+
+test('feedbackFiles: tanpa overlays → hanya klip voice', () => {
+  const voice = { files: { wrong: ['/w.mp3'] } };
+  assert.deepEqual(feedbackFiles(voice, 'wrong', () => 0), ['/w.mp3']);
+});
+
+test('feedbackFiles: voice kosong / taiko → [] (fallback synth)', () => {
+  assert.deepEqual(feedbackFiles(VOICES.taiko, 'correct'), []);
+  assert.deepEqual(feedbackFiles(undefined, 'wrong'), []);
+  assert.deepEqual(feedbackFiles({ files: { correct: [] } }, 'correct'), []);
 });
