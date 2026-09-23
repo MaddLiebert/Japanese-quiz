@@ -7,7 +7,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const VOICES = {
-  // Pack #1 — Kotodama Burst. Tanpa mp3 → synth gong/taiko.
+  // Voice sound dasar (taiko/gong) — dipakai pack Sumi Taiko (visual 'ink').
   taiko: {
     files: { correct: [], wrong: [], streak: [] },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },

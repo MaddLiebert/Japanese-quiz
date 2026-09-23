@@ -434,7 +434,7 @@ export function MondaiQuizResult({
         {/* Grade Circle */}
         <div className="flex justify-center mb-8">
           <div className="relative">
-            {/* Stiker Hina — muncul kalau pack Kotodama Burst aktif */}
+            {/* Stiker Hina — muncul kalau pack Hina Chono aktif */}
             <HinaResultSticker
               score={score}
               total={totalQuestions}

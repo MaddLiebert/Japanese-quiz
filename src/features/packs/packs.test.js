@@ -18,13 +18,18 @@ test('setiap pack punya id unik & field wajib', () => {
 
 test('getPack fallback null', () => {
   assert.equal(getPack('zzz'), null);
-  assert.equal(getPack('kotodama_burst')?.name, 'Kotodama Burst');
+  assert.equal(getPack('kotodama_burst')?.name, 'Hina Chono');
 });
 
-test('kotodama_burst tetap pakai Hina (visual + voice)', () => {
+test('kotodama_burst = "Hina Chono" (nama/kanji/desc sesuai Hina, bukan tinta)', () => {
   const p = getPack('kotodama_burst');
   assert.equal(p.visual, 'hina');
   assert.equal(p.voice, 'hina');
+  assert.equal(p.name, 'Hina Chono');
+  assert.equal(p.kanji, '蝶野雛');
+  assert.match(p.desc, /Hina|suara/i, 'desc harus menyebut Hina/suara');
+  assert.ok(!/tinta|ink/i.test(p.desc), 'desc tidak boleh menulis efek tinta (sudah pindah ke Sumi Taiko)');
+  assert.ok(!/tinta|ink/i.test(p.desc_en), 'desc_en tidak boleh menulis efek tinta');
 });
 
 test('pack_06 = "Sumi Taiko" (tinta washi + taiko), bukan dummy lagi', () => {

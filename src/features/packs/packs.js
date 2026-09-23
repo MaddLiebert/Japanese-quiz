@@ -12,11 +12,11 @@ export const PACK_RARITY = {
 export const PACKS = [
   {
     id: 'kotodama_burst',
-    name: 'Kotodama Burst',
-    kanji: '言霊',
+    name: 'Hina Chono',
+    kanji: '蝶野雛',
     icon: '🈳',
-    desc: 'Tinta washi: cap hanko, sapuan kuas & ensō',
-    desc_en: 'Washi ink: hanko seal, brush stroke & ensō',
+    desc: 'Suara & reaksi Hina: GIF ceria tiap jawaban',
+    desc_en: 'Hina voice & reactions: cheerful GIF every answer',
     price: 2500,
     rarity: 'legendary',
     visual: 'hina',     // → src/features/effects/visuals.js

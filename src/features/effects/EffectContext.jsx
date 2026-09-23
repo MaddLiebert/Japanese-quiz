@@ -8,7 +8,7 @@ import { hinaGifForAnswer } from './hinaGifs';
 import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Kotodama Burst — efek tinta (ink) ala washi/hanko/ensō.
+// Efek tinta washi (visual 'ink') — dipakai pack Sumi Taiko.
 //
 // Prinsip supaya tidak "kaku":
 //  1. Tepi tinta tidak pernah lurus → semua bentuk digambar SVG lalu dilewatkan

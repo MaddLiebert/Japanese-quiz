@@ -37,7 +37,7 @@ function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome
       </h2>
 
       <div className="relative mb-12">
-        {/* Stiker Hina — muncul kalau pack Kotodama Burst aktif */}
+        {/* Stiker Hina — muncul kalau pack Hina Chono aktif */}
         <HinaResultSticker
           score={score}
           total={totalQuestions}
