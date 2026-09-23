@@ -5,7 +5,7 @@ import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, 
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
-import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow } from './hinaFx';
+import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Kotodama Burst — efek tinta (ink) ala washi/hanko/ensō.
@@ -578,15 +578,15 @@ function HinaBurst({ fx, kind }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.16, ease: 'easeOut' } }}
     >
-      {/* Kilau melesat keluar dari tengah */}
+      {/* Kilau melesat keluar dari tengah — stagger + putaran biar hidup */}
       {sparks.map(s => (
         <motion.span
           key={s.id}
           className="absolute select-none"
           style={{ fontSize: s.size, color: s.hue, textShadow: '0 2px 6px rgba(0,0,0,0.15)' }}
-          initial={{ opacity: 0, x: 0, y: 0, scale: 0.4, rotate: 0 }}
-          animate={{ opacity: [0, 1, 1, 0], x: s.dx, y: s.dy, scale: 1, rotate: s.rot }}
-          transition={{ duration: s.dur, delay: s.delay, ease: 'easeOut' }}
+          initial={{ opacity: 0, x: 0, y: 0, scale: 0.3, rotate: 0 }}
+          animate={{ opacity: [0, 1, 1, 0], x: s.dx, y: s.dy, scale: 1, rotate: s.rot + s.spin }}
+          transition={{ duration: s.dur, delay: s.delay, ease: [0.22, 1, 0.36, 1] }}
         >
           {s.char}
         </motion.span>
@@ -598,13 +598,13 @@ function HinaBurst({ fx, kind }) {
           className="absolute left-0 right-0 flex justify-center"
           style={{ top: hasGif ? '8vh' : '50%', transform: hasGif ? 'none' : 'translateY(-50%)' }}
         >
-          {/* Ring pulse — menegaskan momen jawaban */}
+          {/* Ring pulse — tipis & lembut, menegaskan momen tanpa berisik */}
           <motion.span
             className="absolute rounded-full"
-            style={{ border: `3px solid ${color}`, width: 160, height: 160 }}
-            initial={{ opacity: 0.55, scale: 0.4 }}
-            animate={{ opacity: 0, scale: hasGif ? 1.6 : 2.4 }}
-            transition={{ duration: 0.7, ease: 'easeOut' }}
+            style={{ border: `2px solid ${color}`, width: 150, height: 150 }}
+            initial={{ opacity: 0.4, scale: 0.5 }}
+            animate={{ opacity: 0, scale: hasGif ? 1.5 : 2.1 }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           />
           <motion.span
             className="relative font-serif font-black select-none"
@@ -616,11 +616,17 @@ function HinaBurst({ fx, kind }) {
               textShadow: hinaGlow(color),
               willChange: 'transform, opacity',
             }}
-            initial={{ opacity: 0.25, scale: 0.78 }}
+            initial={{ opacity: 0.3, scale: 0.72 }}
             animate={wrong ? { opacity: [0, 1, 1, 0], scale: 1 } : { opacity: 1, scale: 1 }}
             transition={wrong
-              ? { duration: 1.2, times: [0, 0.12, 0.72, 1], ease: 'easeOut' }
-              : { duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+              ? {
+                scale: { duration: 0.42, ease: HINA_POP_EASE },
+                opacity: { duration: 1.2, times: [0, 0.12, 0.72, 1], ease: 'easeOut' },
+              }
+              : {
+                scale: { duration: 0.36, ease: HINA_POP_EASE },
+                opacity: { duration: 0.16, ease: 'easeOut' },
+              }}
           >
             {label}
           </motion.span>
