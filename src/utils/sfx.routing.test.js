@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles } from './sfx.js';
+import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist } from './sfx.js';
 import { VOICES } from '../features/audio/voices.js';
 
 test('default tanpa pack: tidak ada voice (chime dasar)', () => {
@@ -60,4 +60,20 @@ test('feedbackFiles: voice kosong / taiko → [] (fallback synth)', () => {
   assert.deepEqual(feedbackFiles(VOICES.taiko, 'correct'), []);
   assert.deepEqual(feedbackFiles(undefined, 'wrong'), []);
   assert.deepEqual(feedbackFiles({ files: { correct: [] } }, 'correct'), []);
+});
+
+test('streakPlaylist: base rightanswer + klip Hina streak diputar BARENG', () => {
+  const v = VOICES.hina;
+  // milestone → base rightanswer (overlay) + klip streak tier yang sesuai
+  assert.deepEqual(streakPlaylist(v, 1, () => 0),
+    ['/voices/hina/rightanswer.mp3', '/voices/hina/streak_1.mp3']);   // level 1 → tier 0
+  assert.deepEqual(streakPlaylist(v, 7, () => 0),
+    ['/voices/hina/rightanswer.mp3', '/voices/hina/streak_4.mp3']);   // level 7 → tier 3 (50)
+  assert.deepEqual(streakPlaylist(v, 12, () => 0),
+    ['/voices/hina/rightanswer.mp3', '/voices/hina/streak_6.mp3']);   // level 12 → tier 5 (100)
+});
+
+test('streakPlaylist: tanpa overlay / voice kosong → tetap aman', () => {
+  assert.deepEqual(streakPlaylist({ files: { streak: ['/s1.mp3'] } }, 1, () => 0), ['/s1.mp3']);
+  assert.deepEqual(streakPlaylist(VOICES.taiko, 1), []);   // streak kosong → []
 });

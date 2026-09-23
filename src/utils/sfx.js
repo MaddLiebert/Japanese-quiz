@@ -17,8 +17,8 @@ export const setActiveVoice = (key) => { activeVoiceKey = key || null; };
 export const getActiveVoiceKey = () => activeVoiceKey;
 
 // Jenis umpan balik suara untuk satu jawaban.
-// Milestone streak → 'streak' (klip Hina per-tier).
-// Selain itu → type apa adanya ('correct' / 'wrong'), yang memutar overlay + voice Hina.
+// Milestone streak → 'streak' (base rightanswer + klip Hina streak).
+// Selain itu → type apa adanya ('correct' / 'wrong').
 export const answerFeedbackKind = (type, onMilestone = false) =>
   (type === 'correct' && onMilestone) ? 'streak' : type;
 
@@ -180,16 +180,26 @@ export const streakTierIndex = (level = 0) => {
   return STREAK_TIER_BY_LEVEL[lvl - 1];
 };
 
+// Daftar file untuk milestone streak: base overlay (mis. rightanswer) + klip Hina tier.
+// Dua-duanya diputar BARENG. Kalau tidak ada klip streak → [] (pemanggil fallback synth).
+export const streakPlaylist = (voice, level = 0, rng = Math.random) => {
+  const streakFiles = voice?.files?.streak;
+  if (!Array.isArray(streakFiles) || streakFiles.length === 0) return [];
+  const out = [];
+  const ov = pickFile(voice?.overlays?.correct, rng);   // base jawaban benar
+  if (ov) out.push(ov);
+  // 6 file = 6 tier → pilih sesuai milestone (bukan acak). Selain itu → acak.
+  const clip = (streakFiles.length === 6)
+    ? streakFiles[streakTierIndex(level)]
+    : pickFile(streakFiles, rng);
+  if (clip) out.push(clip);
+  return out;
+};
+
 export const playStreakSound = (level = 0) => {
   if (!activeVoiceKey) return synthGong(level);
-  const voice = getVoice(activeVoiceKey);
-  const streakFiles = voice.files?.streak;
-  // 6 file = 6 tier → pilih sesuai milestone (bukan acak).
-  if (Array.isArray(streakFiles) && streakFiles.length === 6) {
-    if (playFile(streakFiles[streakTierIndex(level)])) return;
-  }
-  // Selain itu (array kosong / bukan 6) → perilaku lama (acak → synth).
-  if (playFile(pickFile(streakFiles))) return;
+  const paths = streakPlaylist(getVoice(activeVoiceKey), level);
+  if (paths.length) { paths.forEach((p) => playFile(p)); return; }
   synthGong(level);
 };
 

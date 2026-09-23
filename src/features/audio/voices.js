@@ -30,12 +30,14 @@ export const VOICES = {
   // },
 
   // Pack #1 — suara Hina Chono (klip TTS).
-  //   files    : klip VOICE Hina (dipilih acak)
-  //   overlays : SFX yang diputar BARENG klip voice (bukan menggantikan)
+  //   files    : klip VOICE Hina
+  //              - correct: KOSONG → Hina tidak bunyi di jawaban benar biasa
+  //              - wrong  : bunyi tiap kali salah (bareng wronganswer)
+  //              - streak : bunyi tiap milestone (bareng rightanswer)
+  //   overlays : base SFX jawaban yang SELALU bunyi bareng klip voice
   hina: {
     files: {
-      correct: ['/voices/hina/correct_1.mp3', '/voices/hina/correct_2.mp3',
-                '/voices/hina/correct_3.mp3', '/voices/hina/correct_4.mp3'],
+      correct: [],
       wrong:   ['/voices/hina/wrong_1.mp3',   '/voices/hina/wrong_2.mp3',
                 '/voices/hina/wrong_3.mp3'],
       streak:  ['/voices/hina/streak_1.mp3',  '/voices/hina/streak_2.mp3',
