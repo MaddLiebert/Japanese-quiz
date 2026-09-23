@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist } from './sfx.js';
+import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist, voiceFilePaths } from './sfx.js';
 import { VOICES } from '../features/audio/voices.js';
 
 test('default tanpa pack: tidak ada voice (chime dasar)', () => {
@@ -76,4 +76,20 @@ test('streakPlaylist: base rightanswer + klip Hina streak diputar BARENG', () =>
 test('streakPlaylist: tanpa overlay / voice kosong → tetap aman', () => {
   assert.deepEqual(streakPlaylist({ files: { streak: ['/s1.mp3'] } }, 1, () => 0), ['/s1.mp3']);
   assert.deepEqual(streakPlaylist(VOICES.taiko, 1), []);   // streak kosong → []
+});
+
+test('voiceFilePaths: kumpulkan SEMUA path file + overlay (untuk preload)', () => {
+  const paths = voiceFilePaths(VOICES.hina);
+  assert.equal(paths.length, 11);   // 0 correct + 3 wrong + 6 streak + rightanswer + wronganswer
+  assert.ok(paths.includes('/voices/hina/rightanswer.mp3'));
+  assert.ok(paths.includes('/voices/hina/wronganswer.mp3'));
+  assert.ok(paths.includes('/voices/hina/wrong_1.mp3'));
+  assert.ok(paths.includes('/voices/hina/streak_6.mp3'));
+  assert.equal(new Set(paths).size, paths.length, 'path unik');
+});
+
+test('voiceFilePaths: voice kosong → []', () => {
+  assert.deepEqual(voiceFilePaths(VOICES.taiko), []);
+  assert.deepEqual(voiceFilePaths(undefined), []);
+  assert.deepEqual(voiceFilePaths(null), []);
 });
