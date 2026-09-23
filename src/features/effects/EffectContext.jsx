@@ -5,7 +5,7 @@ import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, 
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
-import { hinaSparkles, hinaAnswerText } from './hinaFx';
+import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount } from './hinaFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Kotodama Burst — efek tinta (ink) ala washi/hanko/ensō.
@@ -556,16 +556,20 @@ function StreakSigil({ fid, level, milestone, signature, streak }) {
 
 // ── Vibe Hina Chono (pack 'hina') ────────────────────────────────────────────
 // Muncul di SETIAP jawaban:
-//   • kilau (✦ ★ ♡ ❀) melesat keluar  → selalu
-//   • teks reaksi anime 正解！/ドンマイ！/連続正解！ → selalu
+//   • kilau pink (✦ ★ ♡ ❀) melesat keluar  → selalu
+//   • teks reaksi anime pink 正解！/ドンマイ！/連続正解！ → selalu
 //   • GIF Hina (HinaRight* / HinaWrong*) → HANYA saat suara Hina bunyi
 //     (salah / milestone streak) — fx.gifSrc diisi oleh hinaGifForAnswer.
+//
+// Tata letak anti-tumpuk: kalau ada GIF, teks naik ke atas (top 8vh) & GIF di
+// tengah; kalau tidak ada GIF (benar biasa), teks di tengah & dibuat besar +
+// glow + ring pulse supaya jawaban BENAR tetap jelas terlihat.
 function HinaBurst({ fx, kind }) {
   const wrong = kind === 'wrong';
-  const [sparks] = useState(() => hinaSparkles(fx.id));
+  const hasGif = Boolean(fx.gifSrc);
+  const [sparks] = useState(() => hinaSparkles(fx.id, hinaSparkleCount(kind)));
   const label = hinaAnswerText(kind);
-
-  const textColor = kind === 'wrong' ? 'text-shu' : kind === 'streak' ? 'text-[#d4af37]' : 'text-matcha';
+  const color = hinaTextColor(kind);
 
   return (
     <motion.div
@@ -589,30 +593,45 @@ function HinaBurst({ fx, kind }) {
         </motion.span>
       ))}
 
-      {/* Teks reaksi anime (selalu ada, walau Hina diam) */}
+      {/* Teks reaksi anime pink (selalu ada, walau Hina diam) */}
       {label && (
-        <motion.span
-          className={`relative z-10 font-serif font-black ${textColor} select-none`}
-          style={{
-            fontSize: 'clamp(40px, 9vw, 96px)',
-            WebkitTextStroke: '2px var(--kinari-light-val)',
-            paintOrder: 'stroke fill',
-          }}
-          initial={{ opacity: 0, scale: 0.5, y: 12 }}
-          animate={wrong ? { opacity: [0, 1, 1, 0], scale: 1, y: 0 } : { opacity: 1, scale: 1, y: 0 }}
-          transition={wrong
-            ? { duration: 1.1, times: [0, 0.15, 0.7, 1], ease: 'easeOut' }
-            : { type: 'spring', stiffness: 320, damping: 18 }}
+        <motion.div
+          className="absolute left-0 right-0 flex justify-center"
+          style={{ top: hasGif ? '8vh' : '50%', transform: hasGif ? 'none' : 'translateY(-50%)' }}
         >
-          {label}
-        </motion.span>
+          {/* Ring pulse — menegaskan momen jawaban */}
+          <motion.span
+            className="absolute rounded-full"
+            style={{ border: `3px solid ${color}`, width: 160, height: 160 }}
+            initial={{ opacity: 0.55, scale: 0.4 }}
+            animate={{ opacity: 0, scale: hasGif ? 1.6 : 2.4 }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
+          />
+          <motion.span
+            className="relative font-serif font-black select-none"
+            style={{
+              fontSize: hasGif ? 'clamp(40px, 8vw, 84px)' : 'clamp(52px, 12vw, 132px)',
+              color,
+              WebkitTextStroke: '2px var(--kinari-light-val)',
+              paintOrder: 'stroke fill',
+              filter: `drop-shadow(0 0 18px ${color}) drop-shadow(0 4px 8px rgba(0,0,0,0.18))`,
+            }}
+            initial={{ opacity: 0, scale: 0.5, y: 12 }}
+            animate={wrong ? { opacity: [0, 1, 1, 0], scale: 1, y: 0 } : { opacity: 1, scale: 1, y: 0 }}
+            transition={wrong
+              ? { duration: 1.2, times: [0, 0.12, 0.72, 1], ease: 'easeOut' }
+              : { type: 'spring', stiffness: 340, damping: 16 }}
+          >
+            {label}
+          </motion.span>
+        </motion.div>
       )}
 
-      {/* GIF Hina — hanya saat suara Hina bunyi */}
-      {fx.gifSrc && (
+      {/* GIF Hina — hanya saat suara Hina bunyi (di tengah, teks sudah pindah ke atas) */}
+      {hasGif && (
         <motion.div
           className="absolute left-1/2 top-1/2"
-          style={{ marginLeft: '-20vh', marginTop: '-20vh' }}
+          style={{ marginLeft: '-18vh', marginTop: '-16vh' }}
           initial={{ opacity: 0, scale: 0.82, rotate: wrong ? 2.5 : -2 }}
           animate={
             wrong
@@ -627,7 +646,7 @@ function HinaBurst({ fx, kind }) {
           }
         >
           <div
-            className="w-[40vh] h-[40vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden"
+            className="w-[36vh] h-[36vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden"
           >
             <img
               src={fx.gifSrc}

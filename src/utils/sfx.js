@@ -78,7 +78,7 @@ export const preloadVoice = (voice) => {
 // (dari elemen <audio>). Kalau tak diketahui → fallback per jenis, lalu di-clamp
 // supaya tidak kedip (<1.2s) dan tidak nyangkut (>8s).
 const GIF_HOLD_FALLBACK = { correct: 1600, wrong: 2000, streak: 2800 };
-const GIF_HOLD_MIN = 1200;
+const GIF_HOLD_MIN = 1600;
 const GIF_HOLD_MAX = 8000;
 
 export const hinaGifHoldMs = (kind, clipMs = 0) => {
