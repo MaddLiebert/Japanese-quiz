@@ -550,14 +550,24 @@ function StreakSigil({ fid, level, milestone, signature, streak }) {
 // Durasi tampil mengikuti hold efek (salah 1.4s / streak 2.0s) via setTimeout
 // di triggerEffect + exit animasi — lihat BASE_INTENSITY / intensityFor.
 function HinaGif({ src, kind }) {
+  const wrong = kind === 'wrong';
   return (
+    // Wrapper: masuk (spring) + getar halus saat salah
     <motion.div
       className="absolute left-1/2 top-1/2"
-      initial={{ opacity: 0, scale: 0.82, rotate: kind === 'wrong' ? 2.5 : -2 }}
-      animate={{ opacity: 1, scale: 1, rotate: kind === 'wrong' ? -1.5 : 1.5 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ type: 'spring', stiffness: 320, damping: 20, mass: 0.8 }}
       style={{ marginLeft: '-20vh', marginTop: '-20vh' }}
+      initial={{ opacity: 0, scale: 0.82, rotate: wrong ? 2.5 : -2 }}
+      animate={
+        wrong
+          ? { opacity: 1, scale: 1, rotate: -1.5, x: [0, -9, 8, -5, 3, 0] }
+          : { opacity: 1, scale: 1, rotate: 1.5, x: 0 }
+      }
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={
+        wrong
+          ? { duration: 0.5, ease: 'easeOut' }
+          : { type: 'spring', stiffness: 320, damping: 20, mass: 0.8 }
+      }
     >
       <div
         className="w-[40vh] h-[40vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden"
