@@ -1,16 +1,18 @@
 // Registry GIF reaksi Hina Chono untuk efek jawaban (pack kotodama_burst).
+// Semua asset dikompres ke WebP animasi (q=80) — dari 3.8MB jadi ~1.4MB supaya
+// preload & tampil instan, tanpa penurunan kualitas yang kasat mata (MAE ~3-5).
 export const HINA_GIFS = {
   correct: [
-    '/effects/HinaRight.gif',
-    '/effects/HinaRight1.gif',
-    '/effects/HinaRight2.gif',
-    '/effects/HinaRight3.gif',
+    '/effects/HinaRight.webp',
+    '/effects/HinaRight1.webp',
+    '/effects/HinaRight2.webp',
+    '/effects/HinaRight3.webp',
   ],
   wrong: [
-    '/effects/HinaWrong.gif',
-    '/effects/HinaWrong1.gif',
+    '/effects/HinaWrong.webp',
+    '/effects/HinaWrong1.webp',
     '/effects/HinaWrong2.webp',
-    '/effects/HinaWrong3.gif',   // ⚠️ dari belakang (tanpa muka) — hapus baris ini kalau tak mau
+    '/effects/HinaWrong3.webp',   // ⚠️ dari belakang (tanpa muka) — hapus baris ini kalau tak mau
   ],
 };
 
