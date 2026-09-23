@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist, voiceFilePaths, hinaGifHoldMs } from './sfx.js';
+import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist, voiceFilePaths, hinaGifHoldMs, playClipFile } from './sfx.js';
 import { VOICES } from '../features/audio/voices.js';
 
 test('default tanpa pack: tidak ada voice (chime dasar)', () => {
@@ -108,4 +108,12 @@ test('hinaGifHoldMs: ikuti durasi klip Hina (fallback + clamp)', () => {
   // nilai tak valid → fallback
   assert.equal(hinaGifHoldMs('wrong', NaN), 2000);
   assert.equal(hinaGifHoldMs('wrong', -5), 2000);
+});
+
+test('playClipFile: aman di luar browser (tak melempar, kembalikan 0)', () => {
+  // node tak punya window/Audio → harus aman & kembalikan 0 (tanpa throw).
+  assert.equal(playClipFile('/voices/hina/streak_2.mp3'), 0);
+  assert.equal(playClipFile(''), 0);
+  assert.equal(playClipFile(null), 0);
+  assert.equal(playClipFile(undefined), 0);
 });

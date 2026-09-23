@@ -274,6 +274,11 @@ export const playStreakSound = (level = 0) => {
   return 0;
 };
 
+// Putar satu klip suara bebas (mis. sorakan "sugoi" di layar hasil kuis).
+// Pemanggil (HinaResultSticker) sudah memastikan pack visual 'hina' aktif.
+// Kembalikan durasi klip (ms); 0 kalau gagal/tak ada.
+export const playClipFile = (path) => playFile(path);
+
 // ── Suara mesin slot gacha ──────────────────────────────────────────────────
 // Parameter murni (dites di sfx.gacha.test.js).
 export function reelTickParams() {
