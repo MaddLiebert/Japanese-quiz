@@ -574,10 +574,9 @@ function HinaBurst({ fx, kind }) {
   return (
     <motion.div
       className="absolute inset-0 flex items-center justify-center"
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.22, ease: 'easeOut' }}
+      exit={{ opacity: 0, transition: { duration: 0.16, ease: 'easeOut' } }}
     >
       {/* Kilau melesat keluar dari tengah */}
       {sparks.map(s => (
@@ -632,17 +631,17 @@ function HinaBurst({ fx, kind }) {
         <motion.div
           className="absolute left-1/2 top-1/2"
           style={{ marginLeft: '-18vh', marginTop: '-16vh' }}
-          initial={{ opacity: 0, scale: 0.82, rotate: wrong ? 2.5 : -2 }}
+          initial={{ opacity: 1, scale: 0.94, rotate: wrong ? 2.5 : -2 }}
           animate={
             wrong
               ? { opacity: 1, scale: 1, rotate: -1.5, x: [0, -9, 8, -5, 3, 0] }
               : { opacity: 1, scale: 1, rotate: 1.5, x: 0 }
           }
-          exit={{ opacity: 0, scale: 0.9 }}
+          exit={{ opacity: 0, scale: 0.96 }}
           transition={
             wrong
-              ? { duration: 0.5, ease: 'easeOut' }
-              : { type: 'spring', stiffness: 320, damping: 20, mass: 0.8 }
+              ? { duration: 0.34, ease: 'easeOut' }
+              : { duration: 0.18, ease: 'easeOut' }
           }
         >
           <div
@@ -651,6 +650,8 @@ function HinaBurst({ fx, kind }) {
             <img
               src={fx.gifSrc}
               alt="Hina Chono"
+              decoding="sync"
+              loading="eager"
               className="w-full h-full object-contain select-none"
               draggable={false}
             />

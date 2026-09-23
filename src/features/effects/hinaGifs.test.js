@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HINA_GIFS, pickHinaGif, hinaGifForAnswer } from './hinaGifs.js';
+import { HINA_GIFS, pickHinaGif, hinaGifForAnswer, hinaGifPaths, preloadHinaGifs } from './hinaGifs.js';
 
 test('HINA_GIFS punya 4 correct & 4 wrong', () => {
   assert.equal(HINA_GIFS.correct.length, 4);
@@ -26,4 +26,19 @@ test('hinaGifForAnswer: GIF mengikuti kapan Hina BUNYI', () => {
   assert.equal(hinaGifForAnswer('correct', true, () => 0), '/effects/HinaRight.gif');
   // benar biasa → Hina DIAM → tanpa GIF
   assert.equal(hinaGifForAnswer('correct', false, () => 0), null);
+});
+
+test('hinaGifPaths: 8 path unik (semua GIF untuk preload)', () => {
+  const paths = hinaGifPaths();
+  assert.equal(paths.length, 8);
+  assert.equal(new Set(paths).size, 8);
+});
+
+test('preloadHinaGifs: menyentuh semua path lewat loader (injectable)', () => {
+  const seen = [];
+  const loader = () => ({ set src(v) { seen.push(v); }, decode: () => Promise.resolve(), decoding: 'auto' });
+  const n = preloadHinaGifs(loader);
+  assert.equal(n, 8);
+  assert.equal(seen.length, 8);
+  assert.deepEqual(seen.sort(), hinaGifPaths().sort());
 });
