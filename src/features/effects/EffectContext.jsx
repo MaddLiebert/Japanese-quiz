@@ -4,6 +4,7 @@ import { useUserStats } from '../progress/ProgressContext';
 import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind } from '../../utils/sfx';
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
+import { hinaGifForAnswer } from './hinaGifs';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Kotodama Burst — efek tinta (ink) ala washi/hanko/ensō.
@@ -164,6 +165,9 @@ export function EffectProvider({ children }) {
     const cfg = info ? intensityFor(info.level) : BASE_INTENSITY[type];
     const onMilestone = info ? streakRef.current === info.milestone : false;
 
+    // GIF Hina: hanya saat suara Hina bunyi (salah / tepat milestone). Benar biasa → null.
+    const gifSrc = hinaGifForAnswer(type, onMilestone);
+
     // Suara (keputusan desain):
     //  - jawaban salah  → wronganswer.mp3 + voice Hina wrong (tiap salah)
     //  - milestone streak (3,5,10,…,100) → rightanswer.mp3 + voice Hina streak tier
@@ -177,6 +181,7 @@ export function EffectProvider({ children }) {
 
     setFx({
       kind,
+      gifSrc,                                    // null = tanpa GIF (Hina diam)
       id: ++seq,
       seed: Math.floor(Math.random() * 900) + 1,
       angle: -14 - Math.random() * 12,          // sapuan tidak pernah sama
@@ -221,8 +226,8 @@ function EffectLayer({ fx, drops, visual }) {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
-      {/* Visual tinta (pack 'ink') */}
-      {visual === 'ink' && (
+      {/* Visual tinta (pack 'ink') — filter juga dipakai StreakSigil di mode 'hina' */}
+      {(visual === 'ink' || visual === 'hina') && (
         <>
           {/* Filter tinta — tepi bergerigi organik */}
           <svg width="0" height="0" className="absolute" aria-hidden="true">
@@ -237,61 +242,70 @@ function EffectLayer({ fx, drops, visual }) {
             </defs>
           </svg>
 
-          <motion.div
-            className="absolute inset-0"
-            animate={
-              kind === 'wrong'
-                ? { x: [0, -11, 9, -6, 4, 0], y: [0, 3, -3, 2, -1, 0] }
-                : fx?.signature === 'zenith100'
-                  ? { x: [0, -16, 14, -10, 8, -4, 0], y: [0, -8, 7, -6, 5, -3, 0] }
-                  : (kind === 'streak' && fx?.onMilestone && fx.level >= 5)
-                    ? { x: [0, -7, 6, -4, 3, 0], y: [0, -4, 4, -3, 2, 0] }
-                    : { x: 0, y: 0 }
-            }
-            transition={{ duration: fx?.signature === 'zenith100' ? 0.7 : 0.5, ease: 'easeOut' }}
-          >
-            {/* Wash tint (radial, lembut) */}
-            <AnimatePresence>
-              {kind && (
-                <motion.div
-                  key={`wash-${fx.id}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.34, ease: 'easeOut' }}
-                  className="absolute inset-0"
-                  style={{ background: wash }}
-                />
-              )}
-            </AnimatePresence>
-
-            {/* Ink splash */}
-            {drops.map(d => (
+          {/* Efek tinta — HANYA pack 'ink' (mode 'hina' diganti GIF) */}
+          {visual === 'ink' && (
+            <>
               <motion.div
-                key={d.id}
-                className="absolute left-1/2 top-1/2"
-                initial={{ x: 0, y: 0, opacity: 0.95 }}
-                animate={{ x: d.dx, y: d.dy, opacity: 0 }}
-                transition={{ duration: d.dur, ease: [0.06, 0.72, 0.14, 1], delay: d.delay }}
-                style={{
-                  width: d.size,
-                  height: d.size,
-                  marginLeft: -d.size / 2,
-                  marginTop: -d.size / 2,
-                  filter: d.soft ? 'blur(1.1px)' : undefined,
-                }}
+                className="absolute inset-0"
+                animate={
+                  kind === 'wrong'
+                    ? { x: [0, -11, 9, -6, 4, 0], y: [0, 3, -3, 2, -1, 0] }
+                    : fx?.signature === 'zenith100'
+                      ? { x: [0, -16, 14, -10, 8, -4, 0], y: [0, -8, 7, -6, 5, -3, 0] }
+                      : (kind === 'streak' && fx?.onMilestone && fx.level >= 5)
+                        ? { x: [0, -7, 6, -4, 3, 0], y: [0, -4, 4, -3, 2, 0] }
+                        : { x: 0, y: 0 }
+                }
+                transition={{ duration: fx?.signature === 'zenith100' ? 0.7 : 0.5, ease: 'easeOut' }}
               >
-                <svg width={d.size} height={d.size} viewBox="0 0 16 12"
-                  style={{ transform: `rotate(${d.deg}deg) scaleX(${d.stretch})`, transformOrigin: '0% 50%' }}>
-                  <path d={TEARDROP} style={{ fill: ink }} />
-                </svg>
-              </motion.div>
-            ))}
-          </motion.div>
+                {/* Wash tint (radial, lembut) */}
+                <AnimatePresence>
+                  {kind && (
+                    <motion.div
+                      key={`wash-${fx.id}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.34, ease: 'easeOut' }}
+                      className="absolute inset-0"
+                      style={{ background: wash }}
+                    />
+                  )}
+                </AnimatePresence>
 
+                {/* Ink splash */}
+                {drops.map(d => (
+                  <motion.div
+                    key={d.id}
+                    className="absolute left-1/2 top-1/2"
+                    initial={{ x: 0, y: 0, opacity: 0.95 }}
+                    animate={{ x: d.dx, y: d.dy, opacity: 0 }}
+                    transition={{ duration: d.dur, ease: [0.06, 0.72, 0.14, 1], delay: d.delay }}
+                    style={{
+                      width: d.size,
+                      height: d.size,
+                      marginLeft: -d.size / 2,
+                      marginTop: -d.size / 2,
+                      filter: d.soft ? 'blur(1.1px)' : undefined,
+                    }}
+                  >
+                    <svg width={d.size} height={d.size} viewBox="0 0 16 12"
+                      style={{ transform: `rotate(${d.deg}deg) scaleX(${d.stretch})`, transformOrigin: '0% 50%' }}>
+                      <path d={TEARDROP} style={{ fill: ink }} />
+                    </svg>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              <AnimatePresence>
+                {kind === 'correct' && <HankoStamp key={`h-${fx.id}`} fid={fid} />}
+                {kind === 'wrong' && <BrushSlash key={`b-${fx.id}`} fid={fid} angle={fx.angle} y={fx.y} />}
+              </AnimatePresence>
+            </>
+          )}
+
+          {/* Sigil streak — tampil di pack 'ink' maupun 'hina' */}
           <AnimatePresence>
-            {kind === 'correct' && <HankoStamp key={`h-${fx.id}`} fid={fid} />}
-            {kind === 'wrong' && <BrushSlash key={`b-${fx.id}`} fid={fid} angle={fx.angle} y={fx.y} />}
             {kind === 'streak' && (
               <StreakSigil
                 key={`s-${fx.id}`}
@@ -303,6 +317,11 @@ function EffectLayer({ fx, drops, visual }) {
               />
             )}
           </AnimatePresence>
+
+          {/* GIF Hina — HANYA saat suara Hina bunyi (salah / milestone) */}
+          {visual === 'hina' && fx?.gifSrc && (
+            <HinaGif key={`g-${fx.id}`} src={fx.gifSrc} kind={kind} />
+          )}
         </>
       )}
 
@@ -520,6 +539,36 @@ function StreakSigil({ fid, level, milestone, signature, streak }) {
           </div>
         </motion.div>
       )}
+    </motion.div>
+  );
+}
+
+// ── GIF reaksi Hina (pack 'hina') ────────────────────────────────────────────
+// Muncul HANYA saat suara Hina bunyi: salah (HinaWrong*) & milestone streak
+// (HinaRight*). Kotak persegi seragam + object-contain → muka Hina selalu utuh,
+// GIF landscape (mis. 220×124) dapat bar kosong di dalam kotak (disengaja).
+// Durasi tampil mengikuti hold efek (salah 1.4s / streak 2.0s) via setTimeout
+// di triggerEffect + exit animasi — lihat BASE_INTENSITY / intensityFor.
+function HinaGif({ src, kind }) {
+  return (
+    <motion.div
+      className="absolute left-1/2 top-1/2"
+      initial={{ opacity: 0, scale: 0.82, rotate: kind === 'wrong' ? 2.5 : -2 }}
+      animate={{ opacity: 1, scale: 1, rotate: kind === 'wrong' ? -1.5 : 1.5 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 20, mass: 0.8 }}
+      style={{ marginLeft: '-20vh', marginTop: '-20vh' }}
+    >
+      <div
+        className="w-[40vh] h-[40vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden"
+      >
+        <img
+          src={src}
+          alt="Hina Chono"
+          className="w-full h-full object-contain select-none"
+          draggable={false}
+        />
+      </div>
     </motion.div>
   );
 }
