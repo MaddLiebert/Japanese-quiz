@@ -5,7 +5,7 @@ import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, 
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
-import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount } from './hinaFx';
+import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow } from './hinaFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Kotodama Burst — efek tinta (ink) ala washi/hanko/ensō.
@@ -613,13 +613,14 @@ function HinaBurst({ fx, kind }) {
               color,
               WebkitTextStroke: '2px var(--kinari-light-val)',
               paintOrder: 'stroke fill',
-              filter: `drop-shadow(0 0 18px ${color}) drop-shadow(0 4px 8px rgba(0,0,0,0.18))`,
+              textShadow: hinaGlow(color),
+              willChange: 'transform, opacity',
             }}
-            initial={{ opacity: 0, scale: 0.5, y: 12 }}
-            animate={wrong ? { opacity: [0, 1, 1, 0], scale: 1, y: 0 } : { opacity: 1, scale: 1, y: 0 }}
+            initial={{ opacity: 0.25, scale: 0.78 }}
+            animate={wrong ? { opacity: [0, 1, 1, 0], scale: 1 } : { opacity: 1, scale: 1 }}
             transition={wrong
               ? { duration: 1.2, times: [0, 0.12, 0.72, 1], ease: 'easeOut' }
-              : { type: 'spring', stiffness: 340, damping: 16 }}
+              : { duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
           >
             {label}
           </motion.span>

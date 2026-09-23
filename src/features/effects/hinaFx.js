@@ -22,8 +22,15 @@ export const HINA_TEXT_COLOR = {
 
 export const hinaTextColor = (kind) => HINA_TEXT_COLOR[kind] || '#ff4d94';
 
+// Glow teks pakai text-shadow (BUKAN filter: drop-shadow).
+// filter drop-shadow pada teks besar memaksa browser raster ulang tiap frame →
+// animasi patah-patah. text-shadow jauh lebih murah & tetap terlihat menyala.
+export const hinaGlow = (color = '#ff4d94') =>
+  `0 0 10px ${color}, 0 0 22px ${color}, 0 3px 6px rgba(0,0,0,0.18)`;
+
 // Jumlah kilau per jenis: benar & streak paling ramai (biar jelas terlihat).
-export const HINA_SPARKLE_COUNT = { correct: 20, wrong: 10, streak: 24 };
+// Dijaga sedang (<=14) supaya tidak memberatkan main thread saat muncul.
+export const HINA_SPARKLE_COUNT = { correct: 12, wrong: 8, streak: 14 };
 
 export const hinaSparkleCount = (kind) => HINA_SPARKLE_COUNT[kind] ?? 14;
 
