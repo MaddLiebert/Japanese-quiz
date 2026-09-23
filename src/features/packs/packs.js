@@ -20,7 +20,7 @@ export const PACKS = [
     price: 2500,
     rarity: 'legendary',
     visual: 'ink',      // → src/features/effects/visuals.js
-    voice: 'taiko',     // → src/features/audio/voices.js
+    voice: 'hina',      // → src/features/audio/voices.js
   },
   {
     id: 'pack_02', name: 'Dummy A', kanji: '仮', icon: '🎭',
