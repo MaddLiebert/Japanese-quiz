@@ -171,7 +171,7 @@ export function EffectProvider({ children }) {
 
     // Suara (keputusan desain):
     //  - jawaban salah  → wronganswer.mp3 + voice Hina wrong (tiap salah)
-    //  - milestone streak (3,5,10,…,100) → rightanswer.mp3 + voice Hina streak tier
+    //  - milestone streak (3,5,10,…,100) → MURNI klip voice Hina streak (tanpa base)
     //  - jawaban benar biasa → rightanswer.mp3 saja (Hina diam)
     // Dipanggil di sini karena hanya EffectContext yang tahu streak barunya
     // (call site memanggil triggerEffect SEBELUM streak naik).

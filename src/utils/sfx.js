@@ -17,7 +17,7 @@ export const setActiveVoice = (key) => { activeVoiceKey = key || null; };
 export const getActiveVoiceKey = () => activeVoiceKey;
 
 // Jenis umpan balik suara untuk satu jawaban.
-// Milestone streak → 'streak' (base rightanswer + klip Hina streak).
+// Milestone streak → 'streak' (MURNI klip voice Hina, tanpa base generik).
 // Selain itu → type apa adanya ('correct' / 'wrong').
 export const answerFeedbackKind = (type, onMilestone = false) =>
   (type === 'correct' && onMilestone) ? 'streak' : type;
