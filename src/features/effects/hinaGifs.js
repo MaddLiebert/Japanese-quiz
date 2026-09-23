@@ -64,3 +64,17 @@ export const hinaGifForAnswer = (type, onMilestone = false, rng = Math.random) =
   if (type === 'correct' && onMilestone) return pickHinaGif('correct', rng);
   return null;
 };
+
+// GIF untuk LAYAR HASIL KUIS. Dipilih dari nilai akhir:
+//   - nilai bagus (>= 80% → grade A/S) → Hina senang (GIF benar)
+//   - nilai kurang (< 80%)            → Hina menyemangati (GIF salah)
+// total <= 0 → null (hindari bagi nol).
+export const HINA_RESULT_PASS_PCT = 80;
+
+export const hinaResultGif = (score = 0, total = 0, rng = Math.random) => {
+  if (!total || total <= 0) return null;
+  const pct = (score / total) * 100;
+  return pct >= HINA_RESULT_PASS_PCT
+    ? pickHinaGif('correct', rng)
+    : pickHinaGif('wrong', rng);
+};

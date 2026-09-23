@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
 import { useLanguage } from "../context/LanguageContext";
+import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 
 export function AudioPlayer({
   audioSrc = "/audio/sample.mp3",
@@ -432,20 +433,28 @@ export function MondaiQuizResult({
 
         {/* Grade Circle */}
         <div className="flex justify-center mb-8">
-          <motion.div
-            initial={{ scale: 2, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1, rotate: -5 }}
-            transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.2 }}
-            className="w-36 h-36 sm:w-44 sm:h-44 rounded-full border-[8px] border-shu text-shu flex flex-col items-center justify-center bg-kinari-light shadow-sm relative overflow-hidden"
-          >
-            <div className="absolute inset-0 border-[3px] border-shu opacity-60 rounded-full pointer-events-none"></div>
-            <span className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase mb-2 mt-4">
-              Grade
-            </span>
-            <span className="text-6xl sm:text-7xl font-serif font-black leading-none">
-              {grade}
-            </span>
-          </motion.div>
+          <div className="relative">
+            {/* Stiker Hina — muncul kalau pack Kotodama Burst aktif */}
+            <HinaResultSticker
+              score={score}
+              total={totalQuestions}
+              className="absolute -bottom-4 -right-10 sm:-right-14 z-10"
+            />
+            <motion.div
+              initial={{ scale: 2, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, rotate: -5 }}
+              transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.2 }}
+              className="w-36 h-36 sm:w-44 sm:h-44 rounded-full border-[8px] border-shu text-shu flex flex-col items-center justify-center bg-kinari-light shadow-sm relative overflow-hidden"
+            >
+              <div className="absolute inset-0 border-[3px] border-shu opacity-60 rounded-full pointer-events-none"></div>
+              <span className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase mb-2 mt-4">
+                Grade
+              </span>
+              <span className="text-6xl sm:text-7xl font-serif font-black leading-none">
+                {grade}
+              </span>
+            </motion.div>
+          </div>
         </div>
 
         {/* Score Summary */}

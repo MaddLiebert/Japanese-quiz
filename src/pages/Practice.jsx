@@ -16,6 +16,7 @@ import { categoryTranslations } from "../utils/translations";
 import { KanaTypeToggle } from "../components/KanaTypeToggle";
 import { KanaQuiz } from "../features/quiz/KanaQuiz";
 import { useEffectLayer } from "../features/effects/EffectContext";
+import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
   const { language } = useLanguage();
@@ -35,18 +36,26 @@ function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome
         {language === 'id' ? 'Hasil Kuis' : 'Quiz Results'}
       </h2>
 
-      <motion.div
-        initial={{ scale: 2, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1, rotate: -5 }}
-        transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.2 }}
-        className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-[8px] border-shu text-shu flex flex-col items-center justify-center bg-kinari-light shadow-sm mb-12 relative overflow-hidden"
-      >
-        <div className="absolute inset-0 border-[3px] border-shu opacity-60 m-2 rounded-full pointer-events-none"></div>
-        <span className="text-sm sm:text-base font-bold tracking-[0.3em] uppercase mb-2 mt-4">
-          {language === 'id' ? 'Nilai' : 'Grade'}
-        </span>
-        <span className="text-8xl sm:text-9xl font-serif font-black leading-none">{grade}</span>
-      </motion.div>
+      <div className="relative mb-12">
+        {/* Stiker Hina — muncul kalau pack Kotodama Burst aktif */}
+        <HinaResultSticker
+          score={score}
+          total={totalQuestions}
+          className="absolute bottom-0 -right-20 sm:-right-28 z-10"
+        />
+        <motion.div
+          initial={{ scale: 2, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1, rotate: -5 }}
+          transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.2 }}
+          className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-[8px] border-shu text-shu flex flex-col items-center justify-center bg-kinari-light shadow-sm relative overflow-hidden"
+        >
+          <div className="absolute inset-0 border-[3px] border-shu opacity-60 m-2 rounded-full pointer-events-none"></div>
+          <span className="text-sm sm:text-base font-bold tracking-[0.3em] uppercase mb-2 mt-4">
+            {language === 'id' ? 'Nilai' : 'Grade'}
+          </span>
+          <span className="text-8xl sm:text-9xl font-serif font-black leading-none">{grade}</span>
+        </motion.div>
+      </div>
 
       <div className="text-2xl sm:text-3xl font-serif text-sumi mb-12 font-bold tracking-widest border-b-[4px] border-sumi pb-4">
         {language === 'id' ? 'Benar' : 'Correct'}: <span className="text-ai">{score}</span> / {totalQuestions}

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HINA_GIFS, pickHinaGif, hinaGifForAnswer, hinaGifPaths, preloadHinaGifs } from './hinaGifs.js';
+import { HINA_GIFS, pickHinaGif, hinaGifForAnswer, hinaGifPaths, preloadHinaGifs, hinaResultGif, HINA_RESULT_PASS_PCT } from './hinaGifs.js';
 
 test('HINA_GIFS punya 4 correct & 4 wrong', () => {
   assert.equal(HINA_GIFS.correct.length, 4);
@@ -41,4 +41,22 @@ test('preloadHinaGifs: menyentuh semua path lewat loader (injectable)', () => {
   assert.equal(n, 8);
   assert.equal(seen.length, 8);
   assert.deepEqual(seen.sort(), hinaGifPaths().sort());
+});
+
+test('hinaResultGif: nilai bagus (>=80%) → GIF benar', () => {
+  assert.equal(HINA_RESULT_PASS_PCT, 80);
+  assert.equal(hinaResultGif(20, 20, () => 0), '/effects/HinaRight.webp');
+  assert.equal(hinaResultGif(16, 20, () => 0), '/effects/HinaRight.webp');  // tepat 80%
+  assert.equal(hinaResultGif(5, 5, () => 0.99), '/effects/HinaRight3.webp');
+});
+
+test('hinaResultGif: nilai kurang (<80%) → GIF salah (menyemangati)', () => {
+  assert.equal(hinaResultGif(15, 20, () => 0), '/effects/HinaWrong.webp');  // 75%
+  assert.equal(hinaResultGif(0, 20, () => 0.99), '/effects/HinaWrong3.webp');
+});
+
+test('hinaResultGif: total 0 / tak valid → null (hindari bagi nol)', () => {
+  assert.equal(hinaResultGif(0, 0), null);
+  assert.equal(hinaResultGif(3, 0), null);
+  assert.equal(hinaResultGif(0, -2), null);
 });
