@@ -210,7 +210,7 @@ export function EffectProvider({ children }) {
   const resetEffectStreak = useCallback(() => { streakRef.current = 0; }, []);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, active }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, active, fxKind: fx?.kind ?? null }}>
       {children}
       <EffectLayer fx={fx} drops={drops} visual={activeVisual} />
     </EffectContext.Provider>
