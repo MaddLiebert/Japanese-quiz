@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist, voiceFilePaths, hinaGifHoldMs, playClipFile } from './sfx.js';
+import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist, voiceFilePaths, hinaGifHoldMs, playClipFile, pickStreakClip, primeVoice } from './sfx.js';
 import { VOICES } from '../features/audio/voices.js';
 
 test('default tanpa pack: tidak ada voice (chime dasar)', () => {
@@ -116,4 +116,50 @@ test('playClipFile: aman di luar browser (tak melempar, kembalikan 0)', () => {
   assert.equal(playClipFile(''), 0);
   assert.equal(playClipFile(null), 0);
   assert.equal(playClipFile(undefined), 0);
+});
+
+test('pickStreakClip: 50 & 100 pakai klip khusus, sisanya klip umum', () => {
+  const f = VOICES.hina.files.streak;             // 6 klip
+  assert.equal(pickStreakClip(f, 7).index, 3);    // streak 50  → 「五十連続」
+  assert.equal(pickStreakClip(f, 12).index, 5);   // streak 100 → 「ひゃく」
+  for (const lvl of [1, 2, 3, 4, 5, 6, 8, 9, 10, 11]) {
+    assert.ok(![3, 5].includes(pickStreakClip(f, lvl, lvl).index),
+      `level ${lvl} tak boleh pakai klip khusus (五十連続/ひゃく)`);
+  }
+});
+
+test('pickStreakClip: rotasi TIDAK pernah mengulang klip sama berturut-turut', () => {
+  const f = VOICES.hina.files.streak;
+  let prev = null;
+  for (let c = 0; c < 12; c++) {
+    const { index } = pickStreakClip(f, 1, c);
+    assert.notEqual(index, prev, `cursor ${c} mengulang klip sebelumnya`);
+    prev = index;
+  }
+});
+
+test('pickStreakClip: daftar kosong / null → aman', () => {
+  assert.deepEqual(pickStreakClip([], 1, 0), { index: -1, path: null });
+  assert.deepEqual(pickStreakClip(null, 1, 0), { index: -1, path: null });
+  assert.deepEqual(pickStreakClip(undefined, 1, 0), { index: -1, path: null });
+});
+
+test('streakPlaylist: cursor menggeser klip streak (variatif, bukan sama terus)', () => {
+  const v = VOICES.hina;
+  const a = streakPlaylist(v, 1, () => 0, 0);
+  const b = streakPlaylist(v, 1, () => 0, 1);
+  assert.notDeepEqual(a, b, 'milestone berbeda harus bunyi klip berbeda');
+});
+
+test('primeVoice: aman tanpa fetch (node) → 0', () => {
+  assert.equal(primeVoice(VOICES.hina), 0);
+  assert.equal(primeVoice(null), 0);
+});
+
+test('primeVoice: fetcher inject → unduh tiap klip (buffer penuh)', () => {
+  const calls = [];
+  const fakeFetch = (p) => { calls.push(p); return Promise.resolve({ blob: () => Promise.resolve('x') }); };
+  const n = primeVoice({ files: { correct: ['/zzz/a.mp3'], wrong: [], streak: ['/zzz/b.mp3'] }, overlays: {} }, fakeFetch);
+  assert.equal(n, 2);
+  assert.deepEqual(calls.slice().sort(), ['/zzz/a.mp3', '/zzz/b.mp3']);
 });
