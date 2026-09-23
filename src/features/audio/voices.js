@@ -28,6 +28,20 @@ export const VOICES = {
   //   },
   //   synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   // },
+
+  // Pack #1 — suara Hina Chono (klip TTS). 4 correct / 3 wrong / 6 streak tier.
+  hina: {
+    files: {
+      correct: ['/voices/hina/correct_1.mp3', '/voices/hina/correct_2.mp3',
+                '/voices/hina/correct_3.mp3', '/voices/hina/correct_4.mp3'],
+      wrong:   ['/voices/hina/wrong_1.mp3',   '/voices/hina/wrong_2.mp3',
+                '/voices/hina/wrong_3.mp3'],
+      streak:  ['/voices/hina/streak_1.mp3',  '/voices/hina/streak_2.mp3',
+                '/voices/hina/streak_3.mp3',  '/voices/hina/streak_4.mp3',
+                '/voices/hina/streak_5.mp3',  '/voices/hina/streak_6.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
 };
 
 export const getVoice = (key) => VOICES[key] || VOICES.taiko;
