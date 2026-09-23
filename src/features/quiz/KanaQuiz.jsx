@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Volume2 } from "lucide-react";
 import { playDramaticAudio } from "../../utils/audio";
 import { useLanguage } from "../../context/LanguageContext";
+import { HinaCardFrame } from "../effects/HinaCardFrame";
 
 export function KanaQuiz({
   currentQuestion,
@@ -79,7 +80,8 @@ export function KanaQuiz({
           )}
         </motion.div>
 
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full max-w-lg">
+        <HinaCardFrame className="w-full max-w-lg">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full bg-kinari border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] p-4 sm:p-6 relative z-10">
           {options.map((option) => {
             const isThisSelected = answeredId === option.id;
             const isThisCorrect = option.id === currentQuestion.id;
@@ -122,7 +124,8 @@ export function KanaQuiz({
               </motion.button>
             );
           })}
-        </div>
+          </div>
+        </HinaCardFrame>
 
         {isAnswered && (
           <motion.div
