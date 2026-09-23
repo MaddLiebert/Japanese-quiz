@@ -34,12 +34,54 @@ export const feedbackFiles = (voice, kind, rng = Math.random) => {
   return out;
 };
 
+// Daftar SEMUA path milik satu voice (files + overlays) → dipakai untuk preload.
+export const voiceFilePaths = (voice) => {
+  if (!voice) return [];
+  const groups = [
+    voice.files?.correct, voice.files?.wrong, voice.files?.streak,
+    voice.overlays?.correct, voice.overlays?.wrong,
+  ];
+  const out = [];
+  for (const g of groups) {
+    if (Array.isArray(g)) for (const p of g) if (p && !out.includes(p)) out.push(p);
+  }
+  return out;
+};
+
 // ── Pemutar file mp3 (mode voice pack) ──────────────────────────────────────
+// Cache 1 objek <audio> per path + preload, supaya TIDAK fetch/decode ulang
+// tiap jawaban (penyebab suara telat). Elemen di-reuse → mulai instan.
+const audioCache = new Map();
+
+const getAudio = (path) => {
+  let el = audioCache.get(path);
+  if (!el) {
+    el = new Audio(path);
+    el.preload = 'auto';
+    el.volume = 0.9;
+    audioCache.set(path, el);
+    if (typeof el.load === 'function') el.load();   // warm-up decode
+  }
+  return el;
+};
+
+// Preload semua klip sebuah voice (dipanggil saat pack di-equip).
+export const preloadVoice = (voice) => {
+  if (typeof window === 'undefined') return 0;
+  const paths = voiceFilePaths(voice);
+  paths.forEach(getAudio);
+  return paths.length;
+};
+
 const playFile = (path) => {
   if (typeof window === 'undefined' || !path) return false;
-  const audio = new Audio(path);
-  audio.volume = 0.9;
-  audio.play().catch((err) => console.warn('Voice play error:', err));
+  try {
+    const el = getAudio(path);
+    el.currentTime = 0;                              // putar dari awal (reuse)
+    el.play().catch((err) => console.warn('Voice play error:', err));
+  } catch (err) {
+    console.warn('Voice play error:', err);
+  }
   return true;
 };
 

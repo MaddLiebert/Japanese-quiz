@@ -12,7 +12,8 @@ import Inventory from "./features/inventory/Inventory";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
 import { EffectProvider } from "./features/effects/EffectContext";
 import { getPack } from "./features/packs/packs";
-import { setActiveVoice } from "./utils/sfx";
+import { setActiveVoice, preloadVoice } from "./utils/sfx";
+import { getVoice } from "./features/audio/voices";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
@@ -82,6 +83,8 @@ function VoiceSync() {
   useEffect(() => {
     const pack = getPack(progress.activePack);
     setActiveVoice(pack?.voice || null);
+    // Preload klip pack aktif → hindari suara telat (fetch/decode ulang tiap jawaban).
+    preloadVoice(pack ? getVoice(pack.voice) : null);
   }, [progress.activePack]);
   return null;
 }
