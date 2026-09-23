@@ -25,23 +25,25 @@ test('pickFile deterministik dengan rng inject', () => {
   assert.equal(pickFile(['a', 'b', 'c'], () => 0.99), 'c');
 });
 
-test('voice hina: correct kosong (benar = chime dasar), 3 wrong / 6 streak', () => {
+test('voice hina: 4 correct / 3 wrong / 6 streak + overlay right/wrong', () => {
   const v = VOICES.hina;
   assert.ok(v, 'VOICES.hina harus ada');
-  assert.deepEqual(v.files.correct, [], 'klip correct sengaja tidak dipakai');
+  assert.equal(v.files.correct.length, 4);
   assert.equal(v.files.wrong.length, 3);
   assert.equal(v.files.streak.length, 6);
+  assert.deepEqual(v.overlays.correct, ['/voices/hina/rightanswer.mp3']);
+  assert.deepEqual(v.overlays.wrong, ['/voices/hina/wronganswer.mp3']);
 });
 
-test('semua file hina yang dipakai ada di /voices/hina/ dan path unik', () => {
+test('semua path hina unik & menunjuk ke /voices/hina/', () => {
+  const v = VOICES.hina;
   const all = [
-    ...VOICES.hina.files.correct,
-    ...VOICES.hina.files.wrong,
-    ...VOICES.hina.files.streak,
+    ...v.files.correct, ...v.files.wrong, ...v.files.streak,
+    ...v.overlays.correct, ...v.overlays.wrong,
   ];
-  assert.equal(all.length, 9);
-  assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
-  for (const p of all) assert.match(p, /^\/voices\/hina\/[a-z]+_\d+\.mp3$/);
+  assert.equal(all.length, 15);
+  assert.equal(new Set(all).size, 15, 'tidak boleh ada path duplikat');
+  for (const p of all) assert.match(p, /^\/voices\/hina\/[a-z0-9_]+\.mp3$/);
 });
 
 test('getVoice("hina") mengembalikan voice hina', () => {
