@@ -102,8 +102,8 @@ test('hinaGifHoldMs: ikuti durasi klip Hina (fallback + clamp)', () => {
   assert.equal(hinaGifHoldMs('wrong', 0), 2000);
   assert.equal(hinaGifHoldMs('streak', 0), 2800);
   assert.equal(hinaGifHoldMs('correct', 0), 1600);
-  // clamp: jangan kedip (<1200) & jangan nyangkut (>8000)
-  assert.equal(hinaGifHoldMs('wrong', 100), 1200);
+  // clamp: jangan kedip (<1600) & jangan nyangkut (>8000)
+  assert.equal(hinaGifHoldMs('wrong', 100), 1600);
   assert.equal(hinaGifHoldMs('wrong', 99999), 8000);
   // nilai tak valid → fallback
   assert.equal(hinaGifHoldMs('wrong', NaN), 2000);
