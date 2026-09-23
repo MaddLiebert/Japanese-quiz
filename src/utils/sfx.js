@@ -16,6 +16,12 @@ let activeVoiceKey = null;
 export const setActiveVoice = (key) => { activeVoiceKey = key || null; };
 export const getActiveVoiceKey = () => activeVoiceKey;
 
+// Jenis umpan balik suara untuk satu jawaban.
+// Voice Hina hanya dipakai di MILESTONE streak & saat SALAH.
+// Jawaban benar biasa → 'correct' (pakai suara dasar, bukan voice pack).
+export const answerFeedbackKind = (type, onMilestone = false) =>
+  (type === 'correct' && onMilestone) ? 'streak' : type;
+
 // ── Pemutar file mp3 (mode voice pack) ──────────────────────────────────────
 const playFile = (path) => {
   if (typeof window === 'undefined' || !path) return false;
@@ -135,11 +141,12 @@ const synthGong = (level = 0) => {
 
 // ── API publik (signature TIDAK berubah untuk 4 file pemanggil) ─────────────
 export const playCorrectSound = () => {
-  // Tanpa pack aktif → suara dasar (chime).
+  // Jawaban benar biasa → suara dasar (chime), BUKAN voice pack.
+  // Voice Hina hanya dipakai di milestone streak (playStreakSound).
   if (!activeVoiceKey) return synthChime();
   const voice = getVoice(activeVoiceKey);
   if (playFile(pickFile(voice.files?.correct))) return;
-  synthGong(0);
+  synthChime();
 };
 
 export const playWrongSound = () => {

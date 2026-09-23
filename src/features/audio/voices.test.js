@@ -25,22 +25,22 @@ test('pickFile deterministik dengan rng inject', () => {
   assert.equal(pickFile(['a', 'b', 'c'], () => 0.99), 'c');
 });
 
-test('voice hina terdaftar dengan 4 correct / 3 wrong / 6 streak', () => {
+test('voice hina: correct kosong (benar = chime dasar), 3 wrong / 6 streak', () => {
   const v = VOICES.hina;
   assert.ok(v, 'VOICES.hina harus ada');
-  assert.equal(v.files.correct.length, 4);
+  assert.deepEqual(v.files.correct, [], 'klip correct sengaja tidak dipakai');
   assert.equal(v.files.wrong.length, 3);
   assert.equal(v.files.streak.length, 6);
 });
 
-test('semua file hina ada di /voices/hina/ dan path unik', () => {
+test('semua file hina yang dipakai ada di /voices/hina/ dan path unik', () => {
   const all = [
     ...VOICES.hina.files.correct,
     ...VOICES.hina.files.wrong,
     ...VOICES.hina.files.streak,
   ];
-  assert.equal(all.length, 13);
-  assert.equal(new Set(all).size, 13, 'tidak boleh ada path duplikat');
+  assert.equal(all.length, 9);
+  assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
   for (const p of all) assert.match(p, /^\/voices\/hina\/[a-z]+_\d+\.mp3$/);
 });
 
