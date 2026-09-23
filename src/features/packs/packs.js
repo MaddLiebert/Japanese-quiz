@@ -56,13 +56,21 @@ export const getPack = (id) => PACKS.find((p) => p.id === id) || null;
 export const isPackReady = (pack) => Boolean(pack && pack.visual && pack.voice);
 
 // Undian gacha berbobot rarity. `rng` bisa di-inject untuk testing.
-export const rollPackId = (rng = Math.random) => {
-  const pool = PACKS.filter(isPackReady);
+// poolIds  — batasi undian ke daftar id pack tertentu (untuk BANNER EVENT).
+//            null = semua pack (perilaku lama, backward-compatible).
+// weights  — override bobot per rarity, mis. { special: 2, legendary: 8 }.
+//            null = pakai bobot global PACK_RARITY.
+export const rollPackId = (rng = Math.random, poolIds = null, weights = null) => {
+  const pool = PACKS.filter(
+    (p) => isPackReady(p) && (!poolIds || poolIds.includes(p.id))
+  );
   if (pool.length === 0) return null;
-  const total = pool.reduce((sum, p) => sum + (PACK_RARITY[p.rarity]?.weight ?? 1), 0);
+  const weightOf = (p) => weights?.[p.rarity] ?? PACK_RARITY[p.rarity]?.weight ?? 1;
+  const total = pool.reduce((sum, p) => sum + weightOf(p), 0);
+  if (total <= 0) return pool[0].id;
   let ticket = rng() * total;
   for (const pack of pool) {
-    ticket -= PACK_RARITY[pack.rarity]?.weight ?? 1;
+    ticket -= weightOf(pack);
     if (ticket <= 0) return pack.id;
   }
   return pool[pool.length - 1].id;
