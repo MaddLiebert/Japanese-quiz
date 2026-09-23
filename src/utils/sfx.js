@@ -272,14 +272,18 @@ export const streakTierIndex = (level = 0) => {
   return STREAK_TIER_BY_LEVEL[lvl - 1];
 };
 
-// Daftar file untuk milestone streak: base overlay (mis. rightanswer) + klip Hina tier.
-// Dua-duanya diputar BARENG. Kalau tidak ada klip streak → [] (pemanggil fallback synth).
+// Daftar file untuk milestone streak: HANYA klip voice Hina — sengaja TANPA base
+// SFX (mis. rightanswer) supaya yang terdengar benar-benar SUARA HINA, bukan bunyi
+// generik. Kalau tidak ada klip streak → [] (pemanggil fallback synth).
 // Klip streak dipilih lewat pickStreakClip (50 & 100 tetap klip khusus, sisanya
 // ROTASI lewat kandidat umum pakai `cursor` → tidak pernah mengulang klip sama).
-// Kandidat umum: 0「いい調子」1「すごいすごい」2「止まらないね」4「もう誰も止められない」.
+// Kandidat umum: 0「いい調子」2「止まらないね」4「もう誰も止められない」.
 // Sengaja BUKAN [0,0,1,1,2,2,...] (itu sebabnya dulu milestone 3 & 5 bunyi sama).
+// Indeks 1 (streak_2 =「すごいすごい」) SENGAJA tidak ikut rotasi: klip itu dipakai
+// sebagai sorakan di layar hasil, jadi kalau ikut rotasi akan terdengar DUA KALI
+// (sekali saat milestone, sekali lagi di layar hasil).
 export const STREAK_SPECIAL_INDEX = { 3: 3, 5: 5 };
-export const STREAK_COMMON_POOL = [0, 1, 2, 4];
+export const STREAK_COMMON_POOL = [0, 2, 4];
 
 export const pickStreakClip = (streakFiles, level = 0, cursor = 0) => {
   if (!Array.isArray(streakFiles) || streakFiles.length === 0) return { index: -1, path: null };
@@ -300,15 +304,12 @@ export const pickStreakClip = (streakFiles, level = 0, cursor = 0) => {
 
 let streakClipCursor = 0;   // rotasi klip streak antar milestone
 
-export const streakPlaylist = (voice, level = 0, rng = Math.random, cursor = streakClipCursor) => {
+// Milestone = HANYA klip voice Hina (tanpa base generik) → bunyinya suara Hina.
+export const streakPlaylist = (voice, level = 0, cursor = streakClipCursor) => {
   const streakFiles = voice?.files?.streak;
   if (!Array.isArray(streakFiles) || streakFiles.length === 0) return [];
-  const out = [];
-  const ov = pickFile(voice?.overlays?.correct, rng);   // base jawaban benar
-  if (ov) out.push(ov);
   const clip = pickStreakClip(streakFiles, level, cursor).path;
-  if (clip) out.push(clip);
-  return out;
+  return clip ? [clip] : [];
 };
 
 export const playStreakSound = (level = 0) => {

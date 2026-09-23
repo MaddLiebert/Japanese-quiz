@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
 import { getPack } from '../packs/packs';
@@ -24,10 +24,14 @@ export function HinaResultSticker({ score = 0, total = 0, className = '' }) {
   const cheer = isHina && isHinaCheerScore(score, total);
 
   // Sorakan hanya untuk nilai bagus. Elemen <audio> di-cache per path (sfx.js),
-  // jadi panggilan ganda (StrictMode dev) cuma me-restart klip yang sama → tidak
-  // dobel-echo, cukup diputar sekali dari awal.
+  // jadi panggilan ganda cuma me-restart klip yang sama → tidak dobel-echo.
+  // Guard ref: React StrictMode (dev) menjalankan effect 2× → tanpa ini klip
+  // sorakan di-play 2× (terdengar seperti "suara sama dua kali").
+  const cheeredRef = useRef(false);
   useEffect(() => {
-    if (cheer) playClipFile(HINA_CHEER_SOUND);
+    if (!cheer || cheeredRef.current) return;
+    cheeredRef.current = true;
+    playClipFile(HINA_CHEER_SOUND);
   }, [cheer]);
 
   if (!src) return null;

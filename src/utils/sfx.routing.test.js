@@ -62,19 +62,16 @@ test('feedbackFiles: voice kosong / taiko → [] (fallback synth)', () => {
   assert.deepEqual(feedbackFiles({ files: { correct: [] } }, 'correct'), []);
 });
 
-test('streakPlaylist: base rightanswer + klip Hina streak diputar BARENG', () => {
+test('streakPlaylist: HANYA klip voice Hina (tanpa base generik)', () => {
   const v = VOICES.hina;
-  // milestone → base rightanswer (overlay) + klip streak tier yang sesuai
-  assert.deepEqual(streakPlaylist(v, 1, () => 0),
-    ['/voices/hina/rightanswer.mp3', '/voices/hina/streak_1.mp3']);   // level 1 → tier 0
-  assert.deepEqual(streakPlaylist(v, 7, () => 0),
-    ['/voices/hina/rightanswer.mp3', '/voices/hina/streak_4.mp3']);   // level 7 → tier 3 (50)
-  assert.deepEqual(streakPlaylist(v, 12, () => 0),
-    ['/voices/hina/rightanswer.mp3', '/voices/hina/streak_6.mp3']);   // level 12 → tier 5 (100)
+  // milestone → klip streak Hina saja (base SFX generik TIDAK ikut, biar jelas Hina)
+  assert.deepEqual(streakPlaylist(v, 1, 0), ['/voices/hina/streak_1.mp3']);   // level 1 → tier 0
+  assert.deepEqual(streakPlaylist(v, 7, 0), ['/voices/hina/streak_4.mp3']);   // level 7 → tier 3 (50)
+  assert.deepEqual(streakPlaylist(v, 12, 0), ['/voices/hina/streak_6.mp3']);  // level 12 → tier 5 (100)
 });
 
-test('streakPlaylist: tanpa overlay / voice kosong → tetap aman', () => {
-  assert.deepEqual(streakPlaylist({ files: { streak: ['/s1.mp3'] } }, 1, () => 0), ['/s1.mp3']);
+test('streakPlaylist: voice kosong → [] (fallback synth)', () => {
+  assert.deepEqual(streakPlaylist({ files: { streak: ['/s1.mp3'] } }, 1, 0), ['/s1.mp3']);
   assert.deepEqual(streakPlaylist(VOICES.taiko, 1), []);   // streak kosong → []
 });
 
@@ -138,6 +135,15 @@ test('pickStreakClip: rotasi TIDAK pernah mengulang klip sama berturut-turut', (
   }
 });
 
+test('pickStreakClip: klip sorakan (streak_2 / すごいすごい) TIDAK ikut rotasi streak', () => {
+  const f = VOICES.hina.files.streak;
+  // streak_2 dipakai sebagai sorakan layar hasil → kalau ikut rotasi akan dobel.
+  for (let c = 0; c < 12; c++) {
+    assert.notEqual(pickStreakClip(f, 1, c).index, 1,
+      'streak_2 (sorakan) tak boleh muncul di rotasi milestone');
+  }
+});
+
 test('pickStreakClip: daftar kosong / null → aman', () => {
   assert.deepEqual(pickStreakClip([], 1, 0), { index: -1, path: null });
   assert.deepEqual(pickStreakClip(null, 1, 0), { index: -1, path: null });
@@ -146,8 +152,8 @@ test('pickStreakClip: daftar kosong / null → aman', () => {
 
 test('streakPlaylist: cursor menggeser klip streak (variatif, bukan sama terus)', () => {
   const v = VOICES.hina;
-  const a = streakPlaylist(v, 1, () => 0, 0);
-  const b = streakPlaylist(v, 1, () => 0, 1);
+  const a = streakPlaylist(v, 1, 0);
+  const b = streakPlaylist(v, 1, 1);
   assert.notDeepEqual(a, b, 'milestone berbeda harus bunyi klip berbeda');
 });
 
