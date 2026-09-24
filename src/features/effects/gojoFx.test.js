@@ -10,6 +10,7 @@ import {
   gojoSphereAnim, nextGojoBalls, GOJO_BALLS_EMPTY,
   gojoBallLabel, gojoTensionLines, gojoCharge,
   darkenHex, gojoBallVignette,
+  gojoBallLayout, GOJO_BALL_BREAKPOINT,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -474,4 +475,65 @@ test('gojoBallLabel: teks kanji makin greget (fontScale & stroke tebal)', () => 
   assert.ok(ao.fontScale >= 0.6, 'teks harus lebih besar');
   assert.ok(ao.strokeWidth >= 4, 'outline tinta harus tebal');
   assert.equal(typeof ao.glow, 'string');
+});
+
+// ── Layout bola responsif (fix HP: kartu jawaban ketutupan) ─────────────────
+// Permintaan user: "di hp kan sempit tuh, tadi gw tes ketutupan si card
+// jawabannya". Solusi: di layar sempit bola NAIK ke sudut atas + dikecilkan.
+
+test('gojoBallLayout: desktop = tepi tengah, HP = sudut atas + lebih kecil', () => {
+  const d = gojoBallLayout('ao', 1280, 800);
+  assert.equal(d.mobile, false);
+  assert.equal(d.size, 128);
+  assert.equal(d.anchorYVh, 0, 'desktop: bola sejajar tengah');
+  assert.ok(d.anchorXVw > 0, 'ao di kanan');
+
+  const m = gojoBallLayout('ao', 390, 844);
+  assert.equal(m.mobile, true);
+  assert.ok(m.size < d.size, 'HP: bola lebih kecil');
+  assert.ok(m.anchorYVh < 0, 'HP: bola naik ke ATAS');
+  assert.ok(m.anchorXVw > 0, 'HP ao tetap di kanan');
+  // bola tetap di dalam layar (tidak keluar tepi)
+  const cx = 390 / 2 + (m.anchorXVw / 100) * 390;
+  assert.ok(cx + m.size / 2 <= 390, 'bola tidak keluar tepi kanan');
+  assert.ok(cx - m.size / 2 >= 0, 'bola tidak keluar tepi kiri');
+  // bola ada di area ATAS layar (di atas kartu jawaban di tengah)
+  const cy = 844 / 2 + (m.anchorYVh / 100) * 844;
+  assert.ok(cy + m.size / 2 < 844 * 0.35, 'bola harus di sepertiga atas layar');
+
+  const aka = gojoBallLayout('aka', 390, 844);
+  assert.ok(aka.anchorXVw < 0, 'HP aka di kiri');
+  assert.ok(aka.anchorYVh < 0, 'HP aka juga naik');
+
+  assert.equal(gojoBallLayout('murasaki', 390, 844), null);
+  assert.equal(gojoBallLayout(null, 390, 844), null);
+  assert.equal(GOJO_BALL_BREAKPOINT, 768);
+});
+
+test('gojoBallLayout: di HP bola tidak menutupi kartu jawaban (max-w-lg di tengah)', () => {
+  for (const [vw, vh] of [[390, 844], [360, 780], [430, 932]]) {
+    const cardW = Math.min(512, vw - 32);          // kartu jawaban (max-w-lg, px-4)
+    const cardLeft = vw / 2 - cardW / 2;
+    const cardRight = vw / 2 + cardW / 2;
+    for (const t of ['ao', 'aka']) {
+      const L = gojoBallLayout(t, vw, vh);
+      const cx = vw / 2 + (L.anchorXVw / 100) * vw;
+      const cy = vh / 2 + (L.anchorYVh / 100) * vh;
+      const left = cx - L.size / 2, right = cx + L.size / 2, bottom = cy + L.size / 2;
+      const overlapsX = right > cardLeft && left < cardRight;
+      // kartu di tengah: tepi atasnya minimal di ~22% vh → bola harus di atas itu
+      const cardTop = vh * 0.22;
+      const covers = overlapsX && bottom > cardTop;
+      assert.ok(!covers, `${t} @${vw}x${vh}: bola menutupi kartu (bottom=${bottom.toFixed(0)} > cardTop=${cardTop.toFixed(0)})`);
+    }
+  }
+});
+
+test('gojoTensionLines: terima focus kustom (HP: memancar dari sudut atas)', () => {
+  const lines = gojoTensionLines('ao', 1, () => 0.5, 24, { x: 80, y: 11 });
+  assert.equal(lines.length, 24);
+  for (const l of lines) {
+    assert.ok(l.from[0] >= 50, 'ao tetap di sisi kanan');
+    assert.ok(l.from[1] < 30, 'fokus di area atas');
+  }
 });
