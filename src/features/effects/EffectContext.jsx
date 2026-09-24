@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
-import { playCorrectSound, playWrongSound, playStreakSound, playGojoAnswer, answerFeedbackKind, hinaGifHoldMs } from '../../utils/sfx';
+import { playCorrectSound, playWrongSound, playStreakSound, playGojoSound, answerFeedbackKind, hinaGifHoldMs } from '../../utils/sfx';
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
@@ -179,10 +179,10 @@ export function EffectProvider({ children }) {
     // (call site memanggil triggerEffect SEBELUM streak naik).
     // play*Sound mengembalikan durasi klip (ms) → GIF Hina tampil selama suaranya.
     const feedback = answerFeedbackKind(type, onMilestone);
-    // Pack Gojo: SFX teknik (ao→aka→murasaki→domain) + voice Gojo, diputar BARENG.
+    // Pack Gojo: suara mengikuti teknik visual (ao→aka→murasaki→domain).
     // Teknik ditentukan fungsi yang SAMA dengan efek visual → suara & visual sinkron.
     const clipMs = activeVisual === 'gojo'
-      ? playGojoAnswer(type, gojoTechniqueFor(type, streakRef.current))
+      ? playGojoSound(gojoTechniqueFor(type, streakRef.current))
       : feedback === 'streak' ? playStreakSound(streakSoundLevel(streakRef.current))
         : feedback === 'wrong' ? playWrongSound()
           : playCorrectSound();
