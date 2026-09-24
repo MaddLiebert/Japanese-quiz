@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
-  gojoTechniqueFor, GOJO_STYLE, gojoParticles, gojoCrackCount,
+  gojoTechniqueFor, GOJO_STYLE, gojoParticles, gojoCrackCount, gojoSpheres,
 } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -40,6 +40,7 @@ export function GojoBurst({ fx, kind }) {
   const [particles] = useState(() =>
     technique ? gojoParticles(technique, fx?.id || 1) : []
   );
+  const spheres = technique ? gojoSpheres(technique) : [];
 
   // Salah: wash merah lembut, TANPA retak (retak = ciri streak saja).
   if (!technique) {
@@ -150,6 +151,86 @@ export function GojoBurst({ fx, kind }) {
           </motion.div>
         ))}
 
+        {/* ── Layer 2a — BOLA TEKNIK ────────────────────────────────────────
+            ao  : bola BIRU melesat dari KANAN ke tengah
+            aka : bola MERAH melesat dari KIRI ke tengah
+            茈  : dua bola (biru kanan + merah kiri) TABRAKAN di tengah → ungu */}
+        {spheres.map((b) => (
+          <motion.div
+            key={`sphere-${b.id}`}
+            className="absolute left-1/2 top-1/2 rounded-full"
+            style={{
+              width: b.size,
+              height: b.size,
+              marginLeft: -b.size / 2,
+              marginTop: -b.size / 2,
+              background: `radial-gradient(circle at 34% 28%, #ffffff 0%, ${b.color} 38%, ${b.color} 66%, rgba(0,0,0,0.9) 100%)`,
+              boxShadow: `0 0 36px ${b.color}, 0 0 72px ${b.color}77`,
+              willChange: 'transform, opacity',
+            }}
+            initial={reduced ? { x: 0, opacity: 1 } : { x: `${b.fromVw}vw`, opacity: 0, scale: 0.55 }}
+            animate={
+              reduced
+                ? { x: 0, opacity: 0 }
+                : { x: 0, opacity: [0, 1, 1, 0], scale: [0.55, 1, 1, 1.15] }
+            }
+            transition={
+              reduced
+                ? { duration: 0 }
+                : {
+                  x: { duration: b.dur, delay: b.delay, ease: [0.16, 1, 0.3, 1] },
+                  opacity: { duration: b.dur, delay: b.delay, times: [0, 0.12, 0.72, 1], ease: 'easeOut' },
+                  scale: { duration: b.dur, delay: b.delay, times: [0, 0.12, 0.72, 1], ease: 'easeOut' },
+                }
+            }
+          />
+        ))}
+
+        {/* ── Tabrakan 茈: ledakan bola ungu + shockwave di titik tabrakan ── */}
+        {technique === 'murasaki' && (
+          <>
+            <motion.div
+              key={`mura-core-${fx.id}`}
+              className="absolute left-1/2 top-1/2 rounded-full"
+              style={{
+                width: 132,
+                height: 132,
+                marginLeft: -66,
+                marginTop: -66,
+                background: `radial-gradient(circle at 40% 35%, #ffffff 0%, ${GOJO_STYLE.murasaki.color} 42%, #4a0072 78%, #000000 100%)`,
+                boxShadow: `0 0 70px ${GOJO_STYLE.murasaki.color}, 0 0 140px ${GOJO_STYLE.murasaki.color}88`,
+                willChange: 'transform, opacity',
+              }}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={
+                reduced
+                  ? { scale: 1, opacity: 1 }
+                  : { scale: [0, 0, 1.5, 2.1], opacity: [0, 0, 1, 0] }
+              }
+              transition={{ duration: reduced ? 0 : 1.0, times: [0, 0.5, 0.66, 1], ease: 'easeOut' }}
+            />
+            <motion.div
+              key={`mura-ring-${fx.id}`}
+              className="absolute left-1/2 top-1/2 rounded-full"
+              style={{
+                width: 132,
+                height: 132,
+                marginLeft: -66,
+                marginTop: -66,
+                border: `5px solid ${GOJO_STYLE.murasaki.color}`,
+                willChange: 'transform, opacity',
+              }}
+              initial={{ scale: 0.4, opacity: 0 }}
+              animate={
+                reduced
+                  ? { scale: 0.4, opacity: 0 }
+                  : { scale: [0.4, 0.4, 4], opacity: [0, 0, 0.9, 0] }
+              }
+              transition={{ duration: reduced ? 0 : 1.15, times: [0, 0.5, 0.62, 1], ease: 'easeOut' }}
+            />
+          </>
+        )}
+
         {/* ── Layer 2 — PARTIKEL (hisap / ledak / spiral) ─────────────────── */}
         {particles.map((p) => {
           const dx = Math.cos(p.angle) * p.dist;
@@ -221,10 +302,12 @@ export function GojoBurst({ fx, kind }) {
           </svg>
         )}
 
-        {/* ── Layer 5 — TEKS TEKNIK (chromatic aberration via text-shadow) ── */}
+        {/* ── Layer 5 — TEKS TEKNIK (chromatic aberration via text-shadow) ──
+            Dikecilkan & digeser ke ATAS supaya BOLA di tengah (titik tabrakan 茈)
+            jadi bintang utamanya — bola tidak boleh ketutup teks. */}
         <div
           className="absolute left-0 right-0 flex justify-center"
-          style={{ top: isDomain ? '40%' : '46%' }}
+          style={{ top: '9%' }}
         >
           <motion.span
             className="font-serif font-black select-none"
@@ -237,8 +320,8 @@ export function GojoBurst({ fx, kind }) {
             }}
             style={{
               fontSize: isDomain
-                ? 'clamp(48px, 11vw, 132px)'
-                : 'clamp(64px, 15vw, 190px)',
+                ? 'clamp(40px, 7vw, 92px)'
+                : 'clamp(56px, 10vw, 140px)',
               color: st.color,
               // Chromatic aberration (khas Gojo) + glow. text-shadow, bukan drop-shadow.
               textShadow: `2px 0 #ff1744, -2px 0 #2979ff, 0 0 18px ${st.color}`,
@@ -249,11 +332,11 @@ export function GojoBurst({ fx, kind }) {
           </motion.span>
         </div>
 
-        {/* Teks kecil 領域展開 saat domain (mengunci ke 無量空処 di atas) */}
+        {/* Teks kecil 領域展開 saat domain (di bawah, tidak ganggu bola) */}
         {isDomain && (
           <motion.div
             className="absolute left-0 right-0 flex justify-center text-kinari-light"
-            style={{ top: '28%' }}
+            style={{ top: '26%' }}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reduced ? 0 : 0.35, duration: reduced ? 0 : 0.4 }}

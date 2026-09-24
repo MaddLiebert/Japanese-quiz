@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  gojoTechniqueFor, isGojoMilestone, gojoCrackCount, gojoParticles, GOJO_STYLE,
+  gojoTechniqueFor, isGojoMilestone, gojoCrackCount, gojoParticles, GOJO_STYLE, gojoSpheres,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -88,4 +88,42 @@ test('GOJO_STYLE punya warna & kanji untuk tiap teknik', () => {
   assert.equal(GOJO_STYLE.aka.kanji, '赫');
   assert.equal(GOJO_STYLE.murasaki.kanji, '茈');
   assert.equal(GOJO_STYLE.domain.kanji, '無量空処');
+});
+
+// ── Bola (permintaan user: ao dari kanan, aka dari kiri, murasaki tabrakan) ──
+
+test('gojoSpheres: ao = 1 bola dari KANAN menuju tengah', () => {
+  const s = gojoSpheres('ao');
+  assert.equal(s.length, 1);
+  assert.ok(s[0].fromVw > 0, 'ao harus datang dari kanan (fromVw > 0)');
+  assert.equal(s[0].toVw, 0, 'ao berakhir di tengah');
+});
+
+test('gojoSpheres: aka = 1 bola dari KIRI menuju tengah', () => {
+  const s = gojoSpheres('aka');
+  assert.equal(s.length, 1);
+  assert.ok(s[0].fromVw < 0, 'aka harus datang dari kiri (fromVw < 0)');
+  assert.equal(s[0].toVw, 0, 'aka berakhir di tengah');
+});
+
+test('gojoSpheres: murasaki = DUA bola (kanan + kiri) tabrakan di tengah', () => {
+  const s = gojoSpheres('murasaki');
+  assert.equal(s.length, 2);
+  assert.equal(s.filter((b) => b.fromVw > 0).length, 1, 'satu dari kanan');
+  assert.equal(s.filter((b) => b.fromVw < 0).length, 1, 'satu dari kiri');
+  for (const b of s) assert.equal(b.toVw, 0, 'semua berakhir di tengah (titik tabrakan)');
+});
+
+test('gojoSpheres: warna bola = warna kanon (ao biru, aka merah)', () => {
+  assert.equal(gojoSpheres('ao')[0].color, GOJO_STYLE.ao.color);
+  assert.equal(gojoSpheres('aka')[0].color, GOJO_STYLE.aka.color);
+  const mura = gojoSpheres('murasaki');
+  assert.equal(mura.find((b) => b.id === 'ao').color, GOJO_STYLE.ao.color);
+  assert.equal(mura.find((b) => b.id === 'aka').color, GOJO_STYLE.aka.color);
+});
+
+test('gojoSpheres: domain & teknik lain tidak pakai bola', () => {
+  assert.deepEqual(gojoSpheres('domain'), []);
+  assert.deepEqual(gojoSpheres('domain_zenith'), []);
+  assert.deepEqual(gojoSpheres(null), []);
 });
