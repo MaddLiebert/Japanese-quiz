@@ -42,6 +42,7 @@ export const voiceFilePaths = (voice) => {
   const groups = [
     voice.files?.correct, voice.files?.wrong, voice.files?.streak,
     voice.overlays?.correct, voice.overlays?.wrong,
+    voice.technique ? Object.values(voice.technique) : null,
   ];
   const out = [];
   for (const g of groups) {
@@ -404,8 +405,44 @@ export const GOJO_TONES = {
 
 export const gojoSoundParams = (technique) => GOJO_TONES[technique] || null;
 
-// Pemutar (butuh AudioContext; tidak dites di node). teknik null (jawaban salah) → thud.
-export const playGojoSound = (technique) => {
+// Daftar file untuk SATU jawaban Gojo: SFX teknik + klip voice, diputar BARENG.
+//   benar (kind='correct'): [SFX teknik (ao/aka/murasaki/domain), voice correct]
+//   salah (kind='wrong')  : [voice wrong] saja (teknik null → tak ada SFX)
+// rng bisa di-inject untuk test. Path yang null otomatis dibuang.
+export const gojoAnswerFiles = (kind, technique, voice = getVoice('gojo'), rng = Math.random) => {
+  const out = [];
+  if (kind === 'correct') {
+    const tech = gojoTechniqueFile(technique, voice);
+    if (tech) out.push(tech);
+    const clip = pickFile(voice?.files?.correct, rng);
+    if (clip) out.push(clip);
+  } else {
+    const clip = pickFile(voice?.files?.wrong, rng);
+    if (clip) out.push(clip);
+  }
+  return out;
+};
+
+// Putar SEMUA file jawaban Gojo bareng; kembalikan durasi klip terpanjang (ms).
+export const playGojoAnswer = (kind, technique, voice = activeVoiceKey ? getVoice(activeVoiceKey) : getVoice('gojo')) => {
+  const files = gojoAnswerFiles(kind, technique, voice);
+  if (files.length) return playFiles(files);
+  // tak ada file (mis. aset belum ada) → fallback: synth teknik / thud.
+  if (kind === 'correct') return playGojoSound(technique, voice);
+  synthThud();
+  return 0;
+};
+
+// Path file SFX teknik Gojo dari registry voice (default: VOICES.gojo).
+// teknik null/tak dikenal → null.
+export const gojoTechniqueFile = (technique, voice = getVoice('gojo')) =>
+  (voice && voice.technique && voice.technique[technique]) || null;
+
+// Putar SFX teknik Gojo: utamakan FILE mp3 asli (public/voices/gojo/);
+// kalau file tak ada → fallback synth (GOJO_TONES). Aman di node (→0).
+export const playGojoSound = (technique, voice = activeVoiceKey ? getVoice(activeVoiceKey) : getVoice('gojo')) => {
+  const file = gojoTechniqueFile(technique, voice);
+  if (file) return playFiles([file]);
   const p = gojoSoundParams(technique);
   if (!p) { synthThud(); return 0; }
   const ctx = initAudioContext();
