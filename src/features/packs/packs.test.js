@@ -2,14 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PACKS, PACK_RARITY, getPack, isPackReady, rollPackId } from './packs.js';
 
-test('PACKS berisi 6 pack dan semuanya ready', () => {
-  assert.equal(PACKS.length, 6);
-  assert.equal(PACKS.filter(isPackReady).length, 6);
+test('PACKS berisi 7 pack dan semuanya ready', () => {
+  assert.equal(PACKS.length, 7);
+  assert.equal(PACKS.filter(isPackReady).length, 7);
 });
 
 test('setiap pack punya id unik & field wajib', () => {
   const ids = new Set(PACKS.map((p) => p.id));
-  assert.equal(ids.size, 6);
+  assert.equal(ids.size, 7);
   for (const p of PACKS) {
     assert.ok(p.id && p.name && p.rarity && p.visual && p.voice, `pack ${p.id} kurang field`);
     assert.ok(PACK_RARITY[p.rarity], `rarity ${p.rarity} tidak dikenal`);
@@ -54,7 +54,7 @@ test('rollPackId selalu mengembalikan id valid', () => {
 
 test('rollPackId deterministik dengan rng inject', () => {
   assert.equal(rollPackId(() => 0), 'kotodama_burst');      // ticket 0 → pack pertama
-  assert.equal(rollPackId(() => 0.999), 'pack_06');          // ticket ~max → pack terakhir
+  assert.equal(rollPackId(() => 0.999), 'pack_07');          // ticket ~max → pack terakhir
 });
 
 test('rollPackId menghormati bobot rarity (legendary lebih jarang dari common)', () => {
@@ -120,4 +120,23 @@ test('rollPackId tanpa weights → fallback ke bobot global PACK_RARITY', () => 
   }
   // global: legendary 20, common 50 → common harus lebih sering (~71%)
   assert.ok(tally.pack_02 > tally.kotodama_burst, 'common harus lebih sering dari legendary');
+});
+
+// ── Fase 2 (Gojo): tier SPECIAL + pack_07 ────────────────────────────────────
+
+test('PACK_RARITY punya tier special (bobot 2) & bobot total pool = 100', () => {
+  assert.equal(PACK_RARITY.special.weight, 2);
+  const total = PACKS.reduce((s, p) => s + PACK_RARITY[p.rarity].weight, 0);
+  assert.equal(total, 100, 'per-pack weight harus total 100');
+});
+
+test('pack_07 = Gojo Satoru, rarity special, visual/voice gojo', () => {
+  const p = getPack('pack_07');
+  assert.ok(p, 'pack_07 harus ada');
+  assert.equal(p.rarity, 'special');
+  assert.equal(p.visual, 'gojo');
+  assert.equal(p.voice, 'gojo');
+  assert.equal(p.name, 'Gojo Satoru');
+  assert.equal(p.kanji, '五条悟');
+  assert.equal(p.icon, '🟣');
 });

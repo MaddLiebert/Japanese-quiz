@@ -49,3 +49,13 @@ test('semua path hina unik & menunjuk ke /voices/hina/', () => {
 test('getVoice("hina") mengembalikan voice hina', () => {
   assert.equal(getVoice('hina'), VOICES.hina);
 });
+
+test('voice gojo ada, dummy dulu (files kosong → fallback synth)', () => {
+  const v = VOICES.gojo;
+  assert.ok(v, 'VOICES.gojo harus ada');
+  assert.deepEqual(v.files.correct, []);
+  assert.deepEqual(v.files.wrong, []);
+  assert.deepEqual(v.files.streak, []);
+  assert.equal(v.synth.correct, 'gong');
+  assert.equal(getVoice('gojo'), VOICES.gojo);
+});

@@ -10,6 +10,7 @@ const RARITY_STYLE = {
   common:    { bg: 'bg-kinari-light', text: 'text-sumi',         border: 'border-sumi' },
   rare:      { bg: 'bg-ai',           text: 'text-kinari-light', border: 'border-sumi' },
   legendary: { bg: 'bg-shu',          text: 'text-kinari-light', border: 'border-sumi' },
+  special:   { bg: 'bg-[#9c27b0]',    text: 'text-kinari-light', border: 'border-sumi' },
 };
 
 export function Inventory() {

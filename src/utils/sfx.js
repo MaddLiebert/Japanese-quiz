@@ -333,11 +333,13 @@ export function reelTickParams() {
 }
 
 export function fanfareParams(rarity = 'common') {
-  const notes = rarity === 'legendary'
-    ? [523.25, 659.25, 783.99, 1046.5]   // C5 E5 G5 C6
-    : rarity === 'rare'
-      ? [523.25, 659.25, 783.99]         // C5 E5 G5
-      : [523.25, 659.25];                // C5 E5
+  const notes = rarity === 'special'
+    ? [523.25, 659.25, 783.99, 1046.5, 1318.51]   // C5 E5 G5 C6 E6
+    : rarity === 'legendary'
+      ? [523.25, 659.25, 783.99, 1046.5]          // C5 E5 G5 C6
+      : rarity === 'rare'
+        ? [523.25, 659.25, 783.99]                // C5 E5 G5
+        : [523.25, 659.25];                       // C5 E5
   return { notes, dur: 0.18, gap: 0.12, gain: 0.5 };
 }
 

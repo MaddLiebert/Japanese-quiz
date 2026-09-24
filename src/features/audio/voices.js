@@ -50,6 +50,13 @@ export const VOICES = {
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
+
+  // Pack #7 — Gojo Satoru. DUMMY dulu: synth dasar (files kosong → fallback).
+  // Aset voice menyusul di public/voices/gojo/; efek suara 蒼→赫→茈 menyusul.
+  gojo: {
+    files: { correct: [], wrong: [], streak: [] },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
 };
 
 export const getVoice = (key) => VOICES[key] || VOICES.taiko;
