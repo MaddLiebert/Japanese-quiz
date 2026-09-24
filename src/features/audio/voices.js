@@ -51,10 +51,25 @@ export const VOICES = {
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
 
-  // Pack #7 — Gojo Satoru. DUMMY dulu: synth dasar (files kosong → fallback).
-  // Aset voice menyusul di public/voices/gojo/; efek suara 蒼→赫→茈 menyusul.
+  // Pack #7 — Gojo Satoru. Aset asli terpasang (10 mp3 di public/voices/gojo/).
+  //   files.correct : 2 klip voice 「よくできました」「当然だね」 → bunyi tiap jawaban BENAR
+  //   files.wrong   : 3 klip 「kalah」 → bunyi tiap jawaban SALAH (rotasi acak)
+  //   files.streak  : KOSONG → milestone di-route lewat `technique` (bukan playlist Hina)
+  //   technique     : SFX teknik 蒼→赫→茈→領域展開→茈(zenith), dipilih per teknik
+  //                   (lihat gojoTechniqueFile di src/utils/sfx.js)
   gojo: {
-    files: { correct: [], wrong: [], streak: [] },
+    files: {
+      correct: ['/voices/gojo/correct_1.mp3', '/voices/gojo/correct_2.mp3'],
+      wrong:   ['/voices/gojo/wrong_1.mp3',   '/voices/gojo/wrong_2.mp3', '/voices/gojo/wrong_3.mp3'],
+      streak:  [],
+    },
+    technique: {
+      ao:            '/voices/gojo/ao.mp3',
+      aka:           '/voices/gojo/aka.mp3',
+      murasaki:      '/voices/gojo/murasaki.mp3',
+      domain:        '/voices/gojo/ryoiki_tenkai.mp3',
+      domain_zenith: '/voices/gojo/hollow_purple.mp3',
+    },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
 };
