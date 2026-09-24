@@ -239,8 +239,9 @@ function GojoVignette({ tech, explode, reduced, layout }) {
 // 集中線 ketegangan memancar dari sisi bola (ao kanan / aka kiri).
 // Digambar di layer (bukan di dalam bola) supaya garis bisa keluar dari bola.
 // focus = posisi bola (0..100); di HP fokusnya di sudut atas.
-function GojoTension({ tech, seed, reduced, focus }) {
-  const [lines] = useState(() => gojoTensionLines(tech, seed, Math.random, 24, focus));
+// maxY = batas bawah garis (0..100) supaya tidak turun ke area kartu jawaban.
+function GojoTension({ tech, seed, reduced, focus, maxY }) {
+  const [lines] = useState(() => gojoTensionLines(tech, seed, Math.random, 24, focus, maxY));
   if (!lines.length) return null;
   const color = GOJO_STYLE[tech].color;
   return (
@@ -291,14 +292,16 @@ export function GojoSpheres({ balls, explode = false, seed = 1, reduced }) {
   const layoutAka = gojoBallLayout('aka', vp.w, vp.h);
   // Titik fokus 集中線 (ruang 0..100 viewport) = posisi bola sebenarnya.
   const focusOf = (layout) => ({ x: 50 + layout.anchorXVw, y: 50 + layout.anchorYVh });
+  // Di HP: batasi garis agar tetap di area atas (tidak turun ke kartu jawaban).
+  const maxY = layoutAo.mobile ? 24 : null;
 
   return (
     <div className="absolute inset-0 overflow-hidden">
       {/* latar menggelap (paling belakang) — warna lebih gelap dari bola */}
       {balls.ao && <GojoVignette key="v-ao" tech="ao" explode={explode} reduced={red} layout={layoutAo} />}
       {balls.aka && <GojoVignette key="v-aka" tech="aka" explode={explode} reduced={red} layout={layoutAka} />}
-      {balls.ao && <GojoTension key="t-ao" tech="ao" seed={seed} reduced={red} focus={focusOf(layoutAo)} />}
-      {balls.aka && <GojoTension key="t-aka" tech="aka" seed={seed + 7} reduced={red} focus={focusOf(layoutAka)} />}
+      {balls.ao && <GojoTension key="t-ao" tech="ao" seed={seed} reduced={red} focus={focusOf(layoutAo)} maxY={maxY} />}
+      {balls.aka && <GojoTension key="t-aka" tech="aka" seed={seed + 7} reduced={red} focus={focusOf(layoutAka)} maxY={maxY} />}
       {balls.ao && <GojoBall key="ao" tech="ao" seed={seed} reduced={red} explode={explode} layout={layoutAo} />}
       {balls.aka && <GojoBall key="aka" tech="aka" seed={seed + 7} reduced={red} explode={explode} layout={layoutAka} />}
     </div>
