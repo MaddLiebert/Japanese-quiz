@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import {
   GOJO_STYLE, GOJO_CORE, GOJO_INK,
   gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
-  gojoBallLabel, gojoTensionLines, gojoCharge,
+  gojoBallLabel, gojoTensionLines, gojoCharge, gojoBallVignette,
 } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -161,25 +161,70 @@ function GojoBall({ tech, seed, reduced, explode }) {
           />
         ))}
       </svg>
-      {/* TEKS KANJI teknik (蒼 / 赫) — gaya manga, stroke tinta, denyut napas */}
+      {/* TEKS KANJI teknik (蒼 / 赫) — gaya manga GREGET: bloom warna + stroke
+          tinta tebal + denyut napas. Muncul dengan punch (pop) lalu idle. */}
       {label && (
-        <motion.span
-          className="absolute left-1/2 top-1/2 font-serif font-black select-none"
-          style={{
-            x: '-50%', y: '-50%',
-            fontSize: size * 0.5,
-            color: GOJO_CORE,
-            WebkitTextStroke: `3px ${GOJO_INK}`,
-            textShadow: `0 0 16px ${color}, 0 0 30px ${color}`,
-            willChange: 'transform, opacity',
-          }}
-          animate={reduced ? { opacity: 0.95 } : { opacity: [0.85, 1, 0.85], scale: [1, 1.06, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          {label.kanji}
-        </motion.span>
+        <>
+          {/* bloom warna di belakang teks */}
+          <motion.span
+            className="absolute left-1/2 top-1/2 font-serif font-black select-none pointer-events-none"
+            style={{
+              x: '-50%', y: '-50%',
+              fontSize: size * label.fontScale,
+              color,
+              filter: 'blur(14px)',
+              willChange: 'transform, opacity',
+            }}
+            initial={{ opacity: 0 }}
+            animate={reduced ? { opacity: 0.9 } : { opacity: [0, 1, 0.7, 1, 0.7] }}
+            transition={{ duration: 1.5, repeat: reduced ? 0 : Infinity, ease: 'easeInOut' }}
+          >
+            {label.kanji}
+          </motion.span>
+          <motion.span
+            className="absolute left-1/2 top-1/2 font-serif font-black select-none"
+            style={{
+              x: '-50%', y: '-50%',
+              fontSize: size * label.fontScale,
+              color: GOJO_CORE,
+              WebkitTextStroke: `${label.strokeWidth}px ${GOJO_INK}`,
+              textShadow: `0 0 18px ${color}, 0 0 40px ${color}, 0 0 70px ${color}`,
+              paintOrder: 'stroke fill',
+              willChange: 'transform, opacity',
+            }}
+            initial={{ opacity: 0, scale: 0.3, rotate: -14 }}
+            animate={reduced
+              ? { opacity: 1, scale: 1, rotate: -6 }
+              : { opacity: [0, 1, 1], scale: [0.3, 1.18, 1.04], rotate: [-14, -6, -6] }}
+            transition={reduced ? { duration: 0 } : { duration: 0.7, times: [0, 0.55, 1], ease: [0.34, 1.56, 0.64, 1] }}
+          >
+            {label.kanji}
+          </motion.span>
+        </>
       )}
     </motion.div>
+  );
+}
+
+// Vignette latar: layar MENGELAP dengan warna lebih gelap dari bola, dari sisi
+// bola. Muncul perlahan saat bola muncul → bikin vibe mencekam.
+function GojoVignette({ tech, explode, reduced }) {
+  const v = gojoBallVignette(tech);
+  if (!v) return null;
+  const at = v.side === 'right' ? '68% 50%' : '32% 50%';
+  return (
+    <motion.div
+      className="absolute inset-0"
+      style={{
+        background: `radial-gradient(circle at ${at}, ${v.dark}00 0 6%, ${v.dark}cc 30%, ${v.dark}f2 62%, ${v.dark} 100%)`,
+        willChange: 'opacity',
+      }}
+      initial={{ opacity: 0 }}
+      animate={explode ? { opacity: [1, 1, 0] } : { opacity: 0.9 }}
+      transition={reduced ? { duration: 0 } : (explode
+        ? { duration: 0.6, times: [0, 0.62, 1], ease: 'easeIn' }
+        : { duration: 1.5, ease: 'easeInOut' })}
+    />
   );
 }
 
@@ -223,6 +268,9 @@ export function GojoSpheres({ balls, explode = false, seed = 1, reduced }) {
   if (!balls) return null;
   return (
     <div className="absolute inset-0 overflow-hidden">
+      {/* latar menggelap (paling belakang) — warna lebih gelap dari bola */}
+      {balls.ao && <GojoVignette key="v-ao" tech="ao" explode={explode} reduced={red} />}
+      {balls.aka && <GojoVignette key="v-aka" tech="aka" explode={explode} reduced={red} />}
       {balls.ao && <GojoTension key="t-ao" tech="ao" seed={seed} reduced={red} />}
       {balls.aka && <GojoTension key="t-aka" tech="aka" seed={seed + 7} reduced={red} />}
       {balls.ao && <GojoBall key="ao" tech="ao" seed={seed} reduced={red} explode={explode} />}
