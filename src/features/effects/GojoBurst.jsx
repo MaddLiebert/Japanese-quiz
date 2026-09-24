@@ -24,12 +24,13 @@ const prefersReduced = () =>
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Sudut bingkai (layer 3).
+// Sudut bingkai (layer 3). Tiap sudut: kelas posisi, arah slide-in (dari luar
+// layar), dan titik tumbuh (transform-origin) di sudutnya masing-masing.
 const CORNERS = [
-  'top-0 left-0 border-t-[6px] border-l-[6px]',
-  'top-0 right-0 border-t-[6px] border-r-[6px]',
-  'bottom-0 left-0 border-b-[6px] border-l-[6px]',
-  'bottom-0 right-0 border-b-[6px] border-r-[6px]',
+  { pos: 'top-0 left-0',       from: { x: -70, y: -70 }, origin: 'top left' },
+  { pos: 'top-0 right-0',      from: { x: 70,  y: -70 }, origin: 'top right' },
+  { pos: 'bottom-0 left-0',    from: { x: -70, y: 70 },  origin: 'bottom left' },
+  { pos: 'bottom-0 right-0',   from: { x: 70,  y: 70 },  origin: 'bottom right' },
 ];
 
 export function GojoBurst({ fx, kind }) {
@@ -94,20 +95,59 @@ export function GojoBurst({ fx, kind }) {
         }
         transition={{ duration: zenith ? 0.8 : 0.5, ease: 'easeOut' }}
       >
-        {/* ── Layer 3 — BINGKAI SUDUT (frame 4 ujung + glow) ──────────────── */}
-        {CORNERS.map((pos, i) => (
+        {/* ── Layer 3 — BINGKAI SUDUT (frame 4 ujung, tebal & tegas) ───────── */}
+        {CORNERS.map((c, i) => (
           <motion.div
-            key={pos}
-            className={`absolute ${pos} w-[12vw] h-[12vw]`}
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: reduced ? 0.9 : [0, 0.9, 0.7], scale: 1 }}
+            key={c.pos}
+            className={`absolute ${c.pos} w-[14vw] h-[14vw]`}
+            initial={{ opacity: 0, x: c.from.x, y: c.from.y, scale: 0.9 }}
+            animate={{ opacity: reduced ? 0.95 : 1, x: 0, y: 0, scale: 1 }}
             transition={{
-              duration: reduced ? 0 : 0.5,
-              delay: reduced ? 0 : i * 0.06,
-              ease: 'easeOut',
+              duration: reduced ? 0 : 0.4,
+              delay: reduced ? 0 : i * 0.07,
+              ease: [0.16, 1, 0.3, 1],
             }}
-            style={{ borderColor: st.color, boxShadow: `0 0 24px ${st.color}88` }}
-          />
+            style={{ transformOrigin: c.origin }}
+          >
+            {/* Siku luar — border tebal 10px */}
+            <div
+              className="absolute inset-0"
+              style={{
+                borderTopWidth: 10,
+                borderLeftWidth: c.pos.includes('left') ? 10 : 0,
+                borderRightWidth: c.pos.includes('right') ? 10 : 0,
+                borderBottomWidth: c.pos.includes('bottom') ? 10 : 0,
+                borderStyle: 'solid',
+                borderColor: st.color,
+                filter: `drop-shadow(0 0 10px ${st.color})`,
+              }}
+            />
+            {/* Garis dalam tipis (double frame) — biar terasa disengaja */}
+            <div
+              className="absolute"
+              style={{
+                inset: 16,
+                borderTopWidth: 3,
+                borderLeftWidth: c.pos.includes('left') ? 3 : 0,
+                borderRightWidth: c.pos.includes('right') ? 3 : 0,
+                borderBottomWidth: c.pos.includes('bottom') ? 3 : 0,
+                borderStyle: 'solid',
+                borderColor: `${st.color}aa`,
+              }}
+            />
+            {/* Titik solid di sudut (aksen) */}
+            <div
+              className="absolute w-[16px] h-[16px] rounded-full"
+              style={{
+                background: st.color,
+                top: c.pos.includes('top') ? 6 : undefined,
+                bottom: c.pos.includes('bottom') ? 6 : undefined,
+                left: c.pos.includes('left') ? 6 : undefined,
+                right: c.pos.includes('right') ? 6 : undefined,
+                boxShadow: `0 0 14px ${st.color}`,
+              }}
+            />
+          </motion.div>
         ))}
 
         {/* ── Layer 2 — PARTIKEL (hisap / ledak / spiral) ─────────────────── */}
