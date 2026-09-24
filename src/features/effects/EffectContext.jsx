@@ -1,13 +1,12 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
-import { playCorrectSound, playWrongSound, playStreakSound, playGojoSound, answerFeedbackKind, hinaGifHoldMs } from '../../utils/sfx';
+import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs } from '../../utils/sfx';
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
 import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 import { GojoBurst } from './GojoBurst';
-import { gojoTechniqueFor } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Efek tinta washi (visual 'ink') — dipakai pack Sumi Taiko.
@@ -179,10 +178,10 @@ export function EffectProvider({ children }) {
     // (call site memanggil triggerEffect SEBELUM streak naik).
     // play*Sound mengembalikan durasi klip (ms) → GIF Hina tampil selama suaranya.
     const feedback = answerFeedbackKind(type, onMilestone);
-    // Pack Gojo: suara mengikuti teknik visual (ao→aka→murasaki→domain).
-    // Teknik ditentukan fungsi yang SAMA dengan efek visual → suara & visual sinkron.
+    // Pack Gojo: SENYAP total (tanpa sound apa pun) — sesuai permintaan user.
+    // Efek visualnya tetap jalan; suara menyusul nanti.
     const clipMs = activeVisual === 'gojo'
-      ? playGojoSound(gojoTechniqueFor(type, streakRef.current))
+      ? 0
       : feedback === 'streak' ? playStreakSound(streakSoundLevel(streakRef.current))
         : feedback === 'wrong' ? playWrongSound()
           : playCorrectSound();
