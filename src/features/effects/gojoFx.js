@@ -2,10 +2,11 @@
 // Logika murni efek Gojo Satoru (visual 'gojo'). Tanpa React/DOM → dites di node.
 // Kanon: 蒼 (Ao) → 赫 (Aka) → 茈 (Murasaki = Ao+Aka) → 領域展開・無量空処 (Domain).
 //
-// Rombak (permintaan user): buang primitif generik → asap 呪力 + petir hitam
-// dari tepi, bola plasma berputar, bara 呪力, bintang 無量空処.
+// Gaya v3 (permintaan user): BAHASA ANIME/MANGA, bukan motion-graphics.
+//   - garis tinta tegas (outline), warna rata cel-shade (hard-stop), impact star,
+//     集中線 (speed lines), screentone halftone, オノマトペ (teks bunyi)
 //   - ao/aka DIAM di pinggir (tidak ke tengah); murasaki tabrakan di tengah
-//   - petir & asap TIDAK boleh masuk ke tengah (batas GOJO_EDGE_BAND_VW)
+//   - petir & 集中線 TIDAK boleh masuk ke tengah
 //   - salah → null (tanpa teknik, tanpa retak)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -13,11 +14,17 @@ export const GOJO_MILESTONES = [3, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 export const isGojoMilestone = (streak) => GOJO_MILESTONES.includes(streak);
 
+const clamp100 = (v) => Math.min(100, Math.max(0, v));
+
 // ── Warna khas "petir hitam" Gojo ───────────────────────────────────────────
 // VOID = hitam keunguan (bukan #000 pekat, biar kebaca di tema gelap #141517).
 // RIM  = garis terang tipis di atas petir (kontras di tema terang & gelap).
 export const GOJO_VOID = '#1a0a1a';
 export const GOJO_RIM = '#ece6ff';
+
+// ── Bahasa anime: tinta & flash ─────────────────────────────────────────────
+export const GOJO_INK = '#0a0a0a';    // outline tinta (ring keras, bukan blur)
+export const GOJO_FLASH = '#ffffff';  // flash frame 1-frame
 
 // Pinggir: asap & petir tidak boleh lewat band ini dari tepi (vw).
 export const GOJO_EDGE_BAND_VW = 34;
@@ -50,7 +57,7 @@ export const GOJO_STYLE = {
 
 export const gojoCrackCount = (streak = 0) => Math.min(3 + Math.floor(streak / 2), 14);
 
-// ── Bola teknik (revisi) ────────────────────────────────────────────────────
+// ── Bola teknik ─────────────────────────────────────────────────────────────
 //   ao  → bola BIRU muncul dari tepi KANAN, lalu DIAM di pinggir (tidak ke tengah)
 //   aka → bola MERAH muncul dari tepi KIRI, lalu DIAM di pinggir
 //   茈  → dua bola meluncur dari tepi & TABRAKAN di TENGAH (tetap)
@@ -77,7 +84,79 @@ export const gojoSpheres = (technique) => {
   return [];
 };
 
-// ── Bara 呪力 (partikel memanjang, bukan titik) ─────────────────────────────
+// ── Titik fokus impact (vw dari tengah) ─────────────────────────────────────
+//   ao → kanan · aka → kiri · murasaki/domain → tengah
+export const gojoImpactFocus = (technique) => {
+  if (technique === 'ao') return { xVw: GOJO_EDGE_ANCHOR_VW, yVw: 0 };
+  if (technique === 'aka') return { xVw: -GOJO_EDGE_ANCHOR_VW, yVw: 0 };
+  return { xVw: 0, yVw: 0 };
+};
+
+// ── Impact star (bintang ledakan anime) — polygon lokal 0..100, pusat 50,50 ──
+export const gojoImpactStar = (seed = 1, rng = Math.random, spikes = 8) => {
+  const pts = [];
+  const rot = rng() * Math.PI * 2;
+  for (let i = 0; i < spikes * 2; i++) {
+    const a = rot + (i / (spikes * 2)) * Math.PI * 2;
+    const r = i % 2 === 0 ? 46 + rng() * 4 : 16 + rng() * 8;  // spike luar / dalam
+    pts.push(`${Math.round(50 + Math.cos(a) * r)},${Math.round(50 + Math.sin(a) * r)}`);
+  }
+  return { id: `${seed}-star`, spikes, points: pts.join(' ') };
+};
+
+// ── 集中線: garis tinta memancar dari fokus ─────────────────────────────────
+// ao/aka: garis pendek di band tepi (tidak lewat tengah). murasaki: panjang.
+export const gojoSpeedLines = (technique, seed = 1, rng = Math.random, count = 14) => {
+  const focus = technique === 'ao' ? { x: 82, y: 50 }
+    : technique === 'aka' ? { x: 18, y: 50 }
+      : { x: 50, y: 50 };
+  const maxLen = technique === 'murasaki' ? 60 : 24;   // ao/aka pendek → tidak ke tengah
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    const a = rng() * Math.PI * 2;
+    const len = maxLen * (0.55 + rng() * 0.45);
+    const inner = 6 + rng() * 6;
+    const from = [focus.x + Math.cos(a) * inner, focus.y + Math.sin(a) * inner];
+    const to = [focus.x + Math.cos(a) * (inner + len), focus.y + Math.sin(a) * (inner + len)];
+    out.push({
+      id: `${seed}-sl-${i}`,
+      from: [clamp100(from[0]), clamp100(from[1])],
+      to: [clamp100(to[0]), clamp100(to[1])],
+      width: 0.6 + rng() * 1.4,
+      delay: rng() * 0.12,
+    });
+  }
+  return out;
+};
+
+// ── Screentone: titik halftone (shading manga) di sekitar fokus ─────────────
+export const gojoHalftone = (seed = 1, rng = Math.random, count = 18) => {
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    out.push({
+      id: `${seed}-ht-${i}`,
+      x: 50 + (rng() * 2 - 1) * 40,
+      y: 50 + (rng() * 2 - 1) * 40,
+      size: 0.6 + rng() * 1.4,
+      delay: rng() * 0.2,
+    });
+  }
+  return out;
+};
+
+// ── オノマトペ (teks bunyi anime) ───────────────────────────────────────────
+export const gojoOno = (technique) => {
+  switch (technique) {
+    case 'ao': return 'ドン';
+    case 'aka': return 'ゴッ';
+    case 'murasaki': return 'ズドン';
+    case 'domain': return 'ゴゴゴ';
+    case 'domain_zenith': return 'ゴゴゴゴ';
+    default: return '';
+  }
+};
+
+// ── Serpihan tinta (partikel anime, hard-edge bukan blur) ───────────────────
 export const gojoParticles = (technique, seed = 1, rng = Math.random) => {
   const spiral = technique === 'murasaki';
   const out = technique === 'aka';
@@ -91,34 +170,13 @@ export const gojoParticles = (technique, seed = 1, rng = Math.random) => {
       angle,
       dist,
       size: 4 + rng() * 8,
-      len: 14 + rng() * 30,          // panjang bara (percikan memanjang)
+      len: 14 + rng() * 30,          // panjang serpihan
       delay: rng() * 0.18,
       dur: 0.5 + rng() * 0.5,
       spin: spiral ? (rng() * 2 - 1) * 260 : 0,
       out,
       spiral,
-    });
-  }
-  return list;
-};
-
-// ── Asap 呪力 (dari tepi, tidak ke tengah) ──────────────────────────────────
-// edge: 0 atas, 1 kanan, 2 bawah, 3 kiri. along = posisi sepanjang tepi (0..1).
-export const gojoSmoke = (technique, seed = 1, rng = Math.random) => {
-  const color = (GOJO_STYLE[technique] || GOJO_STYLE.murasaki).color;
-  const count = 8;
-  const list = [];
-  for (let i = 0; i < count; i++) {
-    list.push({
-      id: `${seed}-smoke-${i}`,
-      edge: i % 4,
-      along: 0.08 + rng() * 0.84,
-      reach: 10 + rng() * (GOJO_EDGE_BAND_VW - 14),   // 10..~30 vw (aman dari tengah)
-      size: 90 + rng() * 150,
-      delay: rng() * 0.25,
-      dur: 0.9 + rng() * 0.7,
-      drift: (rng() * 2 - 1) * 22,
-      color,
+      hard: true,                    // hard-edge (bahasa anime, bukan blur)
     });
   }
   return list;
@@ -126,8 +184,6 @@ export const gojoSmoke = (technique, seed = 1, rng = Math.random) => {
 
 // ── Petir hitam tepi (zigzag dari tepi, TIDAK sampai tengah) ────────────────
 // Kembalikan { id, edge, points:[[x,y],...] } dalam ruang viewBox 0..100.
-const clamp100 = (v) => Math.min(100, Math.max(0, v));
-
 export const gojoBolts = (technique, seed = 1, rng = Math.random) => {
   const count = 5;
   const out = [];
