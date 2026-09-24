@@ -426,17 +426,19 @@ export const gojoBallVignette = (technique) => {
 
 // 集中線 ketegangan: garis pendek memancar dari titik fokus (sisi bola), tetap
 // di sisinya (ao x>=50, aka x<=50) → TIDAK menyilang tengah (jaga konsep persist).
-export const gojoTensionLines = (technique, seed = 1, rng = Math.random, count = 24) => {
+// focus opsional { x, y } (ruang 0..100) untuk HP (bola di sudut atas).
+export const gojoTensionLines = (technique, seed = 1, rng = Math.random, count = 24, focus = null) => {
   const label = gojoBallLabel(technique);
   if (!label) return [];
-  const fx = technique === 'ao' ? 80 : 20;   // pusat fokus (kanan / kiri)
+  const fx = focus ? focus.x : (technique === 'ao' ? 80 : 20);
+  const fy = focus ? focus.y : 50;
   const out = [];
   for (let i = 0; i < count; i++) {
     const a = rng() * Math.PI * 2;
     const inner = 10 + rng() * 6;
     const len = 12 + rng() * 22;
-    const from = [fx + Math.cos(a) * inner, 50 + Math.sin(a) * inner * 1.15];
-    const to = [fx + Math.cos(a) * (inner + len), 50 + Math.sin(a) * (inner + len) * 1.15];
+    const from = [fx + Math.cos(a) * inner, fy + Math.sin(a) * inner * 1.15];
+    const to = [fx + Math.cos(a) * (inner + len), fy + Math.sin(a) * (inner + len) * 1.15];
     // Jaminan: garis tidak menyeberang ke sisi lain.
     if (technique === 'ao') { to[0] = Math.max(to[0], 50); from[0] = Math.max(from[0], 50); }
     else { to[0] = Math.min(to[0], 50); from[0] = Math.min(from[0], 50); }
@@ -449,6 +451,37 @@ export const gojoTensionLines = (technique, seed = 1, rng = Math.random, count =
     });
   }
   return out;
+};
+
+// ── Layout bola responsif ───────────────────────────────────────────────────
+// Di HP (layar sempit) kartu jawaban hampir selebar layar → bola di samping
+// PASTI nabrak kartu. Solusi: bola NAIK ke sudut atas + dikecilkan, supaya
+// kartu jawaban (di tengah) 100% tidak ketutupan.
+export const GOJO_BALL_BREAKPOINT = 768;   // < 768px = HP/sempit
+
+// Kembalikan { mobile, size, anchorXVw, anchorYVh } untuk satu teknik bola.
+// anchorX/Y dalam satuan vw/vh dari TENGAH layar (negatif = atas/kiri).
+export const gojoBallLayout = (technique, vw = 1280, vh = 800) => {
+  const label = gojoBallLabel(technique);
+  if (!label) return null;
+  const mobile = vw < GOJO_BALL_BREAKPOINT;
+  const dir = label.side === 'right' ? 1 : -1;   // ao = kanan (+), aka = kiri (−)
+  if (!mobile) {
+    return { mobile: false, size: 128, anchorXVw: dir * 32, anchorYVh: 0 };
+  }
+  // HP: kecilkan + taruh di sudut atas (kanan-atas / kiri-atas).
+  const size = 84;
+  const margin = 10;                             // jarak dari tepi (px)
+  // pusat X: nempel tepi (size/2 + margin dari tepi) → aman walau kartu lebar.
+  const cx = dir > 0 ? vw - (size / 2 + margin) : (size / 2 + margin);
+  // pusat Y: sudut atas (bola nempel atas, di atas kartu jawaban).
+  const cy = size / 2 + margin;
+  return {
+    mobile: true,
+    size,
+    anchorXVw: ((cx - vw / 2) / vw) * 100,
+    anchorYVh: ((cy - vh / 2) / vh) * 100,
+  };
 };
 
 // Charge ring: cincin berdenyut (kekuatan terkumpul) di sekeliling bola.
