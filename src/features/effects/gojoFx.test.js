@@ -9,6 +9,7 @@ import {
   GOJO_CORE, gojoSphereShape, gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
   gojoSphereAnim, nextGojoBalls, GOJO_BALLS_EMPTY,
   gojoBallLabel, gojoTensionLines, gojoCharge,
+  darkenHex, gojoBallVignette,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -434,4 +435,43 @@ test('gojoCharge: ao/aka punya parameter denyut, lain null', () => {
   }
   assert.equal(gojoCharge('murasaki'), null);
   assert.equal(gojoCharge(null), null);
+});
+
+// ── Vibe background gelap (warna lebih gelap dari bola) ─────────────────────
+// Permintaan user: "gw mu vibe background di ao sama aka pas muncul lebih gelap
+// gitu pake warna yang lebih gelap dari si bola nya".
+
+test('darkenHex: menggelapkan hex, hasil lebih gelap & format valid', () => {
+  const d = darkenHex('#00b0ff', 0.3);
+  assert.match(d, /^#[0-9a-f]{6}$/, 'harus hex 6 digit');
+  const lum = (h) => {
+    const n = parseInt(h.slice(1), 16);
+    return ((n >> 16) & 255) + ((n >> 8) & 255) + (n & 255);
+  };
+  assert.ok(lum(d) < lum('#00b0ff'), 'hasil harus lebih gelap');
+  assert.equal(darkenHex('#00b0ff', 1), '#00b0ff', 'faktor 1 = warna sama');
+  assert.equal(darkenHex('#ffffff', 0), '#000000', 'faktor 0 = hitam');
+});
+
+test('gojoBallVignette: ao/aka punya warna gelap (lebih gelap dari bola) + titik fokus sisi', () => {
+  assert.equal(gojoBallVignette('murasaki'), null);
+  assert.equal(gojoBallVignette(null), null);
+  const lum = (h) => {
+    const n = parseInt(h.slice(1), 16);
+    return ((n >> 16) & 255) + ((n >> 8) & 255) + (n & 255);
+  };
+  const ao = gojoBallVignette('ao');
+  assert.match(ao.dark, /^#[0-9a-f]{6}$/);
+  assert.ok(lum(ao.dark) < lum(GOJO_STYLE.ao.color), 'vignette ao harus lebih gelap dari bola');
+  assert.equal(ao.side, 'right');
+  const aka = gojoBallVignette('aka');
+  assert.ok(lum(aka.dark) < lum(GOJO_STYLE.aka.color), 'vignette aka harus lebih gelap dari bola');
+  assert.equal(aka.side, 'left');
+});
+
+test('gojoBallLabel: teks kanji makin greget (fontScale & stroke tebal)', () => {
+  const ao = gojoBallLabel('ao');
+  assert.ok(ao.fontScale >= 0.6, 'teks harus lebih besar');
+  assert.ok(ao.strokeWidth >= 4, 'outline tinta harus tebal');
+  assert.equal(typeof ao.glow, 'string');
 });
