@@ -5,7 +5,7 @@ import {
   gojoBolts, gojoStars, GOJO_VOID, GOJO_RIM,
   GOJO_INK, GOJO_FLASH, gojoImpactFocus, gojoImpactStar,
   gojoSpeedLines, gojoHalftone, gojoOno,
-  GOJO_CORE, gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
+  GOJO_CORE, gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo, gojoSphereAnim,
 } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -54,6 +54,7 @@ export function GojoBurst({ fx, kind }) {
   const [tendrils] = useState(() => (technique ? gojoTendrils(technique, seed) : []));
   const [halos] = useState(() => (technique ? gojoHalo(technique, seed) : []));
   const [impactStar] = useState(() => (technique ? gojoImpactStar(seed) : null));
+  const sphereAnim = gojoSphereAnim(technique);
   const [stars] = useState(() =>
     (technique === 'domain' || technique === 'domain_zenith') ? gojoStars(seed) : []
   );
@@ -235,11 +236,21 @@ export function GojoBurst({ fx, kind }) {
               : { x: `${b.fromVw}vw`, opacity: 0, scale: 0.6 }}
             animate={reduced
               ? { x: `${b.anchorVw}vw`, opacity: 0 }
-              : { x: `${b.anchorVw}vw`, opacity: [0, 1, 1, 0], scale: [0.6, 1, 1.06, 1.15] }}
+              : {
+                x: `${b.anchorVw}vw`,
+                opacity: sphereAnim.opacity,
+                scale: sphereAnim.scale,
+              }}
             transition={reduced ? { duration: 0 } : {
               x: { duration: b.dur, delay: b.delay, ease: [0.16, 1, 0.3, 1] },
-              opacity: { duration: b.dur + 0.5, delay: b.delay, times: [0, 0.1, 0.7, 1], ease: 'easeOut' },
-              scale: { duration: b.dur + 0.5, delay: b.delay, times: [0, 0.12, 0.6, 1], ease: 'easeOut' },
+              opacity: {
+                duration: sphereAnim.dur, delay: b.delay,
+                times: sphereAnim.times, ease: 'easeInOut',
+              },
+              scale: {
+                duration: sphereAnim.dur, delay: b.delay,
+                times: sphereAnim.times, ease: 'easeInOut',
+              },
             }}
           >
             {/* halo lembut menyala (bukan garis) */}
