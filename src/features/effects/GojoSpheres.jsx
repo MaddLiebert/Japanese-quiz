@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
   GOJO_STYLE, GOJO_CORE, GOJO_INK,
   gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
   gojoBallLabel, gojoTensionLines, gojoCharge, gojoBallVignette,
+  gojoBallLayout,
 } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -19,9 +20,7 @@ import {
 // khas per teknik (ao = orbit rings · aka = pita vortex).
 // ─────────────────────────────────────────────────────────────────────────────
 
-const GOJO_EDGE_ANCHOR_VW = 32;   // posisi parkir di pinggir (vw dari tengah)
 const GOJO_SPHERE_OFFSCREEN_VW = 62;
-const BALL_SIZE = 128;
 
 const prefersReduced = () =>
   typeof window !== 'undefined' &&
@@ -29,9 +28,9 @@ const prefersReduced = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Satu bola plasma yang muter terus di tempatnya.
-function GojoBall({ tech, seed, reduced, explode }) {
+function GojoBall({ tech, seed, reduced, explode, layout }) {
   const color = GOJO_STYLE[tech].color;
-  const size = BALL_SIZE;
+  const size = layout.size;
   const [rings] = useState(() => gojoOrbitRings(tech, seed));
   const [ribbons] = useState(() => gojoRibbons(tech, seed));
   const [tendrils] = useState(() => gojoTendrils(tech, seed));
@@ -39,7 +38,8 @@ function GojoBall({ tech, seed, reduced, explode }) {
   const label = gojoBallLabel(tech);
   const charge = gojoCharge(tech);
 
-  const anchorVw = tech === 'ao' ? GOJO_EDGE_ANCHOR_VW : -GOJO_EDGE_ANCHOR_VW;
+  const anchorXVw = layout.anchorXVw;
+  const anchorYVh = layout.anchorYVh;
   const fromVw = tech === 'ao' ? GOJO_SPHERE_OFFSCREEN_VW : -GOJO_SPHERE_OFFSCREEN_VW;
 
   return (
@@ -51,20 +51,22 @@ function GojoBall({ tech, seed, reduced, explode }) {
         zIndex: 3,                       // bola = fokus, di atas impact star
         willChange: 'transform, opacity',
       }}
-      initial={{ x: `${fromVw}vw`, opacity: 0, scale: 0.7 }}
+      initial={{ x: `${fromVw}vw`, y: `${anchorYVh}vh`, opacity: 0, scale: 0.7 }}
       animate={explode
         // meluncur ke tengah lalu MEMUDAR ke dalam ledakan
-        ? { x: '0vw', opacity: [1, 1, 0], scale: [1, 1.12, 1.35] }
-        // muncul PERLAHAN lalu muter tenang di pinggir
-        : { x: `${anchorVw}vw`, opacity: 1, scale: 1 }}
+        ? { x: '0vw', y: '0vh', opacity: [1, 1, 0], scale: [1, 1.12, 1.35] }
+        // muncul PERLAHAN lalu muter tenang di pinggir/sudut
+        : { x: `${anchorXVw}vw`, y: `${anchorYVh}vh`, opacity: 1, scale: 1 }}
       transition={reduced ? { duration: 0 } : (explode
         ? {
           x: { duration: 0.42, ease: [0.55, 0, 0.85, 0.4] },
+          y: { duration: 0.42, ease: [0.55, 0, 0.85, 0.4] },
           opacity: { duration: 0.6, times: [0, 0.62, 1], ease: 'easeIn' },
           scale: { duration: 0.6, times: [0, 0.62, 1], ease: 'easeIn' },
         }
         : {
           x: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
+          y: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
           opacity: { duration: 1.5, ease: 'easeInOut' },
           scale: { duration: 1.5, ease: 'easeInOut' },
         })}
@@ -208,20 +210,21 @@ function GojoBall({ tech, seed, reduced, explode }) {
 
 // Vignette latar: gelap dengan warna lebih gelap dari bola, HANYA di sisi bola
 // (dari tepi layar, memudar sebelum tengah) → tidak menutupi quiz yang di tengah.
-// Jangkauan dibatasi `min()` supaya berhenti sebelum tepi kartu quiz (max-w-lg
-// = 512px di tengah) apa pun lebar layarnya.
-function GojoVignette({ tech, explode, reduced }) {
+// `at` = titik fokus gradient (dari layout bola: sudut atas saat HP).
+function GojoVignette({ tech, explode, reduced, layout }) {
   const v = gojoBallVignette(tech);
   if (!v) return null;
-  const at = v.side === 'right' ? '100% 50%' : '0% 50%';
   // radius horizontal: 30vw, TAPI tidak lebih dari (50vw - 300px) → berhenti
   // ~300px sebelum tengah (kartu quiz max-w-lg = 512px), jadi tidak menyentuh quiz.
   const rx = 'max(0px, min(30vw, 50vw - 300px))';
+  // Saat HP bola di sudut atas, vignette juga naik ke sudut atas.
+  const atY = layout.mobile ? '22%' : '50%';
+  const atX = v.side === 'right' ? '100%' : '0%';
   return (
     <motion.div
       className="absolute inset-0"
       style={{
-        background: `radial-gradient(ellipse ${rx} 135% at ${at}, ${v.dark} 0 70%, ${v.dark}00 100%)`,
+        background: `radial-gradient(ellipse ${rx} 135% at ${atX} ${atY}, ${v.dark} 0 70%, ${v.dark}00 100%)`,
         willChange: 'opacity',
       }}
       initial={{ opacity: 0 }}
@@ -235,8 +238,9 @@ function GojoVignette({ tech, explode, reduced }) {
 
 // 集中線 ketegangan memancar dari sisi bola (ao kanan / aka kiri).
 // Digambar di layer (bukan di dalam bola) supaya garis bisa keluar dari bola.
-function GojoTension({ tech, seed, reduced }) {
-  const [lines] = useState(() => gojoTensionLines(tech, seed));
+// focus = posisi bola (0..100); di HP fokusnya di sudut atas.
+function GojoTension({ tech, seed, reduced, focus }) {
+  const [lines] = useState(() => gojoTensionLines(tech, seed, Math.random, 24, focus));
   if (!lines.length) return null;
   const color = GOJO_STYLE[tech].color;
   return (
@@ -267,19 +271,36 @@ function GojoTension({ tech, seed, reduced }) {
 }
 
 // Lapisan bola persist. balls = { ao, aka }; explode = true saat murasaki.
+// Layout responsif: desktop = tepi tengah; HP (sempit) = sudut atas + lebih kecil
+// supaya kartu jawaban di tengah tidak ketutupan.
 export function GojoSpheres({ balls, explode = false, seed = 1, reduced }) {
   const [autoReduced] = useState(prefersReduced);
   const red = reduced === undefined ? autoReduced : reduced;
+  const [vp, setVp] = useState(() => ({
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    h: typeof window !== 'undefined' ? window.innerHeight : 800,
+  }));
+  useEffect(() => {
+    const onResize = () => setVp({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
   if (!balls) return null;
+
+  const layoutAo = gojoBallLayout('ao', vp.w, vp.h);
+  const layoutAka = gojoBallLayout('aka', vp.w, vp.h);
+  // Titik fokus 集中線 (ruang 0..100 viewport) = posisi bola sebenarnya.
+  const focusOf = (layout) => ({ x: 50 + layout.anchorXVw, y: 50 + layout.anchorYVh });
+
   return (
     <div className="absolute inset-0 overflow-hidden">
       {/* latar menggelap (paling belakang) — warna lebih gelap dari bola */}
-      {balls.ao && <GojoVignette key="v-ao" tech="ao" explode={explode} reduced={red} />}
-      {balls.aka && <GojoVignette key="v-aka" tech="aka" explode={explode} reduced={red} />}
-      {balls.ao && <GojoTension key="t-ao" tech="ao" seed={seed} reduced={red} />}
-      {balls.aka && <GojoTension key="t-aka" tech="aka" seed={seed + 7} reduced={red} />}
-      {balls.ao && <GojoBall key="ao" tech="ao" seed={seed} reduced={red} explode={explode} />}
-      {balls.aka && <GojoBall key="aka" tech="aka" seed={seed + 7} reduced={red} explode={explode} />}
+      {balls.ao && <GojoVignette key="v-ao" tech="ao" explode={explode} reduced={red} layout={layoutAo} />}
+      {balls.aka && <GojoVignette key="v-aka" tech="aka" explode={explode} reduced={red} layout={layoutAka} />}
+      {balls.ao && <GojoTension key="t-ao" tech="ao" seed={seed} reduced={red} focus={focusOf(layoutAo)} />}
+      {balls.aka && <GojoTension key="t-aka" tech="aka" seed={seed + 7} reduced={red} focus={focusOf(layoutAka)} />}
+      {balls.ao && <GojoBall key="ao" tech="ao" seed={seed} reduced={red} explode={explode} layout={layoutAo} />}
+      {balls.aka && <GojoBall key="aka" tech="aka" seed={seed + 7} reduced={red} explode={explode} layout={layoutAka} />}
     </div>
   );
 }
