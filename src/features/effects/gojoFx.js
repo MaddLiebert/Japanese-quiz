@@ -110,14 +110,17 @@ export const gojoSpeedLines = (technique, seed = 1, rng = Math.random, count = 1
   const focus = technique === 'ao' ? { x: 82, y: 50 }
     : technique === 'aka' ? { x: 18, y: 50 }
       : { x: 50, y: 50 };
-  const maxLen = technique === 'murasaki' ? 60 : 24;   // ao/aka pendek → tidak ke tengah
+  const maxLen = technique === 'murasaki' ? 60 : 18;   // ao/aka pendek → tidak ke tengah
   const out = [];
   for (let i = 0; i < count; i++) {
     const a = rng() * Math.PI * 2;
     const len = maxLen * (0.55 + rng() * 0.45);
-    const inner = 6 + rng() * 6;
+    const inner = 6 + rng() * 4;
     const from = [focus.x + Math.cos(a) * inner, focus.y + Math.sin(a) * inner];
     const to = [focus.x + Math.cos(a) * (inner + len), focus.y + Math.sin(a) * (inner + len)];
+    // Jaminan: ao tetap di kanan (>=52), aka tetap di kiri (<=48) → tidak lewat tengah.
+    if (technique === 'ao') to[0] = Math.max(to[0], 52);
+    else if (technique === 'aka') to[0] = Math.min(to[0], 48);
     out.push({
       id: `${seed}-sl-${i}`,
       from: [clamp100(from[0]), clamp100(from[1])],

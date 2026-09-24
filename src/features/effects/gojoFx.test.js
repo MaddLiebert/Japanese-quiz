@@ -132,6 +132,15 @@ test('gojoSpeedLines: deterministik, ada, dan tidak lewat tengah utk ao/aka', ()
   for (const l of gojoSpeedLines('aka', 1, () => 0.5, 14)) {
     assert.ok(l.to[0] < 50, 'aka: ujung garis harus tetap di kiri');
   }
+  // Robustness: dengan RNG acak pun tidak boleh lewat tengah (banyak iterasi).
+  for (let it = 0; it < 200; it++) {
+    for (const l of gojoSpeedLines('ao', it, Math.random, 14)) {
+      assert.ok(l.to[0] > 50, `ao acak: to[0]=${l.to[0]} lewat tengah`);
+    }
+    for (const l of gojoSpeedLines('aka', it, Math.random, 14)) {
+      assert.ok(l.to[0] < 50, `aka acak: to[0]=${l.to[0]} lewat tengah`);
+    }
+  }
 });
 
 // ── Screentone halftone (shading manga) ─────────────────────────────────────
