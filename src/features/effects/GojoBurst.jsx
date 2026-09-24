@@ -2,18 +2,22 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   gojoTechniqueFor, GOJO_STYLE, gojoParticles, gojoCrackCount, gojoSpheres,
+  gojoSmoke, gojoBolts, gojoSphereBolts, gojoStars, GOJO_VOID, GOJO_RIM,
 } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Gojo Satoru (visual 'gojo') — efek berlapis:
+// Gojo Satoru (visual 'gojo') — efek berlapis v2 (rombak):
 //   Layer 5  TEKS TEKNIK      蒼 / 赫 / 茈 / 領域展開・無量空処
-//   Layer 4  RETAK            HANYA streak, makin gila per level
-//   Layer 3  BINGKAI SUDUT    frame 4 ujung layar + glow
-//   Layer 2  PARTIKEL         hisap (ao) / ledak (aka) / spiral (murasaki)
-//   Layer 1  WASH + SHAKE     warna dasar + getar (domain = gelombang transparan)
+//   Layer 4  RETAK            HANYA streak
+//   Layer 3b PETIR HITAM      zigzag dari 4 tepi (TIDAK ke tengah)
+//   Layer 3a ASAP 呪力        gumpalan asap dari tepi (TIDAK ke tengah)
+//   Layer 2b BINTANG 無量空処  domain saja (titik cahaya tak-hingga)
+//   Layer 2a BOLA PLASMA      conic muter + petir membelit + void hitam
+//   Layer 2  BARA 呪力        partikel memanjang
+//   Layer 1  WASH + SHAKE     warna dasar + getar
 //
 // Aturan performa (pelajaran dari efek Hina):
-//   - animasi HANYA transform + opacity (JANGAN width/height/filter)
+//   - animasi HANYA transform + opacity (+ pathLength untuk reveal garis, spt retak)
 //   - teks besar pakai text-shadow, BUKAN filter: drop-shadow
 //   - prefers-reduced-motion → efek langsung "selesai" tanpa animasi
 //   - will-change hanya saat aktif
@@ -24,23 +28,31 @@ const prefersReduced = () =>
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Sudut bingkai (layer 3). Tiap sudut: kelas posisi, arah slide-in (dari luar
-// layar), dan titik tumbuh (transform-origin) di sudutnya masing-masing.
-const CORNERS = [
-  { pos: 'top-0 left-0',       from: { x: -70, y: -70 }, origin: 'top left' },
-  { pos: 'top-0 right-0',      from: { x: 70,  y: -70 }, origin: 'top right' },
-  { pos: 'bottom-0 left-0',    from: { x: -70, y: 70 },  origin: 'bottom left' },
-  { pos: 'bottom-0 right-0',   from: { x: 70,  y: 70 },  origin: 'bottom right' },
-];
+// edge (0 atas,1 kanan,2 bawah,3 kiri) → posisi % layar + arah masuk (px).
+function edgeToXY(edge, along, reachVw) {
+  const vw = (typeof window !== 'undefined' ? window.innerWidth : 1200) / 100;
+  const reachPx = reachVw * vw;
+  const j = (along - 0.5) * 100;   // -50..50 sepanjang tepi
+  if (edge === 0) return { left: 50 + j, top: 0,     dx: 0,        dy: reachPx };
+  if (edge === 1) return { left: 100,    top: 50 + j, dx: -reachPx, dy: 0 };
+  if (edge === 2) return { left: 50 + j, top: 100,   dx: 0,        dy: -reachPx };
+  return { left: 0, top: 50 + j, dx: reachPx, dy: 0 };
+}
 
 export function GojoBurst({ fx, kind }) {
   const [reduced] = useState(prefersReduced);
   const streak = fx?.streak || 0;
+  const seed = fx?.id || 1;
   const technique = gojoTechniqueFor(kind, streak);
-  const [particles] = useState(() =>
-    technique ? gojoParticles(technique, fx?.id || 1) : []
-  );
+
+  const [particles] = useState(() => (technique ? gojoParticles(technique, seed) : []));
+  const [smoke] = useState(() => (technique ? gojoSmoke(technique, seed) : []));
+  const [bolts] = useState(() => (technique ? gojoBolts(technique, seed) : []));
   const spheres = technique ? gojoSpheres(technique) : [];
+  const [sphereBolts] = useState(() => spheres.map(() => gojoSphereBolts(3)));
+  const [stars] = useState(() =>
+    (technique === 'domain' || technique === 'domain_zenith') ? gojoStars(seed) : []
+  );
 
   // Salah: wash merah lembut, TANPA retak (retak = ciri streak saja).
   if (!technique) {
@@ -67,13 +79,13 @@ export function GojoBurst({ fx, kind }) {
 
   return (
     <motion.div
-      className="absolute inset-0"
+      className="absolute inset-0 overflow-hidden"
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.16 } }}
       style={{ willChange: 'transform, opacity' }}
     >
-      {/* ── Layer 1a — WASH (warna dasar; domain = gelombang transparan) ───── */}
+      {/* ── Layer 1a — WASH (domain = nebula lembut + vignette hampa) ──────── */}
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
@@ -81,7 +93,7 @@ export function GojoBurst({ fx, kind }) {
         transition={{ duration: reduced ? 0 : zenith ? 1.1 : 0.7, ease: 'easeOut' }}
         style={{
           background: isDomain
-            ? `repeating-radial-gradient(circle at 50% 50%, ${st.color}22 0px, transparent 18px, transparent 40px)`
+            ? `radial-gradient(circle at 50% 50%, ${st.color}33, transparent 62%), radial-gradient(circle at 50% 50%, transparent 42%, ${GOJO_VOID}66 100%)`
             : `radial-gradient(circle at 50% 50%, ${st.color}55, transparent 70%)`,
         }}
       />
@@ -96,94 +108,176 @@ export function GojoBurst({ fx, kind }) {
         }
         transition={{ duration: zenith ? 0.8 : 0.5, ease: 'easeOut' }}
       >
-        {/* ── Layer 3 — BINGKAI SUDUT (frame 4 ujung, tebal & tegas) ───────── */}
-        {CORNERS.map((c, i) => (
-          <motion.div
-            key={c.pos}
-            className={`absolute ${c.pos} w-[14vw] h-[14vw]`}
-            initial={{ opacity: 0, x: c.from.x, y: c.from.y, scale: 0.9 }}
-            animate={{ opacity: reduced ? 0.95 : 1, x: 0, y: 0, scale: 1 }}
-            transition={{
-              duration: reduced ? 0 : 0.4,
-              delay: reduced ? 0 : i * 0.07,
-              ease: [0.16, 1, 0.3, 1],
+        {/* ── Layer 3a — ASAP 呪力 (dari tepi, tidak ke tengah) ────────────── */}
+        {smoke.map((s) => {
+          const p = edgeToXY(s.edge, s.along, s.reach);
+          return (
+            <motion.div
+              key={s.id}
+              className="absolute rounded-full"
+              style={{
+                left: `${p.left}%`,
+                top: `${p.top}%`,
+                width: s.size,
+                height: s.size,
+                marginLeft: -s.size / 2,
+                marginTop: -s.size / 2,
+                background: `radial-gradient(circle, ${GOJO_VOID} 0%, ${s.color}44 45%, transparent 72%)`,
+                willChange: 'transform, opacity',
+              }}
+              initial={{ opacity: 0, x: p.dx * 0.35, y: p.dy * 0.35, scale: 0.7 }}
+              animate={{ opacity: reduced ? 0.45 : [0, 0.7, 0.45], x: p.dx, y: p.dy, scale: 1 }}
+              transition={{ duration: reduced ? 0 : s.dur, delay: reduced ? 0 : s.delay, ease: 'easeOut' }}
+            />
+          );
+        })}
+
+        {/* ── Layer 3b — PETIR HITAM (zigzag dari tepi, tidak ke tengah) ────── */}
+        <svg
+          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          {bolts.map((b) => {
+            const d = 'M' + b.points.map((pt) => pt.join(',')).join(' L');
+            return (
+              <g key={b.id}>
+                {/* inti petir hitam */}
+                <motion.path
+                  d={d}
+                  fill="none"
+                  stroke={GOJO_VOID}
+                  strokeWidth={3}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                  pathLength={1}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={reduced
+                    ? { pathLength: 1, opacity: 0.9 }
+                    : { pathLength: 1, opacity: [0, 1, 0.25, 1, 0.55] }}
+                  transition={{ duration: reduced ? 0 : 0.5, ease: 'easeOut' }}
+                />
+                {/* rim terang tipis (biar kebaca di tema gelap) */}
+                <motion.path
+                  d={d}
+                  fill="none"
+                  stroke={GOJO_RIM}
+                  strokeWidth={1}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                  pathLength={1}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={reduced
+                    ? { pathLength: 1, opacity: 0.5 }
+                    : { pathLength: 1, opacity: [0, 0.9, 0.15, 0.8, 0.35] }}
+                  transition={{ duration: reduced ? 0 : 0.5, ease: 'easeOut' }}
+                />
+              </g>
+            );
+          })}
+        </svg>
+
+        {/* ── Layer 2b — BINTANG 無量空処 (domain saja) ─────────────────────── */}
+        {isDomain && stars.map((s) => (
+          <motion.span
+            key={s.id}
+            className="absolute rounded-full"
+            style={{
+              left: `${s.x}%`,
+              top: `${s.y}%`,
+              width: s.size,
+              height: s.size,
+              background: '#ffffff',
+              boxShadow: `0 0 ${s.size * 3}px ${st.color}`,
             }}
-            style={{ transformOrigin: c.origin }}
-          >
-            {/* Siku luar — border tebal 10px */}
-            <div
-              className="absolute inset-0"
-              style={{
-                borderTopWidth: 10,
-                borderLeftWidth: c.pos.includes('left') ? 10 : 0,
-                borderRightWidth: c.pos.includes('right') ? 10 : 0,
-                borderBottomWidth: c.pos.includes('bottom') ? 10 : 0,
-                borderStyle: 'solid',
-                borderColor: st.color,
-                filter: `drop-shadow(0 0 10px ${st.color})`,
-              }}
-            />
-            {/* Garis dalam tipis (double frame) — biar terasa disengaja */}
-            <div
-              className="absolute"
-              style={{
-                inset: 16,
-                borderTopWidth: 3,
-                borderLeftWidth: c.pos.includes('left') ? 3 : 0,
-                borderRightWidth: c.pos.includes('right') ? 3 : 0,
-                borderBottomWidth: c.pos.includes('bottom') ? 3 : 0,
-                borderStyle: 'solid',
-                borderColor: `${st.color}aa`,
-              }}
-            />
-            {/* Titik solid di sudut (aksen) */}
-            <div
-              className="absolute w-[16px] h-[16px] rounded-full"
-              style={{
-                background: st.color,
-                top: c.pos.includes('top') ? 6 : undefined,
-                bottom: c.pos.includes('bottom') ? 6 : undefined,
-                left: c.pos.includes('left') ? 6 : undefined,
-                right: c.pos.includes('right') ? 6 : undefined,
-                boxShadow: `0 0 14px ${st.color}`,
-              }}
-            />
-          </motion.div>
+            initial={{ opacity: 0 }}
+            animate={reduced ? { opacity: 0.8 } : { opacity: [0, 0.95, 0.35, 0.85, 0.3] }}
+            transition={{ duration: reduced ? 0 : s.dur, delay: reduced ? 0 : s.delay, ease: 'easeOut' }}
+          />
         ))}
 
-        {/* ── Layer 2a — BOLA TEKNIK ────────────────────────────────────────
-            ao  : bola BIRU melesat dari KANAN ke tengah
-            aka : bola MERAH melesat dari KIRI ke tengah
-            茈  : dua bola (biru kanan + merah kiri) TABRAKAN di tengah → ungu */}
-        {spheres.map((b) => (
+        {/* ── Layer 2a — BOLA PLASMA ────────────────────────────────────────
+            ao  : bola BIRU muncul dari KANAN, DIAM di pinggir
+            aka : bola MERAH muncul dari KIRI, DIAM di pinggir
+            茈  : dua bola meluncur & TABRAKAN di tengah → inti ungu + shockwave */}
+        {spheres.map((b, si) => (
           <motion.div
             key={`sphere-${b.id}`}
-            className="absolute left-1/2 top-1/2 rounded-full"
+            className="absolute left-1/2 top-1/2"
             style={{
               width: b.size,
               height: b.size,
               marginLeft: -b.size / 2,
               marginTop: -b.size / 2,
-              background: `radial-gradient(circle at 34% 28%, #ffffff 0%, ${b.color} 38%, ${b.color} 66%, rgba(0,0,0,0.9) 100%)`,
-              boxShadow: `0 0 36px ${b.color}, 0 0 72px ${b.color}77`,
               willChange: 'transform, opacity',
             }}
-            initial={reduced ? { x: 0, opacity: 1 } : { x: `${b.fromVw}vw`, opacity: 0, scale: 0.55 }}
-            animate={
-              reduced
-                ? { x: 0, opacity: 0 }
-                : { x: 0, opacity: [0, 1, 1, 0], scale: [0.55, 1, 1, 1.15] }
-            }
-            transition={
-              reduced
-                ? { duration: 0 }
-                : {
-                  x: { duration: b.dur, delay: b.delay, ease: [0.16, 1, 0.3, 1] },
-                  opacity: { duration: b.dur, delay: b.delay, times: [0, 0.12, 0.72, 1], ease: 'easeOut' },
-                  scale: { duration: b.dur, delay: b.delay, times: [0, 0.12, 0.72, 1], ease: 'easeOut' },
-                }
-            }
-          />
+            initial={reduced
+              ? { x: `${b.anchorVw}vw`, opacity: 1 }
+              : { x: `${b.fromVw}vw`, opacity: 0, scale: 0.6 }}
+            animate={reduced
+              ? { x: `${b.anchorVw}vw`, opacity: 0 }
+              : { x: `${b.anchorVw}vw`, opacity: [0, 1, 1, 0], scale: [0.6, 1, 1.06, 1.15] }}
+            transition={reduced ? { duration: 0 } : {
+              x: { duration: b.dur, delay: b.delay, ease: [0.16, 1, 0.3, 1] },
+              opacity: { duration: b.dur + 0.5, delay: b.delay, times: [0, 0.1, 0.7, 1], ease: 'easeOut' },
+              scale: { duration: b.dur + 0.5, delay: b.delay, times: [0, 0.12, 0.6, 1], ease: 'easeOut' },
+            }}
+          >
+            {/* halo luar */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                inset: -b.size * 0.35,
+                background: `radial-gradient(circle, ${b.color}55, transparent 70%)`,
+              }}
+            />
+            {/* plasma muter (conic berputar) */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: `conic-gradient(from 0deg, ${b.color}, ${GOJO_VOID} 30%, ${b.color}cc 50%, ${GOJO_VOID} 75%, ${b.color})`,
+                willChange: 'transform',
+              }}
+              animate={reduced ? {} : { rotate: 360 }}
+              transition={{ duration: 2.6, repeat: Infinity, ease: 'linear' }}
+            />
+            {/* inti terang */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                inset: b.size * 0.2,
+                background: `radial-gradient(circle at 38% 32%, #ffffff, ${b.color} 55%, transparent 82%)`,
+              }}
+            />
+            {/* void hitam (khas 茈) */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                inset: b.size * 0.36,
+                background: `radial-gradient(circle, ${GOJO_VOID} 45%, transparent 78%)`,
+              }}
+            />
+            {/* petir hitam membelit bola */}
+            <svg className="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 100 100" aria-hidden="true">
+              {(sphereBolts[si] || []).map((pts, i) => (
+                <motion.polyline
+                  key={i}
+                  points={pts}
+                  fill="none"
+                  stroke={GOJO_VOID}
+                  strokeWidth={1.6}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  initial={{ opacity: 0 }}
+                  animate={reduced ? { opacity: 0.7 } : { opacity: [0, 0.95, 0.2, 0.85, 0.3] }}
+                  transition={{ duration: 0.6, repeat: reduced ? 0 : Infinity, repeatDelay: 0.35, delay: i * 0.12 }}
+                />
+              ))}
+            </svg>
+          </motion.div>
         ))}
 
         {/* ── Tabrakan 茈: ledakan bola ungu + shockwave di titik tabrakan ── */}
@@ -197,16 +291,12 @@ export function GojoBurst({ fx, kind }) {
                 height: 132,
                 marginLeft: -66,
                 marginTop: -66,
-                background: `radial-gradient(circle at 40% 35%, #ffffff 0%, ${GOJO_STYLE.murasaki.color} 42%, #4a0072 78%, #000000 100%)`,
+                background: `radial-gradient(circle at 40% 35%, #ffffff 0%, ${GOJO_STYLE.murasaki.color} 42%, ${GOJO_VOID} 82%, #000000 100%)`,
                 boxShadow: `0 0 70px ${GOJO_STYLE.murasaki.color}, 0 0 140px ${GOJO_STYLE.murasaki.color}88`,
                 willChange: 'transform, opacity',
               }}
               initial={{ scale: 0, opacity: 0 }}
-              animate={
-                reduced
-                  ? { scale: 1, opacity: 1 }
-                  : { scale: [0, 0, 1.5, 2.1], opacity: [0, 0, 1, 0] }
-              }
+              animate={reduced ? { scale: 1, opacity: 1 } : { scale: [0, 0, 1.5, 2.1], opacity: [0, 0, 1, 0] }}
               transition={{ duration: reduced ? 0 : 1.0, times: [0, 0.5, 0.66, 1], ease: 'easeOut' }}
             />
             <motion.div
@@ -221,17 +311,13 @@ export function GojoBurst({ fx, kind }) {
                 willChange: 'transform, opacity',
               }}
               initial={{ scale: 0.4, opacity: 0 }}
-              animate={
-                reduced
-                  ? { scale: 0.4, opacity: 0 }
-                  : { scale: [0.4, 0.4, 4], opacity: [0, 0, 0.9, 0] }
-              }
+              animate={reduced ? { scale: 0.4, opacity: 0 } : { scale: [0.4, 0.4, 4], opacity: [0, 0, 0.9, 0] }}
               transition={{ duration: reduced ? 0 : 1.15, times: [0, 0.5, 0.62, 1], ease: 'easeOut' }}
             />
           </>
         )}
 
-        {/* ── Layer 2 — PARTIKEL (hisap / ledak / spiral) ─────────────────── */}
+        {/* ── Layer 2 — BARA 呪力 (partikel memanjang) ─────────────────────── */}
         {particles.map((p) => {
           const dx = Math.cos(p.angle) * p.dist;
           const dy = Math.sin(p.angle) * p.dist;
@@ -239,32 +325,35 @@ export function GojoBurst({ fx, kind }) {
           return (
             <motion.span
               key={p.id}
-              className="absolute left-1/2 top-1/2 rounded-full"
+              className="absolute left-1/2 top-1/2"
+              style={{
+                width: p.size,
+                height: p.len,
+                marginLeft: -p.size / 2,
+                marginTop: -p.len / 2,
+                borderRadius: 9999,
+                background: `linear-gradient(${p.angle}rad, ${st.color}, transparent)`,
+                boxShadow: `0 0 8px ${st.color}`,
+                willChange: 'transform, opacity',
+              }}
               initial={{
                 x: startOut ? 0 : dx,
                 y: startOut ? 0 : dy,
                 opacity: 0.9,
                 scale: 0.5,
+                rotate: (p.angle * 180) / Math.PI,
               }}
               animate={{
                 x: startOut ? dx : 0,
                 y: startOut ? dy : 0,
                 opacity: 0,
                 scale: 1,
-                rotate: p.spin,
+                rotate: (p.angle * 180) / Math.PI + p.spin,
               }}
               transition={{
                 duration: reduced ? 0 : p.dur,
                 delay: reduced ? 0 : p.delay,
                 ease: [0.16, 1, 0.3, 1],
-              }}
-              style={{
-                width: p.size,
-                height: p.size,
-                marginLeft: -p.size / 2,
-                marginTop: -p.size / 2,
-                background: st.color,
-                boxShadow: `0 0 10px ${st.color}`,
               }}
             />
           );
@@ -335,8 +424,8 @@ export function GojoBurst({ fx, kind }) {
         {/* Teks kecil 領域展開 saat domain (di bawah, tidak ganggu bola) */}
         {isDomain && (
           <motion.div
-            className="absolute left-0 right-0 flex justify-center text-kinari-light"
-            style={{ top: '26%' }}
+            className="absolute left-0 right-0 flex justify-center"
+            style={{ top: '26%', color: GOJO_RIM }}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reduced ? 0 : 0.35, duration: reduced ? 0 : 0.4 }}
