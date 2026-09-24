@@ -48,6 +48,34 @@ export const GOJO_STYLE = {
 export const gojoCrackCount = (streak = 0) =>
   Math.min(3 + Math.floor(streak / 2), 14);
 
+// Bola teknik (permintaan user):
+//   ao  → 1 bola BIRU datang dari KANAN menuju tengah
+//   aka → 1 bola MERAH datang dari KIRI menuju tengah
+//   茈  → DUA bola (biru dari kanan + merah dari kiri) TABRAKAN di tengah → ungu
+// domain & salah tidak pakai bola (domain = gelombang, salah = wash polos).
+// fromVw/toVw = offset horizontal dari tengah layar, satuan vw (62 = di luar layar).
+// Murni & deterministik → bisa dites.
+export const GOJO_SPHERE_OFFSCREEN_VW = 62;
+
+export const gojoSpheres = (technique) => {
+  const R = GOJO_SPHERE_OFFSCREEN_VW;   // kanan
+  const L = -GOJO_SPHERE_OFFSCREEN_VW;  // kiri
+  if (technique === 'ao') {
+    return [{ id: 'ao', color: GOJO_STYLE.ao.color, fromVw: R, toVw: 0, size: 112, dur: 0.62, delay: 0 }];
+  }
+  if (technique === 'aka') {
+    return [{ id: 'aka', color: GOJO_STYLE.aka.color, fromVw: L, toVw: 0, size: 112, dur: 0.62, delay: 0 }];
+  }
+  if (technique === 'murasaki') {
+    return [
+      { id: 'ao',  color: GOJO_STYLE.ao.color,  fromVw: R, toVw: 0, size: 92, dur: 0.5, delay: 0 },
+      { id: 'aka', color: GOJO_STYLE.aka.color, fromVw: L, toVw: 0, size: 92, dur: 0.5, delay: 0 },
+    ];
+  }
+  return [];
+};
+
+
 // Partikel: hisap (ao/domain) / ledak (aka) / spiral (murasaki).
 // Murni & deterministik (rng bisa di-inject). Animasinya pakai transform/opacity.
 export const gojoParticles = (technique, seed = 1, rng = Math.random) => {
