@@ -4,9 +4,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const PACK_RARITY = {
-  common:    { label: 'COMMON',    weight: 50 },
-  rare:      { label: 'RARE',      weight: 30 },
-  legendary: { label: 'LEGENDARY', weight: 20 },
+  common:    { label: 'COMMON',    weight: 25 },
+  rare:      { label: 'RARE',      weight: 15 },
+  legendary: { label: 'LEGENDARY', weight: 9  },
+  special:   { label: 'SPECIAL',   weight: 2  },
 };
 
 export const PACKS = [
@@ -47,6 +48,15 @@ export const PACKS = [
     desc: 'Tinta sumi: cap hanko & ensō, dentum taiko',
     desc_en: 'Sumi ink: hanko seal & ensō, taiko drum',
     price: 2500, rarity: 'legendary', visual: 'ink', voice: 'taiko',
+  },
+  {
+    // Pack #7 — Gojo Satoru. Sementara DUMMY dulu: pakai visual 'gojo'
+    // (placeholder ungu) + voice 'gojo' (synth). Efek mewah 蒼→赫→茈→無量空処
+    // & aset suara menyusul.
+    id: 'pack_07', name: 'Gojo Satoru', kanji: '五条悟', icon: '🟣',
+    desc: 'Domain & Infinity: 蒼→赫→茈 (efek menyusul)',
+    desc_en: 'Domain & Infinity: Ao→Aka→Murasaki (FX coming)',
+    price: 2500, rarity: 'special', visual: 'gojo', voice: 'gojo',
   },
 ];
 

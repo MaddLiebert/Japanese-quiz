@@ -348,6 +348,24 @@ function EffectLayer({ fx, drops, visual }) {
           <span className="text-[18vw] font-serif font-black text-sumi/25 select-none">仮</span>
         </motion.div>
       )}
+
+      {/* ── Gojo Satoru (pack 'gojo') — DUMMY dulu ──────────────────────────────
+          Placeholder ungu + kanji 五条悟 samar. Efek mewah 蒼→赫→茈→無量空処
+          menyusul (lihat plan). Sementara ini hanya penanda bahwa pack aktif. */}
+      {visual === 'gojo' && fx && (
+        <motion.div
+          key={`gojo-${fx.id}`}
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: [0, 0.85, 0], scale: [0.92, 1.04, 1] }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
+          className="absolute inset-0 flex items-center justify-center"
+          style={{ background: 'radial-gradient(circle at 50% 50%, rgba(156,39,176,0.18), transparent 70%)' }}
+        >
+          <span className="text-[18vw] font-serif font-black select-none" style={{ color: '#9c27b0', opacity: 0.3 }}>
+            五条悟
+          </span>
+        </motion.div>
+      )}
     </div>
   );
 }

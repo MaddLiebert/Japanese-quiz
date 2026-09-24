@@ -83,6 +83,7 @@ test('reelTargetIcons: memetakan hasil lewat iconOf', () => {
 test('maxRarity: pilih tingkat tertinggi', () => {
   assert.equal(maxRarity(['common', 'rare', 'common']), 'rare');
   assert.equal(maxRarity(['common', 'legendary', 'rare']), 'legendary');
+  assert.equal(maxRarity(['common', 'special', 'legendary']), 'special');
   assert.equal(maxRarity(['common']), 'common');
   assert.equal(maxRarity([]), 'common');
   assert.equal(maxRarity(['ngawur', 'rare']), 'rare');

@@ -41,7 +41,7 @@ export function reelTargetIcons(results, iconOf) {
 }
 
 // Rarity tertinggi dari daftar rarity (untuk menentukan fanfare).
-const RARITY_RANK = { common: 0, rare: 1, legendary: 2 };
+const RARITY_RANK = { common: 0, rare: 1, legendary: 2, special: 3 };
 export function maxRarity(rarities) {
   return (rarities || []).reduce(
     (best, r) => ((RARITY_RANK[r] ?? 0) > (RARITY_RANK[best] ?? 0) ? r : best),

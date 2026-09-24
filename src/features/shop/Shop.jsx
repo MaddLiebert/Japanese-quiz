@@ -14,6 +14,7 @@ const RARITY_STYLE = {
   common:    { bg: 'bg-kinari-light', text: 'text-sumi',         border: 'border-sumi' },
   rare:      { bg: 'bg-ai',           text: 'text-kinari-light', border: 'border-sumi' },
   legendary: { bg: 'bg-shu',          text: 'text-kinari-light', border: 'border-sumi' },
+  special:   { bg: 'bg-[#9c27b0]',    text: 'text-kinari-light', border: 'border-sumi' },
 };
 
 export function Shop() {
@@ -157,8 +158,8 @@ export function Shop() {
               </div>
               <p className="text-[11px] font-bold mt-4 text-kinari-light/80">
                 {language === 'id'
-                  ? 'Duplikat di-refund 50 🪙. Peluang: common 50% · rare 30% · legendary 20%.'
-                  : 'Duplicates refund 50 🪙. Odds: common 50% · rare 30% · legendary 20%.'}
+                  ? 'Duplikat di-refund 50 🪙. Peluang: common 50% · rare 30% · legendary 18% · special 2%.'
+                  : 'Duplicates refund 50 🪙. Odds: common 50% · rare 30% · legendary 18% · special 2%.'}
               </p>
               <p className="text-[11px] font-bold mt-1 text-kinari-light/70">
                 {language === 'id'
