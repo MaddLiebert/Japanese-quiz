@@ -384,14 +384,44 @@ export const gojoStars = (seed = 1, count = 64, rng = Math.random) => {
 // Keluhan user: bola ao/aka kelihatan "kosong / gak mencekam" dan teks 蒼/赫
 // hilang saat jadi mode bola. Tiga penopang drama, TANPA ledakan (tetap persist):
 //   1. label kanji teknik (蒼 / 赫) menempel di sisi bola
-//   2. 集中線 (garis ketegangan) memancar keluar dari sisi bola
+//   2. 集中線 (garis ketegangan) memancarkan dari sisi bola
 //   3. charge ring berdenyut mengembang lalu mengecil (kekuatan terkumpul)
 
-// Label teknik untuk bola: kanji + sisi + warna. Selain ao/aka → null.
+// Gelapkan hex: kalikan tiap kanal dengan faktor (1 = warna sama, 0 = hitam).
+export const darkenHex = (hex, factor = 0.5) => {
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(hex));
+  if (!m) return hex;
+  const n = parseInt(m[1], 16);
+  const f = Math.min(1, Math.max(0, factor));
+  const ch = (v) => Math.round(v * f);
+  const r = ch((n >> 16) & 255), g = ch((n >> 8) & 255), b = ch(n & 255);
+  return '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
+};
+
+// Label teknik untuk bola: kanji + sisi + warna + parameter "greget".
+// Selain ao/aka → null.
 export const gojoBallLabel = (technique) => {
-  if (technique === 'ao') return { kanji: GOJO_STYLE.ao.kanji, side: 'right', color: GOJO_STYLE.ao.color };
-  if (technique === 'aka') return { kanji: GOJO_STYLE.aka.kanji, side: 'left', color: GOJO_STYLE.aka.color };
+  if (technique === 'ao') {
+    return {
+      kanji: GOJO_STYLE.ao.kanji, side: 'right', color: GOJO_STYLE.ao.color,
+      fontScale: 0.66, strokeWidth: 5, glow: '0 0 20px, 0 0 44px',
+    };
+  }
+  if (technique === 'aka') {
+    return {
+      kanji: GOJO_STYLE.aka.kanji, side: 'left', color: GOJO_STYLE.aka.color,
+      fontScale: 0.66, strokeWidth: 5, glow: '0 0 20px, 0 0 44px',
+    };
+  }
   return null;
+};
+
+// Vignette latar: layar menggelap dengan warna LEBIH GELAP dari bola saat
+// ao/aka muncul. dark = versi gelap warna bola; side = dari sisi mana fokus.
+export const gojoBallVignette = (technique) => {
+  const label = gojoBallLabel(technique);
+  if (!label) return null;
+  return { dark: darkenHex(label.color, 0.26), side: label.side, color: label.color };
 };
 
 // 集中線 ketegangan: garis pendek memancar dari titik fokus (sisi bola), tetap
