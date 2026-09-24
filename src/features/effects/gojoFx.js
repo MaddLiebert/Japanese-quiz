@@ -110,6 +110,23 @@ export const gojoSphereAnim = (technique) => {
   };
 };
 
+// ── Bola PERSIST antar jawaban (konsep user) ────────────────────────────────
+// Bola TIDAK meledak tiap jawaban: ao muncul & muter diam di kanan, lalu aka
+// muncul & muter di kiri TANPA menghilangkan ao. Saat murasaki (bener #3 &
+// tiap milestone), kedua bola meluncur ke tengah lalu MELEDAK → reset kosong.
+//   technique: 'ao' | 'aka' | 'murasaki' | null | 'domain' | 'domain_zenith'
+export const GOJO_BALLS_EMPTY = { ao: false, aka: false };
+
+export const nextGojoBalls = (current, technique) => {
+  const cur = current || GOJO_BALLS_EMPTY;
+  if (technique === 'ao') return { ao: true, aka: cur.aka };
+  if (technique === 'aka') return { ao: cur.ao, aka: true };
+  // murasaki (茈 = 蒼 + 赫): PAKSA kedua bola ada, walau baru satu yang muncul.
+  if (technique === 'murasaki') return { ao: true, aka: true };
+  // salah / domain / lainnya → reset (bener berikutnya mulai dari kosong).
+  return { ao: false, aka: false };
+};
+
 // ── Inti bola: putih-panas (bukan void hitam) ───────────────────────────────
 export const GOJO_CORE = '#ffffff';
 

@@ -7,7 +7,7 @@ import {
   GOJO_INK, GOJO_FLASH, gojoImpactFocus, gojoImpactStar,
   gojoSpeedLines, gojoHalftone, gojoOno,
   GOJO_CORE, gojoSphereShape, gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
-  gojoSphereAnim,
+  gojoSphereAnim, nextGojoBalls, GOJO_BALLS_EMPTY,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -227,6 +227,42 @@ test('gojoSphereAnim: durasi masuk (fade-in) cukup lama, bukan instan', () => {
 test('gojoSphereAnim: deterministik & domain kosong', () => {
   assert.deepEqual(gojoSphereAnim('ao'), gojoSphereAnim('ao'));
   assert.equal(gojoSphereAnim('domain'), null);
+});
+
+// ── Bola PERSIST antar jawaban (konsep user) ────────────────────────────────
+// benar#1 ao → biru nempel kanan · benar#2 aka → merah nempel kiri (ao TETAP)
+// benar#3 murasaki → dua bola ke tengah MELEDAK → reset (kosong)
+
+test('nextGojoBalls: benar#1 ao → hanya bola ao', () => {
+  const r = nextGojoBalls(GOJO_BALLS_EMPTY, 'ao');
+  assert.deepEqual(r, { ao: true, aka: false });
+});
+
+test('nextGojoBalls: benar#2 aka → ao TETAP + aka muncul (dua bola)', () => {
+  const afterAo = nextGojoBalls(GOJO_BALLS_EMPTY, 'ao');
+  const r = nextGojoBalls(afterAo, 'aka');
+  assert.equal(r.ao, true, 'ao masih ada saat aka muncul');
+  assert.equal(r.aka, true);
+});
+
+test('nextGojoBalls: murasaki → PAKSA dua bola (kanon 茈 = 蒼+赫)', () => {
+  // walau baru ao yang muncul, murasaki memaksa keduanya ada
+  const r = nextGojoBalls({ ao: true, aka: false }, 'murasaki');
+  assert.equal(r.ao, true);
+  assert.equal(r.aka, true);
+});
+
+test('nextGojoBalls: setelah ledakan → reset kosong (bener#4 mulai dari nol)', () => {
+  const r = nextGojoBalls({ ao: true, aka: true }, null);
+  assert.deepEqual(r, { ao: false, aka: false });
+  // dan #4 (ao) mulai bersih lagi
+  assert.deepEqual(nextGojoBalls(r, 'ao'), { ao: true, aka: false });
+});
+
+test('nextGojoBalls: tidak mengubah input (immutable)', () => {
+  const input = { ao: true, aka: false };
+  nextGojoBalls(input, 'aka');
+  assert.deepEqual(input, { ao: true, aka: false });
 });
 
 // ── Partikel = serpihan tinta hard-edge ─────────────────────────────────────
