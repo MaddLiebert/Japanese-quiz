@@ -379,3 +379,53 @@ export const gojoStars = (seed = 1, count = 64, rng = Math.random) => {
   }
   return out;
 };
+
+// ── DRAMA bola persist (ao/aka) ─────────────────────────────────────────────
+// Keluhan user: bola ao/aka kelihatan "kosong / gak mencekam" dan teks 蒼/赫
+// hilang saat jadi mode bola. Tiga penopang drama, TANPA ledakan (tetap persist):
+//   1. label kanji teknik (蒼 / 赫) menempel di sisi bola
+//   2. 集中線 (garis ketegangan) memancar keluar dari sisi bola
+//   3. charge ring berdenyut mengembang lalu mengecil (kekuatan terkumpul)
+
+// Label teknik untuk bola: kanji + sisi + warna. Selain ao/aka → null.
+export const gojoBallLabel = (technique) => {
+  if (technique === 'ao') return { kanji: GOJO_STYLE.ao.kanji, side: 'right', color: GOJO_STYLE.ao.color };
+  if (technique === 'aka') return { kanji: GOJO_STYLE.aka.kanji, side: 'left', color: GOJO_STYLE.aka.color };
+  return null;
+};
+
+// 集中線 ketegangan: garis pendek memancar dari titik fokus (sisi bola), tetap
+// di sisinya (ao x>=50, aka x<=50) → TIDAK menyilang tengah (jaga konsep persist).
+export const gojoTensionLines = (technique, seed = 1, rng = Math.random, count = 24) => {
+  const label = gojoBallLabel(technique);
+  if (!label) return [];
+  const fx = technique === 'ao' ? 80 : 20;   // pusat fokus (kanan / kiri)
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    const a = rng() * Math.PI * 2;
+    const inner = 10 + rng() * 6;
+    const len = 12 + rng() * 22;
+    const from = [fx + Math.cos(a) * inner, 50 + Math.sin(a) * inner * 1.15];
+    const to = [fx + Math.cos(a) * (inner + len), 50 + Math.sin(a) * (inner + len) * 1.15];
+    // Jaminan: garis tidak menyeberang ke sisi lain.
+    if (technique === 'ao') { to[0] = Math.max(to[0], 50); from[0] = Math.max(from[0], 50); }
+    else { to[0] = Math.min(to[0], 50); from[0] = Math.min(from[0], 50); }
+    out.push({
+      id: `${seed}-tension-${i}`,
+      from: [clamp100(from[0]), clamp100(from[1])],
+      to: [clamp100(to[0]), clamp100(to[1])],
+      width: 0.5 + rng() * 1.6,
+      delay: rng() * 0.9,          // denyut tidak serempak → hidup
+    });
+  }
+  return out;
+};
+
+// Charge ring: cincin berdenyut (kekuatan terkumpul) di sekeliling bola.
+// ringScale > 1 = melebar; ringDur = periode denyut (detik).
+export const gojoCharge = (technique) => {
+  if (technique === 'ao' || technique === 'aka') {
+    return { ringDur: 1.6, ringScale: 1.9, ringWidth: 3, pulseDur: 1.2 };
+  }
+  return null;
+};

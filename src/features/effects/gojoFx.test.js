@@ -8,6 +8,7 @@ import {
   gojoSpeedLines, gojoHalftone, gojoOno,
   GOJO_CORE, gojoSphereShape, gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
   gojoSphereAnim, nextGojoBalls, GOJO_BALLS_EMPTY,
+  gojoBallLabel, gojoTensionLines, gojoCharge,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -380,4 +381,57 @@ test('gojoTendrils: deterministik, titik valid 0..100', () => {
 test('gojoHalo: hanya murasaki, 1 cincin', () => {
   assert.equal(gojoHalo('murasaki', 1, () => 0.5).length, 1);
   assert.equal(gojoHalo('ao', 1, () => 0.5).length, 0);
+});
+
+// ── Drama bola persist (ao/aka): label kanji + 集中線 + charge ring ──────────
+// Keluhan user: "ao sama aka kurang dramatis kek kosong gitu gak mencekam sama
+// teks ao aka nya gak ada". Bola persist harus tetap dramatis & ada teks 蒼/赫.
+
+test('gojoBallLabel: ao=蒼(kanan), aka=赫(kiri), lain=null', () => {
+  const ao = gojoBallLabel('ao');
+  assert.equal(ao.kanji, '蒼');
+  assert.equal(ao.side, 'right');
+  assert.equal(ao.color, GOJO_STYLE.ao.color);
+  const aka = gojoBallLabel('aka');
+  assert.equal(aka.kanji, '赫');
+  assert.equal(aka.side, 'left');
+  assert.equal(gojoBallLabel('murasaki'), null);
+  assert.equal(gojoBallLabel(null), null);
+});
+
+test('gojoTensionLines: hanya ao/aka, deterministik, tetap di sisinya (tidak ke tengah)', () => {
+  assert.equal(gojoTensionLines('murasaki', 1, () => 0.5).length, 0);
+  assert.equal(gojoTensionLines(null, 1, () => 0.5).length, 0);
+  const a = gojoTensionLines('ao', 1, () => 0.5);
+  const b = gojoTensionLines('ao', 1, () => 0.5);
+  assert.deepEqual(a, b);
+  assert.equal(a.length, 24);
+  for (const l of a) {
+    for (const p of [l.from, l.to]) {
+      assert.ok(p[0] >= 50 && p[0] <= 100, `ao: x=${p[0]} harus di kanan (>=50)`);
+      assert.ok(p[1] >= 0 && p[1] <= 100, 'y dalam 0..100');
+    }
+    assert.ok(l.width > 0);
+  }
+  for (const l of gojoTensionLines('aka', 1, () => 0.5)) {
+    for (const p of [l.from, l.to]) assert.ok(p[0] <= 50, `aka: x=${p[0]} harus di kiri`);
+  }
+  // Robustness acak: tetap tidak melewati tengah.
+  for (let it = 0; it < 200; it++) {
+    for (const l of gojoTensionLines('ao', it, Math.random)) {
+      assert.ok(l.from[0] >= 50 && l.to[0] >= 50, `ao acak lewat tengah (${l.from[0]},${l.to[0]})`);
+    }
+    for (const l of gojoTensionLines('aka', it, Math.random)) {
+      assert.ok(l.from[0] <= 50 && l.to[0] <= 50, `aka acak lewat tengah (${l.from[0]},${l.to[0]})`);
+    }
+  }
+});
+
+test('gojoCharge: ao/aka punya parameter denyut, lain null', () => {
+  for (const t of ['ao', 'aka']) {
+    const c = gojoCharge(t);
+    assert.ok(c && c.ringDur > 0 && c.ringScale > 1, `${t}: charge valid`);
+  }
+  assert.equal(gojoCharge('murasaki'), null);
+  assert.equal(gojoCharge(null), null);
 });
