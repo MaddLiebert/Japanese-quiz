@@ -84,6 +84,95 @@ export const gojoSpheres = (technique) => {
   return [];
 };
 
+// ── Inti bola: putih-panas (bukan void hitam) ───────────────────────────────
+export const GOJO_CORE = '#ffffff';
+
+// ── Bentuk bola per teknik (mengikuti referensi JJK) ────────────────────────
+//   ao       → orbit rings (2–3 cincin elips nyelimutin)
+//   aka      → pita vortex (ribbon tebal membelit)
+//   murasaki → cabang petir (tendril) + halo besar
+export const gojoSphereShape = (technique) => {
+  if (technique === 'ao') return { rings: 3, ribbons: 0, tendrils: 0, halo: 0 };
+  if (technique === 'aka') return { rings: 0, ribbons: 4, tendrils: 0, halo: 0 };
+  if (technique === 'murasaki') return { rings: 0, ribbons: 0, tendrils: 6, halo: 1 };
+  return { rings: 0, ribbons: 0, tendrils: 0, halo: 0 };
+};
+
+// Orbit rings (ellipse miring) — ruang 0..100, pusat 50,50.
+export const gojoOrbitRings = (technique, seed = 1, rng = Math.random) => {
+  const n = gojoSphereShape(technique).rings;
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    out.push({
+      id: `${seed}-ring-${i}`,
+      rx: 52 + rng() * 16,
+      ry: 14 + rng() * 12,        // rx > ry → terlihat miring
+      rot: Math.round(rng() * 180),
+      width: 1.6 + rng() * 1.4,
+      dur: 2.2 + rng() * 1.6,
+      delay: rng() * 0.2,
+    });
+  }
+  return out;
+};
+
+// Pita vortex (aka): busur elips tebal yang melilit bola.
+export const gojoRibbons = (technique, seed = 1, rng = Math.random) => {
+  const n = gojoSphereShape(technique).ribbons;
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    out.push({
+      id: `${seed}-ribbon-${i}`,
+      rx: 46 + rng() * 14,
+      ry: 20 + rng() * 18,
+      rot: Math.round(rng() * 180),
+      width: 3 + rng() * 3,
+      dur: 1.8 + rng() * 1.4,
+      delay: rng() * 0.15,
+      dir: rng() < 0.5 ? 1 : -1,
+    });
+  }
+  return out;
+};
+
+// Cabang petir (murasaki): polyline bercabang keluar dari tepi bola.
+export const gojoTendrils = (technique, seed = 1, rng = Math.random) => {
+  const n = gojoSphereShape(technique).tendrils;
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const a = rng() * Math.PI * 2;
+    const len = 20 + rng() * 25;
+    const steps = 4;
+    const pts = [];
+    for (let s = 0; s <= steps; s++) {
+      const t = s / steps;
+      const r = 38 + t * len;
+      const jit = (rng() * 2 - 1) * 7;
+      const aa = a + (rng() * 2 - 1) * 0.5 * t;
+      pts.push([clamp100(50 + Math.cos(aa) * (r + jit)), clamp100(50 + Math.sin(aa) * (r + jit))]);
+    }
+    out.push({ id: `${seed}-tendril-${i}`, points: pts, width: 1.2 + rng() * 1.4, delay: rng() * 0.15 });
+  }
+  return out;
+};
+
+// Halo besar (murasaki): 1 cincin lebar mengelilingi bola.
+export const gojoHalo = (technique, seed = 1, rng = Math.random) => {
+  const n = gojoSphereShape(technique).halo;
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    out.push({
+      id: `${seed}-halo-${i}`,
+      rx: 74 + rng() * 10,
+      ry: 26 + rng() * 10,
+      rot: Math.round(rng() * 40 - 20),
+      width: 3 + rng() * 2,
+      dur: 3.2 + rng() * 1.4,
+    });
+  }
+  return out;
+};
+
 // ── Titik fokus impact (vw dari tengah) ─────────────────────────────────────
 //   ao → kanan · aka → kiri · murasaki/domain → tengah
 export const gojoImpactFocus = (technique) => {

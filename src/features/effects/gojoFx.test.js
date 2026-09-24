@@ -6,6 +6,7 @@ import {
   GOJO_VOID, GOJO_RIM,
   GOJO_INK, GOJO_FLASH, gojoImpactFocus, gojoImpactStar,
   gojoSpeedLines, gojoHalftone, gojoOno,
+  GOJO_CORE, gojoSphereShape, gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -261,4 +262,61 @@ test('gojoStars: deterministik & jumlah sesuai', () => {
     assert.ok(s.x >= 0 && s.x <= 100 && s.y >= 0 && s.y <= 100, 'bintang di dalam layar');
     assert.ok(s.size > 0);
   }
+});
+
+// ── Bola plasma: bentuk per teknik (mengikuti referensi JJK) ────────────────
+
+test('GOJO_CORE = putih (inti menyala, bukan void hitam)', () => {
+  assert.equal(GOJO_CORE.toLowerCase(), '#ffffff');
+});
+
+test('gojoSphereShape: ao=rings, aka=ribbons, murasaki=tendrils+halo', () => {
+  const ao = gojoSphereShape('ao');
+  assert.ok(ao.rings >= 2, 'ao = orbit rings');
+  assert.equal(ao.ribbons, 0);
+  assert.equal(ao.tendrils, 0);
+  const aka = gojoSphereShape('aka');
+  assert.ok(aka.ribbons >= 3, 'aka = pita vortex');
+  assert.equal(aka.rings, 0);
+  const mura = gojoSphereShape('murasaki');
+  assert.ok(mura.tendrils >= 4, 'murasaki = cabang petir');
+  assert.ok(mura.halo >= 1, 'murasaki = halo besar');
+});
+
+test('gojoOrbitRings: deterministik, jumlah = shape, elips (rx>ry)', () => {
+  const a = gojoOrbitRings('ao', 1, () => 0.5);
+  const b = gojoOrbitRings('ao', 1, () => 0.5);
+  assert.deepEqual(a, b);
+  assert.equal(a.length, gojoSphereShape('ao').rings);
+  for (const r of a) {
+    assert.ok(r.rx > r.ry, 'harus elips (miring)');
+    assert.ok(r.width > 0 && r.dur > 0);
+  }
+  assert.equal(gojoOrbitRings('aka', 1, () => 0.5).length, 0, 'aka tanpa rings');
+});
+
+test('gojoRibbons: deterministik, jumlah = shape, pita tebal', () => {
+  const a = gojoRibbons('aka', 1, () => 0.5);
+  const b = gojoRibbons('aka', 1, () => 0.5);
+  assert.deepEqual(a, b);
+  assert.equal(a.length, gojoSphereShape('aka').ribbons);
+  for (const r of a) assert.ok(r.width >= 2, 'pita harus tebal');
+});
+
+test('gojoTendrils: deterministik, titik valid 0..100', () => {
+  const a = gojoTendrils('murasaki', 1, () => 0.5);
+  const b = gojoTendrils('murasaki', 1, () => 0.5);
+  assert.deepEqual(a, b);
+  assert.equal(a.length, gojoSphereShape('murasaki').tendrils);
+  for (const t of a) {
+    assert.ok(t.points.length >= 4, 'tendril minimal 4 titik');
+    for (const [x, y] of t.points) {
+      assert.ok(x >= 0 && x <= 100 && y >= 0 && y <= 100, `titik (${x},${y}) di luar 0..100`);
+    }
+  }
+});
+
+test('gojoHalo: hanya murasaki, 1 cincin', () => {
+  assert.equal(gojoHalo('murasaki', 1, () => 0.5).length, 1);
+  assert.equal(gojoHalo('ao', 1, () => 0.5).length, 0);
 });
