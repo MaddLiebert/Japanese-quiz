@@ -70,18 +70,44 @@ export const gojoSpheres = (technique) => {
   const R = GOJO_SPHERE_OFFSCREEN_VW;
   const A = GOJO_EDGE_ANCHOR_VW;
   if (technique === 'ao') {
-    return [{ id: 'ao', color: GOJO_STYLE.ao.color, fromVw: R, anchorVw: A, size: 128, dur: 0.5, delay: 0 }];
+    return [{ id: 'ao', color: GOJO_STYLE.ao.color, fromVw: R, anchorVw: A, size: 128, dur: 0.9, delay: 0 }];
   }
   if (technique === 'aka') {
-    return [{ id: 'aka', color: GOJO_STYLE.aka.color, fromVw: -R, anchorVw: -A, size: 128, dur: 0.5, delay: 0 }];
+    return [{ id: 'aka', color: GOJO_STYLE.aka.color, fromVw: -R, anchorVw: -A, size: 128, dur: 0.9, delay: 0 }];
   }
   if (technique === 'murasaki') {
     return [
-      { id: 'ao',  color: GOJO_STYLE.ao.color,  fromVw: R,  anchorVw: 0, size: 96, dur: 0.5, delay: 0 },
-      { id: 'aka', color: GOJO_STYLE.aka.color, fromVw: -R, anchorVw: 0, size: 96, dur: 0.5, delay: 0 },
+      { id: 'ao',  color: GOJO_STYLE.ao.color,  fromVw: R,  anchorVw: 0, size: 96, dur: 0.75, delay: 0 },
+      { id: 'aka', color: GOJO_STYLE.aka.color, fromVw: -R, anchorVw: 0, size: 96, dur: 0.75, delay: 0 },
     ];
   }
   return [];
+};
+
+// ── Timing bola: muncul PERLAHAN, tahan lama (bukan pop-in instan) ──────────
+// Keluhan user: "terlalu cepet munculnya". Sebelumnya opacity penuh dalam 0.1
+// durasi → kelihatan nge-pop. Sekarang naik bertahap (keyframe 0 → 0.25 → 0.65
+// → 1) dan seluruh efek ditahan lebih lama sebelum di-unmount.
+export const gojoSphereAnim = (technique) => {
+  if (!technique || technique === 'domain' || technique === 'domain_zenith') return null;
+  // times: kapan tiap keyframe opacity/scale terjadi (fraksi durasi)
+  // opacity: 0 → 0.25 → 0.65 → 1 → 0  (perlahan masuk, perlahan pergi)
+  const times = [0, 0.2, 0.5, 0.8, 1];
+  const opacity = [0, 0.25, 0.65, 1, 0];
+  const scale = technique === 'murasaki'
+    ? [0.5, 0.72, 0.92, 1.06, 1.16]
+    : [0.55, 0.76, 0.94, 1.04, 1.14];
+  const dur = technique === 'murasaki' ? 1.7 : 1.9;   // detik (opacity + scale)
+  return {
+    dur,
+    times,
+    opacity,
+    scale,
+    travelMs: Math.round((technique === 'murasaki' ? 0.75 : 0.9) * 1000),
+    fadeInMs: Math.round(dur * 1000 * 0.8),  // saat opacity pertama mencapai 1
+    fadeOutMs: Math.round(dur * 1000 * 0.2),
+    holdMs: 2000,                             // efek ditahan >= 2s sebelum hilang
+  };
 };
 
 // ── Inti bola: putih-panas (bukan void hitam) ───────────────────────────────

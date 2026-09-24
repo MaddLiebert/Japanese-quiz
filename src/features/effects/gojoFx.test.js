@@ -7,6 +7,7 @@ import {
   GOJO_INK, GOJO_FLASH, gojoImpactFocus, gojoImpactStar,
   gojoSpeedLines, gojoHalftone, gojoOno,
   GOJO_CORE, gojoSphereShape, gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
+  gojoSphereAnim,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -202,6 +203,30 @@ test('gojoSpheres: warna bola = warna kanon, domain tanpa bola', () => {
   assert.deepEqual(gojoSpheres('domain'), []);
   assert.deepEqual(gojoSpheres('domain_zenith'), []);
   assert.deepEqual(gojoSpheres(null), []);
+});
+
+// ── Timing bola: muncul perlahan (bukan pop-in instan) ──────────────────────
+
+test('gojoSphereAnim: muncul PERLAHAN — opacity belum penuh di awal', () => {
+  const a = gojoSphereAnim('ao');
+  assert.ok(Array.isArray(a.times), 'times = keyframe opacity');
+  // keyframe pertama opacity 0, dan belum penuh (1) di paruh awal
+  assert.equal(a.times[0], 0, 'mulai dari transparan');
+  const halfIdx = a.times.findIndex((t) => t >= 0.5);
+  assert.ok(a.opacity[halfIdx] < 1, 'belum penuh di tengah → muncul perlahan');
+  assert.ok(a.holdMs >= 1600, `efek bertahan cukup lama (>=1.6s), dapat ${a.holdMs}`);
+});
+
+test('gojoSphereAnim: durasi masuk (fade-in) cukup lama, bukan instan', () => {
+  for (const t of ['ao', 'aka', 'murasaki']) {
+    const a = gojoSphereAnim(t);
+    assert.ok(a.fadeInMs >= 400, `${t}: fade-in >= 400ms, dapat ${a.fadeInMs}`);
+  }
+});
+
+test('gojoSphereAnim: deterministik & domain kosong', () => {
+  assert.deepEqual(gojoSphereAnim('ao'), gojoSphereAnim('ao'));
+  assert.equal(gojoSphereAnim('domain'), null);
 });
 
 // ── Partikel = serpihan tinta hard-edge ─────────────────────────────────────

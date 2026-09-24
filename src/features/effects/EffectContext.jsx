@@ -187,10 +187,13 @@ export function EffectProvider({ children }) {
           : playCorrectSound();
 
     // Lama tampil: pack 'hina' → ikuti durasi klip suara (min. 1.2s agar kilau/teks
-    // terlihat); pack lain (ink/dummy) → hold efek aslinya.
+    // terlihat); pack 'gojo' → tahan lebih lama agar bola plasma (fade-in ~1.5s)
+    // tidak terpotong sebelum selesai; pack lain (ink/dummy) → hold efek aslinya.
     const holdMs = activeVisual === 'hina'
       ? hinaGifHoldMs(kind === 'streak' ? 'streak' : type, clipMs)
-      : cfg.hold;
+      : activeVisual === 'gojo'
+        ? Math.max(cfg.hold, 2200)   // bola plasma butuh waktu muncul & tampil
+        : cfg.hold;
     const gifHoldMs = holdMs;   // dipakai komponen GIF sebagai referensi (informatif)
 
     setFx({
