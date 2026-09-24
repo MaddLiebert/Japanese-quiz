@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  gojoTechniqueFor, isGojoMilestone, gojoCrackCount, gojoParticles, GOJO_STYLE, gojoSpheres,
+  gojoTechniqueFor, isGojoMilestone, gojoCrackCount, gojoParticles, GOJO_STYLE,
+  gojoSpheres, gojoSmoke, gojoBolts, gojoBoltPath, gojoStars,
+  GOJO_VOID, GOJO_RIM, GOJO_EDGE_BAND_VW,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -59,25 +61,7 @@ test('gojoCrackCount: naik per level, ada batas atas', () => {
   assert.ok(gojoCrackCount(3) >= 3);
 });
 
-// ── Partikel (deterministik dengan rng inject) ──────────────────────────────
-
-test('gojoParticles: jumlah wajar & deterministik dengan rng inject', () => {
-  const a = gojoParticles('ao', 1, () => 0.5);
-  const b = gojoParticles('ao', 1, () => 0.5);
-  assert.ok(a.length >= 12 && a.length <= 30);
-  assert.deepEqual(a, b);
-});
-
-test('gojoParticles: murasaki = spiral, aka = ledak keluar, ao = hisap masuk', () => {
-  const ao = gojoParticles('ao', 1, () => 0.5);
-  const aka = gojoParticles('aka', 1, () => 0.5);
-  const mura = gojoParticles('murasaki', 1, () => 0.5);
-  assert.equal(ao[0].out, false, 'ao = hisap (tidak keluar)');
-  assert.equal(aka[0].out, true, 'aka = ledak keluar');
-  assert.equal(mura[0].spiral, true, 'murasaki = spiral');
-});
-
-// ── Style ───────────────────────────────────────────────────────────────────
+// ── Style + warna petir hitam ───────────────────────────────────────────────
 
 test('GOJO_STYLE punya warna & kanji untuk tiap teknik', () => {
   for (const t of ['ao', 'aka', 'murasaki', 'domain', 'domain_zenith']) {
@@ -90,40 +74,116 @@ test('GOJO_STYLE punya warna & kanji untuk tiap teknik', () => {
   assert.equal(GOJO_STYLE.domain.kanji, '無量空処');
 });
 
-// ── Bola (permintaan user: ao dari kanan, aka dari kiri, murasaki tabrakan) ──
+test('GOJO_VOID & GOJO_RIM = hex valid (petir hitam + rim kebaca 2 tema)', () => {
+  assert.match(GOJO_VOID, /^#[0-9a-f]{6}$/i);
+  assert.match(GOJO_RIM, /^#[0-9a-f]{6}$/i);
+  assert.notEqual(GOJO_VOID.toLowerCase(), '#000000', 'jangan hitam pekat (tak kebaca di tema gelap)');
+});
 
-test('gojoSpheres: ao = 1 bola dari KANAN menuju tengah', () => {
+// ── Bola (REVISI: ao/aka DIAM di pinggir, murasaki tabrakan di tengah) ───────
+
+test('gojoSpheres: ao = dari KANAN, DIAM di pinggir (tidak ke tengah)', () => {
   const s = gojoSpheres('ao');
   assert.equal(s.length, 1);
-  assert.ok(s[0].fromVw > 0, 'ao harus datang dari kanan (fromVw > 0)');
-  assert.equal(s[0].toVw, 0, 'ao berakhir di tengah');
+  assert.ok(s[0].fromVw > 0, 'mulai dari kanan');
+  assert.ok(s[0].anchorVw > 0, 'berhenti di pinggir kanan, bukan tengah');
+  assert.ok(s[0].anchorVw >= 20, 'anchor cukup ke pinggir');
 });
 
-test('gojoSpheres: aka = 1 bola dari KIRI menuju tengah', () => {
+test('gojoSpheres: aka = dari KIRI, DIAM di pinggir', () => {
   const s = gojoSpheres('aka');
   assert.equal(s.length, 1);
-  assert.ok(s[0].fromVw < 0, 'aka harus datang dari kiri (fromVw < 0)');
-  assert.equal(s[0].toVw, 0, 'aka berakhir di tengah');
+  assert.ok(s[0].fromVw < 0, 'mulai dari kiri');
+  assert.ok(s[0].anchorVw < 0, 'berhenti di pinggir kiri');
+  assert.ok(s[0].anchorVw <= -20, 'anchor cukup ke pinggir');
 });
 
-test('gojoSpheres: murasaki = DUA bola (kanan + kiri) tabrakan di tengah', () => {
+test('gojoSpheres: murasaki = DUA bola (kanan + kiri) tabrakan di TENGAH', () => {
   const s = gojoSpheres('murasaki');
   assert.equal(s.length, 2);
   assert.equal(s.filter((b) => b.fromVw > 0).length, 1, 'satu dari kanan');
   assert.equal(s.filter((b) => b.fromVw < 0).length, 1, 'satu dari kiri');
-  for (const b of s) assert.equal(b.toVw, 0, 'semua berakhir di tengah (titik tabrakan)');
+  for (const b of s) assert.equal(b.anchorVw, 0, 'semua berakhir di tengah (titik tabrakan)');
 });
 
-test('gojoSpheres: warna bola = warna kanon (ao biru, aka merah)', () => {
+test('gojoSpheres: warna bola = warna kanon, domain tanpa bola', () => {
   assert.equal(gojoSpheres('ao')[0].color, GOJO_STYLE.ao.color);
   assert.equal(gojoSpheres('aka')[0].color, GOJO_STYLE.aka.color);
   const mura = gojoSpheres('murasaki');
   assert.equal(mura.find((b) => b.id === 'ao').color, GOJO_STYLE.ao.color);
   assert.equal(mura.find((b) => b.id === 'aka').color, GOJO_STYLE.aka.color);
-});
-
-test('gojoSpheres: domain & teknik lain tidak pakai bola', () => {
   assert.deepEqual(gojoSpheres('domain'), []);
   assert.deepEqual(gojoSpheres('domain_zenith'), []);
   assert.deepEqual(gojoSpheres(null), []);
+});
+
+// ── Partikel = bara memanjang ───────────────────────────────────────────────
+
+test('gojoParticles: tiap bara punya panjang (len) & deterministik', () => {
+  const a = gojoParticles('ao', 1, () => 0.5);
+  const b = gojoParticles('ao', 1, () => 0.5);
+  assert.deepEqual(a, b);
+  assert.ok(a.length >= 12 && a.length <= 30);
+  for (const p of a) assert.ok(p.len > 0, 'bara harus punya panjang');
+});
+
+test('gojoParticles: murasaki = spiral, aka = ledak keluar, ao = hisap masuk', () => {
+  const ao = gojoParticles('ao', 1, () => 0.5);
+  const aka = gojoParticles('aka', 1, () => 0.5);
+  const mura = gojoParticles('murasaki', 1, () => 0.5);
+  assert.equal(ao[0].out, false, 'ao = hisap (tidak keluar)');
+  assert.equal(aka[0].out, true, 'aka = ledak keluar');
+  assert.equal(mura[0].spiral, true, 'murasaki = spiral');
+});
+
+// ── Asap 呪力 (dari tepi, tidak ke tengah) ──────────────────────────────────
+
+test('gojoSmoke: deterministik, dari tepi, tidak lewat band tepi', () => {
+  const a = gojoSmoke('ao', 1, () => 0.5);
+  const b = gojoSmoke('ao', 1, () => 0.5);
+  assert.deepEqual(a, b);
+  assert.ok(a.length >= 4, 'minimal 4 gumpalan asap');
+  for (const s of a) {
+    assert.ok(s.reach > 0 && s.reach <= GOJO_EDGE_BAND_VW, `reach ${s.reach} harus di dalam band tepi`);
+    assert.ok(s.edge >= 0 && s.edge <= 3, 'edge 0..3');
+    assert.ok(s.size > 0);
+  }
+});
+
+// ── Petir hitam (dari tepi, TIDAK sampai tengah) ────────────────────────────
+
+test('gojoBolts: semua titik jauh dari tengah (jangan ke tengah)', () => {
+  for (const t of ['ao', 'aka', 'murasaki']) {
+    const bolts = gojoBolts(t, 1, () => 0.5);
+    assert.ok(bolts.length >= 3, `${t}: minimal 3 petir`);
+    for (const b of bolts) {
+      for (const [x, y] of b.points) {
+        const dist = Math.hypot(x - 50, y - 50);
+        assert.ok(dist >= 16, `${t}: titik petir (${x},${y}) terlalu dekat tengah`);
+      }
+    }
+  }
+});
+
+test('gojoBoltPath: polyline valid di ruang 0..100, nempel di tepi bola', () => {
+  const pts = gojoBoltPath(() => 0.5).split(' ').map((s) => s.split(',').map(Number));
+  assert.ok(pts.length >= 4, 'minimal 4 titik');
+  for (const [x, y] of pts) {
+    assert.ok(x >= 0 && x <= 100 && y >= 0 && y <= 100, `titik (${x},${y}) di luar 0..100`);
+    const r = Math.hypot(x - 50, y - 50);
+    assert.ok(r >= 30, `titik harus di pinggir bola (r=${r.toFixed(1)})`);
+  }
+});
+
+// ── Bintang 無量空処 (domain) ───────────────────────────────────────────────
+
+test('gojoStars: deterministik & jumlah sesuai', () => {
+  const a = gojoStars(1, 40, () => 0.5);
+  const b = gojoStars(1, 40, () => 0.5);
+  assert.deepEqual(a, b);
+  assert.equal(a.length, 40);
+  for (const s of a) {
+    assert.ok(s.x >= 0 && s.x <= 100 && s.y >= 0 && s.y <= 100, 'bintang di dalam layar');
+    assert.ok(s.size > 0);
+  }
 });
