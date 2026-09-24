@@ -7,6 +7,8 @@ import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
 import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 import { GojoBurst } from './GojoBurst';
+import { GojoSpheres } from './GojoSpheres';
+import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Efek tinta washi (visual 'ink') — dipakai pack Sumi Taiko.
@@ -102,6 +104,10 @@ export function EffectProvider({ children }) {
   const { progress } = useUserStats();
   const [fx, setFx] = useState(null); // { kind, id, seed, angle, y } | null
   const [drops, setDrops] = useState([]);
+  // Bola Gojo PERSIST antar jawaban (konsep user): ao nempel, aka nyusul,
+  // murasaki → keduanya meluncur ke tengah lalu meledak (lalu reset).
+  const [gojoBalls, setGojoBalls] = useState(GOJO_BALLS_EMPTY);
+  const [gojoExplode, setGojoExplode] = useState(false);
   const streakRef = useRef(0);
   const timersRef = useRef([]);
 
@@ -211,22 +217,49 @@ export function EffectProvider({ children }) {
       onMilestone,
     });
     spawnInk(kind, cfg);
+
+    // ── Bola Gojo PERSIST (konsep user) ────────────────────────────────────
+    // ao → bola biru nempel kanan · aka → merah nempel kiri (biru TETAP)
+    // murasaki (bener #3 & milestone) → dua bola ke tengah lalu MELEDAK → reset
+    if (activeVisual === 'gojo') {
+      const tech = gojoTechniqueFor(kind, type === 'correct' ? streakRef.current : 0);
+      if (tech === 'murasaki') {
+        setGojoBalls({ ao: true, aka: true });
+        setGojoExplode(true);
+        const tr = setTimeout(() => {
+          setGojoBalls(GOJO_BALLS_EMPTY);
+          setGojoExplode(false);
+        }, 1300);   // bola meluncur (0.42s) + ledakan selesai → reset
+        timersRef.current.push(tr);
+      } else if (tech === 'ao' || tech === 'aka') {
+        setGojoExplode(false);
+        setGojoBalls((prev) => nextGojoBalls(prev, tech));   // akumulasi, bukan reset
+      } else {
+        setGojoExplode(false);                               // salah / domain → reset
+        setGojoBalls(GOJO_BALLS_EMPTY);
+      }
+    }
+
     const t = setTimeout(() => setFx(null), holdMs);
     timersRef.current.push(t);
   }, [active, spawnInk, activeVisual]);
 
-  const resetEffectStreak = useCallback(() => { streakRef.current = 0; }, []);
+  const resetEffectStreak = useCallback(() => {
+    streakRef.current = 0;
+    setGojoBalls(GOJO_BALLS_EMPTY);
+    setGojoExplode(false);
+  }, []);
 
   return (
     <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, active }}>
       {children}
-      <EffectLayer fx={fx} drops={drops} visual={activeVisual} />
+      <EffectLayer fx={fx} drops={drops} visual={activeVisual} gojoBalls={gojoBalls} gojoExplode={gojoExplode} />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -358,12 +391,16 @@ function EffectLayer({ fx, drops, visual }) {
       )}
 
       {/* ── Gojo Satoru (pack 'gojo') — 蒼 → 赫 → 茈 → 無量空処 ──────────────
-          Efek berlapis (wash+shake / partikel / bingkai sudut / retak streak /
-          teks teknik). Logika murni di gojoFx.js, komponen di GojoBurst.jsx. */}
+          Bola PERSIST di GojoSpheres (ao nempel kanan → aka nyusul kiri →
+          murasaki tabrakan & meledak). Ledakan anime & teks di GojoBurst
+          (hanya murasaki/domain; ao/aka mengembalikan null). */}
       {visual === 'gojo' && (
-        <AnimatePresence>
-          {fx && <GojoBurst key={`gojo-${fx.id}`} fx={fx} kind={kind} />}
-        </AnimatePresence>
+        <>
+          <GojoSpheres balls={gojoBalls} explode={gojoExplode} seed={fx?.id || 1} />
+          <AnimatePresence>
+            {fx && <GojoBurst key={`gojo-${fx.id}`} fx={fx} kind={kind} />}
+          </AnimatePresence>
+        </>
       )}
     </div>
   );
