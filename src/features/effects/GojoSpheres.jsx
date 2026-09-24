@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
-  GOJO_STYLE, GOJO_CORE,
+  GOJO_STYLE, GOJO_CORE, GOJO_INK,
   gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
+  gojoBallLabel, gojoTensionLines, gojoCharge,
 } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -35,6 +36,8 @@ function GojoBall({ tech, seed, reduced, explode }) {
   const [ribbons] = useState(() => gojoRibbons(tech, seed));
   const [tendrils] = useState(() => gojoTendrils(tech, seed));
   const [halos] = useState(() => gojoHalo(tech, seed));
+  const label = gojoBallLabel(tech);
+  const charge = gojoCharge(tech);
 
   const anchorVw = tech === 'ao' ? GOJO_EDGE_ANCHOR_VW : -GOJO_EDGE_ANCHOR_VW;
   const fromVw = tech === 'ao' ? GOJO_SPHERE_OFFSCREEN_VW : -GOJO_SPHERE_OFFSCREEN_VW;
@@ -66,11 +69,32 @@ function GojoBall({ tech, seed, reduced, explode }) {
           scale: { duration: 1.5, ease: 'easeInOut' },
         })}
     >
-      {/* halo lembut menyala (bukan garis) */}
-      <div
+      {/* aura menyala BERDENYUT (mencekam, bukan glow pasif) */}
+      <motion.div
         className="absolute rounded-full"
-        style={{ inset: -size * 0.4, background: `radial-gradient(circle, ${color}66, transparent 68%)` }}
+        style={{
+          inset: -size * 0.55,
+          background: `radial-gradient(circle, ${color}99 0 16%, ${color}55 32%, ${color}22 52%, transparent 72%)`,
+          willChange: 'transform, opacity',
+        }}
+        animate={reduced ? { opacity: 0.7 } : { opacity: [0.55, 0.95, 0.55], scale: [1, 1.09, 1] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       />
+      {/* charge ring — mengembang lalu hilang (kekuatan terkumpul) */}
+      {charge && (
+        <motion.div
+          className="absolute rounded-full"
+          style={{
+            inset: 0,
+            border: `${charge.ringWidth}px solid ${color}`,
+            boxShadow: `0 0 18px 2px ${color}88`,
+            willChange: 'transform, opacity',
+          }}
+          initial={{ scale: 1, opacity: 0.85 }}
+          animate={reduced ? { opacity: 0 } : { scale: [1, charge.ringScale], opacity: [0.85, 0] }}
+          transition={{ duration: charge.ringDur, repeat: reduced ? 0 : Infinity, ease: 'easeOut' }}
+        />
+      )}
       {/* badan plasma: inti PUTIH-panas → warna → tepi lembut (tanpa ring tinta) */}
       <div
         className="absolute inset-0 rounded-full"
@@ -137,7 +161,58 @@ function GojoBall({ tech, seed, reduced, explode }) {
           />
         ))}
       </svg>
+      {/* TEKS KANJI teknik (蒼 / 赫) — gaya manga, stroke tinta, denyut napas */}
+      {label && (
+        <motion.span
+          className="absolute left-1/2 top-1/2 font-serif font-black select-none"
+          style={{
+            x: '-50%', y: '-50%',
+            fontSize: size * 0.5,
+            color: GOJO_CORE,
+            WebkitTextStroke: `3px ${GOJO_INK}`,
+            textShadow: `0 0 16px ${color}, 0 0 30px ${color}`,
+            willChange: 'transform, opacity',
+          }}
+          animate={reduced ? { opacity: 0.95 } : { opacity: [0.85, 1, 0.85], scale: [1, 1.06, 1] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          {label.kanji}
+        </motion.span>
+      )}
     </motion.div>
+  );
+}
+
+// 集中線 ketegangan memancar dari sisi bola (ao kanan / aka kiri).
+// Digambar di layer (bukan di dalam bola) supaya garis bisa keluar dari bola.
+function GojoTension({ tech, seed, reduced }) {
+  const [lines] = useState(() => gojoTensionLines(tech, seed));
+  if (!lines.length) return null;
+  const color = GOJO_STYLE[tech].color;
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      {lines.map((l) => (
+        <motion.line
+          key={l.id}
+          x1={l.from[0]}
+          y1={l.from[1]}
+          x2={l.to[0]}
+          y2={l.to[1]}
+          stroke={color}
+          strokeWidth={l.width}
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          initial={{ opacity: 0 }}
+          animate={reduced ? { opacity: 0.35 } : { opacity: [0, 0.7, 0.25, 0.6, 0.3] }}
+          transition={{ duration: 0.7, repeat: reduced ? 0 : Infinity, repeatDelay: 0.4, delay: l.delay }}
+        />
+      ))}
+    </svg>
   );
 }
 
@@ -148,6 +223,8 @@ export function GojoSpheres({ balls, explode = false, seed = 1, reduced }) {
   if (!balls) return null;
   return (
     <div className="absolute inset-0 overflow-hidden">
+      {balls.ao && <GojoTension key="t-ao" tech="ao" seed={seed} reduced={red} />}
+      {balls.aka && <GojoTension key="t-aka" tech="aka" seed={seed + 7} reduced={red} />}
       {balls.ao && <GojoBall key="ao" tech="ao" seed={seed} reduced={red} explode={explode} />}
       {balls.aka && <GojoBall key="aka" tech="aka" seed={seed + 7} reduced={red} explode={explode} />}
     </div>
