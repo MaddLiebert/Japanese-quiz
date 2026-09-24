@@ -427,11 +427,13 @@ export const gojoBallVignette = (technique) => {
 // 集中線 ketegangan: garis pendek memancar dari titik fokus (sisi bola), tetap
 // di sisinya (ao x>=50, aka x<=50) → TIDAK menyilang tengah (jaga konsep persist).
 // focus opsional { x, y } (ruang 0..100) untuk HP (bola di sudut atas).
-export const gojoTensionLines = (technique, seed = 1, rng = Math.random, count = 24, focus = null) => {
+// maxY opsional: batasi semua titik agar tetap di atas (tidak kena kartu jawaban).
+export const gojoTensionLines = (technique, seed = 1, rng = Math.random, count = 24, focus = null, maxY = null) => {
   const label = gojoBallLabel(technique);
   if (!label) return [];
   const fx = focus ? focus.x : (technique === 'ao' ? 80 : 20);
   const fy = focus ? focus.y : 50;
+  const capY = (v) => (maxY == null ? v : Math.min(v, maxY));
   const out = [];
   for (let i = 0; i < count; i++) {
     const a = rng() * Math.PI * 2;
@@ -444,8 +446,8 @@ export const gojoTensionLines = (technique, seed = 1, rng = Math.random, count =
     else { to[0] = Math.min(to[0], 50); from[0] = Math.min(from[0], 50); }
     out.push({
       id: `${seed}-tension-${i}`,
-      from: [clamp100(from[0]), clamp100(from[1])],
-      to: [clamp100(to[0]), clamp100(to[1])],
+      from: [clamp100(from[0]), clamp100(capY(from[1]))],
+      to: [clamp100(to[0]), clamp100(capY(to[1]))],
       width: 0.5 + rng() * 1.6,
       delay: rng() * 0.9,          // denyut tidak serempak → hidup
     });

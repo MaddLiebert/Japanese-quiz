@@ -537,3 +537,15 @@ test('gojoTensionLines: terima focus kustom (HP: memancar dari sudut atas)', () 
     assert.ok(l.from[1] < 30, 'fokus di area atas');
   }
 });
+
+test('gojoTensionLines: maxY membatasi garis tetap di atas (tidak kena kartu)', () => {
+  // HP: fokus di sudut atas + maxY 24 → semua titik y <= 24 (di atas kartu jawaban).
+  const lines = gojoTensionLines('ao', 1, Math.random, 24, { x: 80, y: 11 }, 24);
+  assert.equal(lines.length, 24);
+  for (const l of lines) {
+    assert.ok(l.from[1] <= 24 && l.to[1] <= 24, `y harus <= 24, dapat from=${l.from[1]} to=${l.to[1]}`);
+  }
+  // tanpa maxY → tidak dibatasi (bisa lebih dari 24)
+  const free = gojoTensionLines('ao', 1, Math.random, 24, { x: 80, y: 50 });
+  assert.ok(free.some((l) => l.to[1] > 24), 'tanpa maxY garis boleh turun');
+});
