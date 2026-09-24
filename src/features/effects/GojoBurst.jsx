@@ -2,42 +2,40 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   gojoTechniqueFor, GOJO_STYLE, gojoParticles, gojoCrackCount, gojoSpheres,
-  gojoSmoke, gojoBolts, gojoSphereBolts, gojoStars, GOJO_VOID, GOJO_RIM,
+  gojoBolts, gojoSphereBolts, gojoStars, GOJO_VOID, GOJO_RIM,
+  GOJO_INK, GOJO_FLASH, gojoImpactFocus, gojoImpactStar,
+  gojoSpeedLines, gojoHalftone, gojoOno,
 } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Gojo Satoru (visual 'gojo') — efek berlapis v2 (rombak):
-//   Layer 5  TEKS TEKNIK      蒼 / 赫 / 茈 / 領域展開・無量空処
-//   Layer 4  RETAK            HANYA streak
-//   Layer 3b PETIR HITAM      zigzag dari 4 tepi (TIDAK ke tengah)
-//   Layer 3a ASAP 呪力        gumpalan asap dari tepi (TIDAK ke tengah)
-//   Layer 2b BINTANG 無量空処  domain saja (titik cahaya tak-hingga)
-//   Layer 2a BOLA PLASMA      conic muter + petir membelit + void hitam
-//   Layer 2  BARA 呪力        partikel memanjang
-//   Layer 1  WASH + SHAKE     warna dasar + getar
+// Gojo Satoru (visual 'gojo') — efek berlapis v3: BAHASA ANIME/MANGA.
+// (bukan motion-graphics: tidak ada blur/glow lembut; pakai TINTA tegas + warna
+//  rata cel-shade + impact star + 集中線 + screentone + オノマトペ.)
 //
-// Aturan performa (pelajaran dari efek Hina):
-//   - animasi HANYA transform + opacity (+ pathLength untuk reveal garis, spt retak)
-//   - teks besar pakai text-shadow, BUKAN filter: drop-shadow
+//   Layer 5  TEKS TEKNIK      蒼 / 赫 / 茈 / 領域展開・無量空処 (stroke tinta)
+//   Layer 4  RETAK            HANYA streak
+//   Layer 2e オノマトペ        teks bunyi di titik impact (ドン/ゴッ/ズドン)
+//   Layer 2d SCREENTONE       titik halftone (shading manga) di titik impact
+//   Layer 2c IMPACT STAR      bintang ledakan anime di titik impact
+//   Layer 3b PETIR HITAM      zigzag dari 4 tepi (TIDAK ke tengah)
+//   Layer 3a 集中線           garis tinta dari titik fokus (ao/aka tetap di tepi)
+//   Layer 2b BINTANG 無量空処  domain saja (titik cahaya tak-hingga)
+//   Layer 2a BOLA CEL-SHADE   band warna rata + outline tinta + petir membelit
+//   Layer 2  SERPIHAN TINTA   partikel hard-edge (bukan blur)
+//   Layer 1  WASH + SHAKE     cel-shade hard-stop + getar
+//   Layer 0  FLASH            kilat putih 1-frame
+//
+// Aturan performa:
+//   - animasi HANYA transform + opacity (+ pathLength untuk reveal garis)
+//   - outline pakai ring keras (box-shadow blur 0) / stroke, BUKAN blur
+//   - teks besar pakai -webkit-text-stroke + text-shadow keras, bukan drop-shadow
 //   - prefers-reduced-motion → efek langsung "selesai" tanpa animasi
-//   - will-change hanya saat aktif
 // ─────────────────────────────────────────────────────────────────────────────
 
 const prefersReduced = () =>
   typeof window !== 'undefined' &&
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-// edge (0 atas,1 kanan,2 bawah,3 kiri) → posisi % layar + arah masuk (px).
-function edgeToXY(edge, along, reachVw) {
-  const vw = (typeof window !== 'undefined' ? window.innerWidth : 1200) / 100;
-  const reachPx = reachVw * vw;
-  const j = (along - 0.5) * 100;   // -50..50 sepanjang tepi
-  if (edge === 0) return { left: 50 + j, top: 0,     dx: 0,        dy: reachPx };
-  if (edge === 1) return { left: 100,    top: 50 + j, dx: -reachPx, dy: 0 };
-  if (edge === 2) return { left: 50 + j, top: 100,   dx: 0,        dy: -reachPx };
-  return { left: 0, top: 50 + j, dx: reachPx, dy: 0 };
-}
 
 export function GojoBurst({ fx, kind }) {
   const [reduced] = useState(prefersReduced);
@@ -46,15 +44,17 @@ export function GojoBurst({ fx, kind }) {
   const technique = gojoTechniqueFor(kind, streak);
 
   const [particles] = useState(() => (technique ? gojoParticles(technique, seed) : []));
-  const [smoke] = useState(() => (technique ? gojoSmoke(technique, seed) : []));
   const [bolts] = useState(() => (technique ? gojoBolts(technique, seed) : []));
+  const [speedLines] = useState(() => (technique ? gojoSpeedLines(technique, seed) : []));
+  const [halftone] = useState(() => (technique ? gojoHalftone(seed) : []));
   const spheres = technique ? gojoSpheres(technique) : [];
   const [sphereBolts] = useState(() => spheres.map(() => gojoSphereBolts(3)));
+  const [impactStar] = useState(() => (technique ? gojoImpactStar(seed) : null));
   const [stars] = useState(() =>
     (technique === 'domain' || technique === 'domain_zenith') ? gojoStars(seed) : []
   );
 
-  // Salah: wash merah lembut, TANPA retak (retak = ciri streak saja).
+  // Salah: wash merah, TANPA retak / impact (bukan teknik).
   if (!technique) {
     return (
       <motion.div
@@ -63,8 +63,7 @@ export function GojoBurst({ fx, kind }) {
         animate={{ opacity: reduced ? 0.5 : [0, 0.5, 0] }}
         transition={{ duration: reduced ? 0 : 0.6, ease: 'easeOut' }}
         style={{
-          background:
-            'radial-gradient(circle at 50% 50%, rgba(229,57,53,0.28), transparent 70%)',
+          background: 'radial-gradient(circle at 50% 50%, rgba(229,57,53,0.28), transparent 70%)',
         }}
       />
     );
@@ -76,6 +75,8 @@ export function GojoBurst({ fx, kind }) {
   const isStreak = kind === 'streak';
   const cracks = isStreak ? gojoCrackCount(streak) : 0;
   const shake = isDomain || isStreak;
+  const focus = gojoImpactFocus(technique);
+  const ono = gojoOno(technique);
 
   return (
     <motion.div
@@ -85,17 +86,24 @@ export function GojoBurst({ fx, kind }) {
       exit={{ opacity: 0, transition: { duration: 0.16 } }}
       style={{ willChange: 'transform, opacity' }}
     >
-      {/* ── Layer 1a — WASH (domain = nebula lembut + vignette hampa) ──────── */}
+      {/* ── Layer 1a — WASH (cel-shade hard-stop, bukan blur) ─────────────── */}
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
-        animate={{ opacity: reduced ? 0.35 : [0, isDomain ? 0.5 : 0.35, 0] }}
-        transition={{ duration: reduced ? 0 : zenith ? 1.1 : 0.7, ease: 'easeOut' }}
+        animate={{ opacity: reduced ? 0.4 : [0, isDomain ? 0.55 : 0.4, 0] }}
+        transition={{ duration: reduced ? 0 : zenith ? 1.1 : 0.6, ease: 'easeOut' }}
         style={{
-          background: isDomain
-            ? `radial-gradient(circle at 50% 50%, ${st.color}33, transparent 62%), radial-gradient(circle at 50% 50%, transparent 42%, ${GOJO_VOID}66 100%)`
-            : `radial-gradient(circle at 50% 50%, ${st.color}55, transparent 70%)`,
+          background: `radial-gradient(circle at 50% 50%, ${st.color} 0 18%, ${st.color}88 18% 32%, transparent 32%)`,
         }}
+      />
+
+      {/* ── Layer 0 — FLASH (kilat putih 1-frame, khas anime) ─────────────── */}
+      <motion.div
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: reduced ? 0.18 : [0, 0.85, 0] }}
+        transition={{ duration: reduced ? 0 : 0.28, times: [0, 0.15, 1], ease: 'easeOut' }}
+        style={{ background: GOJO_FLASH }}
       />
 
       {/* ── Layer 1b — SHAKE (streak/domain) + pembungkus layer 2–5 ────────── */}
@@ -108,29 +116,33 @@ export function GojoBurst({ fx, kind }) {
         }
         transition={{ duration: zenith ? 0.8 : 0.5, ease: 'easeOut' }}
       >
-        {/* ── Layer 3a — ASAP 呪力 (dari tepi, tidak ke tengah) ────────────── */}
-        {smoke.map((s) => {
-          const p = edgeToXY(s.edge, s.along, s.reach);
-          return (
-            <motion.div
-              key={s.id}
-              className="absolute rounded-full"
-              style={{
-                left: `${p.left}%`,
-                top: `${p.top}%`,
-                width: s.size,
-                height: s.size,
-                marginLeft: -s.size / 2,
-                marginTop: -s.size / 2,
-                background: `radial-gradient(circle, ${GOJO_VOID} 0%, ${s.color}44 45%, transparent 72%)`,
-                willChange: 'transform, opacity',
-              }}
-              initial={{ opacity: 0, x: p.dx * 0.35, y: p.dy * 0.35, scale: 0.7 }}
-              animate={{ opacity: reduced ? 0.45 : [0, 0.7, 0.45], x: p.dx, y: p.dy, scale: 1 }}
-              transition={{ duration: reduced ? 0 : s.dur, delay: reduced ? 0 : s.delay, ease: 'easeOut' }}
+        {/* ── Layer 3a — 集中線 (garis tinta dari fokus; ao/aka di band tepi) ── */}
+        <svg
+          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          {speedLines.map((l) => (
+            <motion.line
+              key={l.id}
+              x1={l.from[0]}
+              y1={l.from[1]}
+              x2={l.to[0]}
+              y2={l.to[1]}
+              stroke={GOJO_INK}
+              strokeWidth={l.width}
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+              pathLength={1}
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={reduced
+                ? { pathLength: 1, opacity: 0.8 }
+                : { pathLength: 1, opacity: [0, 0.95, 0.4, 0.85, 0.5] }}
+              transition={{ duration: reduced ? 0 : 0.45, delay: reduced ? 0 : l.delay, ease: 'easeOut' }}
             />
-          );
-        })}
+          ))}
+        </svg>
 
         {/* ── Layer 3b — PETIR HITAM (zigzag dari tepi, tidak ke tengah) ────── */}
         <svg
@@ -143,23 +155,21 @@ export function GojoBurst({ fx, kind }) {
             const d = 'M' + b.points.map((pt) => pt.join(',')).join(' L');
             return (
               <g key={b.id}>
-                {/* inti petir hitam */}
                 <motion.path
                   d={d}
                   fill="none"
-                  stroke={GOJO_VOID}
-                  strokeWidth={3}
+                  stroke={GOJO_INK}
+                  strokeWidth={3.5}
                   strokeLinejoin="round"
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
                   pathLength={1}
                   initial={{ pathLength: 0, opacity: 0 }}
                   animate={reduced
-                    ? { pathLength: 1, opacity: 0.9 }
-                    : { pathLength: 1, opacity: [0, 1, 0.25, 1, 0.55] }}
-                  transition={{ duration: reduced ? 0 : 0.5, ease: 'easeOut' }}
+                    ? { pathLength: 1, opacity: 0.95 }
+                    : { pathLength: 1, opacity: [0, 1, 0.3, 1, 0.6] }}
+                  transition={{ duration: reduced ? 0 : 0.45, ease: 'easeOut' }}
                 />
-                {/* rim terang tipis (biar kebaca di tema gelap) */}
                 <motion.path
                   d={d}
                   fill="none"
@@ -173,7 +183,7 @@ export function GojoBurst({ fx, kind }) {
                   animate={reduced
                     ? { pathLength: 1, opacity: 0.5 }
                     : { pathLength: 1, opacity: [0, 0.9, 0.15, 0.8, 0.35] }}
-                  transition={{ duration: reduced ? 0 : 0.5, ease: 'easeOut' }}
+                  transition={{ duration: reduced ? 0 : 0.45, ease: 'easeOut' }}
                 />
               </g>
             );
@@ -184,25 +194,25 @@ export function GojoBurst({ fx, kind }) {
         {isDomain && stars.map((s) => (
           <motion.span
             key={s.id}
-            className="absolute rounded-full"
+            className="absolute"
             style={{
               left: `${s.x}%`,
               top: `${s.y}%`,
               width: s.size,
               height: s.size,
               background: '#ffffff',
-              boxShadow: `0 0 ${s.size * 3}px ${st.color}`,
+              outline: `1px solid ${GOJO_INK}`,
             }}
             initial={{ opacity: 0 }}
-            animate={reduced ? { opacity: 0.8 } : { opacity: [0, 0.95, 0.35, 0.85, 0.3] }}
+            animate={reduced ? { opacity: 0.85 } : { opacity: [0, 0.95, 0.35, 0.85, 0.3] }}
             transition={{ duration: reduced ? 0 : s.dur, delay: reduced ? 0 : s.delay, ease: 'easeOut' }}
           />
         ))}
 
-        {/* ── Layer 2a — BOLA PLASMA ────────────────────────────────────────
-            ao  : bola BIRU muncul dari KANAN, DIAM di pinggir
-            aka : bola MERAH muncul dari KIRI, DIAM di pinggir
-            茈  : dua bola meluncur & TABRAKAN di tengah → inti ungu + shockwave */}
+        {/* ── Layer 2a — BOLA CEL-SHADE ─────────────────────────────────────
+            ao  : bola BIRU dari KANAN, DIAM di pinggir (tidak ke tengah)
+            aka : bola MERAH dari KIRI, DIAM di pinggir
+            茈  : dua bola meluncur & TABRAKAN di tengah → ledakan ungu */}
         {spheres.map((b, si) => (
           <motion.div
             key={`sphere-${b.id}`}
@@ -226,38 +236,42 @@ export function GojoBurst({ fx, kind }) {
               scale: { duration: b.dur + 0.5, delay: b.delay, times: [0, 0.12, 0.6, 1], ease: 'easeOut' },
             }}
           >
-            {/* halo luar */}
+            {/* outline tinta (ring keras, blur 0) — bahasa manga */}
             <div
-              className="absolute rounded-full"
+              className="absolute inset-0 rounded-full"
+              style={{ boxShadow: `0 0 0 4px ${GOJO_INK}` }}
+            />
+            {/* badan cel-shade: highlight keras → warna rata → band gelap → tepi tinta */}
+            <div
+              className="absolute inset-0 rounded-full"
               style={{
-                inset: -b.size * 0.35,
-                background: `radial-gradient(circle, ${b.color}55, transparent 70%)`,
+                background: `radial-gradient(circle at 36% 30%, #ffffff 0 12%, ${b.color} 12% 46%, ${GOJO_VOID} 46% 66%, ${GOJO_INK} 66% 72%, transparent 72%)`,
               }}
             />
-            {/* plasma muter (conic berputar) */}
+            {/* plasma muter hard-stop (pinwheel, bukan gradient halus) */}
             <motion.div
               className="absolute inset-0 rounded-full"
               style={{
-                background: `conic-gradient(from 0deg, ${b.color}, ${GOJO_VOID} 30%, ${b.color}cc 50%, ${GOJO_VOID} 75%, ${b.color})`,
+                background: `conic-gradient(from 0deg, ${b.color} 0 13%, transparent 13% 25%, ${b.color} 25% 38%, transparent 38% 50%, ${b.color} 50% 63%, transparent 63% 75%, ${b.color} 75% 88%, transparent 88% 100%)`,
                 willChange: 'transform',
               }}
               animate={reduced ? {} : { rotate: 360 }}
               transition={{ duration: 2.6, repeat: Infinity, ease: 'linear' }}
             />
-            {/* inti terang */}
+            {/* highlight keras (elips putih tajam, khas cel-shade) */}
             <div
               className="absolute rounded-full"
               style={{
-                inset: b.size * 0.2,
-                background: `radial-gradient(circle at 38% 32%, #ffffff, ${b.color} 55%, transparent 82%)`,
+                inset: b.size * 0.22,
+                background: 'radial-gradient(ellipse 55% 40% at 38% 30%, #ffffff 0 55%, transparent 56%)',
               }}
             />
-            {/* void hitam (khas 茈) */}
+            {/* void hitam inti (khas 茈) */}
             <div
               className="absolute rounded-full"
               style={{
-                inset: b.size * 0.36,
-                background: `radial-gradient(circle, ${GOJO_VOID} 45%, transparent 78%)`,
+                inset: b.size * 0.4,
+                background: `${GOJO_INK}`,
               }}
             />
             {/* petir hitam membelit bola */}
@@ -267,12 +281,12 @@ export function GojoBurst({ fx, kind }) {
                   key={i}
                   points={pts}
                   fill="none"
-                  stroke={GOJO_VOID}
-                  strokeWidth={1.6}
+                  stroke={GOJO_INK}
+                  strokeWidth={2}
                   strokeLinejoin="round"
                   strokeLinecap="round"
                   initial={{ opacity: 0 }}
-                  animate={reduced ? { opacity: 0.7 } : { opacity: [0, 0.95, 0.2, 0.85, 0.3] }}
+                  animate={reduced ? { opacity: 0.8 } : { opacity: [0, 1, 0.25, 0.9, 0.35] }}
                   transition={{ duration: 0.6, repeat: reduced ? 0 : Infinity, repeatDelay: 0.35, delay: i * 0.12 }}
                 />
               ))}
@@ -280,7 +294,83 @@ export function GojoBurst({ fx, kind }) {
           </motion.div>
         ))}
 
-        {/* ── Tabrakan 茈: ledakan bola ungu + shockwave di titik tabrakan ── */}
+        {/* ── IMPACT (star + screentone + オノマトペ) di titik fokus ─────────── */}
+        <motion.div
+          className="absolute left-1/2 top-1/2"
+          style={{ x: `${focus.xVw}vw` }}
+        >
+          {/* Layer 2c — IMPACT STAR (bintang ledakan anime) */}
+          {impactStar && (
+            <motion.svg
+              className="absolute"
+              style={{
+                width: 320, height: 320,
+                marginLeft: -160, marginTop: -160,
+                overflow: 'visible',
+              }}
+              viewBox="0 0 100 100"
+              aria-hidden="true"
+              initial={{ scale: 0, opacity: 0, rotate: -20 }}
+              animate={reduced
+                ? { scale: 1, opacity: 0.9, rotate: 0 }
+                : { scale: [0, 1.15, 1, 0.9], opacity: [0, 1, 0.95, 0], rotate: [0, 0, -6, -12] }}
+              transition={{ duration: reduced ? 0 : 0.75, times: [0, 0.2, 0.6, 1], ease: 'easeOut' }}
+            >
+              <polygon
+                points={impactStar.points}
+                fill={GOJO_FLASH}
+                stroke={GOJO_INK}
+                strokeWidth={2.4}
+                strokeLinejoin="round"
+              />
+            </motion.svg>
+          )}
+
+          {/* Layer 2d — SCREENTONE (titik halftone, shading manga) */}
+          <svg
+            className="absolute"
+            style={{ width: 300, height: 300, marginLeft: -150, marginTop: -150, overflow: 'visible' }}
+            viewBox="0 0 100 100"
+            aria-hidden="true"
+          >
+            {halftone.map((d) => (
+              <motion.circle
+                key={d.id}
+                cx={d.x}
+                cy={d.y}
+                r={d.size}
+                fill={GOJO_INK}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={reduced ? { opacity: 0.5, scale: 1 } : { opacity: [0, 0.7, 0.45], scale: [0, 1, 1] }}
+                transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : d.delay, ease: 'easeOut' }}
+              />
+            ))}
+          </svg>
+
+          {/* Layer 2e — オノマトペ (teks bunyi anime) */}
+          {ono && (
+            <motion.span
+              className="absolute font-serif font-black select-none whitespace-nowrap"
+              style={{
+                left: 0, top: 0,
+                fontSize: 'clamp(40px, 7vw, 96px)',
+                color: st.color,
+                WebkitTextStroke: `3px ${GOJO_INK}`,
+                textShadow: `4px 4px 0 ${GOJO_INK}`,
+                willChange: 'transform, opacity',
+              }}
+              initial={{ opacity: 0, scale: 0.4, rotate: -12, x: '-50%', y: '-50%' }}
+              animate={reduced
+                ? { opacity: 1, scale: 1, rotate: -8, x: '-50%', y: '-50%' }
+                : { opacity: [0, 1, 1, 0], scale: [0.4, 1.2, 1, 1.05], rotate: [-12, -8, -6, -4], x: '-50%', y: '-50%' }}
+              transition={{ duration: reduced ? 0 : 0.85, times: [0, 0.18, 0.7, 1], ease: 'easeOut' }}
+            >
+              {ono}
+            </motion.span>
+          )}
+        </motion.div>
+
+        {/* ── Tabrakan 茈: ledakan bola ungu + shockwave (cel-shade) ─────────── */}
         {technique === 'murasaki' && (
           <>
             <motion.div
@@ -291,8 +381,8 @@ export function GojoBurst({ fx, kind }) {
                 height: 132,
                 marginLeft: -66,
                 marginTop: -66,
-                background: `radial-gradient(circle at 40% 35%, #ffffff 0%, ${GOJO_STYLE.murasaki.color} 42%, ${GOJO_VOID} 82%, #000000 100%)`,
-                boxShadow: `0 0 70px ${GOJO_STYLE.murasaki.color}, 0 0 140px ${GOJO_STYLE.murasaki.color}88`,
+                background: `radial-gradient(circle at 40% 35%, #ffffff 0 16%, ${GOJO_STYLE.murasaki.color} 16% 50%, ${GOJO_VOID} 50% 74%, ${GOJO_INK} 74% 80%, transparent 80%)`,
+                boxShadow: `0 0 0 4px ${GOJO_INK}`,
                 willChange: 'transform, opacity',
               }}
               initial={{ scale: 0, opacity: 0 }}
@@ -307,7 +397,8 @@ export function GojoBurst({ fx, kind }) {
                 height: 132,
                 marginLeft: -66,
                 marginTop: -66,
-                border: `5px solid ${GOJO_STYLE.murasaki.color}`,
+                border: `6px solid ${GOJO_STYLE.murasaki.color}`,
+                boxShadow: `0 0 0 3px ${GOJO_INK}`,
                 willChange: 'transform, opacity',
               }}
               initial={{ scale: 0.4, opacity: 0 }}
@@ -317,11 +408,11 @@ export function GojoBurst({ fx, kind }) {
           </>
         )}
 
-        {/* ── Layer 2 — BARA 呪力 (partikel memanjang) ─────────────────────── */}
+        {/* ── Layer 2 — SERPIHAN TINTA (partikel hard-edge, bukan blur) ─────── */}
         {particles.map((p) => {
           const dx = Math.cos(p.angle) * p.dist;
           const dy = Math.sin(p.angle) * p.dist;
-          const startOut = p.out || p.spiral; // aka & murasaki mulai dari pusat lalu keluar
+          const startOut = p.out || p.spiral;
           return (
             <motion.span
               key={p.id}
@@ -331,15 +422,14 @@ export function GojoBurst({ fx, kind }) {
                 height: p.len,
                 marginLeft: -p.size / 2,
                 marginTop: -p.len / 2,
-                borderRadius: 9999,
-                background: `linear-gradient(${p.angle}rad, ${st.color}, transparent)`,
-                boxShadow: `0 0 8px ${st.color}`,
+                background: st.color,
+                border: `2px solid ${GOJO_INK}`,
                 willChange: 'transform, opacity',
               }}
               initial={{
                 x: startOut ? 0 : dx,
                 y: startOut ? 0 : dy,
-                opacity: 0.9,
+                opacity: 1,
                 scale: 0.5,
                 rotate: (p.angle * 180) / Math.PI,
               }}
@@ -359,7 +449,7 @@ export function GojoBurst({ fx, kind }) {
           );
         })}
 
-        {/* ── Layer 4 — RETAK (HANYA streak; makin gila per level) ────────── */}
+        {/* ── Layer 4 — RETAK (HANYA streak; garis tinta tegas) ───────────── */}
         {isStreak && !reduced && (
           <svg
             className="absolute inset-0 w-full h-full"
@@ -378,12 +468,13 @@ export function GojoBurst({ fx, kind }) {
                   y1="50"
                   x2={x2}
                   y2={y2}
-                  stroke={st.color}
-                  strokeWidth="0.35"
+                  stroke={GOJO_INK}
+                  strokeWidth="0.5"
                   strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
                   pathLength={1}
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: [0, 0.95, 0.6] }}
+                  animate={{ pathLength: 1, opacity: [0, 0.95, 0.7] }}
                   transition={{ duration: 0.4, delay: i * 0.05, ease: 'easeOut' }}
                 />
               );
@@ -391,13 +482,8 @@ export function GojoBurst({ fx, kind }) {
           </svg>
         )}
 
-        {/* ── Layer 5 — TEKS TEKNIK (chromatic aberration via text-shadow) ──
-            Dikecilkan & digeser ke ATAS supaya BOLA di tengah (titik tabrakan 茈)
-            jadi bintang utamanya — bola tidak boleh ketutup teks. */}
-        <div
-          className="absolute left-0 right-0 flex justify-center"
-          style={{ top: '9%' }}
-        >
+        {/* ── Layer 5 — TEKS TEKNIK (stroke tinta, gaya manga) ─────────────── */}
+        <div className="absolute left-0 right-0 flex justify-center" style={{ top: '9%' }}>
           <motion.span
             className="font-serif font-black select-none"
             initial={{ opacity: 0, scale: 0.6 }}
@@ -408,12 +494,10 @@ export function GojoBurst({ fx, kind }) {
               ease: [0.34, 1.56, 0.64, 1],
             }}
             style={{
-              fontSize: isDomain
-                ? 'clamp(40px, 7vw, 92px)'
-                : 'clamp(56px, 10vw, 140px)',
+              fontSize: isDomain ? 'clamp(40px, 7vw, 92px)' : 'clamp(56px, 10vw, 140px)',
               color: st.color,
-              // Chromatic aberration (khas Gojo) + glow. text-shadow, bukan drop-shadow.
-              textShadow: `2px 0 #ff1744, -2px 0 #2979ff, 0 0 18px ${st.color}`,
+              WebkitTextStroke: `3px ${GOJO_INK}`,
+              textShadow: `5px 5px 0 ${GOJO_INK}`,
               willChange: 'transform, opacity',
             }}
           >
@@ -421,18 +505,22 @@ export function GojoBurst({ fx, kind }) {
           </motion.span>
         </div>
 
-        {/* Teks kecil 領域展開 saat domain (di bawah, tidak ganggu bola) */}
+        {/* Teks kecil 領域展開 saat domain */}
         {isDomain && (
           <motion.div
             className="absolute left-0 right-0 flex justify-center"
-            style={{ top: '26%', color: GOJO_RIM }}
+            style={{ top: '26%' }}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reduced ? 0 : 0.35, duration: reduced ? 0 : 0.4 }}
           >
             <span
               className="font-serif font-black tracking-[0.3em]"
-              style={{ fontSize: 'clamp(14px, 3vw, 30px)' }}
+              style={{
+                fontSize: 'clamp(14px, 3vw, 30px)',
+                color: GOJO_RIM,
+                WebkitTextStroke: `2px ${GOJO_INK}`,
+              }}
             >
               領域展開
             </span>
