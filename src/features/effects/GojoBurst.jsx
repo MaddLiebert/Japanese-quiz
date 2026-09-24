@@ -227,6 +227,7 @@ export function GojoBurst({ fx, kind }) {
               height: b.size,
               marginLeft: -b.size / 2,
               marginTop: -b.size / 2,
+              zIndex: 3,          // bola = fokus, di ATAS impact star (star di belakang)
               willChange: 'transform, opacity',
             }}
             initial={reduced
