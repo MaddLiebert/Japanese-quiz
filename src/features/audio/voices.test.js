@@ -50,27 +50,12 @@ test('getVoice("hina") mengembalikan voice hina', () => {
   assert.equal(getVoice('hina'), VOICES.hina);
 });
 
-test('voice gojo: file asli terpasang (correct 2 / wrong 3 / teknik 5)', () => {
+test('voice gojo ada, dummy dulu (files kosong → fallback synth)', () => {
   const v = VOICES.gojo;
   assert.ok(v, 'VOICES.gojo harus ada');
-  assert.deepEqual(v.files.correct, ['/voices/gojo/correct_1.mp3', '/voices/gojo/correct_2.mp3']);
-  assert.deepEqual(v.files.wrong, ['/voices/gojo/wrong_1.mp3', '/voices/gojo/wrong_2.mp3', '/voices/gojo/wrong_3.mp3']);
-  assert.equal(v.files.streak.length, 0, 'streak Gojo di-route lewat teknik, bukan playlist');
-  assert.equal(Object.keys(v.technique).length, 5, 'harus ada 5 SFX teknik');
-  assert.equal(v.technique.ao, '/voices/gojo/ao.mp3');
-  assert.equal(v.technique.aka, '/voices/gojo/aka.mp3');
-  assert.equal(v.technique.murasaki, '/voices/gojo/murasaki.mp3');
-  assert.equal(v.technique.domain, '/voices/gojo/ryoiki_tenkai.mp3');
-  assert.equal(v.technique.domain_zenith, '/voices/gojo/hollow_purple.mp3');
+  assert.deepEqual(v.files.correct, []);
+  assert.deepEqual(v.files.wrong, []);
+  assert.deepEqual(v.files.streak, []);
+  assert.equal(v.synth.correct, 'gong');
   assert.equal(getVoice('gojo'), VOICES.gojo);
-});
-
-test('semua path gojo unik & lowercase (Vercel case-sensitive)', () => {
-  const v = VOICES.gojo;
-  const all = [
-    ...v.files.correct, ...v.files.wrong, ...v.files.streak,
-    ...Object.values(v.technique),
-  ];
-  assert.equal(new Set(all).size, all.length, 'tidak boleh ada path duplikat');
-  for (const p of all) assert.match(p, /^\/voices\/gojo\/[a-z0-9_]+\.mp3$/);
 });
