@@ -206,21 +206,26 @@ function GojoBall({ tech, seed, reduced, explode }) {
   );
 }
 
-// Vignette latar: layar MENGELAP dengan warna lebih gelap dari bola, dari sisi
-// bola. Muncul perlahan saat bola muncul → bikin vibe mencekam.
+// Vignette latar: gelap dengan warna lebih gelap dari bola, HANYA di sisi bola
+// (dari tepi layar, memudar sebelum tengah) → tidak menutupi quiz yang di tengah.
+// Jangkauan dibatasi `min()` supaya berhenti sebelum tepi kartu quiz (max-w-lg
+// = 512px di tengah) apa pun lebar layarnya.
 function GojoVignette({ tech, explode, reduced }) {
   const v = gojoBallVignette(tech);
   if (!v) return null;
-  const at = v.side === 'right' ? '68% 50%' : '32% 50%';
+  const at = v.side === 'right' ? '100% 50%' : '0% 50%';
+  // radius horizontal: 30vw, TAPI tidak lebih dari (50vw - 300px) → berhenti
+  // ~300px sebelum tengah (kartu quiz max-w-lg = 512px), jadi tidak menyentuh quiz.
+  const rx = 'max(0px, min(30vw, 50vw - 300px))';
   return (
     <motion.div
       className="absolute inset-0"
       style={{
-        background: `radial-gradient(circle at ${at}, ${v.dark}00 0 6%, ${v.dark}cc 30%, ${v.dark}f2 62%, ${v.dark} 100%)`,
+        background: `radial-gradient(ellipse ${rx} 135% at ${at}, ${v.dark} 0 70%, ${v.dark}00 100%)`,
         willChange: 'opacity',
       }}
       initial={{ opacity: 0 }}
-      animate={explode ? { opacity: [1, 1, 0] } : { opacity: 0.9 }}
+      animate={explode ? { opacity: [1, 1, 0] } : { opacity: 0.95 }}
       transition={reduced ? { duration: 0 } : (explode
         ? { duration: 0.6, times: [0, 0.62, 1], ease: 'easeIn' }
         : { duration: 1.5, ease: 'easeInOut' })}
