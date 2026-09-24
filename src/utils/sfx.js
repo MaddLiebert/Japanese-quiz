@@ -3,6 +3,8 @@ import { getVoice, pickFile } from '../features/audio/voices.js';
 let audioCtx;
 
 const initAudioContext = () => {
+  // Guard: node/test tak punya window → kembalikan null (pemutar jadi no-op, tanpa throw).
+  if (typeof window === 'undefined') return null;
   if (!audioCtx) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (AudioContext) audioCtx = new AudioContext();
@@ -383,4 +385,44 @@ export const playFanfare = (rarity = 'common') => {
     osc.start(t);
     osc.stop(t + dur + 0.05);
   });
+};
+
+// ── Suara teknik Gojo (蒼→赫→茈→Domain) ─────────────────────────────────────
+// Satu nada "glide" per teknik, meniru gerak efek visualnya:
+//   ao            = partikel HISAP ke dalam   → nada NAIK   (220→660 Hz)
+//   aka           = partikel LEDAK ke luar    → nada TURUN  (660→220 Hz)
+//   murasaki      = dua aliran MENYATU        → naik, timbre kasar (sawtooth)
+//   domain/zenith = gelombang domain          → bass naik, makin panjang & terang
+// Murni & deterministik → dites di node (sfx.gojo.test.js). Bisa di-tune nanti.
+export const GOJO_TONES = {
+  ao:            { type: 'sine',     from: 220, to: 660,    dur: 0.55, gain: 0.35 },
+  aka:           { type: 'triangle', from: 660, to: 220,    dur: 0.50, gain: 0.40 },
+  murasaki:      { type: 'sawtooth', from: 392, to: 523.25, dur: 0.75, gain: 0.40 },
+  domain:        { type: 'sine',     from: 110, to: 220,    dur: 1.20, gain: 0.45 },
+  domain_zenith: { type: 'sine',     from: 110, to: 330,    dur: 1.60, gain: 0.50 },
+};
+
+export const gojoSoundParams = (technique) => GOJO_TONES[technique] || null;
+
+// Pemutar (butuh AudioContext; tidak dites di node). teknik null (jawaban salah) → thud.
+export const playGojoSound = (technique) => {
+  const p = gojoSoundParams(technique);
+  if (!p) { synthThud(); return 0; }
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = p.type;
+  osc.frequency.setValueAtTime(p.from, t);
+  osc.frequency.exponentialRampToValueAtTime(p.to, t + p.dur * 0.8);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.gain, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.05);
+  return 0;
 };
