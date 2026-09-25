@@ -51,7 +51,7 @@ function writeProgress(patch) {
 export function DevPanel() {
   const { language } = useLanguage();
   const { progress, buyPack, togglePack } = useUserStats();
-  const { previewStreak } = useEffectLayer();
+  const { previewStreak, castDomain } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
 
@@ -134,6 +134,13 @@ export function DevPanel() {
     // res === "invalid" → pack tidak siap; tidak ada yang bisa dilakukan
   };
 
+  // Cast domain langsung (dev). Kalau pack Gojo belum aktif → aktifkan dulu
+  // (klik sekali lagi untuk cast).
+  const castNow = () => {
+    if (progress.activePack === GOJO_PACK_ID) { castDomain(); return; }
+    previewGojo(20);
+  };
+
   const btn =
     "px-4 py-3 border-[3px] border-sumi font-black text-[11px] uppercase tracking-widest transition-all " +
     "shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] cursor-pointer";
@@ -190,18 +197,21 @@ export function DevPanel() {
               ? "Satu klik = satu jawaban benar di streak target. Pack Gojo otomatis dibeli & diaktifkan bila perlu. Bola/ledakan muncul di layar ini."
               : "One click = one correct answer at the target streak. Gojo pack is bought & equipped automatically if needed."}
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
             <button type="button" onClick={() => previewGojo(3)} className={`${btn} bg-[#9c27b0] text-kinari-light`}>
               🟣 {id ? "茈 #3" : "茈 #3"}
             </button>
-            <button type="button" onClick={() => previewGojo(50)} className={`${btn} bg-[#7c4dff] text-kinari-light`}>
-              🟪 {id ? "無量空処 #50" : "Domain #50"}
+            <button type="button" onClick={() => previewGojo(50)} className={`${btn} bg-[#9c27b0] text-kinari-light`}>
+              🟣 {id ? "茈 #50" : "茈 #50"}
             </button>
-            <button type="button" onClick={() => previewGojo(100)} className={`${btn} bg-[#b388ff] text-sumi`}>
-              💫 {id ? "Zenith #100" : "Zenith #100"}
+            <button type="button" onClick={() => previewGojo(100)} className={`${btn} bg-[#9c27b0] text-kinari-light`}>
+              🟣 {id ? "茈 #100" : "茈 #100"}
             </button>
-            <button type="button" onClick={() => previewGojo(10)} className={`${btn} bg-matcha text-kinari-light`}>
-              🟣 {id ? "茈 #10" : "茈 #10"}
+            <button type="button" onClick={() => previewGojo(20)} className={`${btn} bg-[#ffd700] text-sumi`}>
+              ⚡ {id ? "Isi Bar #20" : "Fill Bar #20"}
+            </button>
+            <button type="button" onClick={castNow} className={`${btn} bg-[#7c4dff] text-kinari-light`}>
+              🌌 {id ? "Cast 領域展開" : "Cast Domain"}
             </button>
           </div>
         </div>
