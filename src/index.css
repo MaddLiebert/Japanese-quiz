@@ -102,3 +102,25 @@ html, body, div, header, main, section, footer, article, nav, aside, button, inp
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ── Hint Six Eyes 六眼 — selama domain 領域展開 hidup ──────────────────────── */
+/* Opsi jawaban BENAR berkilau biru-putih tiap 5 dtk (nyala ±1,4 dtk per siklus:
+   fase 70%→98% = 3,5s→4,9s). Murni CSS — nol timer JS: otomatis mati saat tombol
+   dijawab (disabled), saat domain padam (atribut dilepas). Pakai `filter` (BUKAN
+   box-shadow) karena override dark-mode mengunci box-shadow dengan !important. */
+@keyframes gojoSixEyesHint {
+  0%, 70% { filter: drop-shadow(0 0 0 rgba(56, 189, 248, 0)); }
+  76%, 92% { filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 28px rgba(124, 77, 255, 0.55)); }
+  98%, 100% { filter: drop-shadow(0 0 0 rgba(56, 189, 248, 0)); }
+}
+
+html[data-gojo-domain='on'] button[data-correct]:not(:disabled) {
+  animation: gojoSixEyesHint 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-gojo-domain='on'] button[data-correct]:not(:disabled) {
+    animation: none;
+    filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.8));
+  }
+}
