@@ -14,6 +14,7 @@ import {
   gojoMurasakiBurst,
   GOJO_ULT_THRESHOLD, gojoUltReady, gojoCurseCharge,
   gojoDomainTimeline, gojoSequentialChars,
+  gojoNebulaSpots, GOJO_NEBULA_COLORS,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -122,6 +123,27 @@ test('gojoSequentialChars: 1 entry/karakter, delay naik, deterministik', () => {
   assert.deepEqual(a.map((x) => x.delayMs), [500, 750, 1000, 1250]);
   assert.deepEqual(gojoSequentialChars('', 0, 1), []);
   assert.deepEqual(gojoSequentialChars(null, 0, 1), []);
+});
+
+// ── Bercak ruang angkasa (pinggir kuis) ─────────────────────────────────────
+
+test('gojoNebulaSpots: deterministik & jumlah sesuai', () => {
+  const a = gojoNebulaSpots(1, 8, () => 0.5);
+  assert.deepEqual(a, gojoNebulaSpots(1, 8, () => 0.5));
+  assert.equal(a.length, 8);
+  assert.equal(new Set(a.map((s) => s.id)).size, 8, 'id unik');
+});
+
+test('gojoNebulaSpots: semua di PINGGIR, warna dari palet, angka sehat', () => {
+  for (let seed = 1; seed <= 5; seed++) {
+    for (const s of gojoNebulaSpots(seed, 8, () => 0.5)) {
+      const edge = s.x <= 22 || s.x >= 78 || s.y <= 22 || s.y >= 78;
+      assert.ok(edge, `seed ${seed}: spot (${s.x.toFixed(1)},${s.y.toFixed(1)}) harus di pinggir`);
+      assert.ok(GOJO_NEBULA_COLORS.includes(s.color), 'warna dari palet');
+      assert.ok(s.size > 0 && s.opacity > 0 && s.opacity < 1, 'size/opacity sehat');
+      assert.ok(s.delay >= 0 && s.delay <= 1, 'delay wajar');
+    }
+  }
 });
 
 // ── Milestone helper ────────────────────────────────────────────────────────

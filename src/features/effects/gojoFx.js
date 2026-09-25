@@ -428,6 +428,34 @@ export const gojoStars = (seed = 1, count = 64, rng = Math.random) => {
   return out;
 };
 
+// ── Bercak ruang angkasa (persist di pinggir kuis saat domain aktif) ────────
+// Dipilih dari 4 sisi bergantian supaya selalu "di pinggir", tidak menutupi
+// kartu soal. Warna = palet nebula ungu/biru/magenta. Deterministik via rng.
+export const GOJO_NEBULA_COLORS = ['#7c4dff', '#38bdf8', '#c026d3', '#818cf8'];
+
+export const gojoNebulaSpots = (seed = 1, count = 8, rng = Math.random) => {
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    const edge = i % 4;                        // 0 atas · 1 kanan · 2 bawah · 3 kiri
+    const along = 6 + rng() * 88;              // posisi sepanjang sisi (%)
+    const depth = 4 + rng() * 15;              // jarak dari tepi (%)
+    let x; let y;
+    if (edge === 0) { x = along; y = depth; }
+    else if (edge === 1) { x = 100 - depth; y = along; }
+    else if (edge === 2) { x = along; y = 100 - depth; }
+    else { x = depth; y = along; }
+    out.push({
+      id: `${seed}-neb-${i}`,
+      x, y,
+      size: 110 + rng() * 130,                 // px (blob lembut)
+      opacity: 0.2 + rng() * 0.25,
+      color: GOJO_NEBULA_COLORS[Math.floor(rng() * GOJO_NEBULA_COLORS.length)],
+      delay: rng() * 0.6,
+    });
+  }
+  return out;
+};
+
 // ── DRAMA bola persist (ao/aka) ─────────────────────────────────────────────
 // Keluhan user: bola ao/aka kelihatan "kosong / gak mencekam" dan teks 蒼/赫
 // hilang saat jadi mode bola. Tiga penopang drama, TANPA ledakan (tetap persist):
