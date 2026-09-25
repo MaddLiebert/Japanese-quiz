@@ -31,6 +31,7 @@ const prefersReduced = () =>
 function GojoBall({ tech, seed, reduced, explode, layout }) {
   const color = GOJO_STYLE[tech].color;
   const size = layout.size;
+  const decoK = Math.min(1, size / 84);   // deco kanji di-tune utk bola 84px → mengecil proporsional
   const [rings] = useState(() => gojoOrbitRings(tech, seed));
   const [ribbons] = useState(() => gojoRibbons(tech, seed));
   const [tendrils] = useState(() => gojoTendrils(tech, seed));
@@ -174,7 +175,7 @@ function GojoBall({ tech, seed, reduced, explode, layout }) {
               x: '-50%', y: '-50%',
               fontSize: size * label.fontScale,
               color,
-              filter: 'blur(14px)',
+              filter: `blur(${14 * decoK}px)`,
               willChange: 'transform, opacity',
             }}
             initial={{ opacity: 0 }}
@@ -189,8 +190,8 @@ function GojoBall({ tech, seed, reduced, explode, layout }) {
               x: '-50%', y: '-50%',
               fontSize: size * label.fontScale,
               color: GOJO_CORE,
-              WebkitTextStroke: `${label.strokeWidth}px ${GOJO_INK}`,
-              textShadow: `0 0 18px ${color}, 0 0 40px ${color}, 0 0 70px ${color}`,
+              WebkitTextStroke: `${label.strokeWidth * decoK}px ${GOJO_INK}`,
+              textShadow: `0 0 ${18 * decoK}px ${color}, 0 0 ${40 * decoK}px ${color}, 0 0 ${70 * decoK}px ${color}`,
               paintOrder: 'stroke fill',
               willChange: 'transform, opacity',
             }}
