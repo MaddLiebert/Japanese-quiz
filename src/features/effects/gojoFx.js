@@ -547,7 +547,8 @@ export const gojoBallVignette = (technique) => {
 //             0px di layar 390px (50vw-300px negatif) → wash TIDAK pernah
 //             tampil; keluhan user: "efek di hp cuma bola2 doang... kaya di pc
 //             kan ada aura2 ungu sama merah gitu".
-//             Wash HP = pita lebar di tepi atas (atY 18%), diukur supaya:
+//             Wash HP = ellipse di sudut bola, PUSAT = PUSAT BOLA (bukan
+//             persen tetap). Geometri diukur supaya:
 //             - kanji soal (x159-231, y278-350) & kartu jawaban (y≥414) ada DI
 //               LUAR ellipse (r>1 → alpha 0) — konten 100% bersih;
 //             - titik tengah tombol kontrol atas (y32) juga r≥1;
@@ -564,13 +565,23 @@ export const gojoBallWash = (technique, vw = 1280, vh = 800) => {
       background: `radial-gradient(ellipse max(0px, min(30vw, 50vw - 300px)) 135% at ${atX} 50%, ${v.dark} 0 70%, ${v.dark}00 100%)`,
     };
   }
+  // Wash SELALU berpusat di PUSAT BOLA — bukan dipatok persen tinggi layar:
+  // dulu hardcode `at 20%` → hanya pas di layar ±835px; di layar lebih pendek
+  // wash tampak DI ATAS bola (keluhan user: "terlalu ke atas efeknya gak
+  // sesuai bola"). atY = ballCy/vh (frame = layer yang diukur), radius pakai
+  // px dari geometri yang sama → posisi & ukuran konsisten dgn bola.
+  const ballCy = gojoBallLayout(technique, vw, vh).ballCy;
+  const atY = ballCy / vh;
+  const atYPct = +((atY * 100).toFixed(2));
+  const rxPx = vw * 0.46;
+  const ryPx = vh * 0.145;
   return {
     mobile: true,
     side: v.side,
-    atY: 0.20,
-    rxPx: vw * 0.46,
-    ryPx: vh * 0.145,
-    background: `radial-gradient(ellipse 46vw 14.5vh at ${atX} 20%, ${v.dark} 0 40%, ${v.dark}99 70%, ${v.dark}00 100%)`,
+    atY,
+    rxPx,
+    ryPx,
+    background: `radial-gradient(ellipse ${rxPx}px ${ryPx}px at ${atX} ${atYPct}%, ${v.dark} 0 40%, ${v.dark}99 70%, ${v.dark}00 100%)`,
   };
 };
 
@@ -671,31 +682,52 @@ export const gojoTensionLines = (technique, seed = 1, rng = Math.random, count =
 // (tidak nempel tombol kontrol atas), di atas progress bar & kartu jawaban.
 export const GOJO_BALL_BREAKPOINT = 768;   // < 768px = HP/sempit
 
-// Kembalikan { mobile, size, anchorXVw, anchorYVh } untuk satu teknik bola.
-// anchorX/Y dalam satuan vw/vh dari TENGAH layar (negatif = atas/kiri).
+// Kembalikan geometri bola dalam PX (frame = kotak overlay layer yang diukur):
+//   ballCx/ballCy       = pusat bola dari kiri/atas layer (px)
+//   anchorXpx/anchorYpx = offset dari TENGAH layer (px, dipakai motion x/y)
+//   offXpx              = titik mulai animasi masuk (di luar layar, px)
+// Kenapa PX, bukan vw/vh: di HP satuan vh CSS = viewport BESAR (URL bar
+// tersembunyi) sedangkan window.innerHeight = viewport terlihat — saat URL bar
+// muncul keduanya beda → bola (dirender dgn vh) meleset dari wash (persen
+// layer) dan tampak "terlalu ke atas". PX dari rect layer → satu frame utk
+// bola, wash, dan 集中線; selalu sejajar apa pun kondisi URL bar.
 export const gojoBallLayout = (technique, vw = 1280, vh = 800) => {
   const label = gojoBallLabel(technique);
   if (!label) return null;
   const mobile = vw < GOJO_BALL_BREAKPOINT;
   const dir = label.side === 'right' ? 1 : -1;   // ao = kanan (+), aka = kiri (−)
+  const offXpx = dir * (GOJO_SPHERE_OFFSCREEN_VW / 100) * vw;
   if (!mobile) {
-    return { mobile: false, size: 128, anchorXVw: dir * 32, anchorYVh: 0 };
+    const anchorXpx = dir * (GOJO_EDGE_ANCHOR_VW / 100) * vw;
+    return {
+      mobile: false,
+      size: 128,
+      ballCx: vw / 2 + anchorXpx,
+      ballCy: vh / 2,
+      anchorXpx,
+      anchorYpx: 0,
+      offXpx,
+    };
   }
   // HP: kecilkan + TURUNKAN ke bawah border header (jangan nempel tombol atas).
   const size = 44;
   const margin = 10;                             // jarak dari tepi (px)
-  // Tepi ATAS bola (px dari atas layar). 145 = tepat di bawah border header
+  // Tepi ATAS bola (px dari atas layer). 145 = tepat di bawah border header
   // (terukur berakhir y≈143) & di atas progress bar kotoba/kanji (y≈191).
+  // NILAI TETAP px — header & progress bar juga px, bukan proporsional vh.
   const topGap = 145;
   // pusat X: nempel tepi (size/2 + margin dari tepi) → aman walau kartu lebar.
-  const cx = dir > 0 ? vw - (size / 2 + margin) : (size / 2 + margin);
+  const ballCx = dir > 0 ? vw - (size / 2 + margin) : (size / 2 + margin);
   // pusat Y: di bawah header, di atas progress bar.
-  const cy = topGap + size / 2;
+  const ballCy = topGap + size / 2;
   return {
     mobile: true,
     size,
-    anchorXVw: ((cx - vw / 2) / vw) * 100,
-    anchorYVh: ((cy - vh / 2) / vh) * 100,
+    ballCx,
+    ballCy,
+    anchorXpx: ballCx - vw / 2,
+    anchorYpx: ballCy - vh / 2,
+    offXpx,
   };
 };
 

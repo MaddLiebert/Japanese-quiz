@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import {
   GOJO_STYLE, GOJO_CORE, GOJO_INK,
@@ -20,8 +20,6 @@ import {
 // khas per teknik (ao = orbit rings · aka = pita vortex).
 // ─────────────────────────────────────────────────────────────────────────────
 
-const GOJO_SPHERE_OFFSCREEN_VW = 62;
-
 const prefersReduced = () =>
   typeof window !== 'undefined' &&
   typeof window.matchMedia === 'function' &&
@@ -40,9 +38,9 @@ function GojoBall({ tech, seed, reduced, explode, layout }) {
   const charge = gojoCharge(tech);
   const aura = gojoBallAura(tech, size, layout.mobile);
 
-  const anchorXVw = layout.anchorXVw;
-  const anchorYVh = layout.anchorYVh;
-  const fromVw = tech === 'ao' ? GOJO_SPHERE_OFFSCREEN_VW : -GOJO_SPHERE_OFFSCREEN_VW;
+  const anchorXpx = layout.anchorXpx;
+  const anchorYpx = layout.anchorYpx;
+  const offXpx = layout.offXpx;
 
   return (
     <motion.div
@@ -54,12 +52,12 @@ function GojoBall({ tech, seed, reduced, explode, layout }) {
         zIndex: 3,                       // bola = fokus, di atas impact star
         willChange: 'transform, opacity',
       }}
-      initial={{ x: `${fromVw}vw`, y: `${anchorYVh}vh`, opacity: 0, scale: 0.7 }}
+      initial={{ x: offXpx, y: anchorYpx, opacity: 0, scale: 0.7 }}
       animate={explode
         // meluncur ke tengah lalu MEMUDAR ke dalam ledakan
-        ? { x: '0vw', y: '0vh', opacity: [1, 1, 0], scale: [1, 1.12, 1.35] }
+        ? { x: 0, y: 0, opacity: [1, 1, 0], scale: [1, 1.12, 1.35] }
         // muncul PERLAHAN lalu muter tenang di pinggir/sudut
-        : { x: `${anchorXVw}vw`, y: `${anchorYVh}vh`, opacity: 1, scale: 1 }}
+        : { x: anchorXpx, y: anchorYpx, opacity: 1, scale: 1 }}
       transition={reduced ? { duration: 0 } : (explode
         ? {
           x: { duration: 0.42, ease: [0.55, 0, 0.85, 0.4] },
@@ -219,7 +217,7 @@ function GojoBall({ tech, seed, reduced, explode, layout }) {
 // berhenti ±300px sebelum tengah); HP = ellipse di sudut bola (formula desktop
 // menghasilkan 0px di layar 390px → wash tidak tampil; user: "efek di hp cuma
 // bola2 doang... kaya di pc kan ada aura2 ungu sama merah gitu").
-function GojoVignette({ tech, explode, reduced, layout, vw, vh }) {
+function GojoVignette({ tech, explode, reduced, vw, vh }) {
   const v = gojoBallVignette(tech);
   const w = gojoBallWash(tech, vw, vh);
   if (!v || !w) return null;
@@ -280,29 +278,54 @@ function GojoTension({ tech, seed, reduced, focus, maxY }) {
 export function GojoSpheres({ balls, explode = false, seed = 1, reduced }) {
   const [autoReduced] = useState(prefersReduced);
   const red = reduced === undefined ? autoReduced : reduced;
+  const rootRef = useRef(null);
+  // Frame ukur = RECT LAYER (kotak overlay), bukan window.innerHeight:
+  // di HP, innerHeight (visual viewport) ≠ tinggi layer (fixed inset-0) saat
+  // URL bar muncul → dulu bola pakai vh (viewport besar) + wash pakai persen
+  // layer → meleset ("terlalu ke atas efeknya gak sesuai bola"). Semua posisi
+  // kini px/percent dari rect yang SAMA → bola, wash, 集中線 selalu sejajar.
   const [vp, setVp] = useState(() => ({
     w: typeof window !== 'undefined' ? window.innerWidth : 1280,
     h: typeof window !== 'undefined' ? window.innerHeight : 800,
   }));
-  useEffect(() => {
-    const onResize = () => setVp({ w: window.innerWidth, h: window.innerHeight });
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
+  useLayoutEffect(() => {
+    const el = rootRef.current;
+    if (!el) return undefined;
+    const measure = () => {
+      const r = el.getBoundingClientRect();
+      const w = r.width || window.innerWidth;
+      const h = r.height || window.innerHeight;
+      setVp((prev) => (Math.abs(prev.w - w) < 0.5 && Math.abs(prev.h - h) < 0.5 ? prev : { w, h }));
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    const vv = window.visualViewport;
+    if (vv) {
+      vv.addEventListener('resize', measure);
+      vv.addEventListener('scroll', measure);
+    }
+    return () => {
+      window.removeEventListener('resize', measure);
+      if (vv) {
+        vv.removeEventListener('resize', measure);
+        vv.removeEventListener('scroll', measure);
+      }
+    };
+  }, [balls]);
   if (!balls) return null;
 
   const layoutAo = gojoBallLayout('ao', vp.w, vp.h);
   const layoutAka = gojoBallLayout('aka', vp.w, vp.h);
-  // Titik fokus 集中線 (ruang 0..100 viewport) = posisi bola sebenarnya.
-  const focusOf = (layout) => ({ x: 50 + layout.anchorXVw, y: 50 + layout.anchorYVh });
+  // Titik fokus 集中線 (ruang 0..100 viewport) = posisi bola sebenarnya (px → %).
+  const focusOf = (layout) => ({ x: (layout.ballCx / vp.w) * 100, y: (layout.ballCy / vp.h) * 100 });
   // Di HP: batasi garis agar tetap di area atas (tidak turun ke kartu jawaban).
   const maxY = layoutAo.mobile ? 24 : null;
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div ref={rootRef} className="absolute inset-0 overflow-hidden">
       {/* latar menggelap (paling belakang) — warna lebih gelap dari bola */}
-      {balls.ao && <GojoVignette key="v-ao" tech="ao" explode={explode} reduced={red} layout={layoutAo} vw={vp.w} vh={vp.h} />}
-      {balls.aka && <GojoVignette key="v-aka" tech="aka" explode={explode} reduced={red} layout={layoutAka} vw={vp.w} vh={vp.h} />}
+      {balls.ao && <GojoVignette key="v-ao" tech="ao" explode={explode} reduced={red} vw={vp.w} vh={vp.h} />}
+      {balls.aka && <GojoVignette key="v-aka" tech="aka" explode={explode} reduced={red} vw={vp.w} vh={vp.h} />}
       {balls.ao && <GojoTension key="t-ao" tech="ao" seed={seed} reduced={red} focus={focusOf(layoutAo)} maxY={maxY} />}
       {balls.aka && <GojoTension key="t-aka" tech="aka" seed={seed + 7} reduced={red} focus={focusOf(layoutAka)} maxY={maxY} />}
       {balls.ao && <GojoBall key="ao" tech="ao" seed={seed} reduced={red} explode={explode} layout={layoutAo} />}
