@@ -15,6 +15,8 @@ import {
 // ditangani komponen GojoSpheres. GojoBurst hanya muncul untuk:
 //   • murasaki (bener #3 & tiap milestone) → kedua bola ke tengah lalu MELEDAK
 //     (domain 領域展開 kini punya cinematic sendiri: GojoDomainCine)
+//   • GIF (aset user): salah → meme "Gojo kalah"; murasaki → GIF teknik 茈.
+//     Muncul di TENGAH dengan bingkai tinta, di atas efek ledakan.
 //
 //   Layer 5  TEKS TEKNIK      茈 (stroke tinta)
 //   Layer 4  RETAK            HANYA streak
@@ -39,6 +41,38 @@ const prefersReduced = () =>
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// GIF reaksi Gojo (aset user) — bingkai tinta ala panel manga, di tengah layar.
+// Salah → goyang kecil (meme kalah); murasaki → muncul mantap (teknik).
+function GojoGifLayer({ src, reduced, wrong = false }) {
+  if (!src) return null;
+  return (
+    <motion.div
+      data-gojo-gif
+      className="absolute left-1/2 top-1/2 z-10"
+      style={{ marginLeft: '-19vh', marginTop: '-17vh' }}
+      initial={{ opacity: 0, scale: 0.92, rotate: wrong ? 2.5 : -1.5 }}
+      animate={
+        wrong
+          ? { opacity: 1, scale: 1, rotate: -1.5, x: reduced ? 0 : [0, -9, 8, -5, 3, 0] }
+          : { opacity: 1, scale: 1, rotate: 0, x: 0 }
+      }
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ duration: reduced ? 0 : wrong ? 0.34 : 0.2, ease: 'easeOut' }}
+    >
+      <div className="w-[38vh] h-[38vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden">
+        <img
+          src={src}
+          alt="Gojo"
+          decoding="sync"
+          loading="eager"
+          className="w-full h-full object-contain select-none"
+          draggable={false}
+        />
+      </div>
+    </motion.div>
+  );
+}
+
 export function GojoBurst({ fx, kind }) {
   const [reduced] = useState(prefersReduced);
   const streak = fx?.streak || 0;
@@ -51,18 +85,26 @@ export function GojoBurst({ fx, kind }) {
   const [halftone] = useState(() => (technique ? gojoHalftone(seed) : []));
   const [impactStar] = useState(() => (technique ? gojoImpactStar(seed) : null));
 
-  // Salah: wash merah, TANPA retak / impact (bukan teknik).
+  // Salah: wash merah, TANPA retak / impact (bukan teknik). GIF "kalah" di tengah.
   if (!technique) {
     return (
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
-        animate={{ opacity: reduced ? 0.5 : [0, 0.5, 0] }}
-        transition={{ duration: reduced ? 0 : 0.6, ease: 'easeOut' }}
-        style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(229,57,53,0.28), transparent 70%)',
-        }}
-      />
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, transition: { duration: 0.16 } }}
+      >
+        <motion.div
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: reduced ? 0.5 : [0, 0.5, 0] }}
+          transition={{ duration: reduced ? 0 : 0.6, ease: 'easeOut' }}
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(229,57,53,0.28), transparent 70%)',
+          }}
+        />
+        <GojoGifLayer src={fx?.gifSrc} reduced={reduced} wrong />
+      </motion.div>
     );
   }
 
@@ -305,6 +347,9 @@ export function GojoBurst({ fx, kind }) {
             />
           </>
         )}
+
+        {/* ── GIF teknik 茈 (aset user) — di atas ledakan plasma ───────────── */}
+        <GojoGifLayer src={fx?.gifSrc} reduced={reduced} />
 
         {/* ── Layer 2 — SERPIHAN TINTA (partikel hard-edge, bukan blur) ─────── */}
         {particles.map((p) => {

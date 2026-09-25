@@ -14,6 +14,7 @@ import { EffectProvider } from "./features/effects/EffectContext";
 import { getPack } from "./features/packs/packs";
 import { setActiveVoice, preloadVoice, primeVoice } from "./utils/sfx";
 import { preloadHinaGifs } from "./features/effects/hinaGifs";
+import { preloadGojoGifs } from "./features/effects/gojoGifs";
 import { getVoice } from "./features/audio/voices";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
@@ -92,6 +93,9 @@ function VoiceSync() {
     // Pack visual 'hina' → preload + decode GIF, supaya efek muncul TEPAT saat
     // suara Hina bunyi (bukan telat karena decode GIF 1.7MB).
     if (pack?.visual === 'hina') preloadHinaGifs();
+    // Pack visual 'gojo' → preload + decode GIF (kalah/murasaki/ryoiki), supaya
+    // GIF tampil instan saat jawaban & cast (tanpa jeda decode frame pertama).
+    if (pack?.visual === 'gojo') preloadGojoGifs();
   }, [progress.activePack]);
   return null;
 }

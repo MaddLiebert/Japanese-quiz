@@ -42,6 +42,7 @@ export const voiceFilePaths = (voice) => {
   const groups = [
     voice.files?.correct, voice.files?.wrong, voice.files?.streak,
     voice.overlays?.correct, voice.overlays?.wrong,
+    voice.clips,   // klip jalur khusus (mis. Gojo: ao/aka/ryoiki) — tetap di-preload
   ];
   const out = [];
   for (const g of groups) {
@@ -299,6 +300,23 @@ export const playDomainBoom = (kind = 'cast') => {
   }
   return Math.round(p.dur * 1000);
 };
+
+// ── Suara khusus Gojo (pack_07) ─────────────────────────────────────────────
+// Teknik diputar DETERMINISTIK (bukan pickFile acak): 蒼 → ao.mp3, 赫 → aka.mp3.
+// 茈 (murasaki) belum punya klip — GIF murasaki yang tampil, jadi senyap.
+export const GOJO_TECHNIQUE_FILES = {
+  ao: '/voices/gojo/ao.mp3',
+  aka: '/voices/gojo/aka.mp3',
+};
+
+export const playGojoTechnique = (technique) => {
+  const path = GOJO_TECHNIQUE_FILES[technique];
+  return path ? playFile(path) : 0;
+};
+
+// Cast 領域展開 — klip voice Gojo (diputar bareng dentuman oleh EffectProvider).
+export const GOJO_CAST_FILE = '/voices/gojo/ryoiki tenkai.mp3';
+export const playGojoCast = () => playFile(GOJO_CAST_FILE);
 
 // ── API publik ──────────────────────────────────────────────────────────────
 // Semua mengembalikan durasi klip (ms) supaya efek visual (GIF Hina) bisa
