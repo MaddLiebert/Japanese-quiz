@@ -639,11 +639,14 @@ test('gojoBallWash: HP = wash di sudut bola, TIDAK menyentuh konten kuis', () =>
     assert.equal(w.mobile, true);
     assert.equal(w.side, side);
     assert.ok(w.rxPx > 0 && w.ryPx > 0, 'geometri numerik untuk uji aman');
-    // Background = warna gelap bola + memudar transparan (bukan kotak keras).
+    // Background = warna gelap bola + memudar transparan (bukan kotak keras),
+    // dipusatkan ke PUSAT BOLA (dulu hardcode 20% → ngambang di atas bola).
     const dark = gojoBallVignette(tech).dark;
+    const L = gojoBallLayout(tech, vw, vh);
+    const atYPct = +(((L.ballCy / vh) * 100).toFixed(2));
     assert.equal(
       w.background,
-      `radial-gradient(ellipse 46vw 14.5vh at ${side === 'right' ? '100%' : '0%'} 20%, ${dark} 0 40%, ${dark}99 70%, ${dark}00 100%)`,
+      `radial-gradient(ellipse ${w.rxPx}px ${w.ryPx}px at ${side === 'right' ? '100%' : '0%'} ${atYPct}%, ${dark} 0 40%, ${dark}99 70%, ${dark}00 100%)`,
     );
     // Wash tetap "kaya" (lebar), bukan titik kecil.
     assert.ok(w.rxPx >= vw * 0.4, `wash terlalu sempit (${w.rxPx}px)`);
@@ -676,6 +679,29 @@ test('gojoBallWash: HP = wash di sudut bola, TIDAK menyentuh konten kuis', () =>
   }
 });
 
+// ── Wash = pusat bola di SEMUA ukuran layar (fix "terlalu ke atas") ─────────
+// Keluhan user (screenshot HP): "terlalu ke atas efeknya gak sesuai bola".
+// Sebab: wash dipatok `at 20%` tinggi viewport, bola dipatok 167px dari atas —
+// keduanya hanya kebetulan ketemu di layar ±835px; di layar pendek (URL bar
+// HP aktif) wash tampak puluhan px DI ATAS bola. Kini wash selalu = pusat bola.
+test('gojoBallWash: pusat wash = pusat bola di semua tinggi layar', () => {
+  for (const [vw, vh] of [[390, 844], [360, 780], [430, 932], [412, 915], [390, 700], [360, 640]]) {
+    for (const t of ['ao', 'aka']) {
+      const L = gojoBallLayout(t, vw, vh);
+      const w = gojoBallWash(t, vw, vh);
+      assert.ok(Math.abs(w.atY * vh - L.ballCy) <= 0.1,
+        `${t}@${vw}x${vh}: wash ${(w.atY * vh).toFixed(1)}px vs bola ${L.ballCy}px`);
+      const pct = Number(/at \S+ ([\d.]+)%/.exec(w.background)[1]);
+      assert.ok(Math.abs((pct / 100) * vh - L.ballCy) < 1,
+        `${t}@${vw}x${vh}: wash dirender di ${pct}% (${((pct / 100) * vh).toFixed(1)}px) vs bola ${L.ballCy}px`);
+    }
+  }
+  // Layar pendek = kasus keluhan: wash ikut turun ke bola, bukan ngambang di 20%.
+  const short = gojoBallWash('ao', 390, 640);
+  assert.ok(Math.abs(short.atY * 640 - 167) <= 0.1, 'layar pendek: wash di pusat bola (167px)');
+  assert.ok(Math.abs(short.atY * 640 - 0.2 * 640) > 20, 'layar pendek: wash TIDAK lagi dipatok 20% (128px)');
+});
+
 test('gojoBallLabel: teks kanji makin greget (fontScale & stroke tebal)', () => {
   const ao = gojoBallLabel('ao');
   assert.ok(ao.fontScale >= 0.6, 'teks harus lebih besar');
@@ -691,54 +717,49 @@ test('gojoBallLayout: desktop = tepi tengah, HP = sudut atas + lebih kecil', () 
   const d = gojoBallLayout('ao', 1280, 800);
   assert.equal(d.mobile, false);
   assert.equal(d.size, 128);
-  assert.equal(d.anchorYVh, 0, 'desktop: bola sejajar tengah');
-  assert.ok(d.anchorXVw > 0, 'ao di kanan');
+  assert.equal(d.ballCy, 400, 'desktop: bola sejajar tengah');
+  assert.equal(d.anchorYpx, 0, 'desktop: offset Y = 0');
+  assert.ok(Math.abs(d.anchorXpx - 0.32 * 1280) < 0.001, 'desktop: 32% lebar dari tengah');
+  assert.ok(Math.abs(d.offXpx - 0.62 * 1280) < 0.001, 'desktop: mulai dari kanan (luar layar)');
+  const dk = gojoBallLayout('aka', 1280, 800);
+  assert.ok(dk.anchorXpx < 0 && dk.ballCx < 640 && dk.offXpx < 0, 'aka di kiri');
 
   const m = gojoBallLayout('ao', 390, 844);
   assert.equal(m.mobile, true);
   assert.ok(m.size < d.size, 'HP: bola lebih kecil');
-  assert.ok(m.anchorYVh < 0, 'HP: bola naik ke ATAS');
-  assert.ok(m.anchorXVw > 0, 'HP ao tetap di kanan');
   assert.equal(m.size, 44, 'HP: bola 44px (lebih kecil dari 84)');
+  assert.equal(m.ballCy, 167, 'HP: pusat bola 167px dari atas (tepi atas 145 + 22)');
+  assert.equal(m.ballCx, 358, 'HP: bola nempel tepi kanan');
+  assert.equal(m.anchorXpx, 358 - 195, 'offset X dari tengah kotak');
+  assert.equal(m.anchorYpx, 167 - 422, 'offset Y dari tengah kotak');
+  assert.ok(Math.abs(m.offXpx - 0.62 * 390) < 0.001, 'HP ao mulai dari kanan (luar layar)');
   // bola tetap di dalam layar (tidak keluar tepi)
-  const cx = 390 / 2 + (m.anchorXVw / 100) * 390;
-  assert.ok(cx + m.size / 2 <= 390, 'bola tidak keluar tepi kanan');
-  assert.ok(cx - m.size / 2 >= 0, 'bola tidak keluar tepi kiri');
-  // bola ada di area ATAS layar (di atas kartu jawaban di tengah)
-  const cy = 844 / 2 + (m.anchorYVh / 100) * 844;
-  assert.ok(Math.abs((cy - m.size / 2) - 145) <= 1, 'HP: tepi atas bola ≈ y145 (di bawah border header)');
-  assert.ok(cy + m.size / 2 < 844 * 0.35, 'bola harus di sepertiga atas layar');
+  assert.ok(m.ballCx + m.size / 2 <= 390, 'bola tidak keluar tepi kanan');
+  assert.ok(m.ballCx - m.size / 2 >= 0, 'bola tidak keluar tepi kiri');
 
   const aka = gojoBallLayout('aka', 390, 844);
-  assert.ok(aka.anchorXVw < 0, 'HP aka di kiri');
-  assert.ok(aka.anchorYVh < 0, 'HP aka juga naik');
+  assert.equal(aka.ballCx, 32, 'HP aka nempel tepi kiri');
+  assert.ok(aka.offXpx < 0, 'HP aka mulai dari kiri (luar layar)');
 
   assert.equal(gojoBallLayout('murasaki', 390, 844), null);
   assert.equal(gojoBallLayout(null, 390, 844), null);
   assert.equal(GOJO_BALL_BREAKPOINT, 768);
 });
 
-test('gojoBallLayout: di HP bola tetap di atas progress bar & kartu jawaban', () => {
+test('gojoBallLayout: di HP bola tetap di antara border header & progress bar', () => {
   // Terukur (360/375/390/430 × HP): border header berakhir y≈143,
-  // progress bar kotoba/kanji y≈191–197, kartu soal y≈237.
-  for (const [vw, vh] of [[390, 844], [360, 780], [430, 932]]) {
+  // progress bar kotoba/kanji y≈191–197, kartu soal y≈237. Posisi bola dalam
+  // PX (ballCy) — sama untuk semua tinggi layar; frame = kotak overlay terukur.
+  for (const [vw, vh] of [[390, 844], [360, 780], [430, 932], [390, 700], [360, 640]]) {
     for (const t of ['ao', 'aka']) {
       const L = gojoBallLayout(t, vw, vh);
-      const cy = vh / 2 + (L.anchorYVh / 100) * vh;
-      const bottom = cy + L.size / 2;
+      const bottom = L.ballCy + L.size / 2;
       assert.ok(bottom < 191, `${t} @${vw}x${vh}: bola menyentuh progress bar (bottom=${bottom.toFixed(0)})`);
       assert.ok(bottom < 237, `${t} @${vw}x${vh}: bola menutupi kartu soal`);
+      const top = L.ballCy - L.size / 2;
+      assert.ok(top >= 143, `${t} @${vw}x${vh}: tepi atas di bawah border header (top=${top.toFixed(0)})`);
+      assert.ok(L.size <= 48, `${t} @${vw}x${vh}: ukuran kecil (size=${L.size})`);
     }
-  }
-});
-
-test('gojoBallLayout: di HP bola turun ke bawah header — tidak nempel tombol atas', () => {
-  for (const [vw, vh] of [[390, 844], [360, 780], [430, 932]]) {
-    const L = gojoBallLayout('ao', vw, vh);
-    const cy = vh / 2 + (L.anchorYVh / 100) * vh;
-    const top = cy - L.size / 2;
-    assert.ok(top >= 143, `tepi atas di bawah border header (top=${top.toFixed(0)})`);
-    assert.ok(L.size <= 48, `ukuran kecil (size=${L.size})`);
   }
 });
 
