@@ -51,10 +51,24 @@ export const VOICES = {
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
 
-  // Pack #7 — Gojo Satoru. DUMMY dulu: synth dasar (files kosong → fallback).
-  // Aset voice menyusul di public/voices/gojo/; efek suara 蒼→赫→茈 menyusul.
+  // Pack #7 — Gojo Satoru. Aset user di public/voices/gojo/:
+  //   wrong : 4 klip meme "gojo kalah" (dipilih acak tiap jawaban salah)
+  //   clips : klip jalur khusus — ao/aka (teknik, diputar deterministik oleh
+  //           playGojoTechnique) + ryoiki tenkai (cast domain). Ikut di-preload.
+  //   correct/streak: KOSONG — benar biasa = suara teknik (ao/aka) yang dipilih
+  //           deterministik, bukan acak; 茈 belum punya klip (GIF yang bicara).
   gojo: {
-    files: { correct: [], wrong: [], streak: [] },
+    files: {
+      correct: [],
+      wrong: [
+        '/voices/gojo/Gojo kalah 1.mp3',
+        '/voices/gojo/gojo kalah2.mp3',
+        '/voices/gojo/gojo kalah 3.mp3',
+        '/voices/gojo/gojo kalah 4.mp3',
+      ],
+      streak: [],
+    },
+    clips: ['/voices/gojo/ao.mp3', '/voices/gojo/aka.mp3', '/voices/gojo/ryoiki tenkai.mp3'],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
 };

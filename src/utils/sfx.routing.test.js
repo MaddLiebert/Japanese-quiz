@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist, voiceFilePaths, hinaGifHoldMs, playClipFile, pickStreakClip, primeVoice } from './sfx.js';
+import { setActiveVoice, getActiveVoiceKey, streakTierIndex, STREAK_TIER_BY_LEVEL, answerFeedbackKind, feedbackFiles, streakPlaylist, voiceFilePaths, hinaGifHoldMs, playClipFile, pickStreakClip, primeVoice, GOJO_TECHNIQUE_FILES, playGojoTechnique, GOJO_CAST_FILE, playGojoCast } from './sfx.js';
 import { VOICES } from '../features/audio/voices.js';
 
 test('default tanpa pack: tidak ada voice (chime dasar)', () => {
@@ -168,4 +168,25 @@ test('primeVoice: fetcher inject → unduh tiap klip (buffer penuh)', () => {
   const n = primeVoice({ files: { correct: ['/zzz/a.mp3'], wrong: [], streak: ['/zzz/b.mp3'] }, overlays: {} }, fakeFetch);
   assert.equal(n, 2);
   assert.deepEqual(calls.slice().sort(), ['/zzz/a.mp3', '/zzz/b.mp3']);
+});
+
+test('voiceFilePaths: klip jalur khusus (clips) IKUT di-preload', () => {
+  const paths = voiceFilePaths(VOICES.gojo);
+  // 4 klip salah + 3 klip teknik/cast
+  assert.equal(paths.length, 7);
+  assert.ok(paths.includes('/voices/gojo/ao.mp3'));
+  assert.ok(paths.includes('/voices/gojo/aka.mp3'));
+  assert.ok(paths.includes('/voices/gojo/ryoiki tenkai.mp3'));
+});
+
+test('suara Gojo: teknik deterministik (ao→蒼, aka→赫), cast → ryoiki tenkai', () => {
+  assert.equal(GOJO_TECHNIQUE_FILES.ao, '/voices/gojo/ao.mp3');
+  assert.equal(GOJO_TECHNIQUE_FILES.aka, '/voices/gojo/aka.mp3');
+  assert.equal(GOJO_CAST_FILE, '/voices/gojo/ryoiki tenkai.mp3');
+  // node (tanpa window) → play* no-op, kembalikan 0 tanpa throw.
+  assert.equal(playGojoTechnique('ao'), 0);
+  assert.equal(playGojoTechnique('aka'), 0);
+  assert.equal(playGojoTechnique('murasaki'), 0, '茈 belum punya klip');
+  assert.equal(playGojoTechnique('zzz'), 0);
+  assert.equal(playGojoCast(), 0);
 });

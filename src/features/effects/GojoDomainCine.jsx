@@ -7,6 +7,7 @@ import {
   gojoDomainTimeline, gojoSequentialChars, gojoNebulaSpots, gojoStars,
 } from './gojoFx';
 import { playDomainBoom } from '../../utils/sfx';
+import { gojoCastGif } from './gojoGifs';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 領域展開・無量空処 — CINEMATIC ULTIMATE (bar energi kutukan, persist sampai salah).
@@ -320,6 +321,7 @@ export function GojoSpacePortal({ seed = 1 }) {
 // elemennya memang sudah transparan, jadi tak ada yang terlihat hilang mendadak.
 export function GojoDomainCine() {
   const [reduced] = useState(prefersReduced);
+  const [castGif] = useState(gojoCastGif);   // GIF Gojo clasped-hands saat cast
   const t = gojoDomainTimeline();
 
   // Dentuman bigbang (cast sudah dibunyikan EffectProvider).
@@ -346,6 +348,35 @@ export function GojoDomainCine() {
           animate={{ opacity: 0 }}
           transition={{ delay: t.settleStart, duration: reduced ? 0.3 : t.settleDur, ease: 'easeInOut' }}
         />
+
+        {/* GIF Gojo (ryoiki tenkai) — muncul saat cast, DI ATAS teks, ikut naik
+            saat settle (satu blok dengan teks supaya tidak tertinggal). */}
+        {castGif && (
+          <motion.div
+            data-gojo-castgif
+            className="absolute left-1/2 top-1/2"
+            style={{ marginLeft: '-16vh', marginTop: '-34vh' }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: [0, 1, 1, 0], scale: [0.9, 1, 1, 0.96] }}
+            transition={{
+              delay: reduced ? 0 : t.text1Start,
+              duration: reduced ? 0 : t.settleStart + t.settleDur - t.text1Start,
+              times: [0, 0.08, 0.82, 1],
+              ease: 'easeOut',
+            }}
+          >
+            <div className="w-[32vh] h-[32vh] border-[3px] border-[#e8e0ff] bg-[#07030d] shadow-[0_0_40px_rgba(124,77,255,0.55)] overflow-hidden">
+              <img
+                src={castGif}
+                alt="Gojo — 領域展開"
+                decoding="sync"
+                loading="eager"
+                className="w-full h-full object-contain select-none"
+                draggable={false}
+              />
+            </div>
+          </motion.div>
+        )}
 
         {/* Blok tengah: [mata] → [領域展開] → [無量空処]; naik, mengecil, lalu memudar */}
         <motion.div

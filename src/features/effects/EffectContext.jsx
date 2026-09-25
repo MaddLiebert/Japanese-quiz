@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
-import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs, playDomainBoom } from '../../utils/sfx';
+import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs, playDomainBoom, playGojoTechnique, playGojoCast } from '../../utils/sfx';
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
+import { gojoGifForAnswer, gojoGifHoldMs } from './gojoGifs';
 import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 import { GojoBurst } from './GojoBurst';
 import { GojoSpheres } from './GojoSpheres';
@@ -182,7 +183,10 @@ export function EffectProvider({ children }) {
     const onMilestone = info ? streakRef.current === info.milestone : false;
 
     // GIF Hina: hanya saat suara Hina bunyi (salah / tepat milestone). Benar biasa → null.
-    const gifSrc = hinaGifForAnswer(type, onMilestone);
+    // GIF Gojo: salah → meme "kalah"; teknik 茈 → murasaki; ao/aka → null (bola plasma).
+    const gifSrc = activeVisual === 'gojo'
+      ? gojoGifForAnswer(type, gojoTechniqueFor(kind, type === 'correct' ? streakRef.current : 0))
+      : hinaGifForAnswer(type, onMilestone);
 
     // Suara (keputusan desain):
     //  - jawaban salah  → wronganswer.mp3 + voice Hina wrong (tiap salah)
@@ -192,10 +196,12 @@ export function EffectProvider({ children }) {
     // (call site memanggil triggerEffect SEBELUM streak naik).
     // play*Sound mengembalikan durasi klip (ms) → GIF Hina tampil selama suaranya.
     const feedback = answerFeedbackKind(type, onMilestone);
-    // Pack Gojo: SENYAP total (tanpa sound apa pun) — sesuai permintaan user.
-    // Efek visualnya tetap jalan; suara menyusul nanti.
+    // Pack Gojo (aset user): benar → klip teknik DETERMINISTIK (蒼 ao / 赫 aka,
+    // 茈 senyap — GIF yang bicara); salah → klip "gojo kalah" acak.
     const clipMs = activeVisual === 'gojo'
-      ? 0
+      ? (type === 'wrong'
+        ? playWrongSound()
+        : playGojoTechnique(gojoTechniqueFor(kind, streakRef.current)))
       : feedback === 'streak' ? playStreakSound(streakSoundLevel(streakRef.current))
         : feedback === 'wrong' ? playWrongSound()
           : playCorrectSound();
@@ -206,7 +212,9 @@ export function EffectProvider({ children }) {
     const holdMs = activeVisual === 'hina'
       ? hinaGifHoldMs(kind === 'streak' ? 'streak' : type, clipMs)
       : activeVisual === 'gojo'
-        ? Math.max(cfg.hold, 2200)   // bola plasma butuh waktu muncul & tampil
+        // Bola plasma butuh waktu muncul (min 2.2s) + GIF tidak boleh kepotong
+        // di tengah putaran (mis. "kalah 2" = 3.5s) → pakai durasi GIF terukur.
+        ? gojoGifHoldMs(gifSrc, Math.max(cfg.hold, 2200))
         : cfg.hold;
     const gifHoldMs = holdMs;   // dipakai komponen GIF sebagai referensi (informatif)
 
@@ -287,6 +295,7 @@ export function EffectProvider({ children }) {
     domainEndsAtRef.current = Date.now() + gojoDomainStartDelayMs() + GOJO_DOMAIN_DURATION_S * 1000;
     setDomainLeft(GOJO_DOMAIN_DURATION_S);
     playDomainBoom('cast');
+    playGojoCast();   // klip voice Gojo "ryoiki tenkai" bareng dentuman
   }, [activeVisual]);
 
   // Penanda global untuk CSS hint Six Eyes (index.css) — nol timer JS.
