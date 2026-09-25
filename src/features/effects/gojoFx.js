@@ -541,6 +541,39 @@ export const gojoBallVignette = (technique) => {
   return { dark: darkenHex(label.color, 0.26), side: label.side, color: label.color };
 };
 
+// Wash warna di sisi bola (aura latar seperti PC).
+//   desktop → formula lama: ellipse lebar yang berhenti ±300px sebelum tengah.
+//   HP      → formula lama menghasilkan rx = max(0px, min(30vw, 50vw-300px)) =
+//             0px di layar 390px (50vw-300px negatif) → wash TIDAK pernah
+//             tampil; keluhan user: "efek di hp cuma bola2 doang... kaya di pc
+//             kan ada aura2 ungu sama merah gitu".
+//             Wash HP = pita lebar di tepi atas (atY 18%), diukur supaya:
+//             - kanji soal (x159-231, y278-350) & kartu jawaban (y≥414) ada DI
+//               LUAR ellipse (r>1 → alpha 0) — konten 100% bersih;
+//             - titik tengah tombol kontrol atas (y32) juga r≥1;
+//             - hanya sudut bawah tombol atas yang kena ekor fade (alpha ≤0.3).
+export const gojoBallWash = (technique, vw = 1280, vh = 800) => {
+  const v = gojoBallVignette(technique);
+  if (!v) return null;
+  const mobile = vw < GOJO_BALL_BREAKPOINT;
+  const atX = v.side === 'right' ? '100%' : '0%';
+  if (!mobile) {
+    return {
+      mobile: false,
+      side: v.side,
+      background: `radial-gradient(ellipse max(0px, min(30vw, 50vw - 300px)) 135% at ${atX} 50%, ${v.dark} 0 70%, ${v.dark}00 100%)`,
+    };
+  }
+  return {
+    mobile: true,
+    side: v.side,
+    atY: 0.20,
+    rxPx: vw * 0.46,
+    ryPx: vh * 0.145,
+    background: `radial-gradient(ellipse 46vw 14.5vh at ${atX} 20%, ${v.dark} 0 40%, ${v.dark}99 70%, ${v.dark}00 100%)`,
+  };
+};
+
 // Aura menyala di sekeliling bola (halo berdenyut).
 //   desktop → parameter lama: melebar (inset -size*0.55) + tail redup (…22).
 //   HP      → lebih RAPAT (sedikit lebih besar dari bola, inset -size*0.34)

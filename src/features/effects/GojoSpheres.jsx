@@ -4,7 +4,7 @@ import {
   GOJO_STYLE, GOJO_CORE, GOJO_INK,
   gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
   gojoBallLabel, gojoBallAura, gojoTensionLines, gojoCharge, gojoBallVignette,
-  gojoBallLayout,
+  gojoBallWash, gojoBallLayout,
 } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -215,21 +215,19 @@ function GojoBall({ tech, seed, reduced, explode, layout }) {
 
 // Vignette latar: gelap dengan warna lebih gelap dari bola, HANYA di sisi bola
 // (dari tepi layar, memudar sebelum tengah) → tidak menutupi quiz yang di tengah.
-// `at` = titik fokus gradient (dari layout bola: sudut atas saat HP).
-function GojoVignette({ tech, explode, reduced, layout }) {
+// Geometri dari gojoBallWash(tech, vw, vh): desktop = formula lama (radius
+// berhenti ±300px sebelum tengah); HP = ellipse di sudut bola (formula desktop
+// menghasilkan 0px di layar 390px → wash tidak tampil; user: "efek di hp cuma
+// bola2 doang... kaya di pc kan ada aura2 ungu sama merah gitu").
+function GojoVignette({ tech, explode, reduced, layout, vw, vh }) {
   const v = gojoBallVignette(tech);
-  if (!v) return null;
-  // radius horizontal: 30vw, TAPI tidak lebih dari (50vw - 300px) → berhenti
-  // ~300px sebelum tengah (kartu quiz max-w-lg = 512px), jadi tidak menyentuh quiz.
-  const rx = 'max(0px, min(30vw, 50vw - 300px))';
-  // Saat HP bola di sudut atas, vignette juga naik ke sudut atas.
-  const atY = layout.mobile ? '22%' : '50%';
-  const atX = v.side === 'right' ? '100%' : '0%';
+  const w = gojoBallWash(tech, vw, vh);
+  if (!v || !w) return null;
   return (
     <motion.div
       className="absolute inset-0"
       style={{
-        background: `radial-gradient(ellipse ${rx} 135% at ${atX} ${atY}, ${v.dark} 0 70%, ${v.dark}00 100%)`,
+        background: w.background,
         willChange: 'opacity',
       }}
       initial={{ opacity: 0 }}
@@ -303,8 +301,8 @@ export function GojoSpheres({ balls, explode = false, seed = 1, reduced }) {
   return (
     <div className="absolute inset-0 overflow-hidden">
       {/* latar menggelap (paling belakang) — warna lebih gelap dari bola */}
-      {balls.ao && <GojoVignette key="v-ao" tech="ao" explode={explode} reduced={red} layout={layoutAo} />}
-      {balls.aka && <GojoVignette key="v-aka" tech="aka" explode={explode} reduced={red} layout={layoutAka} />}
+      {balls.ao && <GojoVignette key="v-ao" tech="ao" explode={explode} reduced={red} layout={layoutAo} vw={vp.w} vh={vp.h} />}
+      {balls.aka && <GojoVignette key="v-aka" tech="aka" explode={explode} reduced={red} layout={layoutAka} vw={vp.w} vh={vp.h} />}
       {balls.ao && <GojoTension key="t-ao" tech="ao" seed={seed} reduced={red} focus={focusOf(layoutAo)} maxY={maxY} />}
       {balls.aka && <GojoTension key="t-aka" tech="aka" seed={seed + 7} reduced={red} focus={focusOf(layoutAka)} maxY={maxY} />}
       {balls.ao && <GojoBall key="ao" tech="ao" seed={seed} reduced={red} explode={explode} layout={layoutAo} />}

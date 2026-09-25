@@ -9,7 +9,7 @@ import {
   GOJO_CORE, gojoSphereShape, gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
   gojoSphereAnim, nextGojoBalls, GOJO_BALLS_EMPTY,
   gojoBallLabel, gojoBallAura, gojoTensionLines, gojoCharge,
-  darkenHex, gojoBallVignette,
+  darkenHex, gojoBallVignette, gojoBallWash,
   gojoBallLayout, GOJO_BALL_BREAKPOINT,
   gojoMurasakiBurst,
   GOJO_ULT_THRESHOLD, gojoUltReady, gojoCurseCharge,
@@ -608,6 +608,72 @@ test('gojoBallVignette: ao/aka punya warna gelap (lebih gelap dari bola) + titik
   const aka = gojoBallVignette('aka');
   assert.ok(lum(aka.dark) < lum(GOJO_STYLE.aka.color), 'vignette aka harus lebih gelap dari bola');
   assert.equal(aka.side, 'left');
+});
+
+// ── Wash sisi bola di HP (aura latar ala PC) ────────────────────────────────
+// Permintaan user: "efek di hp cuma bola2 doang... kaya di pc kan ada aura2
+// ungu sama merah gitu". Formula desktop = 0px di layar 390px → wash tidak
+// pernah tampil di HP. Wash HP = ellipse di sudut bola, diuji AMAN geometri.
+
+test('gojoBallWash: desktop = formula lama persis (tanpa regresi)', () => {
+  const v = gojoBallVignette('ao');
+  const w = gojoBallWash('ao', 1264, 800);
+  assert.equal(w.mobile, false);
+  assert.equal(
+    w.background,
+    `radial-gradient(ellipse max(0px, min(30vw, 50vw - 300px)) 135% at 100% 50%, ${v.dark} 0 70%, ${v.dark}00 100%)`,
+  );
+  const a = gojoBallWash('aka', 1264, 800);
+  assert.ok(a.background.includes('at 0% 50%'), 'aka fokus kiri');
+  assert.equal(gojoBallWash('murasaki', 1264, 800), null);
+  assert.equal(gojoBallWash(null, 1264, 800), null);
+  // Batas breakpoint: < 768 = HP, ≥ 768 = desktop.
+  assert.equal(gojoBallWash('ao', 767, 900).mobile, true);
+  assert.equal(gojoBallWash('ao', 768, 900).mobile, false);
+});
+
+test('gojoBallWash: HP = wash di sudut bola, TIDAK menyentuh konten kuis', () => {
+  const vw = 390, vh = 844;
+  for (const [tech, side] of [['ao', 'right'], ['aka', 'left']]) {
+    const w = gojoBallWash(tech, vw, vh);
+    assert.equal(w.mobile, true);
+    assert.equal(w.side, side);
+    assert.ok(w.rxPx > 0 && w.ryPx > 0, 'geometri numerik untuk uji aman');
+    // Background = warna gelap bola + memudar transparan (bukan kotak keras).
+    const dark = gojoBallVignette(tech).dark;
+    assert.equal(
+      w.background,
+      `radial-gradient(ellipse 46vw 14.5vh at ${side === 'right' ? '100%' : '0%'} 20%, ${dark} 0 40%, ${dark}99 70%, ${dark}00 100%)`,
+    );
+    // Wash tetap "kaya" (lebar), bukan titik kecil.
+    assert.ok(w.rxPx >= vw * 0.4, `wash terlalu sempit (${w.rxPx}px)`);
+    assert.ok(w.ryPx >= vh * 0.12, `wash terlalu tipis (${w.ryPx}px)`);
+    // Jarak ternormalisasi ke pusat ellipse (r>1 = di luar → alpha 0).
+    const cx = side === 'right' ? vw : 0;
+    const cy = w.atY * vh;
+    const rAt = (x, y) => Math.sqrt(((x - cx) / w.rxPx) ** 2 + ((y - cy) / w.ryPx) ** 2);
+    // Kanji soal (terukur x159-231, y278-350): DI LUAR ellipse → 0% tint.
+    for (const [x, y] of [[159, 278], [231, 278], [159, 350], [231, 350]]) {
+      const r = rAt(x, y);
+      assert.ok(r >= 1, `${tech}: kanji (${x},${y}) r=${r.toFixed(3)} — wash menyentuh soal`);
+    }
+    // Kartu jawaban (y ≥ 414, x 16-374): jauh di luar ellipse.
+    for (const [x, y] of [[16, 414], [374, 414], [195, 414], [195, 620]]) {
+      const r = rAt(x, y);
+      assert.ok(r > 1.4, `${tech}: opsi (${x},${y}) r=${r.toFixed(3)} — wash menyentuh jawaban`);
+    }
+    // Baris tombol kontrol atas (y16-48) harus hampir bersih dari wash.
+    for (const [x, y] of [[340, 32], [260, 32], [180, 32], [100, 32]]) {
+      const r = rAt(x, y);
+      assert.ok(r >= 1, `${tech}: tombol atas (${x},${y}) kena wash (r=${r.toFixed(3)})`);
+    }
+    // Pojok bawah tombol EN/ID — hanya ekor sangat lembut (alpha ≤ ~10%).
+    const [ex, ey] = side === 'right' ? [374, 48] : [16, 48];
+    assert.ok(rAt(ex, ey) >= 0.95, `${tech}: ekor fade terlalu kuat di tombol (r=${rAt(ex, ey).toFixed(3)})`);
+    // Bola sendiri harus berada di INTI terang wash (r ≤ 0.4 → alpha penuh).
+    const [bx, by] = side === 'right' ? [358, 167] : [32, 167];
+    assert.ok(rAt(bx, by) <= 0.4, `${tech}: bola di luar inti wash (r=${rAt(bx, by).toFixed(3)})`);
+  }
 });
 
 test('gojoBallLabel: teks kanji makin greget (fontScale & stroke tebal)', () => {
