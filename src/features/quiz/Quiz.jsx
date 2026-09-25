@@ -86,7 +86,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
   if (!currentQuestion) return null;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+    <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
       <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none"></div>
 
       {onBack && (
@@ -118,7 +118,6 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
         key={currentQuestionIndex}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        data-quiz-area
         className="border-[4px] border-sumi bg-kinari-light p-6 sm:p-12 shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] relative z-10 flex-1 flex flex-col justify-between"
       >
         <div>

@@ -186,6 +186,11 @@ export function Practice() {
     advanceQuestion();
   };
 
+  // Kuis selesai → domain & bar 呪力 padam, layar skor bersih.
+  useEffect(() => {
+    if (isFinished) endQuizSession();
+  }, [isFinished, endQuizSession]);
+
   // Keyboard navigation: 1-6 for option selection, Space/Enter to advance
   useEffect(() => {
     if (!quizStarted || isFinished || !currentQuestion) return;
@@ -291,7 +296,7 @@ export function Practice() {
       // ── Kanji Quiz UI ────────────────────────────────────────────────────────
       if (isKanjiMode) {
         return (
-          <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+          <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
             <button
@@ -316,7 +321,7 @@ export function Practice() {
               </div>
             </header>
 
-            <div data-quiz-area className="flex-1 flex flex-col items-center relative z-10">
+            <div className="flex-1 flex flex-col items-center relative z-10">
               {/* Progress bar */}
               <div className="w-full max-w-lg mb-10 h-1.5 bg-sumi/10 rounded-full overflow-hidden">
                 <div
@@ -472,7 +477,7 @@ export function Practice() {
       if (isKotobaMode) {
 
         return (
-          <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+          <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
             <button
@@ -497,7 +502,7 @@ export function Practice() {
               </div>
             </header>
 
-            <div data-quiz-area className="flex-1 flex flex-col items-center relative z-10">
+            <div className="flex-1 flex flex-col items-center relative z-10">
               {/* Progress bar */}
               <div className="w-full max-w-lg mb-10 h-1.5 bg-sumi/10 rounded-full overflow-hidden">
                 <div

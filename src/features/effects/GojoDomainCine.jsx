@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { createPortal } from 'react-dom';
+import { motion } from 'motion/react';
 import {
   GOJO_STYLE, GOJO_INK, GOJO_BALL_BREAKPOINT, GOJO_ULT_THRESHOLD,
   gojoDomainTimeline, gojoSequentialChars, gojoNebulaSpots, gojoStars,
@@ -9,12 +10,14 @@ import { playDomainBoom } from '../../utils/sfx';
 // ─────────────────────────────────────────────────────────────────────────────
 // 領域展開・無量空処 — CINEMATIC ULTIMATE (bar energi kutukan, persist sampai salah).
 //   0. BAR       → 呪力 bar vertikal tepi KANAN, keisi naik tiap benar (aura di garis isi)
-//   1. GELAP     → layar hitam kecuali area kuis (spotlight [data-quiz-area])
-//   2. TEKS      → 領域展開 → 無量空処 muncul PER-KARAKTER (berurutan)
-//   3. SIX EYES  → mata di ATAS teks, nutup → kebuka
-//   4. BIGBANG   → di tengah + bercak ruang angkasa di PINGGIR kuis
-//   5. SETTLE    → blok mata+teks naik ke atas & mengecil → kartu soal kebaca
-//   6. PERSIST   → tetap hidup sampai jawaban SALAH (dikontrol EffectProvider)
+//   1. RUANG     → ruang angkasa (gelap + nebula + bintang) DI BELAKANG kuis;
+//                  kuis "terkurung" di dalamnya — kartu & opsi tetap terbaca (portal z-5)
+//   2. VEIL      → saat cast layar ditutup penuh; tersingkap saat settle (setelah bigbang)
+//   3. TEKS      → 領域展開 → 無量空処 muncul PER-KARAKTER (berurutan)
+//   4. SIX EYES  → mata di ATAS teks, nutup → kebuka
+//   5. BIGBANG   → di tengah (flash + ring mengembang)
+//   6. SETTLE    → blok mata+teks naik, mengecil, lalu memudar → kuis kebaca
+//   7. PERSIST   → ruang tetap hidup sampai jawaban SALAH (dikontrol EffectProvider)
 // Semua overlay pointer-events-none → quiz tetap bisa dijawab (bar-nya sendiri yang klikable).
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -43,7 +46,8 @@ export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
       {/* Slot label (tinggi tetap) → bar tidak bergeser saat label muncul.
           Di HP bar ditambatkan ke ATAS agar tidak menutupi opsi jawaban di bawah. */}
       <div className="flex h-14 items-center justify-center">
-        <AnimatePresence>
+        {/* Tanpa AnimatePresence: label harus hilang SEKETIKA saat bar tidak penuh
+            lagi (exit-animation + repeat: Infinity pernah bikin elemen nyangkut). */}
         {ready && (
           <motion.span
             key="ready-label"
@@ -51,13 +55,11 @@ export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
             style={{ color: '#e8e0ff', writingMode: 'vertical-rl', textShadow: `0 0 12px ${purple}` }}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: reduced ? 1 : [0.65, 1, 0.65], y: 0 }}
-            exit={{ opacity: 0, transition: { duration: 0.25 } }}
             transition={reduced ? { duration: 0 } : { repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
           >
             領域展開
           </motion.span>
         )}
-        </AnimatePresence>
       </div>
 
       {/* Bar-nya (tap = cast saat penuh) */}
@@ -212,91 +214,34 @@ function GojoBigBang({ reduced, start, dur }) {
   );
 }
 
-export function GojoDomainCine({ seed = 1 }) {
+// Ruang angkasa DI BELAKANG konten (portal ke <body>, z-5 di bawah <main> z-10):
+// kuis "terkurung" di dalam domain — kartu & opsi tetap terbaca di atasnya.
+// SENGAJA tanpa AnimatePresence/exit: portal + exit-animation bisa nyangkut
+// (AnimatePresence tak bisa menyelesaikan exit di luar tree-nya) → domain padam
+// harus menghapus ruang SEGERA. Fade-in saja (via CSS transition).
+export function GojoSpacePortal({ seed = 1 }) {
   const [reduced] = useState(prefersReduced);
   const [mobile] = useState(isMobile);
   const t = gojoDomainTimeline();
   const [spots] = useState(() => gojoNebulaSpots(seed, mobile ? 5 : 8));
   const [allStars] = useState(() => gojoStars(seed, mobile ? 36 : 64));
-  // Bintang hanya yang di pinggir (x/y di luar 18%/82%) → area kuis tetap bersih.
+  // Bintang hanya yang di pinggir (x/y di luar 18%/82%) → bagian tengah layar tetap bersih.
   const edgeStars = allStars.filter((s) => s.x <= 18 || s.x >= 82 || s.y <= 14 || s.y >= 86);
 
-  // Spotlight: ukur area kuis ([data-quiz-area]); fallback = full gelap.
-  const [rect, setRect] = useState(null);
-  useEffect(() => {
-    const measure = () => {
-      const el = document.querySelector('[data-quiz-area]');
-      if (!el) { setRect(null); return; }
-      const r = el.getBoundingClientRect();
-      setRect(r.width > 0 && r.height > 0
-        ? { left: r.left, top: r.top, width: r.width, height: r.height }
-        : null);
-    };
-    measure();
-    window.addEventListener('resize', measure);
-    const id = setTimeout(measure, 400);   // setelah animasi kartu selesai
-    return () => { window.removeEventListener('resize', measure); clearTimeout(id); };
-  }, []);
-
-  // Dentuman bigbang (cast sudah dibunyikan EffectProvider).
-  useEffect(() => {
-    if (reduced) return undefined;
-    const id = setTimeout(() => playDomainBoom('bang'), t.bangStart * 1000);
-    return () => clearTimeout(id);
-  }, [reduced, t.bangStart]);
-
-  return (
+  return createPortal(
     <motion.div
-      data-gojo-domain
-      className="absolute inset-0 overflow-hidden"
+      data-gojo-space
+      className="pointer-events-none fixed inset-0 z-[5] overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: reduced ? 0 : 0.6 } }}
+      transition={{ duration: reduced ? 0 : 0.6, ease: 'easeOut' }}
     >
-      {/* Placeholder gelap — detail fase menyusul Task 6–8 */}
       <div
         className="absolute inset-0"
-        style={rect
-          ? {
-            left: rect.left, top: rect.top, width: rect.width, height: rect.height,
-            boxShadow: '0 0 0 100vmax rgba(2,2,6,0.94)',
-          }
-          : { background: 'rgba(2,2,6,0.94)' }}
+        style={{ background: 'radial-gradient(120% 90% at 50% 10%, #0d0720 0%, #05030f 48%, #020206 100%)' }}
       />
 
-      {/* Blok tengah: [mata] → [領域展開] → [無量空処]; naik & mengecil saat settle */}
-      <motion.div
-        data-gojo-text
-        className="absolute inset-0 flex flex-col items-center justify-center gap-[2.2vmin]"
-        initial={false}
-        animate={reduced ? {} : { y: '-31vh', scale: 0.34, opacity: 0.75 }}
-        transition={{ delay: reduced ? 0 : t.settleStart, duration: reduced ? 0 : t.settleDur, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <SixEyes reduced={reduced} start={t.eyesStart} openDur={t.eyesOpenDur} />
-        <SequentialChars
-          text="領域展開"
-          start={t.text1Start}
-          perChar={t.text1Char}
-          reduced={reduced}
-          className="font-serif font-black tracking-[0.35em] text-[#e8e0ff]"
-          style={{ fontSize: 'clamp(20px, 3.4vw, 40px)', WebkitTextStroke: `2px ${GOJO_INK}` }}
-        />
-        <SequentialChars
-          text="無量空処"
-          start={t.text2Start}
-          perChar={t.text2Char}
-          reduced={reduced}
-          className="font-serif font-black tracking-[0.22em]"
-          style={{
-            fontSize: 'clamp(44px, 8.5vw, 118px)',
-            color: GOJO_STYLE.domain.color,
-            WebkitTextStroke: `3px ${GOJO_INK}`,
-            textShadow: `6px 6px 0 ${GOJO_INK}, 0 0 60px ${GOJO_STYLE.domain.color}cc`,
-          }}
-        />
-      </motion.div>
-
-      {/* Bercak ruang angkasa DI PINGGIR kuis (persist, denyut pelan) */}
+      {/* Bercak ruang angkasa (persist, denyut pelan) */}
       {spots.map((s) => (
         <motion.div
           key={s.id}
@@ -327,7 +272,7 @@ export function GojoDomainCine({ seed = 1 }) {
         />
       ))}
 
-      {/* Bintang hanya di PINGGIR (biar kartu soal tetap bersih) */}
+      {/* Bintang hanya di PINGGIR (biar bagian tengah tetap bersih) */}
       {edgeStars.map((st) => (
         <motion.span
           key={st.id}
@@ -344,10 +289,80 @@ export function GojoDomainCine({ seed = 1 }) {
           }}
         />
       ))}
+    </motion.div>,
+    document.body,
+  );
+}
 
-      {/* BIGBANG di tengah */}
-      <GojoBigBang reduced={reduced} start={t.bangStart} dur={t.bangDur} />
-    </motion.div>
+// Lapisan ATAS: veil gelap saat cast (tersingkap saat settle) + teks + bigbang.
+// Di-render kondisional tanpa AnimatePresence (lihat catatan di EffectContext):
+// saat domain padam, lapisan ini harus lenyap seketika — setelah settle semua
+// elemennya memang sudah transparan, jadi tak ada yang terlihat hilang mendadak.
+export function GojoDomainCine() {
+  const [reduced] = useState(prefersReduced);
+  const t = gojoDomainTimeline();
+
+  // Dentuman bigbang (cast sudah dibunyikan EffectProvider).
+  useEffect(() => {
+    if (reduced) return undefined;
+    const id = setTimeout(() => playDomainBoom('bang'), t.bangStart * 1000);
+    return () => clearTimeout(id);
+  }, [reduced, t.bangStart]);
+
+  return (
+    <>
+      <motion.div
+        data-gojo-domain
+        className="absolute inset-0 overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        {/* Veil: layar gelap penuh saat cast → memudar mulai settle */}
+        <motion.div
+          data-gojo-veil
+          className="absolute inset-0"
+          style={{ background: 'rgba(2,2,6,0.97)' }}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ delay: t.settleStart, duration: reduced ? 0.3 : t.settleDur, ease: 'easeInOut' }}
+        />
+
+        {/* Blok tengah: [mata] → [領域展開] → [無量空処]; naik, mengecil, lalu memudar */}
+        <motion.div
+          data-gojo-text
+          className="absolute inset-0 flex flex-col items-center justify-center gap-[2.2vmin]"
+          initial={{ y: 0, scale: 1, opacity: 1 }}
+          animate={reduced ? { opacity: 0 } : { y: '-31vh', scale: 0.34, opacity: 0 }}
+          transition={{ delay: t.settleStart, duration: reduced ? 0.3 : t.settleDur, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <SixEyes reduced={reduced} start={t.eyesStart} openDur={t.eyesOpenDur} />
+          <SequentialChars
+            text="領域展開"
+            start={t.text1Start}
+            perChar={t.text1Char}
+            reduced={reduced}
+            className="font-serif font-black tracking-[0.35em] text-[#e8e0ff]"
+            style={{ fontSize: 'clamp(20px, 3.4vw, 40px)', WebkitTextStroke: `2px ${GOJO_INK}` }}
+          />
+          <SequentialChars
+            text="無量空処"
+            start={t.text2Start}
+            perChar={t.text2Char}
+            reduced={reduced}
+            className="font-serif font-black tracking-[0.22em]"
+            style={{
+              fontSize: 'clamp(44px, 8.5vw, 118px)',
+              color: GOJO_STYLE.domain.color,
+              WebkitTextStroke: `3px ${GOJO_INK}`,
+              textShadow: `6px 6px 0 ${GOJO_INK}, 0 0 60px ${GOJO_STYLE.domain.color}cc`,
+            }}
+          />
+        </motion.div>
+
+        {/* BIGBANG di tengah */}
+        <GojoBigBang reduced={reduced} start={t.bangStart} dur={t.bangDur} />
+      </motion.div>
+    </>
   );
 }
 
