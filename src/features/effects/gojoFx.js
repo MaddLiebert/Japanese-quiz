@@ -60,6 +60,31 @@ export const gojoCurseCharge = (streak) =>
 export const gojoUltReady = (streak) =>
   Number.isFinite(streak) && streak >= GOJO_ULT_THRESHOLD;
 
+// ── Timeline cinematic 領域展開 (semua waktu di SATU tempat) ────────────────
+// Fase: gelap → teks 領域展開 per-karakter → teks 無量空処 per-karakter (mata
+// membuka bersamaan) → bigbang → settle (teks mengecil ke atas) → persist.
+export const gojoDomainTimeline = () => ({
+  darkDur: 0.5,        // fade-in gelap (spotlight)
+  text1Start: 0.35,    // 領域展開 mulai
+  text1Char: 0.28,     // jeda per karakter
+  text2Start: 1.5,     // 無量空処 mulai (setelah teks 1 selesai)
+  text2Char: 0.32,
+  eyesStart: 0.9,      // Six Eyes muncul (barengan teks 1)
+  eyesOpenDur: 1.2,    // nutup → kebuka
+  bangStart: 2.9,      // bigbang di tengah (setelah "ngomong" selesai)
+  bangDur: 0.7,
+  nebulaStart: 3.0,    // bercak ruang angkasa pinggir mulai
+  settleStart: 3.7,    // blok mata+teks naik & mengecil
+  settleDur: 0.7,
+});
+
+// Pecah teks jadi karakter dengan delay bertambah (ms) → dipakai komponen untuk
+// memunculkan teks satu-per-satu. Murni & deterministik.
+export const gojoSequentialChars = (text, start = 0, perChar = 0.25) => {
+  const chars = [...String(text || '')];
+  return chars.map((ch, i) => ({ ch, delayMs: Math.round((start + i * perChar) * 1000) }));
+};
+
 // ── Preview dev (dipakai DevPanel) ──────────────────────────────────────────
 // Untuk "melompat" ke streak tertentu tanpa quiz: set streakRef ke target-1,
 // lalu satu jawaban benar mendarat TEPAT di target → teknik/milestone asli
