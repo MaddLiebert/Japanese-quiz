@@ -42,34 +42,80 @@ const prefersReduced = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // GIF reaksi Gojo (aset user) — bingkai tinta ala panel manga, di tengah layar.
-// Salah → goyang kecil (meme kalah); murasaki → muncul mantap (teknik).
-function GojoGifLayer({ src, reduced, wrong = false }) {
+// Dua mode GIF:
+//   salah (meme "kalah") → panel berbingkai di TENGAH (tetap).
+//   茈 (murasaki)        → CUT-IN landscape TANPA bingkai di bagian ATAS layar.
+// Keluhan user: GIF 茈 di tengah menutupi ledakan plasma ("kek ketutup sama gif")
+// → GIF naik ke atas (cut-in ala anime), plasma tetap megah di tengah, kanji 茈
+//   turun ke bawah. Munculnya digeser (delay) supaya sinkron dengan tabrakan.
+function GojoGifLayer({ src, reduced, wrong = false, delay = 0 }) {
   if (!src) return null;
+  if (wrong) {
+    return (
+      <motion.div
+        data-gojo-gif
+        className="absolute left-1/2 top-1/2 z-10"
+        style={{ marginLeft: '-19vh', marginTop: '-17vh' }}
+        initial={{ opacity: 0, scale: 0.92, rotate: 2.5 }}
+        animate={{ opacity: 1, scale: 1, rotate: -1.5, x: reduced ? 0 : [0, -9, 8, -5, 3, 0] }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: reduced ? 0 : 0.34, ease: 'easeOut' }}
+      >
+        <div className="w-[38vh] h-[38vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden">
+          <img
+            src={src}
+            alt="Gojo"
+            decoding="sync"
+            loading="eager"
+            className="w-full h-full object-contain select-none"
+            draggable={false}
+          />
+        </div>
+      </motion.div>
+    );
+  }
   return (
-    <motion.div
-      data-gojo-gif
+    <div
       className="absolute left-1/2 top-1/2 z-10"
-      style={{ marginLeft: '-19vh', marginTop: '-17vh' }}
-      initial={{ opacity: 0, scale: 0.92, rotate: wrong ? 2.5 : -1.5 }}
-      animate={
-        wrong
-          ? { opacity: 1, scale: 1, rotate: -1.5, x: reduced ? 0 : [0, -9, 8, -5, 3, 0] }
-          : { opacity: 1, scale: 1, rotate: 0, x: 0 }
-      }
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: reduced ? 0 : wrong ? 0.34 : 0.2, ease: 'easeOut' }}
+      style={{ transform: 'translateX(-50%)', marginTop: '-42vh' }}
     >
-      <div className="w-[38vh] h-[38vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden">
+      {/* Dudukan gelap lembut (vignette, tanpa tepi) di BELAKANG GIF: menyerap
+          kotak GIF saat fade-in & jadi latar gelap untuk blend screen → tepi
+          GIF melebur bahkan di tema terang. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute"
+        style={{
+          inset: '-26% -22%',
+          background: 'radial-gradient(closest-side, rgba(4,2,10,0.96), rgba(4,2,10,0.7) 52%, transparent 100%)',
+        }}
+      />
+      <motion.div
+        data-gojo-gif
+        initial={{ opacity: 0, scale: 0.72 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: reduced ? 0 : 0.42, delay: reduced ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
+      >
         <img
           src={src}
-          alt="Gojo"
+          alt="Gojo — 茈"
           decoding="sync"
           loading="eager"
-          className="w-full h-full object-contain select-none"
+          className="select-none"
+          style={{
+            width: 'min(42vh, 86vw)',
+            height: 'auto',
+            // Latar hitam bawaan GIF dilebur ke dudukan gelap (screen) + tepi
+            // di-mask → cut-in tanpa kotak, bagian terang tetap menyala.
+            mixBlendMode: 'screen',
+            WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, #000 40%, rgba(0,0,0,0.45) 68%, transparent 94%)',
+            maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, #000 40%, rgba(0,0,0,0.45) 68%, transparent 94%)',
+          }}
           draggable={false}
         />
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
 
@@ -348,8 +394,8 @@ export function GojoBurst({ fx, kind }) {
           </>
         )}
 
-        {/* ── GIF teknik 茈 (aset user) — di atas ledakan plasma ───────────── */}
-        <GojoGifLayer src={fx?.gifSrc} reduced={reduced} />
+        {/* ── GIF teknik 茈 (aset user) — cut-in atas, sinkron dgn ledakan ─── */}
+        <GojoGifLayer src={fx?.gifSrc} reduced={reduced} delay={d0} />
 
         {/* ── Layer 2 — SERPIHAN TINTA (partikel hard-edge, bukan blur) ─────── */}
         {particles.map((p) => {
@@ -426,8 +472,9 @@ export function GojoBurst({ fx, kind }) {
           </svg>
         )}
 
-        {/* ── Layer 5 — TEKS TEKNIK (stroke tinta, gaya manga) ─────────────── */}
-        <div className="absolute left-0 right-0 flex justify-center" style={{ top: '9%' }}>
+        {/* ── Layer 5 — TEKS TEKNIK (stroke tinta, gaya manga) — di BAWAH,
+            supaya tidak bentrok dengan GIF cut-in 茈 di atas ───────────────── */}
+        <div className="absolute left-0 right-0 flex justify-center" style={{ bottom: '8%' }}>
           <motion.span
             className="font-serif font-black select-none"
             initial={{ opacity: 0, scale: 0.6 }}
