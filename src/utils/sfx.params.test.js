@@ -67,6 +67,11 @@ test('domainBoomParams: sweep turun, angka sehat', () => {
     assert.ok(p.dur >= 0.5 && p.dur <= 2, `${kind}: durasi wajar`);
     assert.ok(p.gain > 0 && p.gain <= 0.8, `${kind}: gain sehat`);
     assert.ok(p.noiseGain >= 0 && p.noiseGain <= 0.4, `${kind}: noise sehat`);
+    // v2 (user tuning): dentuman kurang nendang. Lapisan punch mid wajib ada
+    // supaya "thump" kedengaran di speaker HP/laptop (bukan cuma sub-bass).
+    assert.ok(p.punchGain > 0 && p.punchGain <= 0.5, `${kind}: punch mid sehat`);
+    assert.ok(p.punchFreq >= 120 && p.punchFreq <= 400, `${kind}: punch di mid-low`);
+    assert.ok(p.punchDur > 0 && p.punchDur <= 0.5, `${kind}: punch pendek (thump)`);
   }
 });
 
@@ -76,4 +81,11 @@ test('domainBoomParams: bang lebih besar dari cast', () => {
   assert.ok(b.gain > c.gain, 'bang lebih keras');
   assert.ok(b.dur > c.dur, 'bang lebih panjang');
   assert.ok(b.freqStart > c.freqStart, 'bang lebih "meledak"');
+});
+
+test('domainBoomParams: cast v2 lebih keras dari v1 (keluhan user)', () => {
+  const c = domainBoomParams('cast');
+  assert.ok(c.gain >= 0.45, 'cast dinaikkan dari 0.34 → terdengar di HP');
+  assert.ok(c.punchGain >= 0.15, 'punch mid ikut dinaikkan');
+  assert.ok(c.noiseGain >= 0.09, 'desis ruang ikut dinaikkan');
 });

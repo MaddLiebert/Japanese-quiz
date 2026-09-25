@@ -82,10 +82,11 @@ test('domainCueParams: eyes = shimmer tinggi halus; kind lain → null', () => {
 
 // ── Rencana ambience (dipakai gojoAmbience.js) ──────────────────────────────
 
-test('domainBgmPlan: drone + pad lengkap, level pelan, fade wajar', () => {
+test('domainBgmPlan: drone + pad lengkap, level kedengaran, fade wajar', () => {
   const p = domainBgmPlan();
   assert.deepEqual(p, domainBgmPlan(), 'deterministik');
-  assert.ok(p.level > 0 && p.level <= 0.12, 'level = latar, bukan lagu');
+  // v2 (user tuning): level lama 0.085 terlalu pelan di speaker asli — harus jelas kedengaran.
+  assert.ok(p.level >= 0.12 && p.level <= 0.3, 'level cukup kedengaran, tetap di bawah voice');
   assert.ok(p.fadeInMs >= 500 && p.fadeInMs <= 3000);
   assert.ok(p.fadeOutMs >= 300 && p.fadeOutMs <= 2000);
   assert.ok(p.drone.freqs.length >= 2, 'drone minimal 2 lapis');
@@ -94,6 +95,10 @@ test('domainBgmPlan: drone + pad lengkap, level pelan, fade wajar', () => {
   for (const f of [...p.drone.freqs, ...p.pad.freqs]) {
     assert.ok(f >= 30 && f <= 2000, `freq ${f} audible`);
   }
+  // Konten mid ≥150Hz wajib ada — speaker HP/laptop tidak memutar 55Hz dengan baik,
+  // jadi BGM yang isinya sub-bass doang akan "hilang" (keluhan user v1).
+  const mid = [...p.drone.freqs, ...p.pad.freqs].filter((f) => f >= 150);
+  assert.ok(mid.length >= 2, 'ada konten mid → kedengaran di speaker HP');
 });
 
 test('ballHumPlan: {} → {}; ao = desir tinggi, aka = gemuruh + crackle', () => {

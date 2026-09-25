@@ -244,16 +244,21 @@ const synthGong = (level = 0) => {
 
 // ── Dentuman domain 領域展開 (cinematic, BUKAN voice) ───────────────────────
 // kind: 'cast' (saat tombol ditekan) | 'bang' (saat bigbang di tengah).
-// Murni synth: sweep sine turun (dentuman) + burst noise lowpass (desis ruang).
+// Murni synth: sweep sine turun (dentuman) + burst noise lowpass (desis ruang)
+// + PUNCH mid (triangle pendek) — v2 tuning: sub-bass 28-92Hz tidak terdengar
+// di speaker HP, punch mid inilah yang bikin "nendang" di device asli.
 export function domainBoomParams(kind = 'cast') {
   const bang = kind === 'bang';
   return {
     freqStart: bang ? 160 : 92,
     freqEnd: bang ? 36 : 28,
     dur: bang ? 1.4 : 1.0,
-    gain: bang ? 0.5 : 0.34,
-    noiseGain: bang ? 0.16 : 0.06,
-    noiseDur: bang ? 0.5 : 0.25,
+    gain: bang ? 0.62 : 0.5,
+    noiseGain: bang ? 0.2 : 0.1,
+    noiseDur: bang ? 0.5 : 0.3,
+    punchFreq: bang ? 240 : 190,
+    punchDur: bang ? 0.28 : 0.22,
+    punchGain: bang ? 0.34 : 0.26,
   };
 }
 
@@ -297,6 +302,24 @@ export const playDomainBoom = (kind = 'cast') => {
     nf.connect(ng);
     ng.connect(ctx.destination);
     src.start(t);
+  }
+
+  // PUNCH mid (v2): triangle pendek di 190-240Hz — decay cepat seperti "thump".
+  // Inilah yang terdengar "nendang" di speaker HP (sweep sub-bass di bawahnya
+  // sering tidak diputar speaker kecil).
+  if (p.punchGain > 0.001) {
+    const po = ctx.createOscillator();
+    const pg = ctx.createGain();
+    po.type = 'triangle';
+    po.frequency.setValueAtTime(p.punchFreq, t);
+    po.frequency.exponentialRampToValueAtTime(p.punchFreq * 0.6, t + p.punchDur);
+    pg.gain.setValueAtTime(0, t);
+    pg.gain.linearRampToValueAtTime(p.punchGain, t + 0.008);
+    pg.gain.exponentialRampToValueAtTime(0.0008, t + p.punchDur);
+    po.connect(pg);
+    pg.connect(ctx.destination);
+    po.start(t);
+    po.stop(t + p.punchDur + 0.02);
   }
   return Math.round(p.dur * 1000);
 };
@@ -672,14 +695,16 @@ export const playDomainCue = (kind) => {
 };
 
 // ── Rencana ambience (dipakai gojoAmbience.js; murni → dites) ───────────────
-// BGM 領域展開: drone bass (55/82.5Hz) + pad triangle yang filternya dibuka-tutup
+// BGM 領域展開: drone bass (55/110Hz) + pad triangle yang filternya dibuka-tutup
 // LFO pelan (0.06Hz) → terasa "ruang bernapas", bukan lagu.
+// v2 (tuning user): level dinaikkan + konten mid ditambah — speaker HP/laptop
+// tidak memutar 55Hz, jadi BGM v1 "hilang" di device asli.
 export const domainBgmPlan = () => ({
-  level: 0.085,          // master — sengaja pelan (latar, bukan lagu)
+  level: 0.18,           // master — jelas kedengaran, tetap di bawah voice (0.18 vs 1.0)
   fadeInMs: 1600,
   fadeOutMs: 900,
-  drone: { freqs: [55, 82.5], detune: [0, -5], gain: 0.5 },
-  pad: { type: 'triangle', freqs: [110, 165, 220], filterHz: 420, lfoHz: 0.06, lfoDepth: 150, gain: 0.3 },
+  drone: { freqs: [55, 110], detune: [0, -5], gain: 0.45 },
+  pad: { type: 'triangle', freqs: [165, 220, 330], filterHz: 900, lfoHz: 0.06, lfoDepth: 260, gain: 0.42 },
 });
 
 // Hum bola persist: ao = desir tinggi (highpass), aka = gemuruh rendah + crackle (bandpass).
