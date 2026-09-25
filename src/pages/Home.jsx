@@ -45,6 +45,10 @@ export function Home() {
   const navigate = useNavigate();
   const { language } = useLanguage();
 
+  // Badge yang tampil di Home (maks 4) + sisa yang disembunyikan (untuk link Profil).
+  const homeBadges = pickBadges(achievements, selectedBadges);
+  const hiddenBadgeCount = Math.max(0, achievements.length - homeBadges.length);
+
   const progressPercentage = (progress.xp > 0 && progress.xp % 100 === 0) ? 100 : (progress.xp % 100);
 
   return (
@@ -351,20 +355,20 @@ export function Home() {
           ) : (
             <>
               <div className="flex flex-wrap gap-8 sm:gap-12 relative z-10">
-                {pickBadges(achievements, selectedBadges).map((id, index) => (
+                {homeBadges.map((id, index) => (
                   ACHIEVEMENT_META[id] && (
                     <AchievementStamp key={id} id={id} meta={ACHIEVEMENT_META[id]} index={index} />
                   )
                 ))}
               </div>
-              {achievements.length > 4 && (
+              {hiddenBadgeCount > 0 && (
                 <button
                   onClick={() => navigate('/profile')}
                   className="mt-6 text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/40 hover:text-shu transition-colors relative z-10 cursor-pointer"
                 >
                   {language === 'id'
-                    ? `+${achievements.length - 4} cap lain — lihat semua di Profil →`
-                    : `+${achievements.length - 4} more stamps — view all in Profile →`}
+                    ? `+${hiddenBadgeCount} cap lain — lihat semua di Profil →`
+                    : `+${hiddenBadgeCount} more stamps — view all in Profile →`}
                 </button>
               )}
             </>
