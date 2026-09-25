@@ -12,3 +12,12 @@ export const pickBadges = (achievements, selected, max = BADGE_DISPLAY_MAX) => {
   const source = chosen.length > 0 ? chosen : all;
   return source.slice(0, Math.max(0, max));
 };
+
+// Buang ID yang tidak punya metadata (badge hantu legacy: '100_xp', 'clean_up',
+// 'speed_demon'). Dipakai untuk hitungan "+N cap lain" dan render, supaya angka
+// yang ditampilkan selalu sama dengan badge yang benar-benar bisa dilihat.
+export const knownBadges = (achievements, meta) => {
+  const all = Array.isArray(achievements) ? achievements : [];
+  if (!meta || typeof meta !== 'object') return [];
+  return all.filter((id) => meta[id]);
+};
