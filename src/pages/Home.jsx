@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { Button } from "../components/ui/Button";
 import { useUserStats, useItemProgress, useAchievements, getRank } from "../features/progress/ProgressContext";
-import { pickBadges } from "../features/progress/badges";
+import { pickBadges, knownBadges } from "../features/progress/badges";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -46,8 +46,10 @@ export function Home() {
   const { language } = useLanguage();
 
   // Badge yang tampil di Home (maks 4) + sisa yang disembunyikan (untuk link Profil).
-  const homeBadges = pickBadges(achievements, selectedBadges);
-  const hiddenBadgeCount = Math.max(0, achievements.length - homeBadges.length);
+  // knownBadges: buang ID tanpa meta supaya angka "+N" selalu = badge yang benar-benar tampil.
+  const visibleBadges = knownBadges(achievements, ACHIEVEMENT_META);
+  const homeBadges = pickBadges(visibleBadges, selectedBadges);
+  const hiddenBadgeCount = Math.max(0, visibleBadges.length - homeBadges.length);
 
   const progressPercentage = (progress.xp > 0 && progress.xp % 100 === 0) ? 100 : (progress.xp % 100);
 
@@ -274,8 +276,12 @@ export function Home() {
                   {language === 'id' ? 'Streak Belajar' : 'Study Streak'}
                 </h4>
                 <StreakIndicator count={progress.streak} isActive={progress.streak > 0} />
-                <div className="mt-4 text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1 bg-sumi text-kinari-light inline-block w-max">
-                  {language === 'id' ? '+5% Bonus Aktif' : '+5% Bonus Active'}
+                <div className={`mt-4 text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1 inline-block w-max ${
+                  progress.streak > 0 ? 'bg-sumi text-kinari-light' : 'bg-sumi/10 text-sumi/50'
+                }`}>
+                  {progress.streak > 0
+                    ? (language === 'id' ? '+5% Bonus Aktif' : '+5% Bonus Active')
+                    : (language === 'id' ? 'Bonus Nonaktif' : 'Bonus Inactive')}
                 </div>
               </div>
             </div>
