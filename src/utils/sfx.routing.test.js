@@ -172,10 +172,11 @@ test('primeVoice: fetcher inject → unduh tiap klip (buffer penuh)', () => {
 
 test('voiceFilePaths: klip jalur khusus (clips) IKUT di-preload', () => {
   const paths = voiceFilePaths(VOICES.gojo);
-  // 4 klip salah + 3 klip teknik/cast
-  assert.equal(paths.length, 7);
+  // 4 klip salah + 4 klip teknik/cast
+  assert.equal(paths.length, 8);
   assert.ok(paths.includes('/voices/gojo/ao.mp3'));
   assert.ok(paths.includes('/voices/gojo/aka.mp3'));
+  assert.ok(paths.includes('/voices/gojo/Murasaki.mp3'));
   assert.ok(paths.includes('/voices/gojo/ryoiki tenkai.mp3'));
 });
 
@@ -186,7 +187,7 @@ test('suara Gojo: teknik deterministik (ao→蒼, aka→赫), cast → ryoiki te
   // node (tanpa window) → play* no-op, kembalikan 0 tanpa throw.
   assert.equal(playGojoTechnique('ao'), 0);
   assert.equal(playGojoTechnique('aka'), 0);
-  assert.equal(playGojoTechnique('murasaki'), 0, '茈 belum punya klip');
+  assert.equal(playGojoTechnique('murasaki'), 0, '茈 sudah punya klip Murasaki.mp3');
   assert.equal(playGojoTechnique('zzz'), 0);
   assert.equal(playGojoCast(), 0);
 });

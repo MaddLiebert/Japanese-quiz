@@ -50,14 +50,14 @@ test('getVoice("hina") mengembalikan voice hina', () => {
   assert.equal(getVoice('hina'), VOICES.hina);
 });
 
-test('voice gojo: 4 klip kalah (wrong) + 3 klip teknik/cast (clips)', () => {
+test('voice gojo: 4 klip kalah (wrong) + 4 klip teknik/cast (clips)', () => {
   const v = VOICES.gojo;
   assert.ok(v, 'VOICES.gojo harus ada');
   assert.deepEqual(v.files.correct, [], 'teknik diputar deterministik, bukan random');
   assert.equal(v.files.wrong.length, 4, '4 klip "gojo kalah"');
   assert.deepEqual(v.files.streak, [], '茈 tanpa klip — GIF yang bicara');
-  assert.equal(v.clips.length, 3, 'ao, aka, ryoiki tenkai');
+  assert.equal(v.clips.length, 4, 'ao, aka, Murasaki, ryoiki tenkai');
   for (const p of [...v.files.wrong, ...v.clips]) assert.match(p, /^\/voices\/gojo\/.+\.mp3$/);
-  assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 7, 'tidak boleh duplikat');
+  assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 8, 'tidak boleh duplikat');
   assert.equal(getVoice('gojo'), VOICES.gojo);
 });

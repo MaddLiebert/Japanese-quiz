@@ -68,7 +68,7 @@ export const VOICES = {
       ],
       streak: [],
     },
-    clips: ['/voices/gojo/ao.mp3', '/voices/gojo/aka.mp3', '/voices/gojo/ryoiki tenkai.mp3'],
+    clips: ['/voices/gojo/ao.mp3', '/voices/gojo/aka.mp3', '/voices/gojo/Murasaki.mp3', '/voices/gojo/ryoiki tenkai.mp3'],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
 };

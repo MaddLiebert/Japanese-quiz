@@ -365,7 +365,7 @@ export function GojoDomainCine() {
               ease: 'easeOut',
             }}
           >
-            <div className="w-[32vh] h-[32vh] border-[3px] border-[#e8e0ff] bg-[#07030d] shadow-[0_0_40px_rgba(124,77,255,0.55)] overflow-hidden">
+            <div className="w-[32vh] h-[32vh] flex items-center justify-center">
               <img
                 src={castGif}
                 alt="Gojo — 領域展開"
