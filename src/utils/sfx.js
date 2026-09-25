@@ -307,6 +307,7 @@ export const playDomainBoom = (kind = 'cast') => {
 export const GOJO_TECHNIQUE_FILES = {
   ao: '/voices/gojo/ao.mp3',
   aka: '/voices/gojo/aka.mp3',
+  murasaki: '/voices/gojo/Murasaki.mp3',
 };
 
 export const playGojoTechnique = (technique) => {
