@@ -13,6 +13,7 @@ import {
   gojoBallLayout, GOJO_BALL_BREAKPOINT,
   gojoMurasakiBurst,
   GOJO_ULT_THRESHOLD, gojoUltReady, gojoCurseCharge,
+  gojoDomainTimeline, gojoSequentialChars,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -98,6 +99,29 @@ test('gojoUltReady: nyala tepat di 20 benar beruntun, aman utk input aneh', () =
   for (const bad of [0, -3, NaN, Infinity, null, undefined, '20']) {
     assert.equal(gojoUltReady(bad), false, `input ${String(bad)}`);
   }
+});
+
+// ── Timeline cinematic & teks berurutan ─────────────────────────────────────
+
+test('gojoDomainTimeline: urut naik, deterministik, durasi wajar', () => {
+  const t = gojoDomainTimeline();
+  assert.deepEqual(t, gojoDomainTimeline());
+  assert.ok(t.darkDur > 0 && t.darkDur <= 1, 'fade gelap wajar');
+  assert.ok(t.text2Start >= t.text1Start + 4 * t.text1Char, 'teks 2 mulai setelah teks 1 selesai');
+  assert.ok(t.bangStart >= t.text2Start + 4 * t.text2Char, 'bigbang setelah semua teks muncul');
+  assert.ok(t.settleStart >= t.bangStart + t.bangDur, 'settle setelah bigbang selesai');
+  assert.ok(t.eyesStart >= t.text1Start, 'mata muncul saat teks mulai');
+  assert.ok(t.eyesOpenDur > 0.4 && t.eyesOpenDur <= 2, 'buka mata wajar');
+});
+
+test('gojoSequentialChars: 1 entry/karakter, delay naik, deterministik', () => {
+  const a = gojoSequentialChars('領域展開', 0.5, 0.25);
+  assert.deepEqual(a, gojoSequentialChars('領域展開', 0.5, 0.25));
+  assert.equal(a.length, 4);
+  assert.deepEqual(a.map((x) => x.ch), ['領', '域', '展', '開']);
+  assert.deepEqual(a.map((x) => x.delayMs), [500, 750, 1000, 1250]);
+  assert.deepEqual(gojoSequentialChars('', 0, 1), []);
+  assert.deepEqual(gojoSequentialChars(null, 0, 1), []);
 });
 
 // ── Milestone helper ────────────────────────────────────────────────────────
