@@ -6,7 +6,7 @@ import {
   GOJO_DOMAIN_DURATION_S,
   gojoDomainTimeline, gojoSequentialChars, gojoNebulaSpots, gojoStars,
 } from './gojoFx';
-import { playDomainBoom } from '../../utils/sfx';
+import { playDomainBoom, playDomainCue } from '../../utils/sfx';
 import { gojoCastGif } from './gojoGifs';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -330,6 +330,13 @@ export function GojoDomainCine() {
     const id = setTimeout(() => playDomainBoom('bang'), t.bangStart * 1000);
     return () => clearTimeout(id);
   }, [reduced, t.bangStart]);
+
+  // Cue halus saat 六眼 membuka — aksen kecil di atas voice cast (jangan bertumpuk).
+  useEffect(() => {
+    if (reduced) return undefined;
+    const id = setTimeout(() => playDomainCue('eyes'), t.eyesStart * 1000);
+    return () => clearTimeout(id);
+  }, [reduced, t.eyesStart]);
 
   return (
     <>
