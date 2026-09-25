@@ -241,6 +241,65 @@ const synthGong = (level = 0) => {
   }
 };
 
+// ── Dentuman domain 領域展開 (cinematic, BUKAN voice) ───────────────────────
+// kind: 'cast' (saat tombol ditekan) | 'bang' (saat bigbang di tengah).
+// Murni synth: sweep sine turun (dentuman) + burst noise lowpass (desis ruang).
+export function domainBoomParams(kind = 'cast') {
+  const bang = kind === 'bang';
+  return {
+    freqStart: bang ? 160 : 92,
+    freqEnd: bang ? 36 : 28,
+    dur: bang ? 1.4 : 1.0,
+    gain: bang ? 0.5 : 0.34,
+    noiseGain: bang ? 0.16 : 0.06,
+    noiseDur: bang ? 0.5 : 0.25,
+  };
+}
+
+export const playDomainBoom = (kind = 'cast') => {
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const p = domainBoomParams(kind);
+  const t = ctx.currentTime;
+
+  // Sweep turun = dentuman.
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(p.freqStart, t);
+  osc.frequency.exponentialRampToValueAtTime(p.freqEnd, t + p.dur);
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(p.gain, t + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.05);
+
+  // Desis noise (hanya kalau noiseGain > 0).
+  if (p.noiseGain > 0.001) {
+    const len = Math.max(1, Math.floor(ctx.sampleRate * p.noiseDur));
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const nf = ctx.createBiquadFilter();
+    nf.type = 'lowpass';
+    nf.frequency.setValueAtTime(900, t);
+    nf.frequency.exponentialRampToValueAtTime(120, t + p.noiseDur);
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(p.noiseGain, t);
+    ng.gain.exponentialRampToValueAtTime(0.0008, t + p.noiseDur);
+    src.connect(nf);
+    nf.connect(ng);
+    ng.connect(ctx.destination);
+    src.start(t);
+  }
+  return Math.round(p.dur * 1000);
+};
+
 // ── API publik ──────────────────────────────────────────────────────────────
 // Semua mengembalikan durasi klip (ms) supaya efek visual (GIF Hina) bisa
 // tampil selama suaranya berbunyi. 0 = tak ada klip (synth / tanpa pack).

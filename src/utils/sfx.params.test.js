@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { streakGongParams } from './sfx.js';
+import { streakGongParams, domainBoomParams } from './sfx.js';
 
 const LEVELS = [1, 2, 3, 5, 7, 10, 12];
 
@@ -55,4 +55,25 @@ test('transient strike makin terang saat tier tinggi', () => {
   const high = streakGongParams(12).strike;
   assert.ok(high.freq >= low.freq, 'frekuensi strike harus naik');
   assert.ok(high.gain >= low.gain, 'gain strike harus naik');
+});
+
+// ── Dentuman domain 領域展開 (cinematic) ────────────────────────────────────
+
+test('domainBoomParams: sweep turun, angka sehat', () => {
+  for (const kind of ['cast', 'bang']) {
+    const p = domainBoomParams(kind);
+    assert.ok(p.freqStart > p.freqEnd, `${kind}: sweep harus turun`);
+    assert.ok(p.freqStart <= 400 && p.freqEnd >= 20, `${kind}: freq di rentang wajar`);
+    assert.ok(p.dur >= 0.5 && p.dur <= 2, `${kind}: durasi wajar`);
+    assert.ok(p.gain > 0 && p.gain <= 0.8, `${kind}: gain sehat`);
+    assert.ok(p.noiseGain >= 0 && p.noiseGain <= 0.4, `${kind}: noise sehat`);
+  }
+});
+
+test('domainBoomParams: bang lebih besar dari cast', () => {
+  const c = domainBoomParams('cast');
+  const b = domainBoomParams('bang');
+  assert.ok(b.gain > c.gain, 'bang lebih keras');
+  assert.ok(b.dur > c.dur, 'bang lebih panjang');
+  assert.ok(b.freqStart > c.freqStart, 'bang lebih "meledak"');
 });
