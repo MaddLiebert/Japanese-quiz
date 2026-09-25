@@ -4,7 +4,8 @@ import {
   gojoTechniqueFor, GOJO_STYLE, gojoParticles, gojoCrackCount,
   gojoBolts, gojoStars, GOJO_RIM,
   GOJO_INK, GOJO_FLASH, gojoImpactFocus, gojoImpactStar,
-  gojoSpeedLines, gojoHalftone, gojoOno, GOJO_CORE,
+  gojoSpeedLines, gojoHalftone, gojoOno,
+  gojoMurasakiBurst,
 } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -79,6 +80,8 @@ export function GojoBurst({ fx, kind }) {
   const shake = isDomain || isStreak;
   const focus = gojoImpactFocus(technique);
   const ono = gojoOno(technique);
+  // murasaki: parameter ledakan TEBAL (bola plasma, shockwave, garis).
+  const mura = technique === 'murasaki' ? gojoMurasakiBurst() : null;
   // murasaki: tunda ledakan sampai kedua bola tiba di tengah (slide 0.42s).
   const d0 = technique === 'murasaki' ? 0.42 : 0;
 
@@ -135,7 +138,7 @@ export function GojoBurst({ fx, kind }) {
               x2={l.to[0]}
               y2={l.to[1]}
               stroke={GOJO_INK}
-              strokeWidth={l.width}
+              strokeWidth={l.width * (mura ? mura.speedLineScale : 1)}
               strokeLinecap="round"
               vectorEffect="non-scaling-stroke"
               pathLength={1}
@@ -163,7 +166,7 @@ export function GojoBurst({ fx, kind }) {
                   d={d}
                   fill="none"
                   stroke={GOJO_INK}
-                  strokeWidth={3.5}
+                  strokeWidth={mura ? mura.boltInk : 3.5}
                   strokeLinejoin="round"
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
@@ -178,7 +181,7 @@ export function GojoBurst({ fx, kind }) {
                   d={d}
                   fill="none"
                   stroke={GOJO_RIM}
-                  strokeWidth={1}
+                  strokeWidth={mura ? mura.boltRim : 1}
                   strokeLinejoin="round"
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
@@ -239,7 +242,7 @@ export function GojoBurst({ fx, kind }) {
                 points={impactStar.points}
                 fill={GOJO_FLASH}
                 stroke={GOJO_INK}
-                strokeWidth={2.4}
+                strokeWidth={mura ? mura.starStroke : 2.4}
                 strokeLinejoin="round"
               />
             </motion.svg>
@@ -289,19 +292,19 @@ export function GojoBurst({ fx, kind }) {
           )}
         </motion.div>
 
-        {/* ── Tabrakan 茈: ledakan plasma ungu + shockwave ───────────────────── */}
-        {technique === 'murasaki' && (
+        {/* ── Tabrakan 茈: ledakan plasma ungu + shockwave (TEBAL) ───────────── */}
+        {mura && (
           <>
             <motion.div
               key={`mura-core-${fx.id}`}
               className="absolute left-1/2 top-1/2 rounded-full"
               style={{
-                width: 132,
-                height: 132,
-                marginLeft: -66,
-                marginTop: -66,
-                background: `radial-gradient(circle, ${GOJO_CORE} 0 14%, ${GOJO_STYLE.murasaki.color} 14% 46%, ${GOJO_STYLE.murasaki.color}55 46% 70%, transparent 82%)`,
-                boxShadow: `0 0 60px 18px ${GOJO_STYLE.murasaki.color}66`,
+                width: mura.core.size,
+                height: mura.core.size,
+                marginLeft: -mura.core.size / 2,
+                marginTop: -mura.core.size / 2,
+                background: mura.core.background,
+                boxShadow: mura.core.boxShadow,
                 willChange: 'transform, opacity',
               }}
               initial={{ scale: 0, opacity: 0 }}
@@ -312,12 +315,12 @@ export function GojoBurst({ fx, kind }) {
               key={`mura-ring-${fx.id}`}
               className="absolute left-1/2 top-1/2 rounded-full"
               style={{
-                width: 132,
-                height: 132,
-                marginLeft: -66,
-                marginTop: -66,
-                border: `5px solid ${GOJO_STYLE.murasaki.color}`,
-                boxShadow: `0 0 34px 8px ${GOJO_STYLE.murasaki.color}88`,
+                width: mura.ring.size,
+                height: mura.ring.size,
+                marginLeft: -mura.ring.size / 2,
+                marginTop: -mura.ring.size / 2,
+                border: mura.ring.border,
+                boxShadow: mura.ring.boxShadow,
                 willChange: 'transform, opacity',
               }}
               initial={{ scale: 0.4, opacity: 0 }}
@@ -332,17 +335,18 @@ export function GojoBurst({ fx, kind }) {
           const dx = Math.cos(p.angle) * p.dist;
           const dy = Math.sin(p.angle) * p.dist;
           const startOut = p.out || p.spiral;
+          const pk = mura ? mura.particleScale : 1;   // murasaki: serpihan lebih tebal
           return (
             <motion.span
               key={p.id}
               className="absolute left-1/2 top-1/2"
               style={{
-                width: p.size,
-                height: p.len,
-                marginLeft: -p.size / 2,
-                marginTop: -p.len / 2,
+                width: p.size * pk,
+                height: p.len * pk,
+                marginLeft: -(p.size * pk) / 2,
+                marginTop: -(p.len * pk) / 2,
                 background: st.color,
-                border: `2px solid ${GOJO_INK}`,
+                border: `${2 * pk}px solid ${GOJO_INK}`,
                 willChange: 'transform, opacity',
               }}
               initial={{

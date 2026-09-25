@@ -11,6 +11,7 @@ import {
   gojoBallLabel, gojoBallAura, gojoTensionLines, gojoCharge,
   darkenHex, gojoBallVignette,
   gojoBallLayout, GOJO_BALL_BREAKPOINT,
+  gojoMurasakiBurst,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -594,4 +595,43 @@ test('gojoBallAura: aka = merah; teknik lain null', () => {
   assert.ok(a && a.background.includes('#e53935'), 'aka = merah');
   assert.equal(gojoBallAura('murasaki', 44, true), null);
   assert.equal(gojoBallAura(null, 44, true), null);
+});
+
+// ── Ledakan 茈 (murasaki) — lebih TEBAL ─────────────────────────────────────
+// Permintaan user: "efek meledak si murasaki nya kurang masih tipis, gw pengen
+// lebih tebel". Ketebalan ledakan dikumpulkan di gojoMurasakiBurst() supaya
+// bisa di-tune sekali + diuji. (Domain TIDAK ikut berubah.)
+
+test('gojoMurasakiBurst: plasma core lebih tebal (inti solid besar + glow kuat)', () => {
+  const b = gojoMurasakiBurst();
+  assert.ok(b.core, 'ada parameter core');
+  const white = /0 (\d+)%/.exec(b.core.background);
+  assert.ok(white && Number(white[1]) >= 20, `inti putih >= 20% (lama 14), dapat ${white && white[1]}`);
+  const glow = /0 0 (\d+)px (\d+)px/.exec(b.core.boxShadow);
+  assert.ok(glow && Number(glow[1]) >= 80 && Number(glow[2]) >= 28,
+    `glow core lebih besar dari 60/18, dapat ${b.core.boxShadow}`);
+});
+
+test('gojoMurasakiBurst: shockwave ring lebih tebal (border >= 9px, glow besar)', () => {
+  const b = gojoMurasakiBurst();
+  assert.ok(b.ring.borderWidth >= 9, `border >= 9px (lama 5), dapat ${b.ring.borderWidth}`);
+  assert.ok(b.ring.border.includes(`${b.ring.borderWidth}px solid`), 'border string konsisten dgn borderWidth');
+  const glow = /0 0 (\d+)px (\d+)px/.exec(b.ring.boxShadow);
+  assert.ok(glow && Number(glow[2]) >= 14, `glow ring lebih besar dari 8px, dapat ${b.ring.boxShadow}`);
+});
+
+test('gojoMurasakiBurst: petir/bintang/集中線/serpihan lebih tebal', () => {
+  const b = gojoMurasakiBurst();
+  assert.ok(b.boltInk >= 5, `petir >= 5 (lama 3.5), dapat ${b.boltInk}`);
+  assert.ok(b.boltRim >= 1.6, `rim petir (lama 1), dapat ${b.boltRim}`);
+  assert.ok(b.starStroke >= 3.5, `bintang (lama 2.4), dapat ${b.starStroke}`);
+  assert.ok(b.speedLineScale >= 1.8, `集中線 (lama 1x), dapat ${b.speedLineScale}`);
+  assert.ok(b.particleScale >= 1.4, `serpihan (lama 1x), dapat ${b.particleScale}`);
+});
+
+test('gojoMurasakiBurst: deterministik & warna = warna kanon murasaki', () => {
+  assert.deepEqual(gojoMurasakiBurst(), gojoMurasakiBurst());
+  const b = gojoMurasakiBurst();
+  assert.ok(b.core.background.includes(GOJO_STYLE.murasaki.color), 'core pakai warna murasaki');
+  assert.ok(b.ring.border.includes(GOJO_STYLE.murasaki.color), 'ring pakai warna murasaki');
 });

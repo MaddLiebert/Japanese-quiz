@@ -446,6 +446,37 @@ export const gojoBallAura = (technique, size, mobile = false) => {
   };
 };
 
+// ── Ledakan 茈 (murasaki) — parameter TEBAL ─────────────────────────────────
+// Permintaan user: "efek meledak si murasaki nya kurang masih tipis, gw pengen
+// lebih tebel". Semua ketebalan ledakan dikumpulkan di sini → di-tune sekali,
+// diuji lewat unit test. Domain TIDAK memakai ini (tetap seperti semula).
+export const gojoMurasakiBurst = () => {
+  const color = GOJO_STYLE.murasaki.color;
+  const size = 148;                              // bola plasma (lama 132)
+  const borderWidth = 10;                        // shockwave (lama 5)
+  return {
+    // bola plasma pusat: inti putih lebih besar + glow lebih kuat
+    core: {
+      size,
+      background: `radial-gradient(circle, ${GOJO_CORE} 0 22%, ${color} 22% 52%, ${color}66 52% 76%, transparent 88%)`,
+      boxShadow: `0 0 90px 30px ${color}77`,
+    },
+    // shockwave ring: border tebal + glow besar
+    ring: {
+      size,
+      borderWidth,
+      border: `${borderWidth}px solid ${color}`,
+      boxShadow: `0 0 46px 16px ${color}99`,
+    },
+    // ketebalan garis lain saat ledakan murasaki
+    boltInk: 5.5,        // petir hitam (lama 3.5)
+    boltRim: 2,          // rim terang petir (lama 1)
+    starStroke: 4,       // bintang impact (lama 2.4)
+    speedLineScale: 2,   // 集中線 (lama 1x)
+    particleScale: 1.6,  // serpihan tinta (lama 1x)
+  };
+};
+
 // 集中線 ketegangan: garis pendek memancar dari titik fokus (sisi bola), tetap
 // di sisinya (ao x>=50, aka x<=50) → TIDAK menyilang tengah (jaga konsep persist).
 // focus opsional { x, y } (ruang 0..100) untuk HP (bola di sudut atas).
