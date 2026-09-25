@@ -8,7 +8,7 @@ import {
   gojoSpeedLines, gojoHalftone, gojoOno,
   GOJO_CORE, gojoSphereShape, gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
   gojoSphereAnim, nextGojoBalls, GOJO_BALLS_EMPTY,
-  gojoBallLabel, gojoTensionLines, gojoCharge,
+  gojoBallLabel, gojoBallAura, gojoTensionLines, gojoCharge,
   darkenHex, gojoBallVignette,
   gojoBallLayout, GOJO_BALL_BREAKPOINT,
 } from './gojoFx.js';
@@ -555,4 +555,43 @@ test('gojoTensionLines: maxY membatasi garis tetap di atas (tidak kena kartu)', 
   // tanpa maxY → tidak dibatasi (bisa lebih dari 24)
   const free = gojoTensionLines('ao', 1, Math.random, 24, { x: 80, y: 50 });
   assert.ok(free.some((l) => l.to[1] > 24), 'tanpa maxY garis boleh turun');
+});
+
+// ── Aura bola: HP = halo lebih rapat & lebih terang ─────────────────────────
+// Permintaan user: "kan kalo di laptop ada aura nya gitu, buat juga di tampilan
+// hape, tapi cuma di lingkaran bola aja sedikit lebih besar dari bola".
+// Masalah lama: di HP aura pakai parameter desktop (inset -size*0.55 + alpha
+// redup) → di bola 44px + latar terang (vignette desktop tidak dirender di HP)
+// aura nyaris tidak kelihatan. Solusi: di HP aura lebih RAPAT (sedikit lebih
+// besar dari bola) + lebih TERANG supaya tetap terbaca. Desktop TIDAK berubah.
+
+test('gojoBallAura: desktop tetap pakai aura lama (tidak berubah)', () => {
+  const a = gojoBallAura('ao', 128, false);
+  assert.ok(a, 'ao harus punya aura');
+  assert.ok(Math.abs(a.inset - (-128 * 0.55)) < 0.01, 'desktop: inset -size*0.55 (lama)');
+  assert.ok(a.background.includes('#00b0ff99'), 'desktop: inti alpha 99 (lama)');
+  assert.ok(a.background.includes('#00b0ff22'), 'desktop: tail alpha 22 (lama)');
+  assert.ok(a.background.includes('transparent 72%'), 'desktop: falloff 72% (lama)');
+});
+
+test('gojoBallAura: HP = halo sedikit lebih besar dari bola, lebih terang', () => {
+  const size = 44;
+  const m = gojoBallAura('ao', size, true);
+  const d = gojoBallAura('ao', size, false);
+  assert.ok(m, 'ao HP harus punya aura');
+  // "sedikit lebih besar dari bola": aura rapat, tidak melebar jauh
+  assert.ok(Math.abs(m.inset) >= size * 0.25, `aura tetap terlihat (inset=${m.inset})`);
+  assert.ok(Math.abs(m.inset) <= size * 0.42, `aura tidak melebar jauh (inset=${m.inset})`);
+  assert.ok(Math.abs(m.inset) < Math.abs(d.inset), 'HP lebih rapat dari desktop');
+  // lebih terang: inti alpha tinggi, tail redup desktop dibuang
+  assert.ok(m.background.includes('#00b0ffe6'), 'HP: inti lebih terang (alpha e6)');
+  assert.ok(!m.background.includes('#00b0ff22'), 'HP: tidak pakai tail redup desktop');
+  assert.ok(m.background.includes('transparent 72%'), 'HP: tetap memudar mulus');
+});
+
+test('gojoBallAura: aka = merah; teknik lain null', () => {
+  const a = gojoBallAura('aka', 44, true);
+  assert.ok(a && a.background.includes('#e53935'), 'aka = merah');
+  assert.equal(gojoBallAura('murasaki', 44, true), null);
+  assert.equal(gojoBallAura(null, 44, true), null);
 });
