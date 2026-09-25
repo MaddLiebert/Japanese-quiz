@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { Button } from "../components/ui/Button";
 import { useUserStats, useItemProgress, useAchievements, getRank } from "../features/progress/ProgressContext";
+import { pickBadges } from "../features/progress/badges";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -39,7 +40,7 @@ const AchievementStamp = ({ meta, index }) => (
 export function Home() {
   const { progress, username, setUsername } = useUserStats();
   const { weakItems } = useItemProgress();
-  const { achievements, ACHIEVEMENT_META } = useAchievements();
+  const { achievements, ACHIEVEMENT_META, selectedBadges } = useAchievements();
   const [inputName, setInputName] = useState("");
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -348,13 +349,25 @@ export function Home() {
               {language === 'id' ? 'Selesaikan kuis untuk mendapatkan cap.' : 'Complete quizzes to earn stamps.'}
             </motion.p>
           ) : (
-            <div className="flex flex-wrap gap-8 sm:gap-12 relative z-10">
-              {achievements.map((id, index) => (
-                ACHIEVEMENT_META[id] && (
-                  <AchievementStamp key={id} id={id} meta={ACHIEVEMENT_META[id]} index={index} />
-                )
-              ))}
-            </div>
+            <>
+              <div className="flex flex-wrap gap-8 sm:gap-12 relative z-10">
+                {pickBadges(achievements, selectedBadges).map((id, index) => (
+                  ACHIEVEMENT_META[id] && (
+                    <AchievementStamp key={id} id={id} meta={ACHIEVEMENT_META[id]} index={index} />
+                  )
+                ))}
+              </div>
+              {achievements.length > 4 && (
+                <button
+                  onClick={() => navigate('/profile')}
+                  className="mt-6 text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/40 hover:text-shu transition-colors relative z-10 cursor-pointer"
+                >
+                  {language === 'id'
+                    ? `+${achievements.length - 4} cap lain — lihat semua di Profil →`
+                    : `+${achievements.length - 4} more stamps — view all in Profile →`}
+                </button>
+              )}
+            </>
           )}
         </div>
 
