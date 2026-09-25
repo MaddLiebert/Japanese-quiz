@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  gojoTechniqueFor, isGojoMilestone, gojoCrackCount, gojoParticles, GOJO_STYLE,
+  gojoTechniqueFor, gojoPreviewStreak, isGojoMilestone, gojoCrackCount, gojoParticles, GOJO_STYLE,
   gojoSpheres, gojoBolts, gojoBoltPath, gojoStars,
   GOJO_VOID, GOJO_RIM,
   GOJO_INK, GOJO_FLASH, gojoImpactFocus, gojoImpactStar,
@@ -48,6 +48,26 @@ test('gojoTechniqueFor: 50 = domain, 100 = domain_zenith', () => {
 test('gojoTechniqueFor: salah = null (menyusul, tanpa retak)', () => {
   assert.equal(gojoTechniqueFor('wrong', 0), null);
   assert.equal(gojoTechniqueFor('wrong', 7), null);
+});
+
+// ── Preview dev (lompat streak tanpa quiz, dipakai DevPanel) ────────────────
+
+test('gojoPreviewStreak: set target-1 supaya satu tembakan mendarat tepat di target', () => {
+  assert.equal(gojoPreviewStreak(50), 49);
+  assert.equal(gojoPreviewStreak('50'), 49);   // nilai dari <input> = string
+  assert.equal(gojoPreviewStreak(100), 99);
+  assert.equal(gojoPreviewStreak(2.7), 1);     // dibulatkan ke bawah
+  // Kontrak: satu tembakan setelah set → teknik tepat di target.
+  assert.equal(gojoTechniqueFor('correct', gojoPreviewStreak(3) + 1), 'murasaki');
+  assert.equal(gojoTechniqueFor('correct', gojoPreviewStreak(50) + 1), 'domain');
+  assert.equal(gojoTechniqueFor('correct', gojoPreviewStreak(100) + 1), 'domain_zenith');
+});
+
+test('gojoPreviewStreak: input tak valid/negatif → 0 (aman, mulai dari awal)', () => {
+  for (const bad of [0, -5, '', 'abc', NaN, Infinity, null, undefined]) {
+    assert.equal(gojoPreviewStreak(bad), 0, `input ${String(bad)}`);
+  }
+  assert.equal(gojoPreviewStreak(1), 0);   // target 1 → set 0 → tembakan jadi streak 1
 });
 
 // ── Milestone helper ────────────────────────────────────────────────────────

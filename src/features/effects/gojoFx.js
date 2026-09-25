@@ -47,6 +47,16 @@ export const gojoTechniqueFor = (kind, streak = 0) => {
   return techniqueForStreak(streak);
 };
 
+// ── Preview dev (dipakai DevPanel) ──────────────────────────────────────────
+// Untuk "melompat" ke streak tertentu tanpa quiz: set streakRef ke target-1,
+// lalu satu jawaban benar mendarat TEPAT di target → teknik/milestone asli
+// (murasaki/domain/zenith) berjalan lewat pipeline yang sama dengan quiz.
+// Input dari <input> berupa string; nilai tak valid / < 2 → 0 (aman, mulai awal).
+export const gojoPreviewStreak = (target) => {
+  const n = Math.floor(Number(target));
+  return Number.isFinite(n) && n > 1 ? n - 1 : 0;
+};
+
 export const GOJO_STYLE = {
   ao:            { kanji: '蒼',       color: '#00b0ff', label: '蒼 · Ao' },
   aka:           { kanji: '赫',       color: '#e53935', label: '赫 · Aka' },

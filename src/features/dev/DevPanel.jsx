@@ -11,7 +11,9 @@
  *      (baris `import { DevPanel }` dan elemen `<DevPanel />`)
  * ==========================================================================*/
 
+import { useEffect, useState } from "react";
 import { useUserStats } from "../progress/ProgressContext";
+import { useEffectLayer } from "../effects/EffectContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { PACKS } from "../packs/packs";
 import { SHOP_ITEMS, countItems } from "../items/items";
@@ -19,6 +21,9 @@ import { SHOP_ITEMS, countItems } from "../items/items";
 // Kunci localStorage yang dipakai ProgressContext
 const PROGRESS_KEY = "user_progress_v2";
 const ACHIEVEMENTS_KEY = "achievements_unlocked_v2";
+
+// Pack Gojo (lihat src/features/packs/packs.js) — target preview streak.
+const GOJO_PACK_ID = "pack_07";
 
 const ALL_BADGES = [
   "hiragana_origin", "katakana_edge", "kanji_slayer", "kanji_hell", "eagle_eye",
@@ -45,7 +50,17 @@ function writeProgress(patch) {
 
 export function DevPanel() {
   const { language } = useLanguage();
-  const { progress } = useUserStats();
+  const { progress, buyPack, togglePack } = useUserStats();
+  const { previewStreak } = useEffectLayer();
+  // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
+  const [pending, setPending] = useState(null);
+
+  // Begitu pack Gojo aktif (state sudah ter-update), tembak preview-nya.
+  useEffect(() => {
+    if (pending == null || progress.activePack !== GOJO_PACK_ID) return;
+    setPending(null);
+    previewStreak(pending);
+  }, [pending, progress.activePack, previewStreak]);
 
   // Guard: panel ini TIDAK dirender di build produksi.
   if (!import.meta.env.DEV) return null;
@@ -98,6 +113,27 @@ export function DevPanel() {
     reload();
   };
 
+  // Preview efek Gojo tanpa quiz. Otomatis menyiapkan pack Gojo (beli/aktifkan),
+  // lalu menembak satu 'correct' yang mendarat TEPAT di streak target — lewat
+  // pipeline yang sama dengan jawaban sungguhan.
+  const previewGojo = (target) => {
+    if (progress.activePack === GOJO_PACK_ID) {
+      previewStreak(target);
+      return;
+    }
+    const owned = (progress.ownedPacks || []).includes(GOJO_PACK_ID);
+    if (owned) {
+      togglePack(GOJO_PACK_ID);
+      setPending(target);
+      return;
+    }
+    const res = buyPack(GOJO_PACK_ID);
+    if (res === "poor") { giveMedaru(); return; }          // medaru + reload → klik sekali lagi
+    if (res === "bought") { setPending(target); return; }  // activePack sudah diset buyPack
+    if (res === "owned") { togglePack(GOJO_PACK_ID); setPending(target); }
+    // res === "invalid" → pack tidak siap; tidak ada yang bisa dilakukan
+  };
+
   const btn =
     "px-4 py-3 border-[3px] border-sumi font-black text-[11px] uppercase tracking-widest transition-all " +
     "shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] cursor-pointer";
@@ -142,6 +178,32 @@ export function DevPanel() {
           <button type="button" onClick={resetAndCheat} className={`${btn} bg-sumi text-kinari-light col-span-2 sm:col-span-1`}>
             ♻️ {id ? "Reset + Cheat Ulang" : "Reset + Re-cheat"}
           </button>
+        </div>
+
+        {/* DEV-ONLY — Preview efek Gojo tanpa quiz (streak 50/100 tidak mungkin di-grind) */}
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10">
+          <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 mb-2">
+            {id ? "Preview Efek Gojo (tanpa quiz)" : "Gojo Effect Preview (no quiz)"}
+          </p>
+          <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
+            {id
+              ? "Satu klik = satu jawaban benar di streak target. Pack Gojo otomatis dibeli & diaktifkan bila perlu. Bola/ledakan muncul di layar ini."
+              : "One click = one correct answer at the target streak. Gojo pack is bought & equipped automatically if needed."}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <button type="button" onClick={() => previewGojo(3)} className={`${btn} bg-[#9c27b0] text-kinari-light`}>
+              🟣 {id ? "茈 #3" : "茈 #3"}
+            </button>
+            <button type="button" onClick={() => previewGojo(50)} className={`${btn} bg-[#7c4dff] text-kinari-light`}>
+              🟪 {id ? "無量空処 #50" : "Domain #50"}
+            </button>
+            <button type="button" onClick={() => previewGojo(100)} className={`${btn} bg-[#b388ff] text-sumi`}>
+              💫 {id ? "Zenith #100" : "Zenith #100"}
+            </button>
+            <button type="button" onClick={() => previewGojo(10)} className={`${btn} bg-matcha text-kinari-light`}>
+              🟣 {id ? "茈 #10" : "茈 #10"}
+            </button>
+          </div>
         </div>
 
         <div className="mt-6 pt-6 border-t-[2px] border-sumi/10 text-[10px] font-mono text-sumi/50">

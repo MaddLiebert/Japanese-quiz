@@ -8,7 +8,7 @@ import { hinaGifForAnswer } from './hinaGifs';
 import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 import { GojoBurst } from './GojoBurst';
 import { GojoSpheres } from './GojoSpheres';
-import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor } from './gojoFx';
+import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor, gojoPreviewStreak } from './gojoFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Efek tinta washi (visual 'ink') — dipakai pack Sumi Taiko.
@@ -250,8 +250,18 @@ export function EffectProvider({ children }) {
     setGojoExplode(false);
   }, []);
 
+  // DEV-ONLY (dipakai DevPanel): lompat ke streak `target` tanpa quiz.
+  // Set ABSOLUT ke target-1 lalu satu 'correct' → mendarat TEPAT di target,
+  // sehingga teknik & milestone asli (茈/無量空処/Zenith) berjalan lewat
+  // pipeline yang sama dengan jawaban sungguhan. Deterministik saat diulang.
+  const previewStreak = useCallback((target) => {
+    if (!import.meta.env.DEV) return;   // fitur dev-only, tidak untuk produksi
+    streakRef.current = gojoPreviewStreak(target);
+    triggerEffect('correct');
+  }, [triggerEffect]);
+
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, active }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, active }}>
       {children}
       <EffectLayer fx={fx} drops={drops} visual={activeVisual} gojoBalls={gojoBalls} gojoExplode={gojoExplode} />
     </EffectContext.Provider>
