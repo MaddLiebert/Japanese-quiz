@@ -751,6 +751,17 @@ test('gojoMurasakiBurst: petir/bintang/集中線/serpihan lebih tebal', () => {
   assert.ok(b.particleScale >= 1.4, `serpihan (lama 1x), dapat ${b.particleScale}`);
 });
 
+test('gojoMurasakiBurst: durasi ledakan diselaraskan klip suara (tidak kecepetan)', () => {
+  const b = gojoMurasakiBurst();
+  // Ledakan utama (core+ring) harus berlangsung beberapa detik, bukan 1.5s —
+  // keluhan user: "suara sama efek murasaki gak match, efek kecepetan".
+  assert.ok(b.coreDur >= 1.8, `coreDur harus >= 1.8s, dapat ${b.coreDur}`);
+  assert.ok(b.ringDur >= 2.0, `ringDur harus >= 2.0s, dapat ${b.ringDur}`);
+  // Bola tabrakan dulu (d0 = 0.42s) lalu ledakan — total tetap <= klip suara.
+  assert.ok(0.42 + b.ringDur <= 3.24, 'ledakan tidak melebihi durasi klip suara');
+  assert.ok(b.ringDur > b.coreDur, 'shockwave = ekor ledakan, lebih panjang dari inti');
+});
+
 test('gojoMurasakiBurst: deterministik & warna = warna kanon murasaki', () => {
   assert.deepEqual(gojoMurasakiBurst(), gojoMurasakiBurst());
   const b = gojoMurasakiBurst();

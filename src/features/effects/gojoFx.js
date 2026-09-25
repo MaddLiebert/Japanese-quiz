@@ -551,7 +551,14 @@ export const gojoMurasakiBurst = () => {
   const color = GOJO_STYLE.murasaki.color;
   const size = 148;                              // bola plasma (lama 132)
   const borderWidth = 10;                        // shockwave (lama 5)
+  // Durasi ledakan diselaraskan klip suara Murasaki.mp3 (3.24s): inti 2.0s,
+  // shockwave 2.6s (ekor). Tabrakan bola 0.42s + 2.6s = 3.02s < 3.24s → pas.
+  // Keluhan user: "suara sama efek murasaki gak match, efek kecepetan".
+  const coreDur = 2.0;
+  const ringDur = 2.6;
   return {
+    coreDur,
+    ringDur,
     // bola plasma pusat: inti putih lebih besar + glow lebih kuat
     core: {
       size,

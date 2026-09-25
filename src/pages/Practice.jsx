@@ -107,15 +107,15 @@ export function Practice() {
   const navigate = useNavigate();
   const timerRef = useRef(null);
 
-  // Ini penangkal petirnya: kalau komponen mati, timer dibunuh!
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
   const { language } = useLanguage();
   const { triggerEffect, resetEffectStreak, endQuizSession, domainOn } = useEffectLayer();
+
+  // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
+  // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    endQuizSession();
+  }, [endQuizSession]);
 
   const getTranslatedRow = (row) => {
     return (language === 'id' && categoryTranslations[row]) ? categoryTranslations[row] : row;

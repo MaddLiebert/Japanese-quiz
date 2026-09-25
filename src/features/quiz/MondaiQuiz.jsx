@@ -20,9 +20,13 @@ export function MondaiQuiz() {
   const { recordAnswer } = useItemProgress();
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
 
   useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
+
+  // Keluar paksa (browser back / route change) → efek Gojo ikut padam
+  // (bola/GIF/bar tidak nyangkut di halaman berikutnya).
+  useEffect(() => () => endQuizSession(), [endQuizSession]);
 
   const currentItem = mondaiData[currentIndex];
 
