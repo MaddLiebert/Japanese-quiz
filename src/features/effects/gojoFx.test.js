@@ -12,6 +12,7 @@ import {
   darkenHex, gojoBallVignette,
   gojoBallLayout, GOJO_BALL_BREAKPOINT,
   gojoMurasakiBurst,
+  GOJO_ULT_THRESHOLD, gojoUltReady, gojoCurseCharge,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -39,10 +40,16 @@ test('gojoTechniqueFor: non-milestone setelah 3 = ao/aka selang-seling', () => {
   assert.equal(gojoTechniqueFor('streak', 9), 'ao');
 });
 
-test('gojoTechniqueFor: 50 = domain, 100 = domain_zenith', () => {
-  assert.equal(gojoTechniqueFor('streak', 50), 'domain');
-  assert.equal(gojoTechniqueFor('streak', 100), 'domain_zenith');
-  assert.equal(gojoTechniqueFor('streak', 150), 'domain_zenith');
+test('gojoTechniqueFor: 50/100 = murasaki (domain kini dari bar energi kutukan)', () => {
+  assert.equal(gojoTechniqueFor('streak', 50), 'murasaki');
+  assert.equal(gojoTechniqueFor('streak', 100), 'murasaki');
+});
+
+test('gojoTechniqueFor: TIDAK PERNAH mengembalikan domain', () => {
+  for (let s = 1; s <= 200; s++) {
+    const t = gojoTechniqueFor('streak', s);
+    assert.ok(t !== 'domain' && t !== 'domain_zenith', `streak ${s} → ${t}`);
+  }
 });
 
 test('gojoTechniqueFor: salah = null (menyusul, tanpa retak)', () => {
@@ -59,8 +66,8 @@ test('gojoPreviewStreak: set target-1 supaya satu tembakan mendarat tepat di tar
   assert.equal(gojoPreviewStreak(2.7), 1);     // dibulatkan ke bawah
   // Kontrak: satu tembakan setelah set → teknik tepat di target.
   assert.equal(gojoTechniqueFor('correct', gojoPreviewStreak(3) + 1), 'murasaki');
-  assert.equal(gojoTechniqueFor('correct', gojoPreviewStreak(50) + 1), 'domain');
-  assert.equal(gojoTechniqueFor('correct', gojoPreviewStreak(100) + 1), 'domain_zenith');
+  assert.equal(gojoTechniqueFor('correct', gojoPreviewStreak(50) + 1), 'murasaki');   // 50: kini murasaki
+  assert.equal(gojoTechniqueFor('correct', gojoPreviewStreak(100) + 1), 'murasaki');  // 100: kini murasaki
 });
 
 test('gojoPreviewStreak: input tak valid/negatif → 0 (aman, mulai dari awal)', () => {
@@ -68,6 +75,29 @@ test('gojoPreviewStreak: input tak valid/negatif → 0 (aman, mulai dari awal)',
     assert.equal(gojoPreviewStreak(bad), 0, `input ${String(bad)}`);
   }
   assert.equal(gojoPreviewStreak(1), 0);   // target 1 → set 0 → tembakan jadi streak 1
+});
+
+// ── Energi kutukan 呪力 (bar, bukan streak) ─────────────────────────────────
+
+test('gojoCurseCharge: clamp 0..20 (bar keisi tiap benar, berhenti di penuh)', () => {
+  assert.equal(GOJO_ULT_THRESHOLD, 20);
+  assert.equal(gojoCurseCharge(0), 0);
+  assert.equal(gojoCurseCharge(7), 7);
+  assert.equal(gojoCurseCharge(20), 20);
+  assert.equal(gojoCurseCharge(35), 20, 'tidak lebih dari penuh');
+  for (const bad of [-3, NaN, Infinity, null, undefined, '12']) {
+    assert.equal(gojoCurseCharge(bad), 0, `input ${String(bad)}`);
+  }
+});
+
+test('gojoUltReady: nyala tepat di 20 benar beruntun, aman utk input aneh', () => {
+  assert.equal(GOJO_ULT_THRESHOLD, 20);
+  assert.equal(gojoUltReady(19), false);
+  assert.equal(gojoUltReady(20), true);
+  assert.equal(gojoUltReady(21), true);
+  for (const bad of [0, -3, NaN, Infinity, null, undefined, '20']) {
+    assert.equal(gojoUltReady(bad), false, `input ${String(bad)}`);
+  }
 });
 
 // ── Milestone helper ────────────────────────────────────────────────────────

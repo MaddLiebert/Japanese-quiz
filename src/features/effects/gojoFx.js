@@ -30,9 +30,8 @@ export const GOJO_FLASH = '#ffffff';  // flash frame 1-frame
 export const GOJO_EDGE_BAND_VW = 34;
 
 // Teknik untuk satu streak. streak = jumlah jawaban benar beruntun.
+// 50 & 100 TIDAK lagi memicu domain — domain hanya dari bar energi kutukan.
 const techniqueForStreak = (streak) => {
-  if (streak >= 100) return 'domain_zenith';
-  if (streak === 50) return 'domain';
   if (isGojoMilestone(streak)) return 'murasaki';
   if (streak === 1) return 'ao';
   if (streak === 2) return 'aka';
@@ -46,6 +45,20 @@ export const gojoTechniqueFor = (kind, streak = 0) => {
   if (!Number.isFinite(streak) || streak <= 0) return 'ao';
   return techniqueForStreak(streak);
 };
+
+// ── Energi kutukan 呪力 (bar ultimate, dipicu tap — bukan streak) ────────────
+// Charge penuh = 20 jawaban benar beruntun. Bar muncul selama sesi kuis,
+// keisi naik dari bawah ke atas; tap saat penuh = cast 領域展開.
+export const GOJO_ULT_THRESHOLD = 20;
+
+// Charge bar dari streak sekarang: 0..20 (clamp — bar berhenti di penuh).
+export const gojoCurseCharge = (streak) =>
+  (Number.isFinite(streak) && streak > 0)
+    ? Math.min(GOJO_ULT_THRESHOLD, Math.floor(streak))
+    : 0;
+
+export const gojoUltReady = (streak) =>
+  Number.isFinite(streak) && streak >= GOJO_ULT_THRESHOLD;
 
 // ── Preview dev (dipakai DevPanel) ──────────────────────────────────────────
 // Untuk "melompat" ke streak tertentu tanpa quiz: set streakRef ke target-1,
