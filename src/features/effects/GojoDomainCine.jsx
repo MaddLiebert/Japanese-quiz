@@ -16,7 +16,7 @@ import { gojoCastGif } from './gojoGifs';
 //                  kuis "terkurung" di dalamnya — kartu & opsi tetap terbaca (portal z-5)
 //   2. VEIL      → saat cast layar ditutup penuh; tersingkap saat settle (setelah bigbang)
 //   3. TEKS      → 領域展開 → 無量空処 muncul PER-KARAKTER (berurutan)
-//   4. SIX EYES  → mata di ATAS teks, nutup → kebuka
+//   4. SIX EYES  → mata buatan di ATAS GIF (puncak layar), nutup → kebuka
 //   5. BIGBANG   → di tengah (flash + ring mengembang)
 //   6. SETTLE    → blok mata+teks naik, mengecil, lalu memudar → kuis kebaca
 //   7. PERSIST   → ruang hidup sampai jawaban SALAH atau DURASI habis (30 dtk);
@@ -354,8 +354,8 @@ export function GojoDomainCine() {
         {castGif && (
           <motion.div
             data-gojo-castgif
-            className="absolute left-1/2 top-1/2"
-            style={{ marginLeft: '-16vh', marginTop: '-34vh' }}
+            className="absolute left-1/2 top-[12vh]"
+            style={{ marginLeft: 'calc(min(34vh, 84vw) / -2)' }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: [0, 1, 1, 0], scale: [0.9, 1, 1, 0.96] }}
             transition={{
@@ -365,20 +365,48 @@ export function GojoDomainCine() {
               ease: 'easeOut',
             }}
           >
-            <div className="w-[32vh] h-[32vh] flex items-center justify-center">
-              <img
-                src={castGif}
-                alt="Gojo — 領域展開"
-                decoding="sync"
-                loading="eager"
-                className="w-full h-full object-contain select-none"
-                draggable={false}
-              />
-            </div>
+            {/* Dudukan gelap lembut → tepi GIF melebur ke veil, tak ada kotak */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute"
+              style={{
+                inset: '-26% -22%',
+                background: 'radial-gradient(closest-side, rgba(2,2,6,0.97), rgba(2,2,6,0.72) 52%, transparent 100%)',
+              }}
+            />
+            <img
+              src={castGif}
+              alt="Gojo — 領域展開"
+              decoding="sync"
+              loading="eager"
+              className="select-none"
+              style={{
+                width: 'min(34vh, 84vw)',
+                height: 'auto',
+                // Latar hitam bawaan GIF dilebur (screen) + tepi di-mask →
+                // GIF tampil tanpa kotak; wajah & mata tetap menyala.
+                mixBlendMode: 'screen',
+                WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, #000 40%, rgba(0,0,0,0.45) 68%, transparent 94%)',
+                maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, #000 40%, rgba(0,0,0,0.45) 68%, transparent 94%)',
+              }}
+              draggable={false}
+            />
           </motion.div>
         )}
 
-        {/* Blok tengah: [mata] → [領域展開] → [無量空処]; naik, mengecil, lalu memudar */}
+        {/* Mata buatan 六眼 — DI ATAS GIF (permintaan user): duduk sendiri di
+            puncak layar, tidak menumpuk badan GIF. Terangkat & memudar saat settle. */}
+        <motion.div
+          data-gojo-eyes-row
+          className="absolute inset-x-0 top-[2vh] flex justify-center"
+          initial={{ y: 0, opacity: 1 }}
+          animate={reduced ? { opacity: 0 } : { y: '-8vh', opacity: 0 }}
+          transition={{ delay: t.settleStart, duration: reduced ? 0.3 : t.settleDur, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <SixEyes reduced={reduced} start={t.eyesStart} openDur={t.eyesOpenDur} />
+        </motion.div>
+
+        {/* Blok tengah: [領域展開] → [無量空処]; naik, mengecil, lalu memudar */}
         <motion.div
           data-gojo-text
           className="absolute inset-0 flex flex-col items-center justify-center gap-[2.2vmin]"
@@ -386,7 +414,6 @@ export function GojoDomainCine() {
           animate={reduced ? { opacity: 0 } : { y: '-31vh', scale: 0.34, opacity: 0 }}
           transition={{ delay: t.settleStart, duration: reduced ? 0.3 : t.settleDur, ease: [0.22, 1, 0.36, 1] }}
         >
-          <SixEyes reduced={reduced} start={t.eyesStart} openDur={t.eyesOpenDur} />
           <SequentialChars
             text="領域展開"
             start={t.text1Start}
