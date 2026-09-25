@@ -14,6 +14,7 @@
 import { useEffect, useState } from "react";
 import { useUserStats } from "../progress/ProgressContext";
 import { useEffectLayer } from "../effects/EffectContext";
+import { startDomainBgm, stopDomainBgm, setBallHum, stopBallHum } from "../../utils/gojoAmbience";
 import { useLanguage } from "../../context/LanguageContext";
 import { PACKS } from "../packs/packs";
 import { SHOP_ITEMS, countItems } from "../items/items";
@@ -212,6 +213,33 @@ export function DevPanel() {
             </button>
             <button type="button" onClick={castNow} className={`${btn} bg-[#7c4dff] text-kinari-light`}>
               🌌 {id ? "Cast 領域展開" : "Cast Domain"}
+            </button>
+            <button type="button" onClick={() => previewGojo(1)} className={`${btn} bg-[#38bdf8] text-sumi`}>
+              🔵 {id ? "蒼 #1" : "Ao #1"}
+            </button>
+            <button type="button" onClick={() => previewGojo(2)} className={`${btn} bg-[#ef4444] text-kinari-light`}>
+              🔴 {id ? "赫 #2" : "Aka #2"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (window.__gojoAmbience?.bgm) stopDomainBgm();
+                else startDomainBgm();
+              }}
+              className={`${btn} bg-[#7c4dff] text-kinari-light`}
+            >
+              🎵 {id ? "Tes BGM 領域展開" : "Test Domain BGM"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const on = window.__gojoAmbience?.balls?.ao || window.__gojoAmbience?.balls?.aka;
+                if (on) stopBallHum();
+                else setBallHum({ ao: true, aka: true });
+              }}
+              className={`${btn} bg-[#0ea5e9] text-kinari-light`}
+            >
+              🔊 {id ? "Tes Hum Bola" : "Test Ball Hum"}
             </button>
           </div>
         </div>
