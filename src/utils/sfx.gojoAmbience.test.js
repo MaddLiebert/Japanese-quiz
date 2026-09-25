@@ -6,6 +6,9 @@ import {
   playBallSound, playMurasakiRiser, playCurseTick, playCurseReady,
   playDomainCollapse, playDomainCue, getAudioContext,
 } from './sfx.js';
+import {
+  startDomainBgm, stopDomainBgm, setBallHum, stopBallHum, duckAmbience, stopAllAmbience,
+} from './gojoAmbience.js';
 import { GOJO_ULT_THRESHOLD } from '../features/effects/gojoFx.js';
 
 // ── Bola 蒼/赫 ──────────────────────────────────────────────────────────────
@@ -120,4 +123,15 @@ test('pemutar baru & getAudioContext aman di node (0 / null, tanpa throw)', () =
   assert.equal(playDomainCue('eyes'), 0);
   assert.equal(playBallSound('zzz'), 0);
   assert.equal(playDomainCue('zzz'), 0);
+});
+
+// ── Modul ambience: aman di node (semua no-op) ──────────────────────────────
+
+test('gojoAmbience: semua fungsi no-op aman di node (false, tanpa throw)', () => {
+  assert.equal(startDomainBgm(), false);
+  assert.equal(stopDomainBgm(), false);
+  assert.equal(setBallHum({ ao: true, aka: true }), false);
+  assert.equal(stopBallHum(), false);
+  assert.equal(duckAmbience(500), false);
+  assert.equal(stopAllAmbience(), false);
 });
