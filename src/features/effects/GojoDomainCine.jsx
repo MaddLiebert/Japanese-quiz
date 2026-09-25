@@ -38,10 +38,12 @@ export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
   return (
     <div
       data-gojo-cursebar
-      className="pointer-events-none fixed right-2.5 top-1/2 -translate-y-1/2 z-[125] flex flex-col items-center gap-2"
+      className="pointer-events-none fixed right-2.5 top-[6vh] sm:top-1/2 sm:-translate-y-1/2 z-[125] flex flex-col items-center gap-1.5"
     >
-      {/* Label 領域展開 saat penuh */}
-      <AnimatePresence>
+      {/* Slot label (tinggi tetap) → bar tidak bergeser saat label muncul.
+          Di HP bar ditambatkan ke ATAS agar tidak menutupi opsi jawaban di bawah. */}
+      <div className="flex h-14 items-center justify-center">
+        <AnimatePresence>
         {ready && (
           <motion.span
             key="ready-label"
@@ -49,13 +51,14 @@ export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
             style={{ color: '#e8e0ff', writingMode: 'vertical-rl', textShadow: `0 0 12px ${purple}` }}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: reduced ? 1 : [0.65, 1, 0.65], y: 0 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0.25 } }}
             transition={reduced ? { duration: 0 } : { repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
           >
             領域展開
           </motion.span>
         )}
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
 
       {/* Bar-nya (tap = cast saat penuh) */}
       <motion.button
@@ -63,7 +66,7 @@ export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
         onClick={ready ? onCast : undefined}
         aria-label="呪力"
         disabled={!ready}
-        className={`relative w-[14px] h-[46vh] max-h-[380px] min-h-[200px] rounded-full border-[2px] overflow-hidden ${
+        className={`relative w-[14px] h-[30vh] max-h-[380px] min-h-[170px] sm:h-[46vh] sm:min-h-[200px] rounded-full border-[2px] overflow-hidden ${
           ready ? 'pointer-events-auto cursor-pointer' : 'pointer-events-none'
         }`}
         style={{
