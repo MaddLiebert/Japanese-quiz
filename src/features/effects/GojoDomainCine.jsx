@@ -2,7 +2,7 @@ import { useEffect, useId, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   GOJO_STYLE, GOJO_INK, GOJO_BALL_BREAKPOINT, GOJO_ULT_THRESHOLD,
-  gojoDomainTimeline, gojoSequentialChars,
+  gojoDomainTimeline, gojoSequentialChars, gojoNebulaSpots, gojoStars,
 } from './gojoFx';
 import { playDomainBoom } from '../../utils/sfx';
 
@@ -25,8 +25,6 @@ const prefersReduced = () =>
 
 const isMobile = () =>
   typeof window !== 'undefined' && window.innerWidth < GOJO_BALL_BREAKPOINT;
-
-void isMobile;   // dipakai fase bintang/nebula (Task 8)
 
 // ── Bar energi kutukan 呪力 (tepinya KANAN, isi naik dari bawah) ─────────────
 // Visual: jalur gelap + isi ungu dengan glow; tiap +1 benar memicu "letupan aura"
@@ -184,10 +182,41 @@ function SixEyes({ reduced, start, openDur }) {
   );
 }
 
+// Bigbang di TENGAH (flash + ring mengembang, memudar habis) — lalu ruang
+// "tenang": bercak nebula di pinggir + bintang berkelip (persist).
+function GojoBigBang({ reduced, start, dur }) {
+  return (
+    <div
+      data-gojo-bang
+      className="absolute left-1/2 top-1/2"
+      style={{ width: 380, height: 380, marginLeft: -190, marginTop: -190, pointerEvents: 'none' }}
+    >
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={reduced ? { scale: 1, opacity: 0.35 } : { scale: [0, 0.3, 2.7], opacity: [0, 1, 0] }}
+        transition={{ delay: reduced ? 0 : start, duration: reduced ? 0 : dur, times: [0, 0.18, 1], ease: 'easeOut' }}
+        style={{ background: 'radial-gradient(circle, #ffffff 0 10%, #c4b5fd 32%, rgba(124,77,255,0) 72%)' }}
+      />
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        style={{ border: '6px solid #c4b5fd' }}
+        initial={{ scale: 0.1, opacity: 0 }}
+        animate={reduced ? { scale: 1, opacity: 0.25 } : { scale: [0.1, 3.6], opacity: [0, 0.85, 0] }}
+        transition={{ delay: reduced ? 0 : start + 0.05, duration: reduced ? 0 : dur * 1.15, ease: 'easeOut' }}
+      />
+    </div>
+  );
+}
+
 export function GojoDomainCine({ seed = 1 }) {
-  void seed;   // dipakai fase bintang/nebula (Task 8)
   const [reduced] = useState(prefersReduced);
+  const [mobile] = useState(isMobile);
   const t = gojoDomainTimeline();
+  const [spots] = useState(() => gojoNebulaSpots(seed, mobile ? 5 : 8));
+  const [allStars] = useState(() => gojoStars(seed, mobile ? 36 : 64));
+  // Bintang hanya yang di pinggir (x/y di luar 18%/82%) → area kuis tetap bersih.
+  const edgeStars = allStars.filter((s) => s.x <= 18 || s.x >= 82 || s.y <= 14 || s.y >= 86);
 
   // Spotlight: ukur area kuis ([data-quiz-area]); fallback = full gelap.
   const [rect, setRect] = useState(null);
@@ -263,6 +292,58 @@ export function GojoDomainCine({ seed = 1 }) {
           }}
         />
       </motion.div>
+
+      {/* Bercak ruang angkasa DI PINGGIR kuis (persist, denyut pelan) */}
+      {spots.map((s) => (
+        <motion.div
+          key={s.id}
+          data-gojo-nebula
+          className="absolute rounded-full"
+          style={{
+            left: `${s.x}%`,
+            top: `${s.y}%`,
+            width: s.size,
+            height: s.size,
+            marginLeft: -s.size / 2,
+            marginTop: -s.size / 2,
+            background: `radial-gradient(circle, ${s.color} 0 16%, ${s.color}66 44%, transparent 72%)`,
+            filter: 'blur(14px)',
+            willChange: 'transform, opacity',
+          }}
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={reduced
+            ? { opacity: s.opacity, scale: 1 }
+            : { opacity: [0, s.opacity, s.opacity * 0.7, s.opacity], scale: [0.6, 1, 1.08, 1] }}
+          transition={{
+            delay: reduced ? 0 : t.nebulaStart + s.delay,
+            duration: reduced ? 0 : 6,
+            repeat: Infinity,
+            repeatType: 'reverse',
+            ease: 'easeInOut',
+          }}
+        />
+      ))}
+
+      {/* Bintang hanya di PINGGIR (biar kartu soal tetap bersih) */}
+      {edgeStars.map((st) => (
+        <motion.span
+          key={st.id}
+          className="absolute rounded-full bg-white"
+          style={{ left: `${st.x}%`, top: `${st.y}%`, width: st.size, height: st.size }}
+          initial={{ opacity: 0 }}
+          animate={reduced ? { opacity: 0.7 } : { opacity: [0, 0.85, 0.3, 0.75] }}
+          transition={{
+            delay: reduced ? 0 : t.nebulaStart + st.delay,
+            duration: reduced ? 0 : 4,
+            repeat: Infinity,
+            repeatType: 'reverse',
+            ease: 'easeInOut',
+          }}
+        />
+      ))}
+
+      {/* BIGBANG di tengah */}
+      <GojoBigBang reduced={reduced} start={t.bangStart} dur={t.bangDur} />
     </motion.div>
   );
 }
