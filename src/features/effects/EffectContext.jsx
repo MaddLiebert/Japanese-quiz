@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
-import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs, playDomainBoom, playGojoTechnique, playGojoCast } from '../../utils/sfx';
+import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs, playDomainBoom, playGojoTechnique, playGojoCast, playBallSound, playMurasakiRiser, playCurseTick, playCurseReady, playDomainCollapse } from '../../utils/sfx';
+import { startDomainBgm, stopDomainBgm, setBallHum, stopBallHum, duckAmbience, stopAllAmbience } from '../../utils/gojoAmbience';
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
@@ -119,11 +120,13 @@ export function EffectProvider({ children }) {
   const domainEndsAtRef = useRef(null);                     // timestamp akhir domain (durasi)
   const [domainLeft, setDomainLeft] = useState(GOJO_DOMAIN_DURATION_S); // sisa detik domain
   const streakRef = useRef(0);
+  const domainEndedRef = useRef(false);   // suara "domain padam" hanya sekali per cast
   const timersRef = useRef([]);
 
   useEffect(() => () => {
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
+    stopAllAmbience();   // BGM/hum tidak boleh hidup setelah provider unmount
   }, []);
 
   // Visual aktif hanya kalau activePack punya visual yang terdaftar.
@@ -199,6 +202,10 @@ export function EffectProvider({ children }) {
     const feedback = answerFeedbackKind(type, onMilestone);
     // Pack Gojo (aset user): benar → klip teknik DETERMINISTIK (蒼 ao / 赫 aka,
     // 茈 senyap — GIF yang bicara); salah → klip "gojo kalah" acak.
+    // Ambience (BGM domain / hum bola) dipelankan saat klip suara jawaban bunyi —
+    // tanpa ini scene berisik (suara Gojo + ambience bertumpuk).
+    if (activeVisual === 'gojo') duckAmbience(1500);
+
     const clipMs = activeVisual === 'gojo'
       ? (type === 'wrong'
         ? playWrongSound()
@@ -247,6 +254,9 @@ export function EffectProvider({ children }) {
     // murasaki (bener #3 & milestone) → dua bola ke tengah lalu MELEDAK → reset
     if (activeVisual === 'gojo') {
       const tech = gojoTechniqueFor(kind, type === 'correct' ? streakRef.current : 0);
+      // Suara peristiwa (non-voice): bola muncul (蒼/赫) + riser tabrakan 茈.
+      if (tech === 'ao' || tech === 'aka') playBallSound(tech);
+      if (tech === 'murasaki') playMurasakiRiser();
       // Generasi bola baru: reset milik generasi lama (mis. timer 茈 3.2s) TIDAK
       // boleh menghapus bola generasi baru yang sudah tampil (stale timer).
       const ballGen = nextBallToken();
@@ -267,8 +277,21 @@ export function EffectProvider({ children }) {
         setGojoBalls(GOJO_BALLS_EMPTY);
       }
       // Bar energi kutukan ikut streak; SATU salah = domain padam & bar kosong.
-      setUltCharge(gojoCurseCharge(streakRef.current));
-      if (type === 'wrong') setGojoDomain(false);
+      // Suara bar: tick makin tinggi tiap +1 benar; chime saat penuh (20/20).
+      const newCharge = gojoCurseCharge(streakRef.current);
+      setUltCharge(newCharge);
+      if (type === 'correct' && newCharge > 0) {
+        if (newCharge >= GOJO_ULT_THRESHOLD) playCurseReady();
+        else playCurseTick(newCharge);
+      }
+      if (type === 'wrong') {
+        // Domain padam karena SALAH → dentuman "ruang runtuh" (sekali per cast).
+        if (gojoDomain && !domainEndedRef.current) {
+          domainEndedRef.current = true;
+          playDomainCollapse('wrong');
+        }
+        setGojoDomain(false);
+      }
     }
 
     // Timer hold hanya boleh membersihkan fx MILIKNYA (fxId). Kalau sudah ada
@@ -276,10 +299,11 @@ export function EffectProvider({ children }) {
     // prematur oleh timer 蒼 lama (keluhan user: "efek murasaki kecepetan").
     const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
     timersRef.current.push(t);
-  }, [active, spawnInk, activeVisual]);
+  }, [active, spawnInk, activeVisual, gojoDomain]);
 
   const resetEffectStreak = useCallback(() => {
     streakRef.current = 0;
+    domainEndedRef.current = false;
     setGojoBalls(GOJO_BALLS_EMPTY);
     setGojoExplode(false);
     setGojoDomain(false);
@@ -301,6 +325,8 @@ export function EffectProvider({ children }) {
     setGojoDomain(false);
     setUltCharge(0);
     domainEndsAtRef.current = null;
+    domainEndedRef.current = false;
+    stopAllAmbience();
   }, []);
 
   // Cast 領域展開 dengan tap bar. Menghabiskan charge: streak & bar di-reset,
@@ -309,6 +335,7 @@ export function EffectProvider({ children }) {
   const castDomain = useCallback(() => {
     if (activeVisual !== 'gojo') return;
     streakRef.current = 0;
+    domainEndedRef.current = false;
     setGojoExplode(false);
     setUltCharge(0);
     setGojoDomainSeed((n) => n + 1);
@@ -336,7 +363,14 @@ export function EffectProvider({ children }) {
     const tick = () => {
       const left = gojoDomainLeft(domainEndsAtRef.current);
       setDomainLeft(left);
-      if (left <= 0) setGojoDomain(false);
+      if (left <= 0) {
+        // Waktu habis (bukan salah) → padam alami + suara collapse lembut.
+        if (!domainEndedRef.current) {
+          domainEndedRef.current = true;
+          playDomainCollapse('timeout');
+        }
+        setGojoDomain(false);
+      }
     };
     tick();
     const id = setInterval(tick, 250);
@@ -349,6 +383,24 @@ export function EffectProvider({ children }) {
     domainEndsAtRef.current = null;
     setDomainLeft(GOJO_DOMAIN_DURATION_S);
   }, [gojoDomain]);
+
+  // ── Ambience (BGM 領域展開 + hum bola) ─────────────────────────────────────
+  // BGM hidup SETELAH cinematic settle (voice cast & dentuman sudah selesai) dan
+  // mati saat domain padam. Pending timer dibatalkan kalau domain mati lebih dulu.
+  useEffect(() => {
+    if (!gojoDomain || activeVisual !== 'gojo') { stopDomainBgm(); return undefined; }
+    const t = setTimeout(() => startDomainBgm(), gojoDomainStartDelayMs());
+    timersRef.current.push(t);
+    return () => clearTimeout(t);
+  }, [gojoDomain, activeVisual]);
+
+  // Hum bola mengikuti bola yang benar-benar tampil; padam SEKETIKA saat 茈
+  // meledak (gojoExplode) — jangan ikut "meledak" 3.2s sampai reset.
+  useEffect(() => {
+    if (activeVisual !== 'gojo' || gojoExplode) { stopBallHum(); return undefined; }
+    setBallHum(gojoBalls);
+    return undefined;
+  }, [activeVisual, gojoBalls, gojoExplode]);
 
   // DEV-ONLY (dipakai DevPanel): lompat ke streak `target` tanpa quiz.
   // Set ABSOLUT ke target-1 lalu satu 'correct' → mendarat TEPAT di target,
