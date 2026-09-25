@@ -493,12 +493,14 @@ test('gojoBallLayout: desktop = tepi tengah, HP = sudut atas + lebih kecil', () 
   assert.ok(m.size < d.size, 'HP: bola lebih kecil');
   assert.ok(m.anchorYVh < 0, 'HP: bola naik ke ATAS');
   assert.ok(m.anchorXVw > 0, 'HP ao tetap di kanan');
+  assert.equal(m.size, 44, 'HP: bola 44px (lebih kecil dari 84)');
   // bola tetap di dalam layar (tidak keluar tepi)
   const cx = 390 / 2 + (m.anchorXVw / 100) * 390;
   assert.ok(cx + m.size / 2 <= 390, 'bola tidak keluar tepi kanan');
   assert.ok(cx - m.size / 2 >= 0, 'bola tidak keluar tepi kiri');
   // bola ada di area ATAS layar (di atas kartu jawaban di tengah)
   const cy = 844 / 2 + (m.anchorYVh / 100) * 844;
+  assert.ok(Math.abs((cy - m.size / 2) - 145) <= 1, 'HP: tepi atas bola ≈ y145 (di bawah border header)');
   assert.ok(cy + m.size / 2 < 844 * 0.35, 'bola harus di sepertiga atas layar');
 
   const aka = gojoBallLayout('aka', 390, 844);
@@ -510,22 +512,27 @@ test('gojoBallLayout: desktop = tepi tengah, HP = sudut atas + lebih kecil', () 
   assert.equal(GOJO_BALL_BREAKPOINT, 768);
 });
 
-test('gojoBallLayout: di HP bola tidak menutupi kartu jawaban (max-w-lg di tengah)', () => {
+test('gojoBallLayout: di HP bola tetap di atas progress bar & kartu jawaban', () => {
+  // Terukur (360/375/390/430 × HP): border header berakhir y≈143,
+  // progress bar kotoba/kanji y≈191–197, kartu soal y≈237.
   for (const [vw, vh] of [[390, 844], [360, 780], [430, 932]]) {
-    const cardW = Math.min(512, vw - 32);          // kartu jawaban (max-w-lg, px-4)
-    const cardLeft = vw / 2 - cardW / 2;
-    const cardRight = vw / 2 + cardW / 2;
     for (const t of ['ao', 'aka']) {
       const L = gojoBallLayout(t, vw, vh);
-      const cx = vw / 2 + (L.anchorXVw / 100) * vw;
       const cy = vh / 2 + (L.anchorYVh / 100) * vh;
-      const left = cx - L.size / 2, right = cx + L.size / 2, bottom = cy + L.size / 2;
-      const overlapsX = right > cardLeft && left < cardRight;
-      // kartu di tengah: tepi atasnya minimal di ~22% vh → bola harus di atas itu
-      const cardTop = vh * 0.22;
-      const covers = overlapsX && bottom > cardTop;
-      assert.ok(!covers, `${t} @${vw}x${vh}: bola menutupi kartu (bottom=${bottom.toFixed(0)} > cardTop=${cardTop.toFixed(0)})`);
+      const bottom = cy + L.size / 2;
+      assert.ok(bottom < 191, `${t} @${vw}x${vh}: bola menyentuh progress bar (bottom=${bottom.toFixed(0)})`);
+      assert.ok(bottom < 237, `${t} @${vw}x${vh}: bola menutupi kartu soal`);
     }
+  }
+});
+
+test('gojoBallLayout: di HP bola turun ke bawah header — tidak nempel tombol atas', () => {
+  for (const [vw, vh] of [[390, 844], [360, 780], [430, 932]]) {
+    const L = gojoBallLayout('ao', vw, vh);
+    const cy = vh / 2 + (L.anchorYVh / 100) * vh;
+    const top = cy - L.size / 2;
+    assert.ok(top >= 143, `tepi atas di bawah border header (top=${top.toFixed(0)})`);
+    assert.ok(L.size <= 48, `ukuran kecil (size=${L.size})`);
   }
 });
 
