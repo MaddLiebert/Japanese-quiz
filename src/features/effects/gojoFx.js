@@ -457,8 +457,8 @@ export const gojoTensionLines = (technique, seed = 1, rng = Math.random, count =
 
 // ── Layout bola responsif ───────────────────────────────────────────────────
 // Di HP (layar sempit) kartu jawaban hampir selebar layar → bola di samping
-// PASTI nabrak kartu. Solusi: bola NAIK ke sudut atas + dikecilkan, supaya
-// kartu jawaban (di tengah) 100% tidak ketutupan.
+// PASTI nabrak kartu. Solusi: bola DIKECILKAN + TURUN ke bawah border header
+// (tidak nempel tombol kontrol atas), di atas progress bar & kartu jawaban.
 export const GOJO_BALL_BREAKPOINT = 768;   // < 768px = HP/sempit
 
 // Kembalikan { mobile, size, anchorXVw, anchorYVh } untuk satu teknik bola.
@@ -471,13 +471,16 @@ export const gojoBallLayout = (technique, vw = 1280, vh = 800) => {
   if (!mobile) {
     return { mobile: false, size: 128, anchorXVw: dir * 32, anchorYVh: 0 };
   }
-  // HP: kecilkan + taruh di sudut atas (kanan-atas / kiri-atas).
-  const size = 84;
+  // HP: kecilkan + TURUNKAN ke bawah border header (jangan nempel tombol atas).
+  const size = 44;
   const margin = 10;                             // jarak dari tepi (px)
+  // Tepi ATAS bola (px dari atas layar). 145 = tepat di bawah border header
+  // (terukur berakhir y≈143) & di atas progress bar kotoba/kanji (y≈191).
+  const topGap = 145;
   // pusat X: nempel tepi (size/2 + margin dari tepi) → aman walau kartu lebar.
   const cx = dir > 0 ? vw - (size / 2 + margin) : (size / 2 + margin);
-  // pusat Y: sudut atas (bola nempel atas, di atas kartu jawaban).
-  const cy = size / 2 + margin;
+  // pusat Y: di bawah header, di atas progress bar.
+  const cy = topGap + size / 2;
   return {
     mobile: true,
     size,
