@@ -16,6 +16,7 @@ import {
   gojoDomainTimeline, gojoSequentialChars,
   gojoNebulaSpots, GOJO_NEBULA_COLORS,
   GOJO_DOMAIN_DURATION_S, gojoDomainLeft, gojoDomainStartDelayMs,
+  GOJO_CAST_VOICE,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -139,6 +140,22 @@ test('gojoDomainTimeline: urut naik, deterministik, durasi wajar', () => {
   assert.ok(t.settleStart >= t.bangStart + t.bangDur, 'settle setelah bigbang selesai');
   assert.ok(t.eyesStart >= t.text1Start, 'mata muncul saat teks mulai');
   assert.ok(t.eyesOpenDur > 0.4 && t.eyesOpenDur <= 2, 'buka mata wajar');
+});
+
+test('gojoDomainTimeline: teks sinkron dengan frasa suara ryoiki tenkai.mp3', () => {
+  const t = gojoDomainTimeline();
+  const v = GOJO_CAST_VOICE;
+  // 領域展開: muncul saat frasa 1 diucapkan; 4 kanji habis = frasa 1 habis.
+  assert.ok(Math.abs(t.text1Start - v.seg1Start) < 0.01, `領域展開 mulai ${t.text1Start}, frasa ${v.seg1Start}`);
+  assert.ok(Math.abs(t.text1Start + 4 * t.text1Char - v.seg1End) < 0.01, '領域展開 selesai = akhir frasa 1');
+  // 無量空処: BUKAN di tengah jeda (bug lama 1.5s) — mulai saat frasa 2 diucapkan.
+  assert.ok(t.text2Start > v.seg1End, '無量空処 tidak muncul saat jeda suara');
+  assert.ok(Math.abs(t.text2Start - v.seg2Start) < 0.01, `無量空処 mulai ${t.text2Start}, frasa ${v.seg2Start}`);
+  assert.ok(Math.abs(t.text2Start + 4 * t.text2Char - v.seg2End) < 0.01, '無量空処 selesai = akhir frasa 2');
+  // Beat setelah suara: bigbang & settle; cinematic tidak berakhir sebelum klip habis.
+  assert.ok(t.bangStart >= v.seg2End, 'bigbang setelah frasa 2 habis');
+  assert.ok(t.settleStart >= t.bangStart + t.bangDur, 'settle setelah bigbang');
+  assert.ok(t.settleStart + t.settleDur >= v.dur, 'cinematic >= durasi klip suara');
 });
 
 test('gojoSequentialChars: 1 entry/karakter, delay naik, deterministik', () => {
