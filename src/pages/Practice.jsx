@@ -115,7 +115,7 @@ export function Practice() {
   }, []);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
 
   const getTranslatedRow = (row) => {
     return (language === 'id' && categoryTranslations[row]) ? categoryTranslations[row] : row;
@@ -277,8 +277,8 @@ export function Practice() {
           score={score}
           totalQuestions={totalQuestions}
           wrongAnswers={wrongAnswers}
-          onPlayAgain={() => setQuizStarted(false)}
-          onGoHome={() => navigate('/')}
+          onPlayAgain={() => { endQuizSession(); setQuizStarted(false); }}
+          onGoHome={() => { endQuizSession(); navigate('/'); }}
         />
       );
     }
@@ -295,7 +295,7 @@ export function Practice() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
             <button
-              onClick={() => setQuizStarted(false)}
+              onClick={() => { endQuizSession(); setQuizStarted(false); }}
               className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit"
             >
               <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
@@ -316,7 +316,7 @@ export function Practice() {
               </div>
             </header>
 
-            <div className="flex-1 flex flex-col items-center relative z-10">
+            <div data-quiz-area className="flex-1 flex flex-col items-center relative z-10">
               {/* Progress bar */}
               <div className="w-full max-w-lg mb-10 h-1.5 bg-sumi/10 rounded-full overflow-hidden">
                 <div
@@ -418,6 +418,7 @@ export function Practice() {
                     <motion.button
                       key={option.id}
                       onClick={() => handleKotobaOptionClick(option)}
+                      data-correct={isThisCorrect || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -475,7 +476,7 @@ export function Practice() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
             <button
-              onClick={() => setQuizStarted(false)}
+              onClick={() => { endQuizSession(); setQuizStarted(false); }}
               className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit"
             >
               <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
@@ -496,7 +497,7 @@ export function Practice() {
               </div>
             </header>
 
-            <div className="flex-1 flex flex-col items-center relative z-10">
+            <div data-quiz-area className="flex-1 flex flex-col items-center relative z-10">
               {/* Progress bar */}
               <div className="w-full max-w-lg mb-10 h-1.5 bg-sumi/10 rounded-full overflow-hidden">
                 <div
@@ -577,6 +578,7 @@ export function Practice() {
                     <motion.button
                       key={option.id}
                       onClick={() => handleKotobaOptionClick(option)}
+                      data-correct={isThisCorrect || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -640,7 +642,7 @@ export function Practice() {
           isAnswered={isAnswered}
           isCurrentAnswerCorrect={isCurrentAnswerCorrect}
           onOptionClick={handleKanaOptionClick}
-          onBack={() => setQuizStarted(false)}
+          onBack={() => { endQuizSession(); setQuizStarted(false); }}
           isGrammarMode={isGrammarMode}
         />
       );

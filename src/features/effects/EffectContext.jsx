@@ -1,14 +1,15 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
-import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs } from '../../utils/sfx';
+import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs, playDomainBoom } from '../../utils/sfx';
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
 import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 import { GojoBurst } from './GojoBurst';
 import { GojoSpheres } from './GojoSpheres';
-import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor, gojoPreviewStreak } from './gojoFx';
+import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor, gojoPreviewStreak, gojoCurseCharge, GOJO_ULT_THRESHOLD } from './gojoFx';
+import { GojoDomainCine, GojoCurseBar } from './GojoDomainCine';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Efek tinta washi (visual 'ink') — dipakai pack Sumi Taiko.
@@ -108,6 +109,11 @@ export function EffectProvider({ children }) {
   // murasaki → keduanya meluncur ke tengah lalu meledak (lalu reset).
   const [gojoBalls, setGojoBalls] = useState(GOJO_BALLS_EMPTY);
   const [gojoExplode, setGojoExplode] = useState(false);
+  // ── Energi kutukan 呪力 → 領域展開 (bar; persist sampai salah) ────────────
+  const [gojoDomain, setGojoDomain] = useState(false);      // domain sedang hidup
+  const [gojoDomainSeed, setGojoDomainSeed] = useState(0);  // seed per cast (animasi baru)
+  const [ultCharge, setUltCharge] = useState(0);            // isi bar 0..20
+  const [quizActive, setQuizActive] = useState(false);      // bar tampil selama sesi kuis
   const streakRef = useRef(0);
   const timersRef = useRef([]);
 
@@ -238,6 +244,9 @@ export function EffectProvider({ children }) {
         setGojoExplode(false);                               // salah / domain → reset
         setGojoBalls(GOJO_BALLS_EMPTY);
       }
+      // Bar energi kutukan ikut streak; SATU salah = domain padam & bar kosong.
+      setUltCharge(gojoCurseCharge(streakRef.current));
+      if (type === 'wrong') setGojoDomain(false);
     }
 
     const t = setTimeout(() => setFx(null), holdMs);
@@ -248,7 +257,39 @@ export function EffectProvider({ children }) {
     streakRef.current = 0;
     setGojoBalls(GOJO_BALLS_EMPTY);
     setGojoExplode(false);
+    setGojoDomain(false);
+    setUltCharge(0);
+    setQuizActive(true);     // bar energi kutukan tampil selama sesi kuis
   }, []);
+
+  // Sesi kuis selesai / keluar → bar hilang (dipanggil dari onBack/onPlayAgain/
+  // onGoHome Practice + unmount Quiz/Review).
+  const endQuizSession = useCallback(() => {
+    setQuizActive(false);
+    setGojoDomain(false);
+    setUltCharge(0);
+  }, []);
+
+  // Cast 領域展開 dengan tap bar. Menghabiskan charge: streak & bar di-reset,
+  // bar keisi dari 0 sampai 20 benar beruntun lagi. BOLA 蒼/赫 TETAP mengambang
+  // di pinggir (permintaan user — jangan di-reset). Domain hidup sampai jawab SALAH.
+  const castDomain = useCallback(() => {
+    if (activeVisual !== 'gojo') return;
+    streakRef.current = 0;
+    setGojoExplode(false);
+    setUltCharge(0);
+    setGojoDomainSeed((n) => n + 1);
+    setGojoDomain(true);
+    playDomainBoom('cast');
+  }, [activeVisual]);
+
+  // Penanda global untuk CSS hint Six Eyes (index.css) — nol timer JS.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (gojoDomain) root.setAttribute('data-gojo-domain', 'on');
+    else root.removeAttribute('data-gojo-domain');
+    return () => root.removeAttribute('data-gojo-domain');
+  }, [gojoDomain]);
 
   // DEV-ONLY (dipakai DevPanel): lompat ke streak `target` tanpa quiz.
   // Set ABSOLUT ke target-1 lalu satu 'correct' → mendarat TEPAT di target,
@@ -261,15 +302,20 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, active }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, castDomain, endQuizSession, active }}>
       {children}
-      <EffectLayer fx={fx} drops={drops} visual={activeVisual} gojoBalls={gojoBalls} gojoExplode={gojoExplode} />
+      <EffectLayer
+        fx={fx} drops={drops} visual={activeVisual}
+        gojoBalls={gojoBalls} gojoExplode={gojoExplode}
+        domainOn={gojoDomain} domainSeed={gojoDomainSeed}
+        charge={ultCharge} quizActive={quizActive} onCast={castDomain}
+      />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, charge, quizActive, onCast }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -406,11 +452,20 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode }) {
           (hanya murasaki/domain; ao/aka mengembalikan null). */}
       {visual === 'gojo' && (
         <>
+          {/* Domain cinematic di BELAKANG bola/burst → bola & ledakan tetap terlihat */}
+          <AnimatePresence>
+            {domainOn && <GojoDomainCine key={`dom-${domainSeed}`} seed={domainSeed} />}
+          </AnimatePresence>
           <GojoSpheres balls={gojoBalls} explode={gojoExplode} seed={fx?.id || 1} />
           <AnimatePresence>
             {fx && <GojoBurst key={`gojo-${fx.id}`} fx={fx} kind={kind} />}
           </AnimatePresence>
         </>
+      )}
+
+      {/* Bar energi kutukan 呪力 — tampil selama sesi kuis, tap saat penuh = cast */}
+      {visual === 'gojo' && quizActive && (
+        <GojoCurseBar charge={charge} ready={charge >= GOJO_ULT_THRESHOLD && !domainOn} onCast={onCast} />
       )}
     </div>
   );
