@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import {
   GOJO_STYLE, GOJO_CORE, GOJO_INK,
   gojoOrbitRings, gojoRibbons, gojoTendrils, gojoHalo,
-  gojoBallLabel, gojoTensionLines, gojoCharge, gojoBallVignette,
+  gojoBallLabel, gojoBallAura, gojoTensionLines, gojoCharge, gojoBallVignette,
   gojoBallLayout,
 } from './gojoFx';
 
@@ -38,6 +38,7 @@ function GojoBall({ tech, seed, reduced, explode, layout }) {
   const [halos] = useState(() => gojoHalo(tech, seed));
   const label = gojoBallLabel(tech);
   const charge = gojoCharge(tech);
+  const aura = gojoBallAura(tech, size, layout.mobile);
 
   const anchorXVw = layout.anchorXVw;
   const anchorYVh = layout.anchorYVh;
@@ -73,16 +74,18 @@ function GojoBall({ tech, seed, reduced, explode, layout }) {
         })}
     >
       {/* aura menyala BERDENYUT (mencekam, bukan glow pasif) */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          inset: -size * 0.55,
-          background: `radial-gradient(circle, ${color}99 0 16%, ${color}55 32%, ${color}22 52%, transparent 72%)`,
-          willChange: 'transform, opacity',
-        }}
-        animate={reduced ? { opacity: 0.7 } : { opacity: [0.55, 0.95, 0.55], scale: [1, 1.09, 1] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      {aura && (
+        <motion.div
+          className="absolute rounded-full"
+          style={{
+            inset: aura.inset,
+            background: aura.background,
+            willChange: 'transform, opacity',
+          }}
+          animate={reduced ? { opacity: 0.7 } : { opacity: [0.55, 0.95, 0.55], scale: [1, 1.09, 1] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      )}
       {/* charge ring — mengembang lalu hilang (kekuatan terkumpul) */}
       {charge && (
         <motion.div

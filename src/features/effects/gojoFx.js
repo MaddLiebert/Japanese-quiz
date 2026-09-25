@@ -424,6 +424,28 @@ export const gojoBallVignette = (technique) => {
   return { dark: darkenHex(label.color, 0.26), side: label.side, color: label.color };
 };
 
+// Aura menyala di sekeliling bola (halo berdenyut).
+//   desktop → parameter lama: melebar (inset -size*0.55) + tail redup (…22).
+//   HP      → lebih RAPAT (sedikit lebih besar dari bola, inset -size*0.34)
+//             + lebih TERANG, karena di HP latar terang & vignette tidak
+//             dirender → aura lama nyaris tak terlihat di bola 44px.
+// `size` = diameter bola (px); `mobile` = layout HP (gojoBallLayout.mobile).
+export const gojoBallAura = (technique, size, mobile = false) => {
+  const label = gojoBallLabel(technique);
+  if (!label) return null;
+  const color = label.color;
+  if (!mobile) {
+    return {
+      inset: -size * 0.55,
+      background: `radial-gradient(circle, ${color}99 0 16%, ${color}55 32%, ${color}22 52%, transparent 72%)`,
+    };
+  }
+  return {
+    inset: -size * 0.34,
+    background: `radial-gradient(circle, ${color}e6 0 26%, ${color}b3 40%, ${color}80 52%, ${color}40 62%, transparent 72%)`,
+  };
+};
+
 // 集中線 ketegangan: garis pendek memancar dari titik fokus (sisi bola), tetap
 // di sisinya (ao x>=50, aka x<=50) → TIDAK menyilang tengah (jaga konsep persist).
 // focus opsional { x, y } (ruang 0..100) untuk HP (bola di sudut atas).
