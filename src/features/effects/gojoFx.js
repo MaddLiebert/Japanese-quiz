@@ -81,23 +81,43 @@ export const gojoDomainStartDelayMs = () => {
   return Math.round((t.settleStart + t.settleDur) * 1000);
 };
 
+// ── Sinkronisasi teks ↔ suara cast (ryoiki tenkai.mp3) ─────────────────────
+// Envelope suara terukur (Web Audio, RMS 20–50ms):
+//   frasa 1 "領域展開"  ≈ 0.22–1.38s
+//   jeda dramatis       ≈ 1.38–3.00s   (suara hening ±1.6 dtk)
+//   frasa 2 "無量空処"  ≈ 3.00–4.20s
+//   total klip           4.68s
+// Timeline teks DIKUNCI ke frasa ini — keluhan user: "kata2 ryoiki nya gak
+// sesuai sama sound nya, kecepetan teks nya" (dulu 無量空処 muncul di 1.5s,
+// tengah jeda, ±1.5 dtk sebelum suaranya).
+export const GOJO_CAST_VOICE = {
+  seg1Start: 0.22, seg1End: 1.38,   // "領域展開"
+  seg2Start: 3.0, seg2End: 4.2,     // "無量空処"
+  dur: 4.68,
+};
+
 // ── Timeline cinematic 領域展開 (semua waktu di SATU tempat) ────────────────
 // Fase: gelap → teks 領域展開 per-karakter → teks 無量空処 per-karakter (mata
 // membuka bersamaan) → bigbang → settle (teks mengecil ke atas) → persist.
-export const gojoDomainTimeline = () => ({
-  darkDur: 0.5,        // fade-in gelap (spotlight)
-  text1Start: 0.35,    // 領域展開 mulai
-  text1Char: 0.28,     // jeda per karakter
-  text2Start: 1.5,     // 無量空処 mulai (setelah teks 1 selesai)
-  text2Char: 0.32,
-  eyesStart: 0.9,      // Six Eyes muncul (barengan teks 1)
-  eyesOpenDur: 1.2,    // nutup → kebuka
-  bangStart: 2.9,      // bigbang di tengah (setelah "ngomong" selesai)
-  bangDur: 0.7,
-  nebulaStart: 3.0,    // bercak ruang angkasa pinggir mulai
-  settleStart: 3.7,    // blok mata+teks naik & mengecil
-  settleDur: 0.7,
-});
+export const gojoDomainTimeline = () => {
+  const v = GOJO_CAST_VOICE;
+  // Semua waktu teks DIHITUNG dari frasa suara — bukan angka manual — supaya
+  // tidak pernah melenceng lagi kalau klip suara diganti/diukur ulang.
+  return {
+    darkDur: 0.5,                 // fade-in gelap (spotlight)
+    text1Start: v.seg1Start,      // 領域展開 = frasa 1 suara (0.22)
+    text1Char: (v.seg1End - v.seg1Start) / 4,   // 4 kanji habis = frasa 1 habis
+    text2Start: v.seg2Start,      // 無量空処 = frasa 2 suara (3.00), bukan 1.5
+    text2Char: (v.seg2End - v.seg2Start) / 4,
+    eyesStart: 0.9,               // Six Eyes muncul (selama frasa 1)
+    eyesOpenDur: 1.2,             // nutup → kebuka
+    bangStart: v.seg2End + 0.1,   // 4.3 — bigbang setelah "ngomong" selesai
+    bangDur: 0.7,
+    nebulaStart: v.seg2End + 0.2, // 4.4 — bercak ruang angkasa pinggir mulai
+    settleStart: v.seg2End + 0.8, // 5.0 — blok mata+teks naik & mengecil
+    settleDur: 0.7,
+  };
+};
 
 // Pecah teks jadi karakter dengan delay bertambah (ms) → dipakai komponen untuk
 // memunculkan teks satu-per-satu. Murni & deterministik.
