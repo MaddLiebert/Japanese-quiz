@@ -251,6 +251,7 @@ export function QuizHeader({
   streak = 0,
   xp = 0,
 }) {
+  const { language } = useLanguage();
   return (
     <header className="w-full mb-6">
       {/* Top Global Bar */}
@@ -261,7 +262,7 @@ export function QuizHeader({
             <span className="text-shu">🔥</span>
             <div className="text-left leading-none">
               <span className="block text-[8px] uppercase tracking-wider text-sumi/60">STREAK</span>
-              <span className="text-xs font-bold">{streak} DAYS</span>
+              <span className="text-xs font-bold">{streak} {language === 'id' ? 'HARI' : 'DAYS'}</span>
             </div>
           </div>
 

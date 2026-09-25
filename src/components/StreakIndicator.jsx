@@ -1,17 +1,23 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { useLanguage } from '../context/LanguageContext';
+import { streakUnit } from '../features/progress/streak';
 
 export const StreakIndicator = ({ count = 0, isActive = false }) => {
+  const { language } = useLanguage();
   return (
-    <div className="flex items-center gap-2">
-      <motion.span 
+    <div className="flex items-end gap-2">
+      <motion.span
         className="font-serif font-black text-3xl sm:text-4xl text-sumi leading-none"
         animate={isActive ? { scale: [1, 1.05, 1] } : {}}
         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
       >
         {count}
       </motion.span>
-      
+      <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-sumi/60 pb-1">
+        {streakUnit(count, language)}
+      </span>
+
       <div className="relative flex items-center justify-center">
         {isActive ? (
           // Active Fire Flame - Neo-brutalist Flame SVG with pulse animation
