@@ -17,6 +17,7 @@ export function KanaQuiz({
   onOptionClick,
   onBack,
   isGrammarMode = false,
+  frozen = false,
 }) {
   const { language } = useLanguage();
 
@@ -36,8 +37,8 @@ export function KanaQuiz({
         </div>
         <div className="flex items-center gap-4">
           {difficulty === 'Hard' && timeLeft !== null && (
-            <span className="text-xs font-bold tracking-widest uppercase text-shu">
-              {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+            <span className={`text-xs font-bold tracking-widest uppercase ${frozen ? 'text-ai' : 'text-shu'}`}>
+              {frozen ? '❄ ' : ''}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
             </span>
           )}
           <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">

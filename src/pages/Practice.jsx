@@ -115,7 +115,7 @@ export function Practice() {
   }, []);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn } = useEffectLayer();
 
   const getTranslatedRow = (row) => {
     return (language === 'id' && categoryTranslations[row]) ? categoryTranslations[row] : row;
@@ -153,7 +153,7 @@ export function Practice() {
     wrongAnswers,
     currentIndex,
     timeLeft
-  } = useQuizSession();
+  } = useQuizSession({ frozen: domainOn });   // domain Gojo → waktu kuis BEKU
 
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option) => {
@@ -311,8 +311,8 @@ export function Practice() {
               </div>
               <div className="flex items-center gap-4">
                 {difficulty === 'Hard' && timeLeft !== null && (
-                  <span className="text-xs font-bold tracking-widest uppercase text-shu">
-                    {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+                  <span className={`text-xs font-bold tracking-widest uppercase ${domainOn ? 'text-ai' : 'text-shu'}`}>
+                    {domainOn ? '❄ ' : ''}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
                   </span>
                 )}
                 <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
@@ -492,8 +492,8 @@ export function Practice() {
               </div>
               <div className="flex items-center gap-4">
                 {difficulty === 'Hard' && timeLeft !== null && (
-                  <span className="text-xs font-bold tracking-widest uppercase text-shu">
-                    {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+                  <span className={`text-xs font-bold tracking-widest uppercase ${domainOn ? 'text-ai' : 'text-shu'}`}>
+                    {domainOn ? '❄ ' : ''}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
                   </span>
                 )}
                 <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
@@ -649,6 +649,7 @@ export function Practice() {
           onOptionClick={handleKanaOptionClick}
           onBack={() => { endQuizSession(); setQuizStarted(false); }}
           isGrammarMode={isGrammarMode}
+          frozen={domainOn}
         />
       );
     }

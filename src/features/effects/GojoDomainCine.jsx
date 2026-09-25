@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
 import {
   GOJO_STYLE, GOJO_INK, GOJO_BALL_BREAKPOINT, GOJO_ULT_THRESHOLD,
+  GOJO_DOMAIN_DURATION_S,
   gojoDomainTimeline, gojoSequentialChars, gojoNebulaSpots, gojoStars,
 } from './gojoFx';
 import { playDomainBoom } from '../../utils/sfx';
@@ -17,7 +18,8 @@ import { playDomainBoom } from '../../utils/sfx';
 //   4. SIX EYES  → mata di ATAS teks, nutup → kebuka
 //   5. BIGBANG   → di tengah (flash + ring mengembang)
 //   6. SETTLE    → blok mata+teks naik, mengecil, lalu memudar → kuis kebaca
-//   7. PERSIST   → ruang tetap hidup sampai jawaban SALAH (dikontrol EffectProvider)
+//   7. PERSIST   → ruang hidup sampai jawaban SALAH atau DURASI habis (30 dtk);
+//                  selama hidup, bar 呪力 jadi timer hitung mundur + waktu kuis BEKU
 // Semua overlay pointer-events-none → quiz tetap bisa dijawab (bar-nya sendiri yang klikable).
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -33,10 +35,16 @@ const isMobile = () =>
 // Visual: jalur gelap + isi ungu dengan glow; tiap +1 benar memicu "letupan aura"
 // (satu kilau yang naik di garis isi, remount via key=charge); saat penuh → label
 // 領域展開 + denyut; tap bar = cast.
-export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
+export function GojoCurseBar({ charge = 0, ready = false, onCast, domainOn = false, domainLeft = 0 }) {
   const [reduced] = useState(prefersReduced);
-  const pct = Math.max(0, Math.min(100, (charge / GOJO_ULT_THRESHOLD) * 100));
+  // Saat domain hidup bar berubah fungsi: bukan isi charge, tapi DRAIN durasi
+  // (30 dtk → 0). Habis = domain padam sendiri (dikontrol EffectProvider).
+  const pct = domainOn
+    ? Math.max(0, Math.min(100, (domainLeft / GOJO_DOMAIN_DURATION_S) * 100))
+    : Math.max(0, Math.min(100, (charge / GOJO_ULT_THRESHOLD) * 100));
+  const urgent = domainOn && domainLeft <= 5;   // sisa <=5 dtk → merah & denyut
   const purple = GOJO_STYLE.domain.color;
+  const fillColor = urgent ? '#ef4444' : purple;
 
   return (
     <div
@@ -48,6 +56,18 @@ export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
       <div className="flex h-14 items-center justify-center">
         {/* Tanpa AnimatePresence: label harus hilang SEKETIKA saat bar tidak penuh
             lagi (exit-animation + repeat: Infinity pernah bikin elemen nyangkut). */}
+        {domainOn && (
+          <motion.span
+            key="domain-label"
+            className="font-serif font-black tracking-[0.3em] text-[10px]"
+            style={{ color: '#e8e0ff', writingMode: 'vertical-rl', textShadow: `0 0 12px ${purple}` }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: reduced ? 1 : [0.55, 1, 0.55], y: 0 }}
+            transition={reduced ? { duration: 0 } : { repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
+          >
+            無量空処
+          </motion.span>
+        )}
         {ready && (
           <motion.span
             key="ready-label"
@@ -72,25 +92,25 @@ export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
           ready ? 'pointer-events-auto cursor-pointer' : 'pointer-events-none'
         }`}
         style={{
-          borderColor: ready ? purple : 'rgba(124,77,255,0.45)',
+          borderColor: ready || domainOn ? (urgent ? '#ef4444' : purple) : 'rgba(124,77,255,0.45)',
           background: 'rgba(10,4,20,0.55)',
-          boxShadow: ready
-            ? `0 0 18px 3px ${purple}cc, inset 0 0 10px ${purple}55`
+          boxShadow: ready || domainOn
+            ? `0 0 18px 3px ${fillColor}cc, inset 0 0 10px ${fillColor}55`
             : `0 0 8px 1px ${purple}33`,
         }}
         animate={ready && !reduced ? { scaleX: [1, 1.25, 1] } : { scaleX: 1 }}
         transition={ready && !reduced ? { repeat: Infinity, duration: 1.4, ease: 'easeInOut' } : { duration: 0.2 }}
       >
-        {/* Isi: naik dari bawah ke atas */}
+        {/* Isi: charge naik dari bawah ke atas / durasi domain menDRAIN ke bawah */}
         <motion.div
           className="absolute left-0 right-0 bottom-0"
           style={{
-            background: `linear-gradient(to top, ${purple}, #c4b5fd)`,
-            boxShadow: `0 0 12px 2px ${purple}aa`,
+            background: `linear-gradient(to top, ${fillColor}, ${urgent ? '#fca5a5' : '#c4b5fd'})`,
+            boxShadow: `0 0 12px 2px ${fillColor}aa`,
           }}
           initial={false}
           animate={{ height: `${pct}%` }}
-          transition={{ type: 'spring', stiffness: 120, damping: 18 }}
+          transition={domainOn ? { duration: 0.3, ease: 'linear' } : { type: 'spring', stiffness: 120, damping: 18 }}
         />
         {/* Letupan aura tiap +1 benar (remount tiap charge berubah) */}
         {charge > 0 && (
@@ -105,12 +125,12 @@ export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
         )}
       </motion.button>
 
-      {/* Angka charge */}
+      {/* Angka charge / sisa durasi domain */}
       <span
-        className="font-mono font-black text-[10px] tracking-widest"
-        style={{ color: ready ? '#e8e0ff' : 'rgba(232,224,255,0.6)' }}
+        className={`font-mono font-black text-[10px] tracking-widest ${urgent && !reduced ? 'animate-pulse' : ''}`}
+        style={{ color: domainOn ? (urgent ? '#fca5a5' : '#e8e0ff') : ready ? '#e8e0ff' : 'rgba(232,224,255,0.6)' }}
       >
-        {charge}/{GOJO_ULT_THRESHOLD}
+        {domainOn ? `${domainLeft}s` : `${charge}/${GOJO_ULT_THRESHOLD}`}
       </span>
     </div>
   );
