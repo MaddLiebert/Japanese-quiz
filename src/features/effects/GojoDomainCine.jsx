@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   GOJO_STYLE, GOJO_INK, GOJO_BALL_BREAKPOINT, GOJO_ULT_THRESHOLD,
@@ -139,6 +139,51 @@ function SequentialChars({ text, start, perChar, reduced, className, style }) {
   );
 }
 
+// Six Eyes 六眼 — sepasang mata di ATAS teks. Animasi "membuka" = scaleY dari
+// garis tipis (0.05) ke penuh; iris biru langit → ungu dengan glow.
+function SixEyes({ reduced, start, openDur }) {
+  const gid = 'gojoIris' + useId().replace(/[^a-zA-Z0-9]/g, '');
+  const open = {
+    delay: reduced ? 0 : start,
+    duration: reduced ? 0 : openDur,
+    ease: [0.22, 1, 0.36, 1],
+  };
+  return (
+    <motion.div
+      data-gojo-eyes
+      className="flex items-center gap-[7vw]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: reduced ? 0 : start, duration: reduced ? 0 : 0.25 }}
+    >
+      {[0, 1].map((i) => (
+        <motion.div
+          key={i}
+          className="relative"
+          style={{ width: 96, height: 52, transformOrigin: '50% 50%', filter: 'drop-shadow(0 0 18px #38bdf8aa)' }}
+          initial={{ scaleY: reduced ? 1 : 0.05 }}
+          animate={{ scaleY: 1 }}
+          transition={open}
+        >
+          <svg viewBox="0 0 100 56" className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
+            <defs>
+              <radialGradient id={`${gid}-${i}`} cx="50%" cy="45%" r="62%">
+                <stop offset="0%" stopColor="#e0f7ff" />
+                <stop offset="55%" stopColor="#38bdf8" />
+                <stop offset="100%" stopColor="#7c4dff" />
+              </radialGradient>
+            </defs>
+            <path d="M2,28 Q50,-4 98,28 Q50,60 2,28 Z" fill="#07030d" stroke="#e8e0ff" strokeWidth="2.5" />
+            <circle cx="50" cy="28" r="14" fill={`url(#${gid}-${i})`} />
+            <circle cx="50" cy="28" r="6" fill="#07030d" />
+            <circle cx="45" cy="22" r="2.6" fill="#ffffff" opacity="0.85" />
+          </svg>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+}
+
 export function GojoDomainCine({ seed = 1 }) {
   void seed;   // dipakai fase bintang/nebula (Task 8)
   const [reduced] = useState(prefersReduced);
@@ -195,6 +240,7 @@ export function GojoDomainCine({ seed = 1 }) {
         animate={reduced ? {} : { y: '-31vh', scale: 0.34, opacity: 0.75 }}
         transition={{ delay: reduced ? 0 : t.settleStart, duration: reduced ? 0 : t.settleDur, ease: [0.22, 1, 0.36, 1] }}
       >
+        <SixEyes reduced={reduced} start={t.eyesStart} openDur={t.eyesOpenDur} />
         <SequentialChars
           text="領域展開"
           start={t.text1Start}
