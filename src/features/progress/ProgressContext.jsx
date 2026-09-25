@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { getPack, rollPackId, isPackReady } from '../packs/packs';
 import { getItem, addItem, removeItem } from '../items/items';
+import { applyStreakBonus } from './streak';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -8,6 +9,17 @@ const getLocalDateString = (date = new Date()) => {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+};
+
+// Baca JSON dari localStorage tanpa bikin app crash kalau datanya korup.
+const safeParse = (raw, fallback) => {
+  if (!raw) return fallback;
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed ?? fallback;
+  } catch {
+    return fallback;
+  }
 };
 
 // --- USER STATS CONTEXT ---
@@ -93,11 +105,11 @@ export const ACHIEVEMENT_META = {
   sonic_wave: { label: '波', title: 'Sonic Wave', desc: '20 Mondai chapters' },
   inner_ear: { label: '心', title: 'Inner Ear', desc: 'Complete all Mondai' },
   // Warrior's Spirit (6)
-  undefeated: { label: '不', title: 'Undefeated', desc: '15x Correct Streak' },
-  godlike: { label: '神', title: 'Godlike', desc: '50x Correct Streak' },
-  persistent: { label: '極', title: 'Persistent', desc: '7-day study streak' },
-  eternal_soul: { label: '魂', title: 'Eternal Soul', desc: '30-day study streak' },
-  consistent: { label: '恒', title: 'Consistent', desc: '100-day study streak' },
+  undefeated: { label: '不', title: 'Undefeated', desc: 'Streak belajar 15 hari' },
+  godlike: { label: '神', title: 'Godlike', desc: 'Streak belajar 50 hari' },
+  persistent: { label: '極', title: 'Persistent', desc: 'Streak belajar 7 hari' },
+  eternal_soul: { label: '魂', title: 'Eternal Soul', desc: 'Streak belajar 30 hari' },
+  consistent: { label: '恒', title: 'Consistent', desc: 'Streak belajar 100 hari' },
   void: { label: '無', title: 'Void', desc: '100 Correct in one sitting' },
   // Combat Prowess (4)
   lightning_bolt: { label: '雷', title: 'Lightning Bolt', desc: 'Sub-2s per question' },
@@ -158,19 +170,23 @@ export const ProgressProvider = ({ children }) => {
 
   // 2. Item Progress State
   const [itemProgress, setItemProgress] = useState(() => {
-    const saved = localStorage.getItem('item_progress_v2');
-    return saved ? JSON.parse(saved) : DEFAULT_ITEM_PROGRESS;
+    const parsed = safeParse(localStorage.getItem('item_progress_v2'), DEFAULT_ITEM_PROGRESS);
+    return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : DEFAULT_ITEM_PROGRESS;
   });
 
   // 3. Achievements State
   const [achievements, setAchievements] = useState(() => {
-    const saved = localStorage.getItem('achievements_unlocked_v2');
-    return saved ? JSON.parse(saved) : DEFAULT_ACHIEVEMENTS;
+    const parsed = safeParse(localStorage.getItem('achievements_unlocked_v2'), DEFAULT_ACHIEVEMENTS);
+    const arr = Array.isArray(parsed) ? parsed : DEFAULT_ACHIEVEMENTS;
+    // Buang ID hantu legacy tanpa meta (mis. '100_xp', 'clean_up', 'speed_demon')
+    // supaya hitungan cap di Home & Profil selalu akurat.
+    return arr.filter((id) => ACHIEVEMENT_META[id]);
   });
 
   const [selectedBadges, setSelectedBadges] = useState(() => {
-    const saved = localStorage.getItem('selected_badges');
-    return saved ? JSON.parse(saved) : [];
+    const parsed = safeParse(localStorage.getItem('selected_badges'), []);
+    const arr = Array.isArray(parsed) ? parsed : [];
+    return arr.filter((id) => ACHIEVEMENT_META[id]);
   });
 
   // Effect to save User Stats
@@ -214,7 +230,7 @@ export const ProgressProvider = ({ children }) => {
       const add = (id) => { if (!next.includes(id)) next.push(id); };
 
       if (progress.totalAnswered > 0) add('hiragana_origin');
-      if (progress.xp >= 100) { add('novice'); add('100_xp'); }
+      if (progress.xp >= 100) add('novice');
       if (progress.xp >= 1000) add('warrior');
       if (progress.xp >= 5000) add('venerable');
       if (progress.xp >= 10000) add('grand_shogun');
@@ -222,13 +238,12 @@ export const ProgressProvider = ({ children }) => {
 
       if (weakItems.length === 0 && progress.totalAnswered > 10) {
         add('purifier');
-        add('clean_up');
       }
       if (progress.totalAnswered >= 50) { add('kanji_slayer'); add('kanji_hell'); }
       if (progress.totalAnswered >= 500) add('eagle_eye');
       if (progress.totalAnswered >= 1000) add('master_calligrapher');
 
-      if (progress.maxStreak >= 15) { add('undefeated'); add('speed_demon'); }
+      if (progress.maxStreak >= 15) add('undefeated');
       if (progress.maxStreak >= 50) add('godlike');
       if (progress.streak >= 7) add('persistent');
       if (progress.streak >= 30) add('eternal_soul');
@@ -248,8 +263,6 @@ export const ProgressProvider = ({ children }) => {
 
   const addXp = useCallback((amount) => {
     setProgress(prev => {
-      const newXp = prev.xp + amount;
-      const newLevel = Math.min(Math.floor(newXp / 100) + 1, 1000);
       const today = getLocalDateString();
       let newStreak = prev.streak || 0;
       let newMaxStreak = prev.maxStreak || 0;
@@ -276,6 +289,13 @@ export const ProgressProvider = ({ children }) => {
         newStreak = 1;
         newMaxStreak = Math.max(1, newMaxStreak);
       }
+
+      // Bonus streak: +5% XP saat streak aktif (lihat streak.js).
+      // Dihitung dari streak HASIL update hari ini → jawaban pertama yang
+      // menyalakan streak pun langsung dapat bonus; streak 0 → apa adanya.
+      const gained = applyStreakBonus(amount, { streak: newStreak });
+      const newXp = (prev.xp || 0) + gained;
+      const newLevel = Math.min(Math.floor(newXp / 100) + 1, 1000);
 
       return {
         ...prev,

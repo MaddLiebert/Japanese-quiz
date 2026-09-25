@@ -380,7 +380,7 @@ export function Profile() {
                 </div>
                 <div className="border-[4px] border-sumi bg-kinari p-6 shadow-[6px_6px_0_0_#1a1a1a] text-center">
                   <div className="text-xs font-black uppercase text-sumi/60 mb-1">Max Streak</div>
-                  <div className="text-4xl font-serif font-black text-ai">{realProfileData.stats.maxStreak}🔥</div>
+                  <div className="text-4xl font-serif font-black text-ai">{realProfileData.stats.maxStreak} hari 🔥</div>
                 </div>
               </div>
 
