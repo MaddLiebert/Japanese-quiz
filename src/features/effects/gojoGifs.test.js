@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {
   GOJO_GIFS, pickGojoGif, gojoGifForAnswer,
   gojoGifPaths, preloadGojoGifs, gojoCastGif,
-  GOJO_GIF_MS, gojoGifHoldMs,
+  GOJO_GIF_MS, gojoGifHoldMs, gojoMurasakiFxMs, GOJO_MURASAKI_CLIP_MS,
+  gojoAnswerHoldMs,
 } from './gojoGifs.js';
 
 test('GOJO_GIFS: murasaki 1, ryoiki 1, wrong 2 (aset user di public/effects)', () => {
@@ -63,6 +64,30 @@ test('gojoGifHoldMs: hold minimal 1 putaran GIF (tak kepotong di tengah)', () =>
   // clamp: tidak pernah > 8s (GIF panjang maupun hold dasar besar)
   assert.equal(gojoGifHoldMs('/effects/ryoiki tenkai.gif', 100), 6800);
   assert.equal(gojoGifHoldMs('/effects/ryoiki tenkai.gif', 9000), 8000, 'hold dasar besar di-clamp 8s');
+});
+
+test('gojoMurasakiFxMs: efek 茈 sinkron klip suara Murasaki.mp3 (3.24s)', () => {
+  // Klip terukur 3239ms; efek visual + hold harus >= durasi klip supaya
+  // tidak "selesai duluan" (keluhan user: efek kecepetan).
+  assert.ok(gojoMurasakiFxMs() >= 3239, `harus >= 3239ms, dapat ${gojoMurasakiFxMs()}`);
+  // Jangan berlebihan — clamp supaya tidak nyangkut lama.
+  assert.ok(gojoMurasakiFxMs() <= 5000);
+});
+
+test('gojoGifHoldMs: GIF murasaki + hold murasaki → pakai durasi klip', () => {
+  assert.equal(gojoGifHoldMs('/effects/murasaki.gif', gojoMurasakiFxMs()), gojoMurasakiFxMs());
+});
+
+test('gojoAnswerHoldMs: 茈 ikut klip suara, GIF lain ikut 1 putaran GIF', () => {
+  // 茈: efek hidup selama klip Murasaki.mp3 (3.24s) — bukan 2.2s.
+  assert.equal(gojoAnswerHoldMs('murasaki', '/effects/murasaki.gif', 2200), gojoMurasakiFxMs());
+  assert.ok(gojoAnswerHoldMs('murasaki', '/effects/murasaki.gif', 2200) >= GOJO_MURASAKI_CLIP_MS);
+  // kalah 2: GIF 3.5s → hold 3.5s (1 putaran penuh).
+  assert.equal(gojoAnswerHoldMs('wrong', '/effects/gojo kalah gif 2.gif', 2200), 3500);
+  // ao (tanpa GIF): hold dasar apa adanya.
+  assert.equal(gojoAnswerHoldMs('ao', null, 2200), 2200);
+  // salah tanpa GIF tak dikenal: hold dasar.
+  assert.equal(gojoAnswerHoldMs('wrong', '/effects/zzz.gif', 1800), 1800);
 });
 
 test('preloadGojoGifs: menyentuh semua path lewat loader (injectable)', () => {

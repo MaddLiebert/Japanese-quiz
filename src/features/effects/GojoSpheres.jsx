@@ -46,6 +46,7 @@ function GojoBall({ tech, seed, reduced, explode, layout }) {
 
   return (
     <motion.div
+      data-gojo-ball={tech}
       className="absolute left-1/2 top-1/2"
       style={{
         width: size, height: size,

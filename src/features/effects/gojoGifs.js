@@ -42,6 +42,26 @@ export const GOJO_GIF_MS = {
   '/effects/gojo kalah gif 2.gif': 3500,
 };
 
+// Durasi klip suara Murasaki.mp3 (terukur mutagen: 3239ms). Efek visual 茈
+// HARUS hidup >= durasi ini — keluhan user: "efek murasaki kecepetan" (efek
+// selesai sebelum suara habis). Nilai di-clamp agar tidak berlebihan.
+export const GOJO_MURASAKI_CLIP_MS = 3239;
+const GOJO_MURASAKI_FX_MAX = 5000;
+
+// Lama efek 茈 tampil: minimal selama klip suara (tabrakan 0.42s + ledakan
+// ~1.5s + ekor), sinkron dengan Murasaki.mp3.
+export const gojoMurasakiFxMs = () =>
+  Math.min(GOJO_MURASAKI_FX_MAX, GOJO_MURASAKI_CLIP_MS + 400);
+
+// Hold efek per jawaban Gojo (dipakai EffectContext):
+//   - teknik 茈 (murasaki) → SELALU pakai gojoMurasakiFxMs (sinkron klip suara,
+//     bukan GIF-nya — GIF 茈 hanya 1s, suaranya 3.24s; efek harus hidup selama suara)
+//   - selain itu → max(hold dasar, 1 putaran GIF) via gojoGifHoldMs
+export const gojoAnswerHoldMs = (technique, gifSrc, baseHoldMs = 0) =>
+  (technique === 'murasaki')
+    ? gojoMurasakiFxMs()
+    : gojoGifHoldMs(gifSrc, baseHoldMs);
+
 const GOJO_GIF_HOLD_MAX = 8000;
 
 // Lama tampil efek Gojo: max(hold dasar, 1 putaran GIF), di-clamp ≤8s.

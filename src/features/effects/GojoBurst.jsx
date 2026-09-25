@@ -373,7 +373,7 @@ export function GojoBurst({ fx, kind }) {
               }}
               initial={{ scale: 0, opacity: 0 }}
               animate={reduced ? { scale: 1, opacity: 1 } : { scale: [0, 0, 1.5, 2.1], opacity: [0, 0, 1, 0] }}
-              transition={{ duration: reduced ? 0 : 1.0, delay: reduced ? 0 : d0, times: [0, 0.5, 0.66, 1], ease: 'easeOut' }}
+              transition={{ duration: reduced ? 0 : mura.coreDur, delay: reduced ? 0 : d0, times: [0, 0.5, 0.66, 1], ease: 'easeOut' }}
             />
             <motion.div
               key={`mura-ring-${fx.id}`}
@@ -389,7 +389,7 @@ export function GojoBurst({ fx, kind }) {
               }}
               initial={{ scale: 0.4, opacity: 0 }}
               animate={reduced ? { scale: 0.4, opacity: 0 } : { scale: [0.4, 0.4, 4], opacity: [0, 0, 0.9, 0] }}
-              transition={{ duration: reduced ? 0 : 1.15, delay: reduced ? 0 : d0, times: [0, 0.5, 0.62, 1], ease: 'easeOut' }}
+              transition={{ duration: reduced ? 0 : mura.ringDur, delay: reduced ? 0 : d0, times: [0, 0.5, 0.62, 1], ease: 'easeOut' }}
             />
           </>
         )}

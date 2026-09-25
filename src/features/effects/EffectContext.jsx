@@ -5,7 +5,8 @@ import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, 
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
-import { gojoGifForAnswer, gojoGifHoldMs } from './gojoGifs';
+import { gojoGifForAnswer, gojoGifHoldMs, gojoAnswerHoldMs } from './gojoGifs';
+import { clearFxIfCurrent, isCurrentToken, nextBallToken, currentBallToken } from './fxLifecycle';
 import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 import { GojoBurst } from './GojoBurst';
 import { GojoSpheres } from './GojoSpheres';
@@ -214,15 +215,22 @@ export function EffectProvider({ children }) {
       : activeVisual === 'gojo'
         // Bola plasma butuh waktu muncul (min 2.2s) + GIF tidak boleh kepotong
         // di tengah putaran (mis. "kalah 2" = 3.5s) → pakai durasi GIF terukur.
-        ? gojoGifHoldMs(gifSrc, Math.max(cfg.hold, 2200))
+        // 茈: efek hidup selama KLIP SUARA Murasaki.mp3 (3.24s), bukan 2.2s —
+        // keluhan user "efek murasaki kecepetan".
+        ? gojoAnswerHoldMs(
+          gojoTechniqueFor(kind, type === 'correct' ? streakRef.current : 0),
+          gifSrc,
+          Math.max(cfg.hold, 2200),
+        )
         : cfg.hold;
     const gifHoldMs = holdMs;   // dipakai komponen GIF sebagai referensi (informatif)
 
+    const fxId = ++seq;   // id efek ini — timer hold hanya boleh membersihkan MILIKNYA
     setFx({
       kind,
       gifSrc,                                    // null = tanpa GIF (Hina diam)
       gifHoldMs,
-      id: ++seq,
+      id: fxId,
       seed: Math.floor(Math.random() * 900) + 1,
       angle: -14 - Math.random() * 12,          // sapuan tidak pernah sama
       y: 50 + (Math.random() * 16 - 8),          // posisi vertikal (persen)
@@ -239,13 +247,17 @@ export function EffectProvider({ children }) {
     // murasaki (bener #3 & milestone) → dua bola ke tengah lalu MELEDAK → reset
     if (activeVisual === 'gojo') {
       const tech = gojoTechniqueFor(kind, type === 'correct' ? streakRef.current : 0);
+      // Generasi bola baru: reset milik generasi lama (mis. timer 茈 3.2s) TIDAK
+      // boleh menghapus bola generasi baru yang sudah tampil (stale timer).
+      const ballGen = nextBallToken();
       if (tech === 'murasaki') {
         setGojoBalls({ ao: true, aka: true });
         setGojoExplode(true);
         const tr = setTimeout(() => {
+          if (!isCurrentToken(currentBallToken(), ballGen)) return;   // generasi usang → jangan sentuh
           setGojoBalls(GOJO_BALLS_EMPTY);
           setGojoExplode(false);
-        }, 1300);   // bola meluncur (0.42s) + ledakan selesai → reset
+        }, 3200);   // tabrakan (0.42s) + ledakan penuh (2.6s) → reset setelah suara 茈 selesai
         timersRef.current.push(tr);
       } else if (tech === 'ao' || tech === 'aka') {
         setGojoExplode(false);
@@ -259,7 +271,10 @@ export function EffectProvider({ children }) {
       if (type === 'wrong') setGojoDomain(false);
     }
 
-    const t = setTimeout(() => setFx(null), holdMs);
+    // Timer hold hanya boleh membersihkan fx MILIKNYA (fxId). Kalau sudah ada
+    // efek baru (id berbeda), jangan sentuh — kalau tidak, efek 茈 baru mati
+    // prematur oleh timer 蒼 lama (keluhan user: "efek murasaki kecepetan").
+    const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
     timersRef.current.push(t);
   }, [active, spawnInk, activeVisual]);
 
@@ -272,12 +287,20 @@ export function EffectProvider({ children }) {
     setQuizActive(true);     // bar energi kutukan tampil selama sesi kuis
   }, []);
 
-  // Sesi kuis selesai / keluar → bar hilang (dipanggil dari onBack/onPlayAgain/
-  // onGoHome Practice + unmount Quiz/Review).
+  // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
+  // yang sedang berjalan. Tanpa ini, keluar paksa saat efek murasaki/domain
+  // tampil meninggalkan elemen nyangkut (bola, GIF, garis) di halaman berikutnya.
   const endQuizSession = useCallback(() => {
+    timersRef.current.forEach(clearTimeout);   // batalkan timer fx & reset bola
+    timersRef.current = [];
+    setFx(null);
+    setDrops([]);
+    setGojoBalls(GOJO_BALLS_EMPTY);
+    setGojoExplode(false);
     setQuizActive(false);
     setGojoDomain(false);
     setUltCharge(0);
+    domainEndsAtRef.current = null;
   }, []);
 
   // Cast 領域展開 dengan tap bar. Menghabiskan charge: streak & bar di-reset,
