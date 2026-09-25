@@ -9,7 +9,7 @@ import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow
 import { GojoBurst } from './GojoBurst';
 import { GojoSpheres } from './GojoSpheres';
 import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor, gojoPreviewStreak, gojoCurseCharge, GOJO_ULT_THRESHOLD } from './gojoFx';
-import { GojoDomainCine, GojoCurseBar } from './GojoDomainCine';
+import { GojoDomainCine, GojoCurseBar, GojoSpacePortal } from './GojoDomainCine';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Efek tinta washi (visual 'ink') — dipakai pack Sumi Taiko.
@@ -452,10 +452,13 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
           (hanya murasaki/domain; ao/aka mengembalikan null). */}
       {visual === 'gojo' && (
         <>
-          {/* Domain cinematic di BELAKANG bola/burst → bola & ledakan tetap terlihat */}
-          <AnimatePresence>
-            {domainOn && <GojoDomainCine key={`dom-${domainSeed}`} seed={domainSeed} />}
-          </AnimatePresence>
+          {/* Domain: ruang angkasa (portal, z-5 di belakang kuis) + cinematic
+              (veil + teks + bigbang). SENGAJA conditional render TANPA AnimatePresence:
+              exit-animation pernah nyangkut (elemen tertinggal di DOM saat domain
+              padam) → padamnya harus instan & pasti. Setelah settle semua elemen
+              cinematic sudah transparan, jadi unmount instan tak terlihat. */}
+          {domainOn && <GojoSpacePortal key={`space-${domainSeed}`} seed={domainSeed} />}
+          {domainOn && <GojoDomainCine key={`dom-${domainSeed}`} />}
           <GojoSpheres balls={gojoBalls} explode={gojoExplode} seed={fx?.id || 1} />
           <AnimatePresence>
             {fx && <GojoBurst key={`gojo-${fx.id}`} fx={fx} kind={kind} />}

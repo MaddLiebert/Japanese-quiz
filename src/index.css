@@ -103,6 +103,38 @@ html, body, div, header, main, section, footer, article, nav, aside, button, inp
   scrollbar-width: none;
 }
 
+/* ── Kartu kuis saat domain 領域展開 hidup ─────────────────────────────────── */
+/* Shell kuis (root tiap layar kuis) jadi KARTU yang mengambang di ruang angkasa:
+   latar disamakan dengan backdrop halaman (biar isi kuis tetap kontras), ring
+   halus + bayangan dalam, dan mengecil supaya ruang di belakangnya kelihatan
+   "mengurung" kuis. Transisi di base → saat domain padam kartunya balik mulus. */
+[data-quiz-shell] {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+  transition: width 0.5s ease, margin 0.5s ease, background-color 0.5s ease, box-shadow 0.5s ease;
+}
+/* Saat domain hidup, kuis jadi "kaca" yang mengambang di dalam ruang angkasa:
+   tembus pandang (nebula & bintang tetap terlihat menembus) + blur halus supaya
+   teks tetap terbaca, plus ring glow ungu = batas domain. */
+html[data-gojo-domain='on'] [data-quiz-shell] {
+  min-height: 0;
+  width: calc(100% - 2rem);
+  margin-top: 4vh;
+  margin-bottom: 4vh;
+  background: rgba(232, 228, 217, 0.88);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  box-shadow:
+    0 0 0 2px rgba(124, 77, 255, 0.5),
+    0 0 90px -6px rgba(124, 77, 255, 0.45),
+    0 40px 100px -30px rgba(0, 0, 0, 0.9);
+}
+html.dark[data-gojo-domain='on'] [data-quiz-shell],
+html[data-theme='dark'][data-gojo-domain='on'] [data-quiz-shell] {
+  background: rgba(12, 13, 15, 0.88);
+}
+
 /* ── Hint Six Eyes 六眼 — selama domain 領域展開 hidup ──────────────────────── */
 /* Opsi jawaban BENAR berkilau biru-putih tiap 5 dtk (nyala ±1,4 dtk per siklus:
    fase 70%→98% = 3,5s→4,9s). Murni CSS — nol timer JS: otomatis mati saat tombol
