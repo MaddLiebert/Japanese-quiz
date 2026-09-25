@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   gojoTechniqueFor, GOJO_STYLE, gojoParticles, gojoCrackCount,
-  gojoBolts, gojoStars, GOJO_RIM,
+  gojoBolts, GOJO_RIM,
   GOJO_INK, GOJO_FLASH, gojoImpactFocus, gojoImpactStar,
   gojoSpeedLines, gojoHalftone, gojoOno,
   gojoMurasakiBurst,
@@ -14,9 +14,9 @@ import {
 // Konsep (user): bola ao/aka TIDAK meledak — mereka PERSIST & muter di pinggir,
 // ditangani komponen GojoSpheres. GojoBurst hanya muncul untuk:
 //   • murasaki (bener #3 & tiap milestone) → kedua bola ke tengah lalu MELEDAK
-//   • domain (#50) / zenith (#100) → 領域展開・無量空処
+//     (domain 領域展開 kini punya cinematic sendiri: GojoDomainCine)
 //
-//   Layer 5  TEKS TEKNIK      茈 / 領域展開・無量空処 (stroke tinta)
+//   Layer 5  TEKS TEKNIK      茈 (stroke tinta)
 //   Layer 4  RETAK            HANYA streak
 //   Layer 2e オノマトペ        teks bunyi (ズドン / ゴゴゴ)
 //   Layer 2d SCREENTONE       titik halftone (shading manga)
@@ -50,9 +50,6 @@ export function GojoBurst({ fx, kind }) {
   const [speedLines] = useState(() => (technique ? gojoSpeedLines(technique, seed) : []));
   const [halftone] = useState(() => (technique ? gojoHalftone(seed) : []));
   const [impactStar] = useState(() => (technique ? gojoImpactStar(seed) : null));
-  const [stars] = useState(() =>
-    (technique === 'domain' || technique === 'domain_zenith') ? gojoStars(seed) : []
-  );
 
   // Salah: wash merah, TANPA retak / impact (bukan teknik).
   if (!technique) {
@@ -73,11 +70,9 @@ export function GojoBurst({ fx, kind }) {
   if (technique === 'ao' || technique === 'aka') return null;
 
   const st = GOJO_STYLE[technique];
-  const isDomain = technique === 'domain' || technique === 'domain_zenith';
-  const zenith = technique === 'domain_zenith';
   const isStreak = kind === 'streak';
   const cracks = isStreak ? gojoCrackCount(streak) : 0;
-  const shake = isDomain || isStreak;
+  const shake = isStreak;
   const focus = gojoImpactFocus(technique);
   const ono = gojoOno(technique);
   // murasaki: parameter ledakan TEBAL (bola plasma, shockwave, garis).
@@ -97,8 +92,8 @@ export function GojoBurst({ fx, kind }) {
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
-        animate={{ opacity: reduced ? 0.4 : [0, isDomain ? 0.55 : 0.4, 0] }}
-        transition={{ duration: reduced ? 0 : zenith ? 1.1 : 0.6, delay: reduced ? 0 : d0, ease: 'easeOut' }}
+        animate={{ opacity: reduced ? 0.4 : [0, 0.4, 0] }}
+        transition={{ duration: reduced ? 0 : 0.6, delay: reduced ? 0 : d0, ease: 'easeOut' }}
         style={{
           background: `radial-gradient(circle at 50% 50%, ${st.color} 0 18%, ${st.color}88 18% 32%, transparent 32%)`,
         }}
@@ -121,7 +116,7 @@ export function GojoBurst({ fx, kind }) {
             ? { x: 0, y: 0 }
             : { x: [0, -10, 9, -6, 4, 0], y: [0, -6, 5, -4, 3, 0] }
         }
-        transition={{ duration: zenith ? 0.8 : 0.5, delay: reduced ? 0 : d0, ease: 'easeOut' }}
+        transition={{ duration: 0.5, delay: reduced ? 0 : d0, ease: 'easeOut' }}
       >
         {/* ── Layer 3a — 集中線 (garis tinta dari fokus) ────────────────────── */}
         <svg
@@ -196,25 +191,6 @@ export function GojoBurst({ fx, kind }) {
             );
           })}
         </svg>
-
-        {/* ── Layer 2b — BINTANG 無量空処 (domain saja) ─────────────────────── */}
-        {isDomain && stars.map((s) => (
-          <motion.span
-            key={s.id}
-            className="absolute"
-            style={{
-              left: `${s.x}%`,
-              top: `${s.y}%`,
-              width: s.size,
-              height: s.size,
-              background: '#ffffff',
-              outline: `1px solid ${GOJO_INK}`,
-            }}
-            initial={{ opacity: 0 }}
-            animate={reduced ? { opacity: 0.85 } : { opacity: [0, 0.95, 0.35, 0.85, 0.3] }}
-            transition={{ duration: reduced ? 0 : s.dur, delay: reduced ? 0 : s.delay, ease: 'easeOut' }}
-          />
-        ))}
 
         {/* ── IMPACT (star + screentone + オノマトペ) di titik fokus ─────────── */}
         <motion.div
@@ -417,7 +393,7 @@ export function GojoBurst({ fx, kind }) {
               ease: [0.34, 1.56, 0.64, 1],
             }}
             style={{
-              fontSize: isDomain ? 'clamp(40px, 7vw, 92px)' : 'clamp(56px, 10vw, 140px)',
+              fontSize: 'clamp(56px, 10vw, 140px)',
               color: st.color,
               WebkitTextStroke: `3px ${GOJO_INK}`,
               textShadow: `5px 5px 0 ${GOJO_INK}`,
@@ -427,28 +403,6 @@ export function GojoBurst({ fx, kind }) {
             {st.kanji}
           </motion.span>
         </div>
-
-        {/* Teks kecil 領域展開 saat domain */}
-        {isDomain && (
-          <motion.div
-            className="absolute left-0 right-0 flex justify-center"
-            style={{ top: '26%' }}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: reduced ? 0 : 0.35, duration: reduced ? 0 : 0.4 }}
-          >
-            <span
-              className="font-serif font-black tracking-[0.3em]"
-              style={{
-                fontSize: 'clamp(14px, 3vw, 30px)',
-                color: GOJO_RIM,
-                WebkitTextStroke: `2px ${GOJO_INK}`,
-              }}
-            >
-              領域展開
-            </span>
-          </motion.div>
-        )}
       </motion.div>
     </motion.div>
   );
