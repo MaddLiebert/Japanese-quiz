@@ -46,7 +46,7 @@ export function KanaQuiz({
         </div>
       </header>
 
-      <div className="flex-1 flex flex-col items-center justify-center relative z-10 pb-16">
+      <div data-quiz-area className="flex-1 flex flex-col items-center justify-center relative z-10 pb-16">
         <motion.div
           key={currentQuestion.id}
           initial={{ opacity: 0, x: 20 }}
@@ -109,6 +109,7 @@ export function KanaQuiz({
               <motion.button
                 key={option.id}
                 onClick={() => onOptionClick(option)}
+                data-correct={isThisCorrect || undefined}
                 animate={
                   showCorrect && isThisSelected ? { scale: [1, 1.05, 1] }
                     : showWrong ? { x: [0, -10, 10, -10, 10, 0] }

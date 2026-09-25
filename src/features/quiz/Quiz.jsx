@@ -16,9 +16,12 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
   const { recordAnswer } = useItemProgress();
   const { completeQuiz } = useUserStats();
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
 
   useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
+
+  // Keluar dari kuis (chapter /mondai) → bar energi kutukan ikut hilang.
+  useEffect(() => () => endQuizSession(), [endQuizSession]);
 
   const questions = chapter.questions;
   const currentQuestion = questions[currentQuestionIndex];
@@ -115,6 +118,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
         key={currentQuestionIndex}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        data-quiz-area
         className="border-[4px] border-sumi bg-kinari-light p-6 sm:p-12 shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] relative z-10 flex-1 flex flex-col justify-between"
       >
         <div>
@@ -162,6 +166,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
                   whileHover={!isAnswered ? { scale: 1.01 } : {}}
                   whileTap={!isAnswered ? { scale: 0.99 } : {}}
                   onClick={() => handleSelectOption(index)}
+                  data-correct={isCorrect || undefined}
                   disabled={isAnswered || isPlaying}
                   className={`
                     p-4 sm:p-6 text-left font-bold transition-all
