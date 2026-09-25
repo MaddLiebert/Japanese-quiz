@@ -60,6 +60,27 @@ export const gojoCurseCharge = (streak) =>
 export const gojoUltReady = (streak) =>
   Number.isFinite(streak) && streak >= GOJO_ULT_THRESHOLD;
 
+// ── Durasi domain 無量空処 (anti-overpower) ─────────────────────────────────
+// Domain TIDAK abadi: hidup GOJO_DOMAIN_DURATION_S detik (hitung mundur baru
+// mulai setelah cinematic settle selesai, jadi durasi "main" penuh 30 dtk).
+export const GOJO_DOMAIN_DURATION_S = 30;
+
+// Sisa detik dari timestamp akhir (endsAt) relatif `now`. Clamp 0..durasi,
+// aman untuk input aneh (NaN/Infinity/null) → 0 (dianggap habis).
+export const gojoDomainLeft = (endsAt, now = Date.now()) => {
+  if (!Number.isFinite(endsAt) || !Number.isFinite(now)) return 0;
+  const left = Math.ceil((endsAt - now) / 1000);
+  if (!Number.isFinite(left) || left <= 0) return 0;
+  return Math.min(GOJO_DOMAIN_DURATION_S, left);
+};
+
+// Hitung mundur mulai SETELAH cinematic selesai (settle), bukan dari cast —
+// supaya 30 dtk itu waktu main penuh, bukan habis kepotong animasi.
+export const gojoDomainStartDelayMs = () => {
+  const t = gojoDomainTimeline();
+  return Math.round((t.settleStart + t.settleDur) * 1000);
+};
+
 // ── Timeline cinematic 領域展開 (semua waktu di SATU tempat) ────────────────
 // Fase: gelap → teks 領域展開 per-karakter → teks 無量空処 per-karakter (mata
 // membuka bersamaan) → bigbang → settle (teks mengecil ke atas) → persist.

@@ -15,6 +15,7 @@ import {
   GOJO_ULT_THRESHOLD, gojoUltReady, gojoCurseCharge,
   gojoDomainTimeline, gojoSequentialChars,
   gojoNebulaSpots, GOJO_NEBULA_COLORS,
+  GOJO_DOMAIN_DURATION_S, gojoDomainLeft, gojoDomainStartDelayMs,
 } from './gojoFx.js';
 
 // ── Teknik per jawaban (kanon 蒼 → 赫 → 茈 → Domain) ─────────────────────────
@@ -100,6 +101,31 @@ test('gojoUltReady: nyala tepat di 20 benar beruntun, aman utk input aneh', () =
   for (const bad of [0, -3, NaN, Infinity, null, undefined, '20']) {
     assert.equal(gojoUltReady(bad), false, `input ${String(bad)}`);
   }
+});
+
+// ── Durasi domain 無量空処 (anti-overpower) ─────────────────────────────────
+
+test('GOJO_DOMAIN_DURATION_S: durasi domain terbatas, bukan abadi', () => {
+  assert.ok(Number.isInteger(GOJO_DOMAIN_DURATION_S));
+  assert.ok(GOJO_DOMAIN_DURATION_S >= 15 && GOJO_DOMAIN_DURATION_S <= 60, '15-60 dtk');
+});
+
+test('gojoDomainLeft: sisa detik 0..durasi, aman utk input aneh', () => {
+  const now = 1_000_000;
+  assert.equal(gojoDomainLeft(now + 30_000, now), 30);
+  assert.equal(gojoDomainLeft(now + 15_000, now), 15);
+  assert.equal(gojoDomainLeft(now + 30_500, now), 30, 'clamp atas');
+  assert.equal(gojoDomainLeft(now, now), 0);
+  assert.equal(gojoDomainLeft(now - 1, now), 0);
+  for (const bad of [NaN, Infinity, null, undefined]) {
+    assert.equal(gojoDomainLeft(bad, now), 0, `endsAt ${String(bad)}`);
+  }
+});
+
+test('gojoDomainStartDelayMs: hitung mundur mulai setelah cinematic settle', () => {
+  const t = gojoDomainTimeline();
+  assert.equal(gojoDomainStartDelayMs(), Math.round((t.settleStart + t.settleDur) * 1000));
+  assert.ok(gojoDomainStartDelayMs() > 3000 && gojoDomainStartDelayMs() < 6000);
 });
 
 // ── Timeline cinematic & teks berurutan ─────────────────────────────────────

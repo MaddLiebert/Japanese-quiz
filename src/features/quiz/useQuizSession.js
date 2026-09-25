@@ -105,7 +105,9 @@ function buildOptions(item, quizPool, optionCount) {
   return shuffle([...distractorOptions, correctOption]);
 }
 
-export function useQuizSession() {
+// `frozen` (opsional): saat true, countdown Hard mode DIBEKUKAN (tidak
+// berkurang) — dipakai domain Gojo 無量空処 (waktu kuis beku selama domain).
+export function useQuizSession({ frozen = false } = {}) {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -187,18 +189,21 @@ export function useQuizSession() {
     setTimeLeft(diff === 'hard' ? 7 : null);
   }, []);
 
-  // Hard mode timer countdown
+  // Hard mode timer countdown — BEKU saat `frozen` (domain Gojo aktif):
+  // tidak ada interval yang berjalan, sisa waktu persis seperti saat dibekukan.
   useEffect(() => {
     if (timeLeft === null || timeLeft <= 0 || isAnsweredRef.current || isFinished) return;
+    if (frozen) return;   // ❄ waktu beku — countdown pause, bukan reset
 
     const timer = setInterval(() => {
       setTimeLeft(prev => (prev <= 1 ? 0 : prev - 1));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, isFinished]);
+  }, [timeLeft, isFinished, frozen]);
 
-  // Handle timer expiration
+  // Handle timer expiration (tidak pernah kena saat frozen: timeLeft tak
+  // mencapai 0 karena countdown pause).
   useEffect(() => {
     if (timeLeft === 0 && !isAnsweredRef.current && !isFinished) {
       isAnsweredRef.current = true;

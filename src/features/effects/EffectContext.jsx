@@ -8,7 +8,7 @@ import { hinaGifForAnswer } from './hinaGifs';
 import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 import { GojoBurst } from './GojoBurst';
 import { GojoSpheres } from './GojoSpheres';
-import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor, gojoPreviewStreak, gojoCurseCharge, GOJO_ULT_THRESHOLD } from './gojoFx';
+import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor, gojoPreviewStreak, gojoCurseCharge, GOJO_ULT_THRESHOLD, gojoDomainLeft, gojoDomainStartDelayMs, GOJO_DOMAIN_DURATION_S } from './gojoFx';
 import { GojoDomainCine, GojoCurseBar, GojoSpacePortal } from './GojoDomainCine';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -114,6 +114,8 @@ export function EffectProvider({ children }) {
   const [gojoDomainSeed, setGojoDomainSeed] = useState(0);  // seed per cast (animasi baru)
   const [ultCharge, setUltCharge] = useState(0);            // isi bar 0..20
   const [quizActive, setQuizActive] = useState(false);      // bar tampil selama sesi kuis
+  const domainEndsAtRef = useRef(null);                     // timestamp akhir domain (durasi)
+  const [domainLeft, setDomainLeft] = useState(GOJO_DOMAIN_DURATION_S); // sisa detik domain
   const streakRef = useRef(0);
   const timersRef = useRef([]);
 
@@ -280,6 +282,10 @@ export function EffectProvider({ children }) {
     setUltCharge(0);
     setGojoDomainSeed((n) => n + 1);
     setGojoDomain(true);
+    // Durasi 30 dtk mulai SETELAH cinematic settle (bukan dari cast),
+    // supaya waktu main penuh — bukan habis kepotong animasi.
+    domainEndsAtRef.current = Date.now() + gojoDomainStartDelayMs() + GOJO_DOMAIN_DURATION_S * 1000;
+    setDomainLeft(GOJO_DOMAIN_DURATION_S);
     playDomainBoom('cast');
   }, [activeVisual]);
 
@@ -289,6 +295,27 @@ export function EffectProvider({ children }) {
     if (gojoDomain) root.setAttribute('data-gojo-domain', 'on');
     else root.removeAttribute('data-gojo-domain');
     return () => root.removeAttribute('data-gojo-domain');
+  }, [gojoDomain]);
+
+  // Durasi domain (anti-overpower): hitung mundur dari domainEndsAtRef;
+  // habis → domain padam sendiri. Tick 250ms supaya bar timer mulus.
+  useEffect(() => {
+    if (!gojoDomain) return undefined;
+    const tick = () => {
+      const left = gojoDomainLeft(domainEndsAtRef.current);
+      setDomainLeft(left);
+      if (left <= 0) setGojoDomain(false);
+    };
+    tick();
+    const id = setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [gojoDomain]);
+
+  // Domain padam (habis waktu / jawab salah / keluar) → timer balik penuh.
+  useEffect(() => {
+    if (gojoDomain) return;
+    domainEndsAtRef.current = null;
+    setDomainLeft(GOJO_DOMAIN_DURATION_S);
   }, [gojoDomain]);
 
   // DEV-ONLY (dipakai DevPanel): lompat ke streak `target` tanpa quiz.
@@ -302,12 +329,12 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, castDomain, endQuizSession, active }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, castDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
         gojoBalls={gojoBalls} gojoExplode={gojoExplode}
-        domainOn={gojoDomain} domainSeed={gojoDomainSeed}
+        domainOn={gojoDomain} domainSeed={gojoDomainSeed} domainLeft={domainLeft}
         charge={ultCharge} quizActive={quizActive} onCast={castDomain}
       />
     </EffectContext.Provider>
@@ -315,7 +342,7 @@ export function EffectProvider({ children }) {
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, charge, quizActive, onCast }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -468,7 +495,10 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
 
       {/* Bar energi kutukan 呪力 — tampil selama sesi kuis, tap saat penuh = cast */}
       {visual === 'gojo' && quizActive && (
-        <GojoCurseBar charge={charge} ready={charge >= GOJO_ULT_THRESHOLD && !domainOn} onCast={onCast} />
+        <GojoCurseBar
+          charge={charge} ready={charge >= GOJO_ULT_THRESHOLD && !domainOn} onCast={onCast}
+          domainOn={domainOn} domainLeft={domainLeft}
+        />
       )}
     </div>
   );
