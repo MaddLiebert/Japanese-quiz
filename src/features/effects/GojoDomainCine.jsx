@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  GOJO_STYLE, GOJO_BALL_BREAKPOINT, GOJO_ULT_THRESHOLD,
-  gojoDomainTimeline,
+  GOJO_STYLE, GOJO_INK, GOJO_BALL_BREAKPOINT, GOJO_ULT_THRESHOLD,
+  gojoDomainTimeline, gojoSequentialChars,
 } from './gojoFx';
 import { playDomainBoom } from '../../utils/sfx';
 
@@ -114,6 +114,31 @@ export function GojoCurseBar({ charge = 0, ready = false, onCast }) {
 }
 
 // ── Cinematic domain ────────────────────────────────────────────────────────
+
+// Teks muncul PER-KARAKTER berurutan (menggantikan "suara Gojo" sampai aset ada).
+function SequentialChars({ text, start, perChar, reduced, className, style }) {
+  const items = gojoSequentialChars(text, start, perChar);
+  return (
+    <span className={className} style={style} aria-label={text}>
+      {items.map((it, i) => (
+        <motion.span
+          key={`${it.ch}-${i}`}
+          className="inline-block"
+          initial={{ opacity: 0, y: 16, scale: 0.6 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{
+            delay: reduced ? 0 : it.delayMs / 1000,
+            duration: reduced ? 0 : 0.32,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          {it.ch}
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
 export function GojoDomainCine({ seed = 1 }) {
   void seed;   // dipakai fase bintang/nebula (Task 8)
   const [reduced] = useState(prefersReduced);
@@ -161,6 +186,37 @@ export function GojoDomainCine({ seed = 1 }) {
           }
           : { background: 'rgba(2,2,6,0.94)' }}
       />
+
+      {/* Blok tengah: [mata] → [領域展開] → [無量空処]; naik & mengecil saat settle */}
+      <motion.div
+        data-gojo-text
+        className="absolute inset-0 flex flex-col items-center justify-center gap-[2.2vmin]"
+        initial={false}
+        animate={reduced ? {} : { y: '-31vh', scale: 0.34, opacity: 0.75 }}
+        transition={{ delay: reduced ? 0 : t.settleStart, duration: reduced ? 0 : t.settleDur, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <SequentialChars
+          text="領域展開"
+          start={t.text1Start}
+          perChar={t.text1Char}
+          reduced={reduced}
+          className="font-serif font-black tracking-[0.35em] text-[#e8e0ff]"
+          style={{ fontSize: 'clamp(20px, 3.4vw, 40px)', WebkitTextStroke: `2px ${GOJO_INK}` }}
+        />
+        <SequentialChars
+          text="無量空処"
+          start={t.text2Start}
+          perChar={t.text2Char}
+          reduced={reduced}
+          className="font-serif font-black tracking-[0.22em]"
+          style={{
+            fontSize: 'clamp(44px, 8.5vw, 118px)',
+            color: GOJO_STYLE.domain.color,
+            WebkitTextStroke: `3px ${GOJO_INK}`,
+            textShadow: `6px 6px 0 ${GOJO_INK}, 0 0 60px ${GOJO_STYLE.domain.color}cc`,
+          }}
+        />
+      </motion.div>
     </motion.div>
   );
 }
