@@ -6,6 +6,7 @@ import { Practice } from "./pages/Practice";
 import { Review } from "./pages/Review";
 import { Settings } from "./pages/Settings";
 import { Writing } from "./pages/Writing";
+import { Speaking } from "./pages/Speaking";
 import Profile from "./features/profile/Profile";
 import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
 import Shop from "./features/shop/Shop";
@@ -127,6 +128,7 @@ function App() {
                   <Route path="/learn" element={<Learn />} />
                   <Route path="/practice" element={<Practice />} />
                   <Route path="/writing" element={<Writing />} />
+                  <Route path="/speaking" element={<Speaking />} />
                   <Route path="/mondai" element={<MondaiChapterFlow />} />
                   <Route path="/review" element={<Review />} />
                   <Route path="/settings" element={<Settings />} />
