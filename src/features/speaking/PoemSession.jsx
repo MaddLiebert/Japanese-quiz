@@ -3,11 +3,13 @@ import { Volume2, Mic, Check } from 'lucide-react';
 import { Furigana } from './Furigana';
 import { useSpeechRecognition } from './useSpeechRecognition';
 import { matchSpeech, verdictOf } from './speechMatch';
-import { lineReading, poemLineItems, speakXpFor, lineXpFor, DEFAULT_SPEAK_LEVEL } from './speaking';
+import { lineReading, poemLineItems, speakXpFor, lineXpFor, speakLevel, DEFAULT_SPEAK_LEVEL } from './speaking';
 import { useItemProgress, useAchievements, useUserStats } from '../progress/ProgressContext';
 import { useEffectLayer } from '../effects/EffectContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { playDramaticAudio } from '../../utils/audio';
+import poemTranslations from '../../data/poem-translations.json';
+import { translatedLine, translatedTitle } from './poemTranslation';
 
 export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   const { language } = useLanguage();
@@ -23,6 +25,8 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   const [passed, setPassed] = useState({});     // { [lineIndex]: true }
   const [active, setActive] = useState(0);
   const [showFurigana, setShowFurigana] = useState(true);
+  // Default OFF di level Buta (arti sudah jadi petunjuk) — ON di level lain.
+  const [showTranslation, setShowTranslation] = useState(speakLevel(level).key !== 'blind');
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
   const [lineXp, setLineXp] = useState(0);      // total XP baris pada sesi ini
@@ -92,6 +96,10 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
           <input type="checkbox" checked={showFurigana} onChange={(e) => setShowFurigana(e.target.checked)} />
           ふりがな
         </label>
+        <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-sumi/60 cursor-pointer select-none">
+          <input type="checkbox" checked={showTranslation} onChange={(e) => setShowTranslation(e.target.checked)} />
+          {id ? 'Terjemahan' : 'Translation'}
+        </label>
       </div>
 
       <header className="mb-8 text-center">
@@ -101,40 +109,53 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sumi/50 mt-2">
           {poem.author} {poem.excerpt ? (id ? '· kutipan' : '· excerpt') : ''}
         </p>
+        {showTranslation && translatedTitle(poemTranslations, poem.id) && (
+          <p className="text-base font-serif font-bold text-ai mt-3">
+            {translatedTitle(poemTranslations, poem.id)}
+          </p>
+        )}
       </header>
 
       <div className="flex flex-col gap-3 mb-8">
-        {lines.map((line, i) => (
-          <div
-            key={i}
-            className={`border-[3px] border-sumi p-4 flex items-center gap-3 transition-colors ${
-              passed[i] ? 'bg-matcha/15 border-matcha' : active === i ? 'bg-kinari shadow-[4px_4px_0_0_#1a1a1a]' : 'bg-kinari/60'
-            }`}
-          >
-            <span className="text-2xl sm:text-3xl font-serif font-black text-sumi flex-grow leading-relaxed">
-              <Furigana segments={line.segments} show={showFurigana} />
-            </span>
-            <button
-              type="button"
-              onClick={() => playDramaticAudio(lineReading(line))}
-              className="shrink-0 w-9 h-9 border-[2px] border-sumi flex items-center justify-center active:translate-y-[2px] transition-all"
-              title={id ? 'Dengar' : 'Listen'}
-            >
-              <Volume2 size={15} />
-            </button>
-            <button
-              type="button"
-              onClick={() => speakLine(i)}
-              disabled={busy || listening}
-              className={`shrink-0 w-9 h-9 border-[2px] border-sumi flex items-center justify-center transition-all disabled:opacity-50 ${
-                passed[i] ? 'bg-matcha text-kinari-light' : 'bg-ai text-kinari-light active:translate-y-[2px]'
+        {lines.map((line, i) => {
+          const tr = translatedLine(poemTranslations, poem.id, i);
+          return (
+            <div
+              key={i}
+              className={`border-[3px] border-sumi p-4 transition-colors ${
+                passed[i] ? 'bg-matcha/15 border-matcha' : active === i ? 'bg-kinari shadow-[4px_4px_0_0_#1a1a1a]' : 'bg-kinari/60'
               }`}
-              title={selfAssess ? (id ? 'Tandai sudah dibaca' : 'Mark as read') : (id ? 'Ucapkan baris ini' : 'Speak this line')}
             >
-              {passed[i] ? '✓' : (selfAssess ? <Check size={15} /> : <Mic size={15} />)}
-            </button>
-          </div>
-        ))}
+              <div className="flex items-center gap-3">
+                <span className="text-2xl sm:text-3xl font-serif font-black text-sumi flex-grow leading-relaxed">
+                  <Furigana segments={line.segments} show={showFurigana} />
+                </span>
+                <button
+                  type="button"
+                  onClick={() => playDramaticAudio(lineReading(line))}
+                  className="shrink-0 w-9 h-9 border-[2px] border-sumi flex items-center justify-center active:translate-y-[2px] transition-all"
+                  title={id ? 'Dengar' : 'Listen'}
+                >
+                  <Volume2 size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => speakLine(i)}
+                  disabled={busy || listening}
+                  className={`shrink-0 w-9 h-9 border-[2px] border-sumi flex items-center justify-center transition-all disabled:opacity-50 ${
+                    passed[i] ? 'bg-matcha text-kinari-light' : 'bg-ai text-kinari-light active:translate-y-[2px]'
+                  }`}
+                  title={selfAssess ? (id ? 'Tandai sudah dibaca' : 'Mark as read') : (id ? 'Ucapkan baris ini' : 'Speak this line')}
+                >
+                  {passed[i] ? '✓' : (selfAssess ? <Check size={15} /> : <Mic size={15} />)}
+                </button>
+              </div>
+              {showTranslation && tr && (
+                <p className="mt-2 text-sm sm:text-base text-sumi/70 italic leading-relaxed">{tr}</p>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {result && (
