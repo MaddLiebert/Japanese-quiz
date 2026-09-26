@@ -5,105 +5,10 @@ import katakanaData from '../../data/katakana.json';
 import kotobaData from '../../data/kotoba.json';
 import grammarData from '../../data/grammar.json';
 import kanjiData from '../../data/kanji.json';
+import { shuffle, buildOptions } from './questionBuilder';
 
-function shuffle(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-// ── Global data lookup by type (used for fallback only) ──────────────────────
-const GLOBAL_DATA_BY_TYPE = {
-  hiragana: hiraganaData,
-  katakana: katakanaData,
-  kotoba: kotobaData,
-  grammar: grammarData,
-  kanji: kanjiData,
-};
-
-// ── Smart Distractor Builder ─────────────────────────────────────────────────
-// Picks distractors using a 3-tier priority:
-//   1. Same row/category inside the user's quiz pool
-//   2. Different row/category inside the user's quiz pool
-//   3. Global fallback (type-matched, avoids cross-category contamination)
-function pickDistractors(item, quizPool, optionCount) {
-  const needed = optionCount - 1;
-  const groupKey = (item.type === 'kotoba' || item.type === 'grammar' || item.type === 'kanji')
-    ? 'category' : 'row';
-
-  // Tier 1 & 2: from the user's quiz pool (excluding the current item, strictly matching the same item type & script)
-  const poolWithoutSelf = quizPool.filter(d => {
-    if (d.id === item.id) return false;
-    if (item.script || d.script) {
-      return d.script === item.script && d.type === item.type;
-    }
-    return d.type === item.type;
-  });
-  const sameGroup  = shuffle(poolWithoutSelf.filter(d => d[groupKey] === item[groupKey]));
-  const otherGroup = shuffle(poolWithoutSelf.filter(d => d[groupKey] !== item[groupKey]));
-
-  const picked = [...sameGroup, ...otherGroup].slice(0, needed);
-
-  // Tier 3: if the user's pool is too small, pull from the global dataset
-  if (picked.length < needed) {
-    const usedIds = new Set([item.id, ...picked.map(d => d.id)]);
-    const isHiragana = item.id?.startsWith('hira_') || item.script === 'hiragana';
-    const isKatakana = item.id?.startsWith('kata_') || item.script === 'katakana';
-    const targetDataset = isHiragana ? hiraganaData
-      : isKatakana ? katakanaData
-      : GLOBAL_DATA_BY_TYPE[item.type] || [];
-    const globalPool = targetDataset.filter(d => {
-      if (usedIds.has(d.id)) return false;
-      // For kana: match the same type (e.g. seion, dakuon, handakuon, yoon) when possible
-      if (isHiragana || isKatakana) {
-        return d.type === item.type;
-      }
-      // For kotoba/grammar/kanji: match type (already guaranteed by GLOBAL_DATA_BY_TYPE key)
-      return true;
-    });
-    const extras = shuffle(globalPool).slice(0, needed - picked.length);
-    picked.push(...extras);
-  }
-
-  return picked;
-}
-
-// ── Option formatters (shape the distractor data into what the UI expects) ───
-function toOptionShape(d) {
-  if (d.type === 'grammar') {
-    return { id: d.id, char: d.char, answer: d.answer, type: 'grammar' };
-  }
-  if (d.type === 'kotoba') {
-    return { id: d.id, meaning: d.meaning, meaning_id: d.meaning_id, romaji: d.romaji, type: 'kotoba', isCorrect: false };
-  }
-  if (d.type === 'kanji') {
-    return { id: d.id, meaning: d.meaning, meaning_id: d.meaning_id, onyomi: d.onyomi, kunyomi: d.kunyomi, type: 'kanji', isCorrect: false };
-  }
-  // kana — pass through (UI reads .id, .char, .romaji directly)
-  return d;
-}
-
-function buildOptions(item, quizPool, optionCount) {
-  const distractors = pickDistractors(item, quizPool, optionCount);
-
-  // Build the correct-answer option with the right shape
-  let correctOption;
-  if (item.type === 'grammar') {
-    correctOption = { id: item.id, char: item.char, answer: item.answer, type: 'grammar' };
-  } else if (item.type === 'kotoba') {
-    correctOption = { id: item.id, meaning: item.meaning, meaning_id: item.meaning_id, romaji: item.romaji, type: 'kotoba', isCorrect: true };
-  } else if (item.type === 'kanji') {
-    correctOption = { id: item.id, meaning: item.meaning, meaning_id: item.meaning_id, onyomi: item.onyomi, kunyomi: item.kunyomi, type: 'kanji', isCorrect: true };
-  } else {
-    correctOption = item; // kana
-  }
-
-  const distractorOptions = distractors.map(toOptionShape);
-  return shuffle([...distractorOptions, correctOption]);
-}
+// Dataset lengkap untuk fallback distractor (dipakai questionBuilder).
+const DATASETS = { hiragana: hiraganaData, katakana: katakanaData, kotoba: kotobaData, grammar: grammarData, kanji: kanjiData };
 
 export function useQuizSession() {
   const [questions, setQuestions] = useState([]);
@@ -168,7 +73,7 @@ export function useQuizSession() {
 
     const shuffledItems = shuffle(availableItems);
     const generatedQuestions = shuffledItems.map(item => {
-      const options = buildOptions(item, availableItems, optionCount);
+      const options = buildOptions(item, availableItems, optionCount, DATASETS);
       return { target: item, options };
     });
 
