@@ -333,6 +333,20 @@ export function Home() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
               </motion.div>
+
+              <motion.div onClick={() => navigate('/writing')} whileHover={{ backgroundColor: "rgba(24, 43, 73, 0.05)" }} className="p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi">
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-xl sm:text-2xl font-serif font-bold text-sumi group-hover:text-ai transition-colors">
+                    {language === 'id' ? 'Latihan Menulis' : 'Writing Practice'}
+                  </h4>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                    {language === 'id' ? 'Urutan Goresan & Kuis' : 'Stroke Order & Quiz'}
+                  </p>
+                </div>
+                <div className="w-14 h-14 rounded-full border-[3px] border-ai text-ai flex items-center justify-center group-hover:bg-ai group-hover:text-kinari-light transition-all flex-shrink-0">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path><path d="m15 5 4 4"></path></svg>
+                </div>
+              </motion.div>
             </div>
 
           </div>
