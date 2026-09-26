@@ -2174,3 +2174,27 @@ Status: **SELESAI** — 12 commit lokal (`acb607b..55770fc`), belum di-push (ses
 - Puisi 古池や: furigana `<ruby>/<rt>` tampil (toggle 6→0→6), 3 baris `✓ +5 XP`, selesai → `+25 XP poem · +15 XP from lines`, XP total 62, SRS `poem_basho_furuike` correctCount 1, **tidak ada key baris** (`_l`) di SRS.
 - `/review`: 古池や muncul di daftar target + sesi review menampilkan soal puisi (distractor dari puisi lain, tidak crash).
 - Level Buta kanji 一 → teks `？` + arti sebagai prompt; ucapkan `いち` → `Perfect! +24 XP` (12×2).
+
+
+## Log Revisi UX (26/09/2026 — pasca E2E, laporan user)
+
+Dua putaran revisi setelah fitur live, semua diverifikasi di browser (emulasi 390px + hit-test `elementFromPoint`):
+
+### Putaran 1 — `8fde89d` fix(speaking): grid padat + Buta kana dengar-tirukan
+| Keluhan user | Bukti terukur sebelum | Fix | Bukti sesudah |
+|---|---|---|---|
+| Grid kana "makan tempat, gak rapih" | 2 kolom, grid 4720px, halaman 5214px | Grid padat 5 kolom (HP) / 10 (desktop), tombol 65×62px | Grid 1452px (−69%), halaman 1946px (−63%), yoon きゃ 48px < 65px tanpa overflow |
+| Mode Buta kana "sama aja bohong" (romaji terlihat) | prompt = romaji `a` = bacaan itu sendiri | `speakPromptKind(item, level)`: kana+Buta → `'audio'`; prompt 🎧 + tombol "Putar & Tirukan", teks & romaji disembunyikan | `leakedRomaji: false`, `hasHeadphone: true`, `hasPlayBtn: true` |
+| Bonus: arti dobel di Buta kanji | `One` tampil 2× | hapus render duplikat | `meaningShownTimes: 1`, verdict tetap `Perfect +24 XP` |
+
+Test baru: `speakPromptKind` (kana→audio, kotoba/kanji→meaning, pandu/ingat→text). Suite 179 → **180 pass**.
+
+### Putaran 2 — `bf302d9` fix(speaking): back button sesi pindah kiri + turun dari TopControls
+| Keluhan user | Bukti terukur sebelum | Fix | Bukti sesudah |
+|---|---|---|---|
+| "Tombol back pas listening gak keliatan kalo di hp ketutupan" | Tombol `✕ Keluar` di kanan-atas (x323–374, y32–49) PERSIS di dalam area TopControls global (x111–374, y16–48, z-50) → `overlap: true`, hit-test mengembalikan chip TopControls | Tombol back pindah ke KIRI (pola Writing/Practice: `text-[10px] flex items-center gap-2` + `←`), container `py-8` → `pt-14 pb-8 sm:py-16` di SpeakSession + PoemSession | HP 390px: back x16 y57, `backHitOK: true`, `backOverlapTC: false`; state LISTENING aktif (`listeningActive: true`) back tetap bisa diklik; desktop 1264px: back x328 y65, no overlap |
+| Akar masalah | `TopControls` di `App.jsx` = `fixed top-4 right-4 z-50`, semua kontrol kanan-atas halaman ketutupan | — | Toggle furigana PoemSession juga diverifikasi aman (y57 > tcBottom 48, hit-test OK) |
+
+Verifikasi klik nyata: back diklik → kembali ke grid halaman speaking ✓.
+
+**Gate akhir kedua putaran:** `npm test` 180/180 · lint exit 0 · build ✓ · `main` ahead 16, belum di-push.
