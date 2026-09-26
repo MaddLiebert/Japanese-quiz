@@ -132,11 +132,15 @@ The product currently exists as a functional prototype containing:
 ### 9.9 Writing Practice (書)
 
 * **[EXISTING]** Stroke-order animation for Hiragana, Katakana, and Kanji (single characters).
-* **[EXISTING]** Writing quiz: user traces the outline; each stroke is validated (leniency-tuned, backwards strokes accepted, hint after 3 misses).
+* **[EXISTING]** Writing quiz with 3 difficulty levels:
+* *Level 1 — Trace:* outline always visible; hint after 3 misses; leniency 1.4; backwards strokes accepted. **10 XP** (kana) / **15 XP** (kanji).
+* *Level 2 — Memory:* the stroke animation plays once, then the character is hidden; hint after 5 misses; leniency 1.1. **15 XP** / **20 XP**.
+* *Level 3 — Blind:* no outline, no hint; leniency 0.85; backwards strokes counted wrong. **25 XP** / **35 XP**.
+* Levels are freely selectable (no unlock gating yet).
 * **[EXISTING]** Grouped by row (Kana) and category (Kanji); mastered/XP integrated with existing progress system.
 * **[EXISTING]** Offline-first stroke data vendored to `public/strokes/` (Arphic Public License + LGPL animCJK).
 * **[PLANNED]** Yōon combinations (きゃ, しゃ) — 2-character combos are currently read-only.
-* **[PROPOSED]** Strict mode (no leniency, no backwards strokes) as a user setting.
+* **[PROPOSED]** Level gating (unlock 2/3 after completing the previous one per character) or a dedicated writing achievement.
 
 ### 9.10 N5 Challenge
 
