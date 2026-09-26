@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback, useMemo, u
 import { getPack, rollPackId, isPackReady } from '../packs/packs';
 import { getItem, addItem, removeItem } from '../items/items';
 import { applyStreakBonus } from './streak';
+import { WRITE_GATE_KEY } from '../writing/writeGate';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -92,6 +93,10 @@ export const ACHIEVEMENT_META = {
   kanji_hell: { label: '獄', title: 'Kanji Hell', desc: '200 Kanji Correct' },
   eagle_eye: { label: '眼', title: 'Eagle Eye', desc: '500 Total Correct' },
   master_calligrapher: { label: '墨', title: 'Master Calligrapher', desc: '1000 Total Correct' },
+  // Writing (3) — dari fitur Latihan Menulis (書)
+  first_stroke: { label: '一', title: 'First Stroke', desc: 'Lulus kuis tulis level Jiplak' },
+  blind_writer: { label: '盲', title: 'Blind Writer', desc: 'Lulus kuis tulis level Buta' },
+  blind_ten: { label: '闇', title: 'Dark Ink', desc: 'Lulus level Buta di 10 karakter' },
   // Language Arts (6)
   bunpo_student: { label: '文', title: 'Bunpo Student', desc: '10 Grammar sessions' },
   bunpo_master: { label: '典', title: 'Bunpo Master', desc: '50 Grammar sessions' },
@@ -546,11 +551,17 @@ export const ProgressProvider = ({ children }) => {
     return { ok: true, results, refunded };
   }, []);
 
+  const unlockAchievement = useCallback((id) => {
+    if (!ACHIEVEMENT_META[id]) return;   // tolak ID hantu
+    setAchievements((prev) => (prev.includes(id) ? prev : [...prev, id]));
+  }, []);
+
   const resetProgress = useCallback(() => {
     localStorage.removeItem('user_progress_v2');
     localStorage.removeItem('item_progress_v2');
     localStorage.removeItem('achievements_unlocked_v2');
     localStorage.removeItem('selected_badges');
+    localStorage.removeItem(WRITE_GATE_KEY);
     setProgress(DEFAULT_PROGRESS);
     setItemProgress(DEFAULT_ITEM_PROGRESS);
     setAchievements(DEFAULT_ACHIEVEMENTS);
@@ -560,7 +571,7 @@ export const ProgressProvider = ({ children }) => {
   return (
     <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyItem, consumeItem, buyPack, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
-        <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META }}>
+        <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}
         </AchievementsContext.Provider>
       </ItemProgressContext.Provider>
