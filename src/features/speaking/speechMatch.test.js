@@ -77,3 +77,22 @@ test('verdictOf: great / pass / retry sesuai ambang', () => {
   assert.equal(verdictOf(0.5), 'retry');
   assert.equal(verdictOf(undefined), 'retry');
 });
+
+import { readingsFromKanji } from './speechMatch.js';
+
+test('readingsFromKanji: onyomi + kunyomi dipisah 、', () => {
+  const r = readingsFromKanji({ onyomi: 'イチ、イツ', kunyomi: 'ひと(つ)' });
+  assert.deepEqual(r, ['イチ', 'イツ', 'ひと', 'ひとつ']);
+});
+
+test('readingsFromKanji: buang placeholder "-" & tanda hubung okurigana', () => {
+  assert.deepEqual(readingsFromKanji({ onyomi: 'ヒャク', kunyomi: '-' }), ['ヒャク']);
+  assert.deepEqual(readingsFromKanji({ onyomi: 'ニチ、ジツ', kunyomi: 'ひ、-び、か' }), ['ニチ', 'ジツ', 'ひ', 'び', 'か']);
+  assert.deepEqual(readingsFromKanji({ onyomi: 'キン、コン', kunyomi: 'かね、かな-' }), ['キン', 'コン', 'かね', 'かな']);
+});
+
+test('readingsFromKanji: input kosong aman', () => {
+  assert.deepEqual(readingsFromKanji(null), []);
+  assert.deepEqual(readingsFromKanji({}), []);
+  assert.deepEqual(readingsFromKanji({ onyomi: '', kunyomi: '' }), []);
+});
