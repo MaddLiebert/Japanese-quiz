@@ -119,7 +119,11 @@ export function Speaking() {
               membungkus (dulu kartu 86px vs 62px). Kotoba TIDAK di-nowrap — teksnya
               panjang, nowrap bikin meluber keluar kartu. */}
           <span className={`font-serif font-black text-sumi leading-none text-center ${dense ? 'whitespace-nowrap' : 'break-words max-w-full'} ${gridTextClass(it.display, dense)}`}>{it.display}</span>
-          <span className="text-[9px] font-bold text-sumi/50 uppercase tracking-wider truncate w-full text-center">
+          {/* Label arti: 2 baris untuk kana/kanji (kartu kecil), 5 baris untuk
+              kotoba — label terpanjang "That's tough / That sounds difficult"
+              (36 char) butuh 5 baris @9px di 320px; clamp-4 menyisakan 1/876
+              terpotong di 320px, clamp-5 = 0/876 (terverifikasi). */}
+          <span className={`text-[9px] font-bold text-sumi/50 uppercase tracking-wider shrink-0 w-full text-center leading-tight ${dense ? 'line-clamp-2' : 'line-clamp-5'}`}>
             {blind ? '？' : labelFn(it)}
           </span>
         </button>
