@@ -12,6 +12,7 @@ import katakanaData from "../data/katakana.json";
 import kotobaData from "../data/kotoba.json";
 import grammarData from "../data/grammar.json";
 import kanjiData from "../data/kanji.json";
+import poemsData from "../data/poems.json";
 
 import { Button } from "../components/ui/Button";
 
@@ -20,7 +21,15 @@ const allData = [
   ...katakanaData,
   ...kotobaData,
   ...grammarData,
-  ...kanjiData
+  ...kanjiData,
+  ...poemsData.map((p) => ({
+    id: p.id,
+    char: p.title,
+    romaji: p.titleReading,
+    meaning: p.meaning,
+    meaning_id: p.meaning_id,
+    type: 'poem',
+  })),
 ];
 
 function shuffle(array) {
@@ -71,6 +80,7 @@ export function Review() {
       else if (currentWeakChar.type === 'kotoba') pool = kotobaData;
       else if (currentWeakChar.type === 'grammar') pool = grammarData;
       else if (currentWeakChar.type === 'kanji') pool = kanjiData;
+      else if (currentWeakChar.type === 'poem') pool = poemsData;
 
       const distractorsRaw = pool.filter(item => item.id !== currentWeakChar.id);
 
@@ -214,7 +224,7 @@ export function Review() {
               <div key={idx} className="flex items-baseline gap-2 bg-kinari-light px-5 py-3 border-[3px] border-sumi/10 shadow-sm">
                 <span className={`font-serif text-shu font-black ${item.type === 'grammar' ? 'text-xl' : 'text-3xl'}`}>{item.char}</span>
                 <span className="text-xs text-sumi/60 font-bold uppercase tracking-widest">
-                  {item.type === 'grammar' ? item.answer : item.type === 'kotoba' || item.type === 'kanji' ? item.meaning : item.romaji}
+                  {item.type === 'grammar' ? item.answer : item.type === 'kotoba' || item.type === 'kanji' || item.type === 'poem' ? item.meaning : item.romaji}
                 </span>
               </div>
             ))}
@@ -242,7 +252,8 @@ export function Review() {
     const isKotoba = currentWeakChar.type === 'kotoba';
     const isKanji = currentWeakChar.type === 'kanji';
     const isGrammar = currentWeakChar.type === 'grammar';
-    const isKana = !isKotoba && !isKanji && !isGrammar;
+    const isPoem = currentWeakChar.type === 'poem';
+    const isKana = !isKotoba && !isKanji && !isGrammar && !isPoem;
 
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">

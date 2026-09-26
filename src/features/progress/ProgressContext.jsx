@@ -97,6 +97,9 @@ export const ACHIEVEMENT_META = {
   first_stroke: { label: '一', title: 'First Stroke', desc: 'Lulus kuis tulis level Jiplak' },
   blind_writer: { label: '盲', title: 'Blind Writer', desc: 'Lulus kuis tulis level Buta' },
   blind_ten: { label: '闇', title: 'Dark Ink', desc: 'Lulus level Buta di 10 karakter' },
+  // Speaking (2) — dari fitur Latihan Bicara (話)
+  first_voice: { label: '声', title: 'First Voice', desc: 'Selesaikan latihan bicara pertama' },
+  poem_reciter: { label: '詩', title: 'Poem Reciter', desc: 'Selesaikan 3 puisi' },
   // Language Arts (6)
   bunpo_student: { label: '文', title: 'Bunpo Student', desc: '10 Grammar sessions' },
   bunpo_master: { label: '典', title: 'Bunpo Master', desc: '50 Grammar sessions' },
