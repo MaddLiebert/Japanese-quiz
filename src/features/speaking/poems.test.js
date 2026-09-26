@@ -4,11 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { hasKanji } from './speechMatch.js';
-
-// Helper lokal sementara — di Task 6b GANTI jadi:
-// import { lineText, lineReading } from './speaking.js';
-const lineText = (line) => (line.segments || []).map((s) => s.t).join('');
-const lineReading = (line) => (line.segments || []).map((s) => s.r || s.t).join('');
+import { lineText, lineReading } from './speaking.js';
 
 // Modul murni tidak meng-import JSON; test memuat sendiri (pola fitur writing).
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
