@@ -30,6 +30,18 @@ export const speakXpFor = (item, level) => {
 // XP satu baris puisi pada level tertentu (dipakai PoemSession).
 export const lineXpFor = (level) => speakXpFor({ kind: 'poem-line' }, level);
 
+// Jenis prompt yang tampil saat teks disembunyikan (level Buta):
+// - kana (hiragana/katakana): 'audio' — romaji = bacaan itu sendiri, jadi
+//   menampilkannya bikin latihan bohong; user mendengar lalu menirukan.
+// - lainnya (kotoba/kanji/puisi): 'meaning' — arti bahasa Indonesia/Inggris.
+export const speakPromptKind = (item, level) => {
+  if (!speakLevel(level).showText) {
+    const kind = item?.kind;
+    return kind === 'hiragana' || kind === 'katakana' ? 'audio' : 'meaning';
+  }
+  return 'text';
+};
+
 // Teks permukaan satu baris puisi (gabungan t).
 export const lineText = (line) =>
   (line?.segments || []).map((s) => s?.t || '').join('');

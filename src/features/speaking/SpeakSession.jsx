@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { Volume2, Mic, SkipForward, Check } from 'lucide-react';
 import { useSpeechRecognition } from './useSpeechRecognition';
 import { matchSpeech, verdictOf } from './speechMatch';
-import { speakXpFor, speakLevel, DEFAULT_SPEAK_LEVEL } from './speaking';
+import { speakXpFor, speakLevel, speakPromptKind, DEFAULT_SPEAK_LEVEL } from './speaking';
 import { useItemProgress, useAchievements } from '../progress/ProgressContext';
 import { useEffectLayer } from '../effects/EffectContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -41,6 +41,9 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
   const readingText = item
     ? (item.kind === 'kanji' ? (item.readings || []).join('、') : (item.kind === 'kotoba' ? artiText : (item.meaning || '')))
     : '';
+  // Mode Buta: kana pakai prompt audio (romaji = bacaan, menampilkannya bohong), lainnya arti.
+  const promptKind = speakPromptKind(item, level);
+  const audioPrompt = !lv.showText && promptKind === 'audio';
 
   const next = () => {
     clearTimeout(advanceRef.current);
@@ -122,15 +125,21 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
         className="flex-grow flex flex-col items-center justify-center text-center"
       >
         <div className="text-[80px] sm:text-[120px] font-serif font-black text-sumi leading-none mb-6 select-none">
-          {lv.showText ? item.display : '？'}
+          {lv.showText ? item.display : (audioPrompt ? '🎧' : '？')}
         </div>
         {lv.showReading && readingText && (
           <p className="text-sm font-bold text-sumi/60 mb-2">{readingText}</p>
         )}
-        {lv.showMeaning && item.kind === 'kanji' && (
-          <p className="text-sm font-bold text-sumi/60 mb-2">{artiText}</p>
+        {!lv.showText && audioPrompt && (
+          <button
+            type="button"
+            onClick={handleListen}
+            className="mb-3 flex items-center gap-2 px-4 py-2 bg-kinari border-[3px] border-sumi font-black text-[11px] uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all"
+          >
+            <Volume2 size={15} /> {id ? 'Putar & Tirukan' : 'Play & Repeat'}
+          </button>
         )}
-        {!lv.showText && (
+        {!lv.showText && !audioPrompt && (
           <p className="text-lg font-serif font-bold text-sumi mb-2">{artiText || '…'}</p>
         )}
         {item.sub && (
