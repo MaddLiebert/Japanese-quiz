@@ -152,6 +152,7 @@ The product currently exists as a functional prototype containing:
 * **[EXISTING]** All poem text and furigana readings imported from Aozora Bunko (青空文庫) sources via `scripts/import-aozora-poems.mjs` + `scripts/aozora-readings.json`; the importer throws on any unmapped kanji run (no guessing).
 * **[EXISTING]** Pronunciation scored via Web Speech API (`ja-JP`) with kana-normalized fuzzy matching (katakana→hiragana, punctuation stripped, Levenshtein similarity ≥ 0.7 to pass).
 * **[EXISTING]** Kanji items accept any onyomi/kunyomi reading (readings split from `、`, okurigana markers handled).
+* **[EXISTING]** Mic popup while listening (`MicOverlay` in both `SpeakSession` and `PoemSession`): pulsing mic icon + real-time audio spectrum (`useMicLevel` — getUserMedia + AnalyserNode, bars from pure `micSpectrum.js`) + live interim transcript from the Web Speech API + a Cancel button.
 * **[EXISTING]** Three free-select difficulty levels (no gating): Pandu (all hints, ×1 XP), Ingat (text only, ×1.5), Buta (text hidden, meaning as prompt, ×2).
 * **[EXISTING]** Poems render line-by-line with furigana (`<ruby>`), toggleable; each passed line awards 5 XP × level, and a completed poem is recorded as one SRS item (+25 XP × level).
 * **[EXISTING]** Poem translations: poetic Indonesian **per line** for all 19 poems (diction/phrasing matched to the poem's imagery, not literal) in `src/data/poem-translations.json`; shown in `PoemSession` behind a "Terjemahan" toggle (default OFF at level Buta) via pure module `src/features/speaking/poemTranslation.js`.
