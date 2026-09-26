@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import HanziWriter from 'hanzi-writer';
-import { WRITE_COLORS, writeCanvasSize, writeQuizOptions, writeLevel, DEFAULT_WRITE_LEVEL } from './writeQuiz.js';
+import { writeCanvasSize, writeQuizOptions, writeLevel, writeColorsFor, DEFAULT_WRITE_LEVEL } from './writeQuiz.js';
 import { localCharDataLoader } from './strokeLoader.js';
+import { useTheme } from '../../context/ThemeContext.jsx';
 
 /**
  * mode: 'animate' → putar animasi urutan goresan (sekali)
@@ -23,6 +24,8 @@ export function StrokeCanvas({
 }) {
   const mountRef = useRef(null);
   const writerRef = useRef(null);
+  const { theme } = useTheme();
+  const colors = writeColorsFor(theme);
 
   const cfg = writeLevel(level);
   const showOutline = mode === 'quiz' ? cfg.showOutline : true;
@@ -72,10 +75,10 @@ export function StrokeCanvas({
       padding: Math.round(px * 0.08),
       showOutline,
       showCharacter: false,
-      strokeColor: WRITE_COLORS.strokeColor,
-      outlineColor: WRITE_COLORS.outlineColor,
-      highlightColor: WRITE_COLORS.highlightColor,
-      drawingColor: WRITE_COLORS.drawingColor,
+      strokeColor: colors.strokeColor,
+      outlineColor: colors.outlineColor,
+      highlightColor: colors.highlightColor,
+      drawingColor: colors.drawingColor,
       drawingWidth: Math.max(3, Math.round(px * 0.03)),
       strokeWidth: Math.max(2, Math.round(px * 0.018)),
       outlineWidth: Math.max(1, Math.round(px * 0.01)),
@@ -98,7 +101,7 @@ export function StrokeCanvas({
       el.innerHTML = '';
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [char, mode, level, playKey, size]);
+  }, [char, mode, level, playKey, size, theme]);
 
   return (
     <div className="relative inline-block">

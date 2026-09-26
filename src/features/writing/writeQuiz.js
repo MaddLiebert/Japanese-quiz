@@ -1,12 +1,28 @@
 // Params kuis tulis — murni & dites (node --test). Semua angka tune ada di sini.
 // Dipakai StrokeCanvas.jsx saat memanggil writer.quiz(writeQuizOptions(level, handlers)).
 
+// Palet tema terang (default): tinta gelap di atas kertas kinari terang.
 export const WRITE_COLORS = {
   strokeColor: '#1a1a1a',   // goresan contoh (sumi)
   outlineColor: '#c9c4b6',  // garis bayangan (kertas)
   highlightColor: '#182b49',// kilau saat goresan benar (ai)
   drawingColor: '#d3382f',  // coretan user (shu)
 };
+
+// Palet tema gelap: tinta terang di atas kanvas gelap (#1c1d21), kalau tidak
+// tinta #1a1a1a menyatu dengan kanvas (bug kontras dark mode).
+// Nilai diambil dari variabel tema di src/index.css (.dark) supaya konsisten.
+export const WRITE_COLORS_DARK = {
+  strokeColor: '#f3efe6',   // sumi dark
+  outlineColor: '#6b6a66',  // abu terang, jelas tapi tidak mendominasi
+  highlightColor: '#4f80c2',// ai dark
+  drawingColor: '#ef4c3c',  // shu dark
+};
+
+// hanzi-writer HANYA menerima hex/rgb literal (colorStringToVals) — CSS var
+// akan throw "Invalid color". Jadi tema dipetakan ke palet di sini.
+export const writeColorsFor = (theme) =>
+  (theme === 'dark' ? WRITE_COLORS_DARK : WRITE_COLORS);
 
 // 3 level kesulitan. Naik level = lebih sedikit bantuan + XP lebih besar.
 //   trace  → jiplak bayangan (ramah pemula)
