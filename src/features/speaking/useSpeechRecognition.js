@@ -9,17 +9,10 @@ export const getRecognitionCtor = () => {
 
 export const isSpeechRecognitionSupported = () => Boolean(getRecognitionCtor());
 
-// Deteksi perangkat mobile dari user agent (murni → mudah diuji).
-export const isMobileUA = (ua) =>
-  /Android|iPhone|iPad|iPod|Windows Phone|Opera Mini|IEMobile|Mobile/i.test(String(ua || ''));
-
-export const isMobileDevice = () => {
-  if (typeof navigator === 'undefined') return false;
-  const ua = navigator.userAgent || '';
-  if (isMobileUA(ua)) return true;
-  // iPadOS 13+ memakai UA desktop ('Macintosh') tapi layar sentuh >1 titik.
-  return (navigator.maxTouchPoints || 0) > 1 && /Macintosh/.test(ua);
-};
+// Batas maksimum satu sesi dengar (ms): backstop kalau engine tidak mengirim
+// event apa pun (jarang, tapi pernah terjadi) — popup tidak nyangkut selamanya
+// dan user tetap dapat umpan balik.
+export const MAX_LISTEN_MS = 12000;
 
 // Hasil akhir satu sesi dengar. Sebagian HP hanya mengirim hasil interim lalu
 // berhenti (tanpa final) — selamatkan interim terakhir daripada membuang
@@ -76,9 +69,11 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
 
     let settled = false;
     let lastInterim = '';
+    let guardId = null;
     const finish = (texts) => {
       if (settled) return;
       settled = true;
+      if (guardId) clearTimeout(guardId);
       if (recRef.current === rec) recRef.current = null;
       if (settleRef.current === settle) settleRef.current = null;
       setListening(false);
@@ -132,6 +127,12 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
     setError(null);
     setInterim('');
     setListening(true);
+    guardId = setTimeout(() => {
+      if (settled) return;
+      const salvaged = resolveUtterances([], lastInterim);
+      if (!salvaged.length) setError('no-speech');
+      finish(salvaged);
+    }, MAX_LISTEN_MS);
     try { rec.start(); } catch { setError('unknown'); finish([]); }
   }), [lang]);
 

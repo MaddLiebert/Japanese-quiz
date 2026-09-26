@@ -6,26 +6,22 @@
 // (pola GachaSlotOverlay) supaya `fixed` tidak terkurung transform milik
 // parent (motion.div di session).
 //
-// PENTING (HP): level suara real butuh getUserMedia KEDUA. Di Android/iOS
-// stream kedua berebut mikrofon dengan SpeechRecognition sehingga ucapan tidak
-// terdeteksi sama sekali. Karena itu di HP meter real DIMATIKAN (bars memakai
-// animasi CSS); di desktop tetap real (Chrome desktop aman paralel).
+// PENTING: meter level REAL (getUserMedia + AnalyserNode) SENGAJA TIDAK
+// dipakai di sini. Membuka stream getUserMedia KEDUA saat SpeechRecognition
+// sedang jalan membuat rebutan mikrofon — di Android/iOS (dan sebagian Chrome
+// desktop) engine tidak menerima audio sama sekali sehingga ucapan tidak pernah
+// terdeteksi. Indikator suara yang JUJUR adalah teks interim di bawah: begitu
+// kata dikenali, teksnya tampil live. Spectrum di sini murni animasi CSS
+// (tampilan tetap sama, tanpa risiko merebut mic).
 import { Mic } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import { useMicLevel } from './useMicLevel';
-import { isMobileDevice } from './useSpeechRecognition';
-import { MIC_BAR_COUNT, displayHeights } from './micSpectrum';
+import { MIC_BAR_COUNT } from './micSpectrum';
 import { useLanguage } from '../../context/LanguageContext';
 
 export function MicOverlay({ open = false, interim = '', onCancel }) {
   const { language } = useLanguage();
   const id = language === 'id';
-  const meterAllowed = !isMobileDevice();
-  const bars = useMicLevel({ active: open && meterAllowed });
   if (!open) return null;
-
-  const heights = displayHeights(bars);            // [] = level suara tidak tersedia
-  const live = heights.length > 0;
 
   const overlay = (
     <div
@@ -54,14 +50,13 @@ export function MicOverlay({ open = false, interim = '', onCancel }) {
 
         <div
           data-testid="mic-spectrum"
-          data-live={live ? 'true' : 'false'}
           className="flex items-end justify-center gap-1 h-8 w-full border-b-[3px] border-sumi pb-0.5"
         >
-          {(live ? heights : new Array(MIC_BAR_COUNT).fill(28)).map((h, i) => (
+          {new Array(MIC_BAR_COUNT).fill(0).map((_, i) => (
             <span
               key={i}
-              className={`w-1.5 bg-shu ${live ? '' : 'animate-pulse'}`}
-              style={live ? { height: `${h}%` } : { height: `${h}%`, animationDelay: `${i * 90}ms` }}
+              className="w-1.5 bg-shu animate-pulse"
+              style={{ height: '28%', animationDelay: `${i * 90}ms` }}
             />
           ))}
         </div>
