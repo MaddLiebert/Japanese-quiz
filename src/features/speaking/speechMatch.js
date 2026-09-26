@@ -94,3 +94,22 @@ export const verdictOf = (score) => {
   if (s >= SPEAK_PASS) return 'pass';
   return 'retry';
 };
+
+// Bacaan dari item kanji.json: onyomi + kunyomi dipisah '、'.
+// Buang placeholder '-', tanda kurung, dan tanda hubung okurigana di tepi.
+// "ひと(つ)" → ["ひと", "ひとつ"]; "-び" → ["び"]; "イチ、イツ" → ["イチ","イツ"]
+export const readingsFromKanji = (item) => {
+  const out = [];
+  const push = (raw) => {
+    if (!raw) return;
+    for (const part of String(raw).split('、')) {
+      const pre = part.split(/[（(]/)[0].replace(/^-+|-+$/g, '').trim();
+      const full = part.replace(/[（()）]/g, '').replace(/^-+|-+$/g, '').trim();
+      if (pre && pre !== '-') out.push(pre);
+      if (full && full !== '-' && full !== pre) out.push(full);
+    }
+  };
+  push(item?.onyomi);
+  push(item?.kunyomi);
+  return [...new Set(out)];
+};
