@@ -1,0 +1,132 @@
+[
+  {
+    "id": "poem_basho_furuike",
+    "title": "古池や",
+    "titleReading": "ふるいけや",
+    "author": "松尾芭蕉",
+    "authorReading": "まつおばしょう",
+    "type": "haiku",
+    "excerpt": false,
+    "meaning": "The old pond; a frog jumps in — the sound of water.",
+    "meaning_id": "Kolam tua; katak melompat — bunyi air.",
+    "lines": [
+      { "segments": [{ "t": "古池", "r": "ふるいけ" }, { "t": "や" }] },
+      { "segments": [{ "t": "蛙", "r": "かわず" }, { "t": "飛", "r": "と" }, { "t": "びこむ" }] },
+      { "segments": [{ "t": "水", "r": "みず" }, { "t": "の" }, { "t": "音", "r": "おと" }] }
+    ]
+  },
+  {
+    "id": "poem_basho_natsukusa",
+    "title": "夏草や",
+    "titleReading": "なつくさや",
+    "author": "松尾芭蕉",
+    "authorReading": "まつおばしょう",
+    "type": "haiku",
+    "excerpt": false,
+    "meaning": "Summer grass — all that remains of warriors' dreams.",
+    "meaning_id": "Rumput musim panas — sisa mimpi para prajurit.",
+    "lines": [
+      { "segments": [{ "t": "夏草", "r": "なつくさ" }, { "t": "や" }] },
+      { "segments": [{ "t": "兵", "r": "つわもの" }, { "t": "どもが" }] },
+      { "segments": [{ "t": "夢", "r": "ゆめ" }, { "t": "の" }, { "t": "跡", "r": "あと" }] }
+    ]
+  },
+  {
+    "id": "poem_issa_meigetsu",
+    "title": "名月を",
+    "titleReading": "めいげつを",
+    "author": "小林一茶",
+    "authorReading": "こばやしいっさ",
+    "type": "haiku",
+    "excerpt": false,
+    "meaning": "The full moon — and a child crying, \"give it to me!\"",
+    "meaning_id": "Bulan purnama — dan anak kecil menangis, \"ambilkan untukku!\"",
+    "lines": [
+      { "segments": [{ "t": "名月", "r": "めいげつ" }, { "t": "を" }] },
+      { "segments": [{ "t": "とってくれろと" }] },
+      { "segments": [{ "t": "泣", "r": "な" }, { "t": "く" }, { "t": "子", "r": "こ" }, { "t": "かな" }] }
+    ]
+  },
+  {
+    "id": "poem_buson_nanohana",
+    "title": "菜の花や",
+    "titleReading": "なのはなや",
+    "author": "与謝蕪村",
+    "authorReading": "よさぶそん",
+    "type": "haiku",
+    "excerpt": false,
+    "meaning": "Canola blossoms — the moon in the east, the sun in the west.",
+    "meaning_id": "Bunga kanola — bulan di timur, matahari di barat.",
+    "lines": [
+      { "segments": [{ "t": "菜", "r": "な" }, { "t": "の" }, { "t": "花", "r": "はな" }, { "t": "や" }] },
+      { "segments": [{ "t": "月", "r": "つき" }, { "t": "は" }, { "t": "東", "r": "ひがし" }, { "t": "に" }] },
+      { "segments": [{ "t": "日", "r": "ひ" }, { "t": "は" }, { "t": "西", "r": "にし" }, { "t": "に" }] }
+    ]
+  },
+  {
+    "id": "poem_komachi_hananoiro",
+    "title": "花の色は",
+    "titleReading": "はなのいろは",
+    "author": "小野小町",
+    "authorReading": "おののこまち",
+    "type": "tanka",
+    "excerpt": false,
+    "meaning": "The blossoms' colour faded while, in vain, I grew old watching the long rains.",
+    "meaning_id": "Warna bunga pun memudar — masa mudaku terbuang dalam hujan panjang.",
+    "lines": [
+      { "segments": [{ "t": "花", "r": "はな" }, { "t": "の" }, { "t": "色", "r": "いろ" }, { "t": "は" }] },
+      { "segments": [{ "t": "移", "r": "うつ" }, { "t": "りにけりな" }] },
+      { "segments": [{ "t": "いたづらに" }] },
+      { "segments": [{ "t": "わが" }, { "t": "身", "r": "み" }, { "t": "世", "r": "よ" }, { "t": "にふる" }] },
+      { "segments": [{ "t": "ながめせしまに" }] }
+    ]
+  },
+  {
+    "id": "poem_kenji_amenimomakezu",
+    "title": "雨にも負けず",
+    "titleReading": "あめにもまけず",
+    "author": "宮沢賢治",
+    "authorReading": "みやざわけんじ",
+    "type": "free",
+    "excerpt": true,
+    "meaning": "Unbeaten by rain, by wind, by snow and summer heat (excerpt).",
+    "meaning_id": "Tak kalah oleh hujan, angin, salju, maupun panasnya musim panas (kutipan).",
+    "lines": [
+      { "segments": [{ "t": "雨", "r": "あめ" }, { "t": "にも" }, { "t": "負", "r": "ま" }, { "t": "けず" }] },
+      { "segments": [{ "t": "風", "r": "かぜ" }, { "t": "にも" }, { "t": "負", "r": "ま" }, { "t": "けず" }] },
+      { "segments": [{ "t": "雪", "r": "ゆき" }, { "t": "にも" }, { "t": "夏", "r": "なつ" }, { "t": "の" }, { "t": "暑", "r": "あつ" }, { "t": "さにも" }, { "t": "負", "r": "ま" }, { "t": "けぬ" }] }
+    ]
+  },
+  {
+    "id": "poem_basho_yamaji",
+    "title": "山路来て",
+    "titleReading": "やまじきて",
+    "author": "松尾芭蕉",
+    "authorReading": "まつおばしょう",
+    "type": "haiku",
+    "excerpt": false,
+    "meaning": "Along the mountain path — somehow lovely, the violets.",
+    "meaning_id": "Di jalan pegunungan — entah kenapa indah, bunga violet.",
+    "lines": [
+      { "segments": [{ "t": "山", "r": "やま" }, { "t": "路", "r": "じ" }, { "t": "来", "r": "き" }, { "t": "て" }] },
+      { "segments": [{ "t": "何", "r": "なに" }, { "t": "やらゆかし" }] },
+      { "segments": [{ "t": "すみれ" }, { "t": "草", "r": "ぐさ" }] }
+    ]
+  },
+  {
+    "id": "poem_shiki_kakikueba",
+    "title": "柿食えば",
+    "titleReading": "かきくえば",
+    "author": "正岡子規",
+    "authorReading": "まさおかしき",
+    "type": "haiku",
+    "excerpt": false,
+    "meaning": "Eating a persimmon — a bell rings at Hōryū-ji.",
+    "meaning_id": "Menyantap kesemek — lonceng pun berbunyi di Hōryū-ji.",
+    "lines": [
+      { "segments": [{ "t": "柿", "r": "かき" }, { "t": "食", "r": "く" }, { "t": "えば" }] },
+      { "segments": [{ "t": "鐘", "r": "かね" }, { "t": "が" }, { "t": "鳴", "r": "な" }, { "t": "るなり" }] },
+      { "segments": [{ "t": "法隆寺", "r": "ほうりゅうじ" }] }
+    ]
+  }
+]
