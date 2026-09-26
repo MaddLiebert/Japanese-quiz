@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  SPEAK_XP, SPEAK_LEVELS, DEFAULT_SPEAK_LEVEL, speakLevel, speakXpFor, lineXpFor,
+  SPEAK_XP, SPEAK_LEVELS, DEFAULT_SPEAK_LEVEL, speakLevel, speakXpFor, lineXpFor, speakPromptKind,
   lineText, lineReading,
   kanaSpeakItems, kotobaSpeakItems, kanjiSpeakItems, poemLineItems,
   filterKanaByType,
@@ -38,6 +38,16 @@ test('speakXpFor + level: XP = dasar × pengali (dibulatkan)', () => {
   assert.equal(speakXpFor({ kind: 'ngawur' }, 'blind'), 0);        // kind tak dikenal
   assert.equal(lineXpFor('guide'), 5);
   assert.equal(lineXpFor('recall'), 8);                            // round(5 × 1.5)
+});
+
+test('speakPromptKind: mode Buta — kana pakai prompt audio, lainnya arti', () => {
+  assert.equal(speakPromptKind({ kind: 'hiragana' }, 'guide'), 'text');
+  assert.equal(speakPromptKind({ kind: 'katakana' }, 'recall'), 'text');
+  assert.equal(speakPromptKind({ kind: 'hiragana' }, 'blind'), 'audio');   // romaji = bacaan → jangan tampil
+  assert.equal(speakPromptKind({ kind: 'katakana' }, 'blind'), 'audio');
+  assert.equal(speakPromptKind({ kind: 'kotoba' }, 'blind'), 'meaning');
+  assert.equal(speakPromptKind({ kind: 'kanji' }, 'blind'), 'meaning');
+  assert.equal(speakPromptKind(null, 'blind'), 'meaning');
 });
 
 test('lineText & lineReading: gabung segmen', () => {

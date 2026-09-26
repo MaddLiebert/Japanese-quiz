@@ -85,20 +85,23 @@ export function Speaking() {
   }
 
   const mastered = (itemId) => itemProgress[itemId]?.status === 'mastered';
+  const blind = !SPEAK_LEVELS[level]?.showText;
 
-  const itemGrid = (items, labelFn) => (
-    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+  const itemGrid = (items, labelFn, dense = false) => (
+    <div className={`grid gap-2 ${dense ? 'grid-cols-5 sm:grid-cols-8 lg:grid-cols-10' : 'grid-cols-3 sm:grid-cols-5 lg:grid-cols-6'}`}>
       {items.map((it, i) => (
         <button
           key={it.id}
           type="button"
           onClick={() => setSession({ items, index: i })}
-          className="bg-kinari border-[3px] border-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:shadow-[1px_1px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] transition-all p-3 flex flex-col items-center gap-1 relative"
+          className={`bg-kinari border-[3px] border-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:shadow-[1px_1px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex flex-col items-center relative ${
+            dense ? 'px-1 py-2 gap-0.5' : 'p-2.5 gap-1'
+          }`}
         >
-          {mastered(it.id) && <span className="absolute top-1 right-1 text-[9px] text-matcha font-black">✓</span>}
-          <span className="text-3xl font-serif font-black text-sumi leading-none">{it.display}</span>
-          <span className="text-[10px] font-bold text-sumi/50 uppercase tracking-wider truncate w-full">
-            {labelFn(it)}
+          {mastered(it.id) && <span className="absolute top-0.5 right-0.5 text-[9px] text-matcha font-black">✓</span>}
+          <span className={`font-serif font-black text-sumi leading-none ${dense ? 'text-2xl' : 'text-3xl'}`}>{it.display}</span>
+          <span className="text-[9px] font-bold text-sumi/50 uppercase tracking-wider truncate w-full text-center">
+            {blind ? '？' : labelFn(it)}
           </span>
         </button>
       ))}
@@ -170,12 +173,12 @@ export function Speaking() {
               </button>
             ))}
           </div>
-          {itemGrid(hiraganaItems, (it) => it.meaning)}
+          {itemGrid(hiraganaItems, (it) => it.meaning, true)}
         </section>
       )}
 
       {tab === 'katakana' && (
-        <section>{itemGrid(katakanaItems, (it) => it.meaning)}</section>
+        <section>{itemGrid(katakanaItems, (it) => it.meaning, true)}</section>
       )}
 
       {tab === 'kotoba' && (
@@ -204,7 +207,7 @@ export function Speaking() {
               </button>
             ))}
           </div>
-          {itemGrid(kanjiItems, (it) => (id ? it.meaningId : it.meaning))}
+          {itemGrid(kanjiItems, (it) => (id ? it.meaningId : it.meaning), true)}
         </section>
       )}
 
