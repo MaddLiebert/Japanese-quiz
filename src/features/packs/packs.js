@@ -55,6 +55,38 @@ export const getPack = (id) => PACKS.find((p) => p.id === id) || null;
 // Pack "siap pakai" = punya visual & voice (termasuk placeholder 'dummy').
 export const isPackReady = (pack) => Boolean(pack && pack.visual && pack.voice);
 
+// Info isi gacha untuk ditampilkan di Shop: semua pack ready + peluang (%) + status milik.
+// `ownedIds` boleh null / bukan array / berisi id hantu — semua aman.
+// Peluang dihitung dari bobot rarity, dibulatkan 1 desimal, lalu total dikoreksi
+// ke 100% supaya tidak ada selisih pembulatan yang bikin bingung pemain.
+export const gachaPoolInfo = (ownedIds = []) => {
+  const pool = PACKS.filter(isPackReady);
+  if (pool.length === 0) return [];
+  const owned = Array.isArray(ownedIds) ? ownedIds : [];
+  const total = pool.reduce((sum, p) => sum + (PACK_RARITY[p.rarity]?.weight ?? 1), 0);
+  if (total <= 0) return [];
+  const raw = pool.map((p) => (PACK_RARITY[p.rarity]?.weight ?? 1) / total * 100);
+  const rounded = raw.map((c) => Math.round(c * 10) / 10);
+  // Selisih pembulatan dibebankan ke entri terbesar (biasanya common) biar total pas 100.
+  const drift = Math.round((100 - rounded.reduce((s, c) => s + c, 0)) * 10) / 10;
+  if (drift !== 0) {
+    let idx = 0;
+    for (let i = 1; i < rounded.length; i++) if (rounded[i] > rounded[idx]) idx = i;
+    rounded[idx] = Math.round((rounded[idx] + drift) * 10) / 10;
+  }
+  return pool.map((p, i) => ({
+    id: p.id,
+    name: p.name,
+    kanji: p.kanji,
+    icon: p.icon,
+    rarity: p.rarity,
+    desc: p.desc,
+    desc_en: p.desc_en,
+    chance: rounded[i],
+    owned: owned.includes(p.id),
+  }));
+};
+
 // Undian gacha berbobot rarity. `rng` bisa di-inject untuk testing.
 // poolIds  — batasi undian ke daftar id pack tertentu (untuk BANNER EVENT).
 //            null = semua pack (perilaku lama, backward-compatible).
