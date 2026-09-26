@@ -7,7 +7,7 @@ import { Furigana } from '../features/speaking/Furigana';
 import {
   kanaSpeakItems, kotobaSpeakItems, kanjiSpeakItems, filterKanaByType,
   SPEAK_LEVELS, DEFAULT_SPEAK_LEVEL,
-  POEM_THEMES, filterPoemsByTheme,
+  POEM_THEMES, filterPoemsByTheme, gridTextSize,
 } from '../features/speaking/speaking';
 import { isSpeechRecognitionSupported } from '../features/speaking/useSpeechRecognition';
 import { useItemProgress } from '../features/progress/ProgressContext';
@@ -19,12 +19,24 @@ import kanjiData from '../data/kanji.json';
 import poemsData from '../data/poems.json';
 
 const TABS = [
-  { key: 'hiragana', label: 'Hiragana ひらがな' },
-  { key: 'katakana', label: 'Katakana カタカナ' },
-  { key: 'kotoba', label: 'Kotoba 言葉' },
-  { key: 'kanji', label: 'Kanji 漢字' },
-  { key: 'poem', label: 'Puisi 詩' },
+  { key: 'hiragana', label: 'Hiragana', jp: 'ひらがな' },
+  { key: 'katakana', label: 'Katakana', jp: 'カタカナ' },
+  { key: 'kotoba', label: 'Kotoba', jp: '言葉' },
+  { key: 'kanji', label: 'Kanji', jp: '漢字' },
+  { key: 'poem', label: 'Puisi', jp: '詩' },
 ];
+
+// Ukuran teks kartu grid: kunci dari gridTextSize() → kelas Tailwind literal
+// (kelas harus literal agar terdeteksi scanner Tailwind v4). `dense` = kana/kanji
+// (5–10 kolom) memakai ukuran lebih kecil daripada kotoba (2–6 kolom).
+// Angka mobile diukur: karakter Jepang = 1 em, lebar dalam kartu 320px =
+// 37px (dense) / 65px (kotoba) → font dipilih agar maksimal 2 baris.
+const GRID_TEXT_CLASS = {
+  dense: { lg: 'text-2xl', sm: 'text-base sm:text-xl' },
+  wide: { lg: 'text-base sm:text-3xl', md: 'text-sm sm:text-2xl', sm: 'text-xs sm:text-xl' },
+};
+const gridTextClass = (display, dense) =>
+  (dense ? GRID_TEXT_CLASS.dense : GRID_TEXT_CLASS.wide)[gridTextSize(display, dense)];
 
 const KANA_TYPES = [
   { key: 'all', label: 'Semua' },
@@ -92,18 +104,21 @@ export function Speaking() {
   const blind = !SPEAK_LEVELS[level]?.showText;
 
   const itemGrid = (items, labelFn, dense = false) => (
-    <div className={`grid gap-2 ${dense ? 'grid-cols-5 sm:grid-cols-8 lg:grid-cols-10' : 'grid-cols-3 sm:grid-cols-5 lg:grid-cols-6'}`}>
+    <div className={`grid gap-2 auto-rows-fr ${dense ? 'grid-cols-5 sm:grid-cols-8 lg:grid-cols-10' : 'grid-cols-3 sm:grid-cols-5 lg:grid-cols-6'}`}>
       {items.map((it, i) => (
         <button
           key={it.id}
           type="button"
           onClick={() => setSession({ items, index: i })}
-          className={`bg-kinari border-[3px] border-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:shadow-[1px_1px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex flex-col items-center relative ${
+          className={`bg-kinari border-[3px] border-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:shadow-[1px_1px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex flex-col items-center justify-center relative ${
             dense ? 'px-1 py-2 gap-0.5' : 'p-2.5 gap-1'
           }`}
         >
           {mastered(it.id) && <span className="absolute top-0.5 right-0.5 text-[9px] text-matcha font-black">✓</span>}
-          <span className={`font-serif font-black text-sumi leading-none ${dense ? 'text-2xl' : 'text-3xl'}`}>{it.display}</span>
+          {/* Kana/kanji (dense) 1–2 huruf: whitespace-nowrap supaya yoon きゃ tidak
+              membungkus (dulu kartu 86px vs 62px). Kotoba TIDAK di-nowrap — teksnya
+              panjang, nowrap bikin meluber keluar kartu. */}
+          <span className={`font-serif font-black text-sumi leading-none text-center ${dense ? 'whitespace-nowrap' : 'break-words max-w-full'} ${gridTextClass(it.display, dense)}`}>{it.display}</span>
           <span className="text-[9px] font-bold text-sumi/50 uppercase tracking-wider truncate w-full text-center">
             {blind ? '？' : labelFn(it)}
           </span>
@@ -152,18 +167,25 @@ export function Speaking() {
         ))}
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 mb-8 overflow-x-auto no-scrollbar">
+      {/* Tabs — grid 5 kolom di HP: semua tab WAJIB muat tanpa scroll di 320px
+          (sebelumnya flex + tracking lebar → Kotoba/Kanji/Puisi off-screen).
+          Di sm+ kembali seperti desain lama: satu baris "HIRAGANA ひらがな". */}
+      <div className="grid grid-cols-5 sm:flex sm:items-end sm:gap-8 border-b-[2px] border-sumi/10 mb-8">
         {TABS.map((t) => (
           <button
             key={t.key}
             type="button"
             onClick={() => setTab(t.key)}
-            className={`pb-4 text-[10px] font-bold tracking-[0.3em] uppercase border-b-[4px] -mb-[2px] shrink-0 transition-colors ${
+            className={`pb-3 sm:pb-4 flex flex-col sm:flex-row items-center sm:items-baseline gap-0.5 sm:gap-2 border-b-[4px] -mb-[2px] sm:shrink-0 transition-colors ${
               tab === t.key ? 'border-ai text-ai' : 'border-transparent text-sumi/40 hover:text-sumi/70'
             }`}
           >
-            {t.label}
+            <span className="text-[9px] sm:text-[10px] font-bold tracking-normal sm:tracking-[0.3em] uppercase leading-tight text-center px-0.5">
+              {t.label}
+            </span>
+            <span className="text-xs sm:text-[10px] font-serif sm:font-sans font-black sm:font-bold tracking-normal sm:tracking-[0.3em] leading-none">
+              {t.jp}
+            </span>
           </button>
         ))}
       </div>

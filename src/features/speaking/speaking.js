@@ -102,6 +102,37 @@ export const poemLineItems = (poem) =>
 export const filterKanaByType = (data, type) =>
   !type || type === 'all' ? (data || []) : (data || []).filter((d) => d.type === type);
 
+// ── Ukuran teks Speaking (mobile-first, "fit in" di HP) ─────────────────────
+// Semua karakter Jepang = 1 em (full-width — terukur pada Noto Serif JP), jadi
+// lebar teks ≈ n × ukuran font. Helper mengembalikan KUNCI; JSX memetakan kunci
+// → kelas Tailwind literal (agar tetap terdeteksi scanner Tailwind v4).
+
+// Jumlah karakter (code point) teks tampilan — aman untuk null/undefined.
+export const displayCharCount = (display) => [...String(display ?? '')].length;
+
+// Ukuran karakter di kartu grid. `dense` = kana/kanji (grid 5–10 kolom),
+// lainnya kotoba (grid 2–6 kolom). Batas dipilih agar TIDAK ada kartu yang
+// melebihi 2 baris di lebar HP terkecil (320px) — dan kana yoon 2 huruf
+// (きゃ/しゅ) wajib 1 baris (dulu membungkus jadi 2 baris, kartu jadi 86px).
+export const gridTextSize = (display, dense = false) => {
+  const n = displayCharCount(display);
+  if (dense) return n <= 1 ? 'lg' : 'sm';
+  if (n <= 4) return 'lg';
+  if (n <= 6) return 'md';
+  return 'sm';
+};
+
+// Ukuran teks besar di sesi bicara. Batas: ≤3 huruf tetap 80px (desain lama),
+// 4–6 → 64px, 7–10 → 52px, >10 → 40px. Data terpanjang saat ini 10 huruf
+// (がっこうのそうじのひ) → maksimal 2 baris di 320px (dulu 3 baris @80px).
+export const speakTextSize = (display) => {
+  const n = displayCharCount(display);
+  if (n <= 3) return 'xl';
+  if (n <= 6) return 'lg';
+  if (n <= 10) return 'md';
+  return 'sm';
+};
+
 // ── Tema puisi (filter tab Puisi) ───────────────────────────────────────────
 // Urutan tetap: Semua → Klasik → tema bertema. `label` (id) & `labelEn` dipakai
 // chip UI sesuai bahasa aktif; `ja` untuk aksen aksara Jepang.

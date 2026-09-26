@@ -4,11 +4,20 @@ import { Volume2, Mic, SkipForward, Check } from 'lucide-react';
 import { useSpeechRecognition } from './useSpeechRecognition';
 import { MicOverlay } from './MicOverlay';
 import { matchSpeech, verdictOf } from './speechMatch';
-import { speakXpFor, speakLevel, speakPromptKind, DEFAULT_SPEAK_LEVEL } from './speaking';
+import { speakXpFor, speakLevel, speakPromptKind, speakTextSize, DEFAULT_SPEAK_LEVEL } from './speaking';
 import { useItemProgress, useAchievements } from '../progress/ProgressContext';
 import { useEffectLayer } from '../effects/EffectContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { playDramaticAudio } from '../../utils/audio';
+
+// Ukuran teks besar sesi: kunci speakTextSize() → kelas Tailwind literal.
+// Batasnya dipilih agar teks terpanjang (10 huruf) maksimal 2 baris di 320px.
+const SPEAK_TEXT_CLASS = {
+  xl: 'text-[80px] sm:text-[120px]',
+  lg: 'text-[56px] sm:text-[96px]',
+  md: 'text-[44px] sm:text-[72px]',
+  sm: 'text-[34px] sm:text-[56px]',
+};
 
 const ERROR_TEXT = {
   'not-supported': { id: 'Browser ini tidak mendukung pengenalan suara.', en: 'This browser does not support speech recognition.' },
@@ -126,7 +135,9 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
         animate={{ opacity: 1, y: 0 }}
         className="flex-grow flex flex-col items-center justify-center text-center"
       >
-        <div className="text-[80px] sm:text-[120px] font-serif font-black text-sumi leading-none mb-6 select-none">
+        {/* Ukuran font dihitung dari teks yang BENAR-BENAR tampil: mode Buta hanya
+            menampilkan 🎧/？, jadi jangan pakai ukuran teks panjang yang tersembunyi. */}
+        <div className={`font-serif font-black text-sumi leading-none mb-6 select-none text-center break-words ${SPEAK_TEXT_CLASS[speakTextSize(lv.showText ? item.display : '？')]}`}>
           {lv.showText ? item.display : (audioPrompt ? '🎧' : '？')}
         </div>
         {lv.showReading && readingText && (
@@ -148,12 +159,12 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-sumi/40 mb-6">{item.sub}</span>
         )}
 
-        <div className="flex items-center gap-3 mt-6">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-6">
           <button
             type="button"
             onClick={handleListen}
             disabled={busy || listening}
-            className="flex items-center gap-2 px-5 py-3 bg-kinari border-[3px] border-sumi font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-3 bg-kinari border-[3px] border-sumi font-black text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-50"
           >
             <Volume2 size={16} /> {id ? 'Dengar' : 'Listen'}
           </button>
@@ -161,7 +172,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
             <button
               type="button"
               onClick={next}
-              className="flex items-center gap-2 px-6 py-3 bg-matcha text-kinari-light border-[3px] border-sumi font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all"
+              className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-3 bg-matcha text-kinari-light border-[3px] border-sumi font-black text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all"
             >
               <Check size={16} /> {id ? 'Sudah Baca' : 'Read ✓'}
             </button>
@@ -170,7 +181,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
               type="button"
               onClick={handleSpeak}
               disabled={busy || listening}
-              className={`flex items-center gap-2 px-6 py-3 border-[3px] border-sumi font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-60 ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-3 border-[3px] border-sumi font-black text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-60 ${
                 listening ? 'bg-shu text-kinari-light animate-pulse' : 'bg-ai text-kinari-light'
               }`}
             >
@@ -181,9 +192,11 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
             type="button"
             onClick={next}
             disabled={busy || listening}
-            className="flex items-center gap-2 px-5 py-3 bg-kinari border-[3px] border-sumi/30 text-sumi/60 font-black text-xs uppercase tracking-widest active:translate-y-[2px] transition-all disabled:opacity-50"
+            aria-label={id ? 'Lewati' : 'Skip'}
+            title={id ? 'Lewati' : 'Skip'}
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-3 bg-kinari border-[3px] border-sumi/30 text-sumi/60 font-black text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest active:translate-y-[2px] transition-all disabled:opacity-50"
           >
-            <SkipForward size={16} /> {id ? 'Lewati' : 'Skip'}
+            <SkipForward size={16} /> <span className="hidden sm:inline">{id ? 'Lewati' : 'Skip'}</span>
           </button>
         </div>
 
