@@ -1,4 +1,4 @@
-export function KanaTypeToggle({ active, onChange }) {
+export function KanaTypeToggle({ active, onChange, extraTabs = [] }) {
   const tabs = [
     { id: 'hiragana', label: 'Hiragana', jp: 'ひらがな' },
     { id: 'katakana', label: 'Katakana', jp: 'カタカナ' },
@@ -6,6 +6,7 @@ export function KanaTypeToggle({ active, onChange }) {
     { id: 'kanji', label: 'Kanji', jp: '漢字' },
     { id: 'grammar', label: 'Grammar', jp: '文法' },
     { id: 'kurikulum', label: 'Kurikulum MNN', jp: 'カリキュラム' },
+    ...extraTabs,
   ];
   return (
     <div className="flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 pb-0 mb-8 sm:mb-12 overflow-x-auto no-scrollbar flex-nowrap">

@@ -14,6 +14,7 @@ import { useLanguage } from "../context/LanguageContext";
 import { categoryTranslations } from "../utils/translations";
 import { Search } from "lucide-react";
 import { KanaTypeToggle } from "../components/KanaTypeToggle";
+import { PoemReader } from "../features/learn/PoemReader";
 
 export function Learn() {
   const navigate = useNavigate();
@@ -88,6 +89,7 @@ export function Learn() {
                 : activeKanaType === 'kanji' ? '漢字 Kanji'
                 : activeKanaType === 'grammar' ? 'Grammar'
                 : activeKanaType === 'kurikulum' ? 'Kurikulum MNN'
+                : activeKanaType === 'poem' ? 'Puisi 詩'
                 : 'Kotoba'}
             </span>
           </h1>
@@ -96,7 +98,11 @@ export function Learn() {
           </p>
         </header>
 
-        <KanaTypeToggle active={activeKanaType} onChange={handleKanaTypeChange} />
+        <KanaTypeToggle
+          active={activeKanaType}
+          onChange={handleKanaTypeChange}
+          extraTabs={[{ id: 'poem', label: 'Puisi', jp: '詩' }]}
+        />
 
         {/* Kana Subtype Filter */}
         {['hiragana', 'katakana'].includes(activeKanaType) && (
@@ -123,7 +129,9 @@ export function Learn() {
           </div>
         )}
 
-        {activeKanaType === 'kurikulum' ? (
+        {activeKanaType === 'poem' ? (
+          <PoemReader />
+        ) : activeKanaType === 'kurikulum' ? (
           <div className="flex flex-col gap-4 sm:gap-6">
             {syllabusData.map(chapter => (
               <motion.div
