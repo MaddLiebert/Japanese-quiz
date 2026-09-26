@@ -104,18 +104,18 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
   const errText = error ? (ERROR_TEXT[error] || { id: 'Gagal merekam. Coba lagi.', en: 'Recording failed. Try again.' })[id ? 'id' : 'en'] : null;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen flex flex-col">
+    <div className="max-w-2xl mx-auto px-4 sm:px-8 pt-14 pb-8 sm:py-16 min-h-screen flex flex-col">
       <div className="flex items-center justify-between mb-8">
-        <span className="text-[11px] font-black uppercase tracking-[0.3em] text-sumi/50">
-          {index + 1} / {items.length} · +{totalXp} XP
-        </span>
         <button
           type="button"
           onClick={onExit}
-          className="text-[11px] font-black uppercase tracking-[0.2em] text-sumi/60 hover:text-shu transition-colors"
+          className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 group"
         >
-          ✕ {id ? 'Keluar' : 'Exit'}
+          <span className="group-hover:-translate-x-1 transition-transform">←</span> {id ? 'Kembali' : 'Back'}
         </button>
+        <span className="text-[11px] font-black uppercase tracking-[0.3em] text-sumi/50">
+          {index + 1} / {items.length} · +{totalXp} XP
+        </span>
       </div>
 
       <motion.div
