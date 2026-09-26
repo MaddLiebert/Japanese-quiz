@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { getPack, rollPackId, isPackReady } from '../packs/packs';
+import { rollPackId } from '../packs/packs';
 import { getItem, addItem, removeItem } from '../items/items';
 import { applyStreakBonus } from './streak';
 import { WRITE_GATE_KEY } from '../writing/writeGate';
@@ -490,24 +490,6 @@ export const ProgressProvider = ({ children }) => {
     return 'used';
   }, []);
 
-  // Beli pack. Return: 'bought' | 'owned' | 'poor' | 'invalid'
-  const buyPack = useCallback((packId) => {
-    const pack = getPack(packId);
-    if (!pack || !isPackReady(pack)) return 'invalid';
-    const owned = progressRef.current?.ownedPacks || [];
-    if (owned.includes(packId)) return 'owned';
-    const balance = progressRef.current?.medaru || 0;
-    if (balance < pack.price) return 'poor';
-    setProgress(prev => {
-      const ownedNow = prev.ownedPacks || [];
-      if (ownedNow.includes(packId)) return prev;
-      const bal = prev.medaru || 0;
-      if (bal < pack.price) return prev;
-      return { ...prev, medaru: bal - pack.price, ownedPacks: [...ownedNow, packId], activePack: packId };
-    });
-    return 'bought';
-  }, []);
-
   // ON/OFF pack. Return true kalau sekarang aktif.
   const togglePack = useCallback((packId) => {
     let nowActive = false;
@@ -569,7 +551,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyItem, consumeItem, buyPack, togglePack, rollGacha, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}

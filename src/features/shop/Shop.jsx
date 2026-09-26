@@ -3,31 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { PACKS, PACK_RARITY, isPackReady } from "../packs/packs";
 import { SHOP_ITEMS } from "../items/items";
 import { GachaSlotOverlay } from "../gacha/GachaSlotOverlay";
 
 const GACHA_PRICE_1X = 100;
 const GACHA_PRICE_10X = 900;
 
-const RARITY_STYLE = {
-  common:    { bg: 'bg-kinari-light', text: 'text-sumi',         border: 'border-sumi' },
-  rare:      { bg: 'bg-ai',           text: 'text-kinari-light', border: 'border-sumi' },
-  legendary: { bg: 'bg-shu',          text: 'text-kinari-light', border: 'border-sumi' },
-};
-
 export function Shop() {
-  const { progress, buyItem, buyPack, rollGacha } = useUserStats();
+  const { progress, buyItem, rollGacha } = useUserStats();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [pullResult, setPullResult] = useState(null);
 
   const medaru = progress.medaru || 0;
-  const ownedPacks = progress.ownedPacks || [];
   const ownedItems = progress.ownedItems || {};
-
-  // Pack yang sudah dimiliki TIDAK tampil di Shop — pindah ke backpack (🎒).
-  const shopPacks = PACKS.filter((p) => !ownedPacks.includes(p.id));
 
   const handlePurchase = (item) => {
     const res = buyItem(item.id);
@@ -44,14 +33,6 @@ export function Shop() {
       return;
     }
     setPullResult(res);
-  };
-
-  const handleBuyPack = (pack) => {
-    if (!isPackReady(pack)) return;
-    const result = buyPack(pack.id);
-    if (result === 'poor') {
-      alert(language === 'id' ? `Medaru kurang! Butuh ${pack.price}, saldo kamu ${medaru}.` : `Not enough Medaru! Need ${pack.price}, you have ${medaru}.`);
-    }
   };
 
   return (
@@ -168,9 +149,9 @@ export function Shop() {
             </div>
           </section>
 
-          {/* Etalase Section */}
+          {/* Etalase Section — hanya barang konsumsi (Theme Pack dari gacha) */}
           <section>
-            <div className="flex items-center gap-4 mb-8">
+            <div className="flex items-center gap-4 mb-6">
               <h2 className="text-2xl font-serif font-black text-sumi tracking-tight">
                 {language === 'id' ? 'Etalase Warung Kakek' : 'Grandpa Shop Shelf'}
               </h2>
@@ -178,90 +159,47 @@ export function Shop() {
               <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">品物</span>
             </div>
 
-            {/* Kartu Theme Pack — hanya yang BELUM dimiliki */}
-            {shopPacks.length === 0 ? (
-              <p className="text-sm font-bold text-sumi/50 border-[3px] border-dashed border-sumi/20 p-6 text-center mb-10">
-                {language === 'id'
-                  ? 'Semua Theme Pack sudah kamu miliki! Buka Tas Punggung 🎒 untuk memakainya.'
-                  : 'You own every Theme Pack! Open the Backpack 🎒 to equip them.'}
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-                {shopPacks.map((pack) => {
-                  const ready = isPackReady(pack);
-                  const affordable = medaru >= pack.price;
-                  const rarity = PACK_RARITY[pack.rarity] || PACK_RARITY.common;
-                  const st = RARITY_STYLE[pack.rarity] || RARITY_STYLE.common;
-                  const label = !ready
-                    ? (language === 'id' ? 'SEGERA' : 'SOON')
-                    : `BELI - ${pack.price} 🪙`;
-                  const color = !ready
-                    ? 'bg-kinari-light text-sumi/40'
-                    : affordable ? 'bg-ai text-kinari-light' : 'bg-kinari-light text-sumi/50';
-                  return (
-                    <div
-                      key={pack.id}
-                      className={`${st.bg} border-[4px] ${st.border} shadow-[6px_6px_0_0_#1a1a1a] flex flex-col p-6 relative overflow-hidden ${st.text}`}
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="text-5xl">{pack.icon}</div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] px-2 py-1 border-[2px] border-current">
-                          {rarity.label} · {rarity.weight}%
-                        </span>
-                      </div>
-                      <h3 className="text-xl font-serif font-black border-b-4 border-current pb-2 mb-2">
-                        {pack.name}
-                      </h3>
-                      <p className="text-sm font-bold mb-2 flex-grow opacity-90">{pack.desc}</p>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-4 opacity-70">
-                        🎨 {pack.visual} · 🎙️ {pack.voice}
-                      </p>
-                      <button
-                        type="button"
-                        disabled={!ready}
-                        onClick={() => handleBuyPack(pack)}
-                        className={`py-3 font-black text-sm w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all disabled:opacity-60 disabled:cursor-not-allowed ${color}`}
-                      >
-                        {label}
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Barang konsumsi */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Barang konsumsi — baris compact biar hemat scroll */}
+            <div className="flex flex-col gap-3">
               {SHOP_ITEMS.map((item) => {
                 const have = ownedItems[item.id] || 0;
+                const affordable = medaru >= item.price;
                 return (
                   <div
                     key={item.id}
-                    className="bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] flex flex-col text-center p-6 relative overflow-hidden"
+                    className="bg-kinari border-[3px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] flex items-center gap-3 sm:gap-4 p-3 sm:p-4 relative"
                   >
-                    {have > 0 && (
-                      <span className="absolute top-3 right-3 bg-matcha text-kinari-light text-[10px] font-black px-2 py-1 border-[2px] border-sumi">
-                        ×{have}
-                      </span>
-                    )}
-                    <div className="text-6xl mb-4">{item.icon}</div>
-                    <h3 className="text-xl font-serif font-black border-b-4 border-sumi pb-2 mb-2 text-sumi">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm font-bold mb-6 flex-grow text-sumi/80">{item.desc}</p>
+                    <div className="text-3xl sm:text-4xl shrink-0 w-12 text-center">{item.icon}</div>
+                    <div className="flex-grow min-w-0">
+                      <h3 className="text-sm sm:text-base font-serif font-black text-sumi truncate">
+                        {item.name}
+                        {have > 0 && (
+                          <span className="ml-2 align-middle bg-matcha text-kinari-light text-[9px] font-black px-1.5 py-0.5 border-[2px] border-sumi">
+                            ×{have}
+                          </span>
+                        )}
+                      </h3>
+                      <p className="text-[11px] sm:text-xs font-bold text-sumi/70 truncate">{item.desc}</p>
+                    </div>
                     <button
                       type="button"
                       onClick={() => handlePurchase(item)}
-                      className={`py-3 font-black text-lg w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all ${
-                        medaru >= item.price ? "bg-ai text-kinari-light" : "bg-kinari-light text-sumi/50"
+                      className={`shrink-0 px-3 sm:px-5 py-2 font-black text-xs sm:text-sm border-[3px] border-sumi shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all ${
+                        affordable ? "bg-ai text-kinari-light" : "bg-kinari-light text-sumi/50"
                       }`}
                     >
-                      BELI - {item.price} 🪙
+                      {item.price} 🪙
                     </button>
                   </div>
                 );
               })}
             </div>
+
+            <p className="text-[11px] font-bold text-sumi/50 mt-4">
+              {language === 'id'
+                ? '🎁 Theme Pack (visual + suara) didapat dari Gashapon di atas, bukan dibeli.'
+                : '🎁 Theme Packs (visual + voice) come from the Gashapon above, not sold here.'}
+            </p>
           </section>
 
         </div>
