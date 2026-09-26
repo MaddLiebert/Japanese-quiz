@@ -76,3 +76,32 @@ User: "mau ada puisi panjang berdasarkan tema — cinta, kesedihan, kesenangan, 
 - **Bacaan kanji kuno salah** → importer throw per run yang belum dipetakan; review baris-per-baris vs dump sumber; test anti-kanji di bacaan.
 - **旧仮名 beda 1 kana dari ucapan modern** (もみぢ/もみじ, ゐ/い) → matching level-baris menoleransi (baris panjang ≈ 0.9); konsisten dengan puisi lama (蛙 = かわず).
 - **Aozora revisi file** → URL + tanggal akses dicatat di script; importer bisa dijalankan ulang.
+
+## Log Eksekusi (26/09/2026, "lanjut")
+
+**Status: T1–T3 SELESAI & committed; T4 verifikasi browser selesai, docs di-commit terpisah.**
+
+### T2 — Importer + data (`ceae4ef`, `feat(speaking): 12 puisi panjang bertema + 雨ニモマケズ lengkap`)
+- Blocker `~` path fixed: Node di Windows tidak expand `~` → pakai path eksplisit `C:\Users\maddo\aozora_research`.
+- Gaiji 蔭（雨ニモマケズ「野原ノ松ノ林ノ蔭」）→ かげ; mode dump kini mengumpulkan gaiji tak terpetakan (tidak throw prematur).
+- **Dukungan bacaan per-baris** (`READINGS.perLine`): 生=うま/うんだ, 下=した/くだ, 一=いち/ひと — kasus nyata dalam satu puisi.
+- **Split compound**: 一人立→ひとりだち, 二人静か→ふたりしずか (hindari dobel baca).
+- Bug `\r\n` di segmen ruby dibersihkan (`.replace(/[\r\n]+/g, '')`).
+- Koreksi bacaan besar berbasis **file ruby resmi Aozora** (zip + HTML), bukan tebakan: 洗=あら, 日=ひ, 失=うしな, 云=い, 教=おし, 月=つき, 誘=いざな, 爽=さわ, 拓=ひら, 輝=かがや, 無辺際=むへんさい, 肉身=にくしん, 天地=あめつち, 百合花=ゆりか, 子等=こら, 腕=かひな, 伽藍=がらん, 案山子=かかし, 吁=ああ.
+- **Rekonsiliasi jumlah baris** vs HTML mentah Aozora: 樹下の二人 **35** (plan 36), 道程 **14** (plan 16) — baris tanggal (大正一二・三 dll) non-puisi, di-drop benar. Sisanya (dandan 13, lemon 18, dst.) sudah sesuai plan. `ameni` = 30 baris penuh.
+- Gate: importer **0 bacaan hilang, 0 furigana non-kana**; tests **184/184**; lint 0.
+- Catatan: `mismatch.tsv` sesi riset terbukti **saran per-file** (kontaminasi silang) → semua keputusan akhir berbasis baris persis dari zip resmi.
+
+### T3 — Filter tema (`d1e021b`, `feat(speaking): filter tema puisi + badge jumlah baris`)
+- `POEM_THEMES` 6 chip (Semua/Klasik/Cinta/Kesedihan/Kesenangan/Bersyukur; label id+en) + `filterPoemsByTheme` (classic = tanpa tema) — null-safe, ada test.
+- `Speaking.jsx`: chip + jumlah, badge "N baris" di kartu.
+- poems.test mengambil daftar tema dari `POEM_THEMES` (satu sumber kebenaran).
+- Tests 184/184 · lint 0 · build ✓.
+
+### T4 — Verifikasi browser (port 5174)
+- Chip: **All 19 / Classic 7 / Love 3 / Sadness 3 / Joy 3 / Gratitude 3**; tiap tema berisi puisi benar.
+- 雨ニモマケズ 30 baris + 38 ruby; 臨終 bacaan hasil verifikasi tampil benar (洗=あら, 腕=かひな, 子等=こら, 百合花=ゆりか).
+- Toggle furigana 38→0→38; HP 390px back button aman (top=32/56, left=16).
+- Tanpa SpeechRecognition: 30 tombol "Mark as read" → semua ✓ → "Poem complete! 🎉 / Self-assess — no XP" (fallback mandiri utuh).
+- Dengan mic gagal (Recording failed) → error state tampil, tidak crash.
+- PRD §9.10 diperbarui (19 puisi, tema, sumber Aozora).
