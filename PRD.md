@@ -45,6 +45,7 @@ The core loop is strict and cyclic:
 * **Home:** Dashboard for progress, streaks, and quick-start actions.
 * **Learn:** Sequential flashcard modules for Kana and Kotoba.
 * **Practice:** Configurable quiz setup.
+* **Writing:** Stroke-order animation and writing quiz for Hiragana, Katakana, and Kanji.
 * **Review:** Dedicated mode for addressing weak/failed items.
 * **Progress:** Detailed statistics, mastery percentages, and achievements.
 
@@ -57,6 +58,7 @@ The product currently exists as a functional prototype containing:
 * Small Kotoba engine (basic vocabulary).
 * Mixed Quiz (Hiragana + Kotoba).
 * Basic Weak Characters review system.
+* Writing practice (Hiragana, Katakana, Kanji) with stroke-order animation and writing quiz.
 * LocalStorage-based progress tracking (XP, level, streak, achievements).
 
 ## 9. Feature Requirements
@@ -68,7 +70,7 @@ The product currently exists as a functional prototype containing:
 * **[PLANNED]** Dakuten (が, ざ, だ, ば).
 * **[PLANNED]** Handakuten (ぱ).
 * **[PLANNED]** Yōon (きゃ, しゃ, etc.).
-* **[PROPOSED]** Visual stroke order animations on flashcard flip.
+* **[EXISTING]** Visual stroke order animations (see 9.9 Writing Practice).
 
 ### 9.2 Practice / Quiz Engine
 
@@ -127,7 +129,16 @@ The product currently exists as a functional prototype containing:
 * **[PLANNED]** Listening progression: Character → Vocabulary → Short sentence.
 * **[EXISTING]** Audio engine foundation via current character pronunciation tool.
 
-### 9.9 N5 Challenge
+### 9.9 Writing Practice (書)
+
+* **[EXISTING]** Stroke-order animation for Hiragana, Katakana, and Kanji (single characters).
+* **[EXISTING]** Writing quiz: user traces the outline; each stroke is validated (leniency-tuned, backwards strokes accepted, hint after 3 misses).
+* **[EXISTING]** Grouped by row (Kana) and category (Kanji); mastered/XP integrated with existing progress system.
+* **[EXISTING]** Offline-first stroke data vendored to `public/strokes/` (Arphic Public License + LGPL animCJK).
+* **[PLANNED]** Yōon combinations (きゃ, しゃ) — 2-character combos are currently read-only.
+* **[PROPOSED]** Strict mode (no leniency, no backwards strokes) as a user setting.
+
+### 9.10 N5 Challenge
 
 * **[PLANNED]** Final singleplayer exam mode combining all categories.
 * **[PLANNED]** Results breakdown by category to recommend next study steps.
