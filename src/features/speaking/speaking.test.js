@@ -4,7 +4,7 @@ import {
   SPEAK_XP, SPEAK_LEVELS, DEFAULT_SPEAK_LEVEL, speakLevel, speakXpFor, lineXpFor, speakPromptKind,
   lineText, lineReading,
   kanaSpeakItems, kotobaSpeakItems, kanjiSpeakItems, poemLineItems,
-  filterKanaByType,
+  filterKanaByType, displayCharCount, gridTextSize, speakTextSize,
   POEM_THEMES, filterPoemsByTheme,
 } from './speaking.js';
 
@@ -130,4 +130,51 @@ test('filterPoemsByTheme: all / classic / tema / null-safe', () => {
   assert.deepEqual(filterPoemsByTheme(poems, 'love').map((p) => p.id), ['a', 'c']);
   assert.deepEqual(filterPoemsByTheme(poems, 'joy'), []);
   assert.deepEqual(filterPoemsByTheme(null, 'love'), []);
+});
+
+// ── Ukuran teks Speaking (fit in di HP) ─────────────────────────────────────
+
+test('displayCharCount: hitung code point, null-safe', () => {
+  assert.equal(displayCharCount('あ'), 1);
+  assert.equal(displayCharCount('きゃ'), 2);
+  assert.equal(displayCharCount('がっこうのそうじのひ'), 10);
+  assert.equal(displayCharCount(''), 0);
+  assert.equal(displayCharCount(null), 0);
+  assert.equal(displayCharCount(undefined), 0);
+  assert.equal(displayCharCount(123), 3);
+});
+
+test('gridTextSize: kana/kanji (dense) 1 huruf besar, yoon 2 huruf kecil agar 1 baris', () => {
+  assert.equal(gridTextSize('あ', true), 'lg');
+  assert.equal(gridTextSize('ん', true), 'lg');
+  assert.equal(gridTextSize('一', true), 'lg');
+  // Yoon 2 huruf: wajib 'sm' supaya きゃ tidak membungkus jadi 2 baris di 320px.
+  assert.equal(gridTextSize('きゃ', true), 'sm');
+  assert.equal(gridTextSize('しゅ', true), 'sm');
+  assert.equal(gridTextSize('ぴょ', true), 'sm');
+  assert.equal(gridTextSize('', true), 'lg');
+  assert.equal(gridTextSize(null, true), 'lg');
+});
+
+test('gridTextSize: kotoba bertingkat (4/6/7+ huruf) — maksimal 2 baris di 320px', () => {
+  assert.equal(gridTextSize('すし'), 'lg');            // 2 huruf
+  assert.equal(gridTextSize('いちじ'), 'lg');          // 3 huruf
+  assert.equal(gridTextSize('おはよう'), 'lg');        // 4 huruf
+  assert.equal(gridTextSize('がっこう'), 'lg');        // 4 huruf
+  assert.equal(gridTextSize('じゅういちじ'), 'md');    // 6 huruf
+  assert.equal(gridTextSize('こうちょうしつ'), 'sm');  // 7 huruf
+  assert.equal(gridTextSize('コンピューターしつ'), 'sm'); // 9 huruf
+  assert.equal(gridTextSize('がっこうのそうじのひ'), 'sm'); // 10 huruf (terpanjang)
+  assert.equal(gridTextSize(''), 'lg');
+});
+
+test('speakTextSize: teks sesi maksimal 2 baris di HP (data terpanjang 10 huruf)', () => {
+  assert.equal(speakTextSize('あ'), 'xl');            // 1 huruf → 80px (desain lama)
+  assert.equal(speakTextSize('いちじ'), 'xl');        // 3 huruf
+  assert.equal(speakTextSize('おはよう'), 'lg');      // 4 huruf → 64px
+  assert.equal(speakTextSize('じゅういちじ'), 'lg');  // 6 huruf → 64px
+  assert.equal(speakTextSize('こうちょうしつ'), 'md'); // 7 huruf → 56px
+  assert.equal(speakTextSize('がっこうのそうじのひ'), 'md'); // 10 huruf (terpanjang)
+  assert.equal(speakTextSize(''), 'xl');
+  assert.equal(speakTextSize(null), 'xl');
 });

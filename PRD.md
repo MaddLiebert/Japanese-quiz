@@ -159,6 +159,7 @@ The product currently exists as a functional prototype containing:
 * **[EXISTING]** Learn page has a dedicated **"Puisi 詩" section** — read-only full poem + furigana + per-line Indonesian translation + audio + **author credit** (name + reading + romaji + life dates; Aozora source link for themed poems, "karya klasik · domain publik" for classics) via `src/features/learn/PoemReader.jsx` + `src/features/speaking/poemCredits.js` — no XP/scoring/SRS. The Speaking poem tab stays as pronunciation practice.
 * **[EXISTING]** XP base per content type: kana 8, kotoba 10, kanji 12, poem line 5, poem 25. Achievements: First Voice (声), Poem Reciter (詩, 3 poems).
 * **[EXISTING]** Self-assess fallback ("Sudah Baca") for browsers without SpeechRecognition (Firefox) — no scoring, no XP, no SRS.
+* **[EXISTING]** Mobile fit: the 5 content tabs render as a fixed 5-column grid (all tabs visible at 320px — no hidden horizontal scroll), grid cards are sized by character count (`gridTextSize` — kana yoon never wraps, kotoba max 2 lines, uniform row heights via `auto-rows-fr`), and the big session text is tiered by length (`speakTextSize` — hero 80/120px for ≤3 chars, stepping down so a 10-char kotoba is 2 lines at 320px). Session action buttons wrap with compact labels and the Skip button shows icon-only below `sm`.
 * **[EXISTING]** Poem theme categories (Cinta/Kesedihan/Kesenangan/Bersyukur, 3 each) shipped 26/09; 百人一首 still [PLANNED] if requested.
 
 ### 9.11 N5 Challenge
@@ -306,6 +307,9 @@ All data is stored in browser `localStorage`.
 
 * **Mobile-first approach.**
 * **Mobile:** Single column, bottom-anchored actions for easy thumb reach.
+* **Tab bars must fit at 320px:** a tab strip of 5+ items uses a fixed grid (`grid-cols-5`) instead of horizontal scroll — a hidden scrollbar is not a discoverable affordance, so tabs that don't fit read as "cut off". Labels shrink (`text-[9px]`, `tracking-normal`) and the Japanese glyph sits underneath.
+* **Grid cards (Speaking):** Japanese characters are full-width (1 em each), so card text width ≈ chars × font-size. Grid font sizes are tiered by character count (`gridTextSize`) so no card exceeds 2 lines at 320px; kana yoon (2 chars) uses `whitespace-nowrap` so it never wraps, and rows use `auto-rows-fr` for uniform heights.
+* **Big session text (Speaking):** font is tiered by character count (`speakTextSize`) — 1–3 chars keep the 80px/120px hero size, longer items step down — so a 10-char kotoba fits in 2 lines at 320px instead of 3.
 * **Tablet:** Two-column layouts for Progress and Review screens.
 * **Desktop:** Constrained max-width container (e.g., `max-w-2xl` or `max-w-4xl`) centered on screen to maintain editorial proportions; do not stretch to full width.
 
