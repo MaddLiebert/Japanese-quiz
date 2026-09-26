@@ -154,6 +154,8 @@ The product currently exists as a functional prototype containing:
 * **[EXISTING]** Kanji items accept any onyomi/kunyomi reading (readings split from `、`, okurigana markers handled).
 * **[EXISTING]** Three free-select difficulty levels (no gating): Pandu (all hints, ×1 XP), Ingat (text only, ×1.5), Buta (text hidden, meaning as prompt, ×2).
 * **[EXISTING]** Poems render line-by-line with furigana (`<ruby>`), toggleable; each passed line awards 5 XP × level, and a completed poem is recorded as one SRS item (+25 XP × level).
+* **[EXISTING]** Poem translations: poetic Indonesian **per line** for all 19 poems (diction/phrasing matched to the poem's imagery, not literal) in `src/data/poem-translations.json`; shown in `PoemSession` behind a "Terjemahan" toggle (default OFF at level Buta) via pure module `src/features/speaking/poemTranslation.js`.
+* **[EXISTING]** Learn page has a dedicated **"Puisi 詩" section** — read-only full poem + furigana + per-line Indonesian translation + audio + **author credit** (name + reading + romaji + life dates; Aozora source link for themed poems, "karya klasik · domain publik" for classics) via `src/features/learn/PoemReader.jsx` + `src/features/speaking/poemCredits.js` — no XP/scoring/SRS. The Speaking poem tab stays as pronunciation practice.
 * **[EXISTING]** XP base per content type: kana 8, kotoba 10, kanji 12, poem line 5, poem 25. Achievements: First Voice (声), Poem Reciter (詩, 3 poems).
 * **[EXISTING]** Self-assess fallback ("Sudah Baca") for browsers without SpeechRecognition (Firefox) — no scoring, no XP, no SRS.
 * **[EXISTING]** Poem theme categories (Cinta/Kesedihan/Kesenangan/Bersyukur, 3 each) shipped 26/09; 百人一首 still [PLANNED] if requested.
