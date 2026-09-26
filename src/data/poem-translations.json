@@ -1,0 +1,366 @@
+{
+  "poem_basho_furuike": {
+    "title_id": "Kolam Purba",
+    "lines_id": [
+      "Kolam purba —",
+      "katak melompat ke dalam,",
+      "desah air."
+    ]
+  },
+  "poem_basho_natsukusa": {
+    "title_id": "Rumput Musim Panas",
+    "lines_id": [
+      "Rumput musim panas —",
+      "para kesatria,",
+      "jejak mimpi belaka."
+    ]
+  },
+  "poem_issa_meigetsu": {
+    "title_id": "Bulan Purnama",
+    "lines_id": [
+      "Bulan purnama —",
+      "“ambilkan untukku,”",
+      "si kecil menangis."
+    ]
+  },
+  "poem_buson_nanohana": {
+    "title_id": "Bunga Kanola",
+    "lines_id": [
+      "Bunga kanola —",
+      "bulan di timur,",
+      "matahari di barat."
+    ]
+  },
+  "poem_komachi_hananoiro": {
+    "title_id": "Warna Bunga",
+    "lines_id": [
+      "Warna bunga pun",
+      "telah lama memudar",
+      "tanpa guna",
+      "aku menua di dunia",
+      "termenung dalam hujan panjang."
+    ]
+  },
+  "poem_kenji_amenimomakezu": {
+    "title_id": "Tak Kalah oleh Hujan",
+    "lines_id": [
+      "Tak kalah oleh hujan",
+      "tak kalah oleh angin",
+      "tak kalah oleh salju maupun terik musim panas",
+      "berbadan tegap dan sehat",
+      "tanpa ketamakan",
+      "tak pernah marah",
+      "selalu tersenyum dalam sunyi",
+      "sehari empat cangkir beras merah",
+      "dengan miso dan sedikit sayur, kumakan",
+      "segala sesuatu",
+      "tanpa kuhitung diriku sendiri",
+      "kudengar, kusimak, kupahami",
+      "dan tak kulupakan",
+      "di bawah rindang pepohonan pinus di padang",
+      "kuhuni gubuk beratap alang-alang kecil",
+      "bila di timur ada anak sakit",
+      "kupergi merawatnya",
+      "bila di barat ada ibu yang lelah",
+      "kupergi memikul berkas padinya",
+      "bila di selatan ada orang sekarat",
+      "kupergi dan berkata, “jangan takut”",
+      "bila di utara ada pertengkaran dan perkara",
+      "kukata, “tak guna, hentikanlah”",
+      "saat kekeringan, kutitikkan air mata",
+      "saat musim panas dingin, kuharu-biru berjalan",
+      "dipanggil bodoh oleh semua orang",
+      "tak dipuji",
+      "tak pula dianggap beban",
+      "orang seperti itulah",
+      "yang ingin kujadi"
+    ]
+  },
+  "poem_basho_yamaji": {
+    "title_id": "Di Jalan Pegunungan",
+    "lines_id": [
+      "Menyusuri jalan pegunungan —",
+      "entah mengapa mempesona,",
+      "bunga violet di rumput."
+    ]
+  },
+  "poem_shiki_kakikueba": {
+    "title_id": "Saat Menyantap Kesemek",
+    "lines_id": [
+      "Menyantap kesemek —",
+      "gemerincing lonceng pun berbunyi,",
+      "di Hōryū-ji."
+    ]
+  },
+  "poem_shimazaki_hatsukoi": {
+    "title_id": "Cinta Pertama",
+    "lines_id": [
+      "Rambut depan yang baru mulai diangkat,",
+      "ketika kulihat engkau di bawah pohon apel,",
+      "dengan sisir bunga tersemat di depan,",
+      "kukira engkaulah gadis yang berbunga itu.",
+      "Dengan lembut kauulurkan tanganmu yang putih,",
+      "dan yang menyerahkan apel kepadaku,",
+      "pada buah musim gugur berwarna merah muda,",
+      "itulah awal cinta pertamaku.",
+      "Desah napasku yang hampa,",
+      "ketika menyentuh helai rambutmu,",
+      "cawan cinta yang membahagiakan",
+      "kutuang atas kemurahan hatimu.",
+      "Di bawah pepohonan kebun apel,",
+      "jalan kecil yang terbentuk sendiri,",
+      "“siapa gerangan yang pertama melangkahinya,”",
+      "itulah pertanyaanmu yang kucintai."
+    ]
+  },
+  "poem_shimazaki_kamiwoaraeba": {
+    "title_id": "Ketika Kubasuh Rambutku",
+    "lines_id": [
+      "Ketika kubasuh rambutku, ungu",
+      "tampak warnanya di depan rumput kecil,",
+      "ketika kuangkat kaki, burung dan bunga",
+      "mengikutiku dengan segala pesonanya.",
+      "Ketika kupandang, awan berwarna",
+      "terbentang dan terbuka bagai gulungan lukisan.",
+      "Sake di tanganku adalah sake termanis,",
+      "membalut kesedihan masa mudaku.",
+      "Ketika kudengar, dewa nyanyian",
+      "datang meniup seruling permata;",
+      "ketika kubuka mulutku, satu bait",
+      "seorang penyair — aku menyanyikan cinta.",
+      "Ah, hingga sekian pun masih gaib,",
+      "meski aku berhati membara;",
+      "aku merinduimu,",
+      "namun takkan menyamai air matamu."
+    ]
+  },
+  "poem_shimazaki_haruhakinu": {
+    "title_id": "Musim Semi Telah Tiba",
+    "lines_id": [
+      "Musim semi telah tiba",
+      "　　musim semi telah tiba",
+      "O nyanyian pertama burung perenjak yang lembut",
+      "kabarkanlah perpisahan kepada tahun silam",
+      "O salju putih yang tersisa di lembah",
+      "kubur dan sembunyikanlah musim dingin tahun lalu",
+      "Musim semi telah tiba",
+      "　　musim semi telah tiba",
+      "sepi, dingin, tanpa kata",
+      "miskin, gelap, tanpa cahaya",
+      "buruk, berat, tanpa daya",
+      "O musim dingin yang sendu, pergilah",
+      "Musim semi telah tiba",
+      "　　musim semi telah tiba",
+      "O rumput baru yang hijau pucat",
+      "lukislah padang yang jauh",
+      "O bunga musim semi yang merah merekah",
+      "warnailah pucuk pepohonan",
+      "Musim semi telah tiba",
+      "　　musim semi telah tiba",
+      "O kabut, O awan, bergeraklah",
+      "hangatkan langit yang membeku",
+      "O angin musim semi yang mengantar wangi bunga",
+      "tiuplah, bangunkan gunung yang tertidur",
+      "Musim semi telah tiba",
+      "　　musim semi telah tiba",
+      "O pasang pagi yang mendorong musim semi",
+      "basuh dan hanyutkan daun alang-alang yang kering",
+      "O bangau muda yang mabuk kabut",
+      "terbanglah ke langit pagi yang muda",
+      "Musim semi telah tiba",
+      "　　musim semi telah tiba",
+      "memutus akar seledri kesedihan",
+      "air mata yang membeku, kini di mana",
+      "salju yang menumpuk mencair lenyap",
+      "bertunaslah sebagai sayur muda hari ini"
+    ]
+  },
+  "poem_nakahara_yogore": {
+    "title_id": "Pada Kesedihan yang Kian Kotor",
+    "lines_id": [
+      "Pada kesedihan yang kian kotor",
+      "hari ini pun salju tipis berjatuhan",
+      "Pada kesedihan yang kian kotor",
+      "hari ini pun angin sekadar melintas",
+      "Kesedihan yang kian kotor",
+      "bagai bulu rubah yang kusut",
+      "Kesedihan yang kian kotor",
+      "ditempeli salju tipis, menggigil meringkuk",
+      "Kesedihan yang kian kotor",
+      "tak menginginkan apa pun, tak berharap apa pun",
+      "Kesedihan yang kian kotor",
+      "memimpikan mati dalam kejenuhan",
+      "Pada kesedihan yang kian kotor",
+      "dengan pedih, ia pun gentar",
+      "Pada kesedihan yang kian kotor",
+      "tanpa hasil apa pun, hari pun senja……"
+    ]
+  },
+  "poem_nakahara_rinju": {
+    "title_id": "Saat Ajal",
+    "lines_id": [
+      "Langit musim gugur berwarna kelabu pudar",
+      "kilau mata kuda hitam",
+      "　　air mengering, lily pun berguguran",
+      "　　ah, alangkah hampa hati ini",
+      "tanpa tuhan, tanpa penuntun",
+      "dekat jendela perempuan itu berpulang",
+      "　　langit putih membelalak buta",
+      "　　angin putih terasa dingin",
+      "di tepi jendela membasuh rambut",
+      "lengannya begitu lembut",
+      "　　matahari pagi pun tumpah",
+      "　　bunyi air menetes",
+      "kota-kota pun bersenandung",
+      "suara anak-anak pun berselilit",
+      "　　meski begitu, bagaimana jadinya jiwa ini?",
+      "　　memudar tipis, menjadi langitkah?"
+    ]
+  },
+  "poem_nakahara_harunohinoyugure": {
+    "title_id": "Senja Musim Semi",
+    "lines_id": [
+      "Timah menyantap kerupuk senbei",
+      "senja musim semi begitu tenang",
+      "abu yang dilempar dari bawah memucat",
+      "senja musim semi begitu sunyi",
+      "Ah! adakah orang-orangan sawah — tak ada",
+      "kudakah yang meringkik — takkan meringkik",
+      "hanya cahaya bulan yang licin berkilau",
+      "yang patuh itu — senja musim semi",
+      "menetes-netes, di tengah padang candi memerah",
+      "roda pedati kehilangan minyaknya",
+      "ketika aku bicara dalam kala kini sejarah",
+      "mengejek, mengejek, langit dan gunung",
+      "sebuah genting pun terlepas",
+      "sejak kini senja musim semi",
+      "tanpa kata, terus maju",
+      "ke dalam pembuluh nadinya sendiri"
+    ]
+  },
+  "poem_nakahara_kofuku": {
+    "title_id": "Kebahagiaan",
+    "lines_id": [
+      "Kebahagiaan ada di dalam kandang",
+      "di atas jerami.",
+      "Kebahagiaan",
+      "bagi hati yang tenang, seketika terpahami.",
+      "Hati yang keras kepala, malang dan gelisah,",
+      "　　setidaknya dengan hal-hal yang memusingkan",
+      "　　melipur diri pada segudang perkara.",
+      "　　dan makin malanglah ia.",
+      "Kebahagiaan itu beristirahat",
+      "dan apa yang jelas harus dikerjakan",
+      "sedikit demi sedikit dipangkunya,",
+      "kebahagiaan kaya akan pengertian.",
+      "　　Hati yang keras kepala, miskin pengertian,",
+      "　　tak tahu apa yang harus dibuat, hanya mengejar untung,",
+      "　　patah semangat, mudah marah,",
+      "　　dibenci orang, dan sendiri pun bersedih.",
+      "Maka, hai manusia, selalu belajarlah dahulu untuk menurut.",
+      "Bukan agar diterima karena menurut,",
+      "melainkan agar menurut itu sendiri menjadi pelajaran, dan dengan belajar",
+      "martabatmu terangkat, dan pekerjaanmu menjadi berlimpah!"
+    ]
+  },
+  "poem_takamura_jukanofutari": {
+    "title_id": "Dua Orang di Bawah Pohon",
+    "lines_id": [
+      "——di dataran Adatara Michinoku, di pangkal akar dua batang pinus, tampak seseorang berdiri——",
+      "itulah Gunung Adatara,",
+      "yang berkilau itu Sungai Abukuma.",
+      "duduk begitu, dengan sedikit kata,",
+      "di dalam kepala yang mengantuk bagai tertidur,",
+      "hanya angin pinus dari dunia jauh yang bertiup melintas, hijau pucat.",
+      "Di tengah padang dan gunung awal musim dingin yang luas ini,",
+      "sukacita kau dan aku yang diam-diam membara sambil bergandengan tangan,",
+      "marilah berhenti menyembunyikannya dari awan putih yang menunduk itu.",
+      "Kau mendidihkan ramuan ajaib dalam kendi jiwamu,",
+      "ah, betapa kau menggoda orang ke dasar laut cinta yang gaib,",
+      "panorama sepuluh musim yang kita jalani bersama,",
+      "hanya memperlihatkan ketakterhinggaan perempuan di dalam dirimu.",
+      "Yang berasap di batas ketakterhinggaan itu,",
+      "menyucikan aku yang begitu digelisahkan perasaan,",
+      "menuangkan mata air kemudaan yang segar ke dalam diriku yang sarat kepahitan,",
+      "justru seperti iblis, sulit digenggam",
+      "sesuatu yang aneh berubah wujud.",
+      "itulah Gunung Adatara,",
+      "yang berkilau itu Sungai Abukuma.",
+      "di sinilah kampung kelahiranmu,",
+      "titik-titik kecil berdinding putih itu adalah gudang sake keluargamu.",
+      "Maka, bentangkanlah kakimu dengan leluasa,",
+      "mari hirup udara yang lapang dan cerah ini, penuh wangi kayu negeri utara.",
+      "udara sejuk dan menyenangkan seperti dirimu sendiri ini,",
+      "mari basuh kulit kita dalam suasana yang lentur dan kenyal.",
+      "Besok aku kembali pergi jauh,",
+      "ke kota tanpa aturan itu, ke pusaran cinta dan benci yang kacau,",
+      "ke tengah-tengah komedi manusia yang kutakuti namun kucintai itu.",
+      "di sinilah kampung kelahiranmu,",
+      "langit dan bumi yang melahirkan tubuh tersendiri yang ajaib ini.",
+      "angin pinus masih bertiup,",
+      "tolong sekali lagi ceritakan geografi panorama awal musim dingin yang sepi ini.",
+      "itulah Gunung Adatara,",
+      "yang berkilau itu Sungai Abukuma."
+    ]
+  },
+  "poem_takamura_dandan": {
+    "title_id": "Kau Makin Lama Makin Indah",
+    "lines_id": [
+      "Ketika perempuan satu demi satu membuang segala perhiasannya",
+      "mengapa ia jadi begitu indah?",
+      "Tubuhmu yang dibasuh oleh tahun-tahun",
+      "adalah logam langit yang terbang melintasi ketakterhinggaan.",
+      "penampilan dan nama baik sama sekali tak berguna",
+      "makhluk bening yang hanya berisi hakikat",
+      "hidup, bergerak, dan bersemangat dengan tangkas.",
+      "bahwa perempuan merebut kembali keperempuannya",
+      "adakah karena laku zaman ini?",
+      "Ketika kau berdiri dalam diam",
+      "sungguh ia buatan tuhan.",
+      "kadang hingga membuat batinku takjub",
+      "kau makin lama makin indah."
+    ]
+  },
+  "poem_takamura_lemonaika": {
+    "title_id": "Elegi Lemon",
+    "lines_id": [
+      "Kau begitu lama menanti sebiji lemon",
+      "di ranjang kematian yang sendu, putih, dan terang",
+      "sebiji lemon yang kuambil dari tanganku",
+      "gigimu yang indah menggigitnya dengan kriuk",
+      "wangi keemasan topas pun terbit",
+      "beberapa tetes sari lemon dari langit itu",
+      "seketika memulihkan kesadaranmu",
+      "matamu yang biru bening tersenyum tipis",
+      "O sehatnya kekuatan tanganmu yang menggenggam tanganku",
+      "meski ada badai di tenggorokanmu",
+      "di selat kehidupan yang seperti ini",
+      "Chieko kembali menjadi Chieko yang dahulu",
+      "menuang cinta seumur hidup dalam sekejap",
+      "lalu sesaat",
+      "menarik satu napas panjang bagai di puncak gunung dahulu",
+      "mesin tubuhmu pun berhenti begitu saja",
+      "di bawah bayang bunga sakura yang tersemat di depan fotomu",
+      "hari ini pun kutaruh sebiji lemon yang sejuk berkilau."
+    ]
+  },
+  "poem_takamura_doutei": {
+    "title_id": "Perjalanan",
+    "lines_id": [
+      "Ah",
+      "perjalanan umat manusia itu jauh",
+      "dan tak ada jalan raya itu",
+      "anak-anak alam harus membukanya dengan segenap tenaga tubuh",
+      "Berjalanlah, berjalanlah",
+      "apa pun yang muncul, lewati dan teruslah berjalan",
+      "melangkahlah ke dalam pemandangan yang gemerlap ini",
+      "Tak ada jalan di depanku",
+      "jalan tercipta di belakangku",
+      "ah, ayah",
+      "ayah yang membuatku berdiri sendiri",
+      "jagalah aku tanpa melepaskan pandangan dariku",
+      "selalu penuhi aku dengan semangat ayah",
+      "demi perjalanan yang jauh ini"
+    ]
+  }
+}
