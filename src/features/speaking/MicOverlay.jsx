@@ -5,16 +5,23 @@
 // tetap terbaca & halaman tetap bisa di-scroll. Di-portal ke document.body
 // (pola GachaSlotOverlay) supaya `fixed` tidak terkurung transform milik
 // parent (motion.div di session).
+//
+// PENTING (HP): level suara real butuh getUserMedia KEDUA. Di Android/iOS
+// stream kedua berebut mikrofon dengan SpeechRecognition sehingga ucapan tidak
+// terdeteksi sama sekali. Karena itu di HP meter real DIMATIKAN (bars memakai
+// animasi CSS); di desktop tetap real (Chrome desktop aman paralel).
 import { Mic } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { useMicLevel } from './useMicLevel';
+import { isMobileDevice } from './useSpeechRecognition';
 import { MIC_BAR_COUNT, displayHeights } from './micSpectrum';
 import { useLanguage } from '../../context/LanguageContext';
 
 export function MicOverlay({ open = false, interim = '', onCancel }) {
   const { language } = useLanguage();
   const id = language === 'id';
-  const bars = useMicLevel({ active: open });
+  const meterAllowed = !isMobileDevice();
+  const bars = useMicLevel({ active: open && meterAllowed });
   if (!open) return null;
 
   const heights = displayHeights(bars);            // [] = level suara tidak tersedia
