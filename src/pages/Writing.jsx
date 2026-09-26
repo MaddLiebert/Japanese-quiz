@@ -1,11 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { Volume2 } from 'lucide-react';
 import { StrokeCanvas } from '../features/writing/StrokeCanvas';
 import { writingGroups, isWritable, writeXpFor } from '../features/writing/writing';
 import { WRITE_LEVELS, DEFAULT_WRITE_LEVEL } from '../features/writing/writeQuiz';
-import { useItemProgress, useUserStats } from '../features/progress/ProgressContext';
+import {
+  WRITE_GATE_KEY, isLevelUnlocked, markLevelPassed, unlockedLevels,
+} from '../features/writing/writeGate';
+import { useItemProgress, useUserStats, useAchievements } from '../features/progress/ProgressContext';
 import { useEffectLayer } from '../features/effects/EffectContext';
 import { playDramaticAudio } from '../utils/audio';
 import { categoryTranslations } from '../utils/translations';
@@ -17,11 +20,23 @@ import kanjiData from '../data/kanji.json';
 
 const SCRIPT_LABEL = { hiragana: 'Hiragana ひらがな', katakana: 'Katakana カタカナ', kanji: 'Kanji 漢字' };
 
+// Baca gate dari localStorage tanpa bikin app crash kalau korup.
+const readGate = () => {
+  try {
+    const raw = localStorage.getItem(WRITE_GATE_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
+  } catch {
+    return {};
+  }
+};
+
 export function Writing() {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const { recordAnswer, forceMasterItem, itemProgress } = useItemProgress();
   const { progress } = useUserStats();
+  const { unlockAchievement } = useAchievements();
   const { triggerEffect } = useEffectLayer();
 
   const groups = useMemo(
@@ -33,11 +48,17 @@ export function Writing() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [tab, setTab] = useState('animate');       // 'animate' | 'quiz'
   const [level, setLevel] = useState(DEFAULT_WRITE_LEVEL);  // 'trace' | 'memory' | 'blind'
+  const [gate, setGate] = useState(readGate);      // { [char]: { passed: [...] } }
   const [playKey, setPlayKey] = useState(0);
   const [strokeTotal, setStrokeTotal] = useState(0);
   const [correctStrokes, setCorrectStrokes] = useState(0);
   const [mistakes, setMistakes] = useState(0);
   const [finished, setFinished] = useState(false);
+
+  // Simpan gate tiap berubah.
+  useEffect(() => {
+    localStorage.setItem(WRITE_GATE_KEY, JSON.stringify(gate));
+  }, [gate]);
 
   const scriptGroups = groups.filter((g) => g.script === activeScript);
   const group = groups.find((g) => g.key === activeGroupKey) || null;
@@ -46,6 +67,14 @@ export function Writing() {
 
   const id = language === 'id';
   const label = (row) => (id && categoryTranslations[row] ? categoryTranslations[row] : row);
+
+  // Kalau level aktif terkunci (mis. habis pindah karakter), balik ke yang terbuka.
+  useEffect(() => {
+    if (!item) return;
+    if (isLevelUnlocked(gate, item.char, level)) return;
+    const open = unlockedLevels(gate, item.char);
+    setLevel(open[open.length - 1] || DEFAULT_WRITE_LEVEL);
+  }, [item, gate, level]);
 
   const resetSession = () => {
     setPlayKey((k) => k + 1);
@@ -60,6 +89,16 @@ export function Writing() {
     if (!item) return;
     recordAnswer(item.id, true, writeXpFor(item, level));
     triggerEffect('correct');
+
+    // Lulus level → buka level berikutnya + achievement.
+    const nextGate = markLevelPassed(gate, item.char, level);
+    setGate(nextGate);
+    if (level === 'trace') unlockAchievement?.('first_stroke');
+    if (level === 'blind') {
+      unlockAchievement?.('blind_writer');
+      const blindCount = Object.values(nextGate).filter((g) => g.passed?.includes('blind')).length;
+      if (blindCount >= 10) unlockAchievement?.('blind_ten');
+    }
   };
 
   // ── View 1: pilih grup ─────────────────────────────────────────────────────
@@ -200,22 +239,34 @@ export function Writing() {
             { key: 'trace', text: id ? '1 · Jiplak' : '1 · Trace', sub: id ? 'bayangan tampak' : 'outline shown' },
             { key: 'memory', text: id ? '2 · Ingat' : '2 · Memory', sub: id ? 'lihat sekali' : 'peek once' },
             { key: 'blind', text: id ? '3 · Buta' : '3 · Blind', sub: id ? 'tanpa bantuan' : 'no help' },
-          ].map((l) => (
-            <button
-              key={l.key}
-              onClick={() => { setLevel(l.key); resetSession(); }}
-              className={`px-4 py-2 border-[3px] text-left transition-all ${
-                level === l.key
-                  ? 'bg-shu text-kinari-light border-sumi shadow-[3px_3px_0_0_rgba(var(--sumi-val),1)]'
-                  : 'bg-kinari text-sumi/60 border-sumi/30 hover:border-sumi'
-              }`}
-            >
-              <div className="text-[11px] font-black uppercase tracking-widest">{l.text}</div>
-              <div className={`text-[9px] font-bold uppercase tracking-wider ${level === l.key ? 'text-kinari-light/70' : 'text-sumi/40'}`}>
-                {l.sub} · +{WRITE_LEVELS[l.key].xp[item?.type === 'kanji' ? 'kanji' : 'kana']} XP
-              </div>
-            </button>
-          ))}
+          ].map((l) => {
+            const open = item ? isLevelUnlocked(gate, item.char, l.key) : true;
+            return (
+              <button
+                key={l.key}
+                disabled={!open}
+                title={open ? undefined : (id ? 'Lulus level sebelumnya dulu' : 'Pass the previous level first')}
+                onClick={() => { if (!open) return; setLevel(l.key); resetSession(); }}
+                className={`px-4 py-2 border-[3px] text-left transition-all ${
+                  !open
+                    ? 'bg-kinari/40 text-sumi/25 border-sumi/15 cursor-not-allowed'
+                    : level === l.key
+                      ? 'bg-shu text-kinari-light border-sumi shadow-[3px_3px_0_0_rgba(var(--sumi-val),1)]'
+                      : 'bg-kinari text-sumi/60 border-sumi/30 hover:border-sumi'
+                }`}
+              >
+                <div className="text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                  {!open && <span aria-hidden>🔒</span>}
+                  {l.text}
+                </div>
+                <div className={`text-[9px] font-bold uppercase tracking-wider ${!open ? 'text-sumi/25' : level === l.key ? 'text-kinari-light/70' : 'text-sumi/40'}`}>
+                  {open
+                    ? `${l.sub} · +${WRITE_LEVELS[l.key].xp[item?.type === 'kanji' ? 'kanji' : 'kana']} XP`
+                    : (id ? 'terkunci' : 'locked')}
+                </div>
+              </button>
+            );
+          })}
         </div>
       )}
 
