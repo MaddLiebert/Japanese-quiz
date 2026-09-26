@@ -147,14 +147,16 @@ The product currently exists as a functional prototype containing:
 
 ### 9.10 Speaking Practice (話)
 
-* **[EXISTING]** Speech practice for Hiragana (104 incl. yoon), Katakana (46), Kotoba (876), Kanji (86), and Japanese poems (8 public-domain classics).
+* **[EXISTING]** Speech practice for Hiragana (104 incl. yoon), Katakana (46), Kotoba (876), Kanji (86), and Japanese poems (19: 7 public-domain classics + 12 long themed poems).
+* **[EXISTING]** Themed poems: 4 themes (Cinta/Kesedihan/Kesenangan/Bersyukur) × 3 poems, filterable via chips (`POEM_THEMES` + `filterPoemsByTheme` in `speaking.js`); poem cards show line count. 雨ニモマケズ (30 lines) is full-text.
+* **[EXISTING]** All poem text and furigana readings imported from Aozora Bunko (青空文庫) sources via `scripts/import-aozora-poems.mjs` + `scripts/aozora-readings.json`; the importer throws on any unmapped kanji run (no guessing).
 * **[EXISTING]** Pronunciation scored via Web Speech API (`ja-JP`) with kana-normalized fuzzy matching (katakana→hiragana, punctuation stripped, Levenshtein similarity ≥ 0.7 to pass).
 * **[EXISTING]** Kanji items accept any onyomi/kunyomi reading (readings split from `、`, okurigana markers handled).
 * **[EXISTING]** Three free-select difficulty levels (no gating): Pandu (all hints, ×1 XP), Ingat (text only, ×1.5), Buta (text hidden, meaning as prompt, ×2).
 * **[EXISTING]** Poems render line-by-line with furigana (`<ruby>`), toggleable; each passed line awards 5 XP × level, and a completed poem is recorded as one SRS item (+25 XP × level).
 * **[EXISTING]** XP base per content type: kana 8, kotoba 10, kanji 12, poem line 5, poem 25. Achievements: First Voice (声), Poem Reciter (詩, 3 poems).
 * **[EXISTING]** Self-assess fallback ("Sudah Baca") for browsers without SpeechRecognition (Firefox) — no scoring, no XP, no SRS.
-* **[PLANNED]** Poem categories (e.g. 百人一首) if requested.
+* **[EXISTING]** Poem theme categories (Cinta/Kesedihan/Kesenangan/Bersyukur, 3 each) shipped 26/09; 百人一首 still [PLANNED] if requested.
 
 ### 9.11 N5 Challenge
 
