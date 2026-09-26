@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PACKS, PACK_RARITY, getPack, isPackReady, rollPackId } from './packs.js';
+import { PACKS, PACK_RARITY, getPack, isPackReady, rollPackId, gachaPoolInfo } from './packs.js';
 
 test('PACKS berisi 6 pack dan semuanya ready', () => {
   assert.equal(PACKS.length, 6);
@@ -120,4 +120,46 @@ test('rollPackId tanpa weights → fallback ke bobot global PACK_RARITY', () => 
   }
   // global: legendary 20, common 50 → common harus lebih sering (~71%)
   assert.ok(tally.pack_02 > tally.kotodama_burst, 'common harus lebih sering dari legendary');
+});
+
+// ── Info isi gacha (ditampilkan di Shop) ─────────────────────────────────────
+
+test('gachaPoolInfo: daftar semua pack ready + peluang dihitung dari bobot', () => {
+  const info = gachaPoolInfo();
+  assert.equal(info.length, PACKS.filter(isPackReady).length);
+
+  // semua pack punya chance > 0 dan field tampilan lengkap
+  for (const p of info) {
+    assert.ok(p.id && p.name && p.icon, `pack ${p.id} kurang field tampilan`);
+    assert.ok(PACK_RARITY[p.rarity], `rarity ${p.rarity} tidak dikenal`);
+    assert.ok(p.chance > 0, `chance ${p.id} harus > 0`);
+    assert.equal(typeof p.owned, 'boolean');
+  }
+
+  // total peluang = 100% (dibulatkan)
+  const total = info.reduce((s, p) => s + p.chance, 0);
+  assert.ok(Math.abs(total - 100) < 0.01, `total chance ${total} harus 100`);
+});
+
+test('gachaPoolInfo: rarity legendary peluangnya lebih kecil dari common', () => {
+  const info = gachaPoolInfo();
+  const legendary = info.find((p) => p.rarity === 'legendary');
+  const common = info.find((p) => p.rarity === 'common');
+  assert.ok(legendary.chance < common.chance, `legendary(${legendary.chance}) harus < common(${common.chance})`);
+});
+
+test('gachaPoolInfo: tandai pack yang sudah dimiliki', () => {
+  const info = gachaPoolInfo(['kotodama_burst']);
+  assert.equal(info.find((p) => p.id === 'kotodama_burst').owned, true);
+  assert.equal(info.find((p) => p.id === 'pack_02').owned, false);
+});
+
+test('gachaPoolInfo: input kotor aman (null / bukan array / id hantu)', () => {
+  for (const bad of [null, undefined, 'bukan-array', 42, ['tidak_ada']]) {
+    const info = gachaPoolInfo(bad);
+    assert.equal(info.length, PACKS.filter(isPackReady).length);
+    assert.ok(info.every((p) => p.chance > 0));
+  }
+  // id hantu tidak bikin crash, cuma tidak menandai apa pun
+  assert.ok(gachaPoolInfo(['tidak_ada']).every((p) => p.owned === false));
 });

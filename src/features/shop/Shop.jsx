@@ -4,19 +4,29 @@ import { motion, AnimatePresence } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { SHOP_ITEMS } from "../items/items";
+import { gachaPoolInfo, PACK_RARITY } from "../packs/packs";
 import { GachaSlotOverlay } from "../gacha/GachaSlotOverlay";
 
 const GACHA_PRICE_1X = 100;
 const GACHA_PRICE_10X = 900;
+
+const RARITY_BADGE = {
+  common:    'bg-kinari-light/90 text-sumi',
+  rare:      'bg-ai text-kinari-light',
+  legendary: 'bg-[#ffd700] text-sumi',
+};
 
 export function Shop() {
   const { progress, buyItem, rollGacha } = useUserStats();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [pullResult, setPullResult] = useState(null);
+  const [showPool, setShowPool] = useState(false);
 
   const medaru = progress.medaru || 0;
   const ownedItems = progress.ownedItems || {};
+  const ownedPacks = progress.ownedPacks || [];
+  const pool = gachaPoolInfo(ownedPacks);
 
   const handlePurchase = (item) => {
     const res = buyItem(item.id);
@@ -146,6 +156,55 @@ export function Shop() {
                   ? '📦 Hasil tarikan langsung masuk Tas Punggung 🎒'
                   : '📦 Pulls go straight to your Backpack 🎒'}
               </p>
+
+              {/* Isi gacha — daftar pack yang bisa keluar + peluangnya */}
+              <div className="mt-5 border-t-[3px] border-kinari-light/30 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowPool((v) => !v)}
+                  className="w-full flex items-center justify-between gap-3 text-left cursor-pointer group"
+                >
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-kinari-light">
+                    🎁 {language === 'id' ? 'Isi Gashapon' : 'Gashapon Contents'}
+                    <span className="ml-2 font-bold normal-case tracking-normal text-kinari-light/70">
+                      ({pool.filter((p) => p.owned).length}/{pool.length} {language === 'id' ? 'dimiliki' : 'owned'})
+                    </span>
+                  </span>
+                  <span className={`text-kinari-light text-xs font-black transition-transform ${showPool ? 'rotate-180' : ''}`}>
+                    ▼
+                  </span>
+                </button>
+
+                {showPool && (
+                  <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {pool.map((p) => (
+                      <li
+                        key={p.id}
+                        className={`border-[2px] border-sumi/40 bg-kinari-light/10 px-3 py-2 flex items-center gap-3 ${p.owned ? 'opacity-70' : ''}`}
+                      >
+                        <span className="text-2xl shrink-0">{p.icon}</span>
+                        <div className="min-w-0 flex-grow">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-[11px] font-black text-kinari-light truncate">{p.name}</span>
+                            <span className={`text-[8px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5 ${RARITY_BADGE[p.rarity] || RARITY_BADGE.common}`}>
+                              {PACK_RARITY[p.rarity]?.label || 'COMMON'}
+                            </span>
+                            {p.owned && (
+                              <span className="text-[8px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5 bg-matcha text-kinari-light">
+                                ✓
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[10px] font-bold text-kinari-light/70 truncate">
+                            {language === 'id' ? p.desc : (p.desc_en || p.desc)}
+                          </p>
+                        </div>
+                        <span className="text-sm font-black text-kinari-light shrink-0 tabular-nums">{p.chance}%</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </section>
 
