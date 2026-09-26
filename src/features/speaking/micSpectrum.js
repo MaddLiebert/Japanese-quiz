@@ -1,6 +1,9 @@
 // micSpectrum.js — pengolahan data spektrum mikrofon (murni: tanpa DOM/Web Audio).
-// Dipakai hook useMicLevel: byte frequency data (0..255) → tinggi bar 0..1
-// untuk indikator spectrum di popup mic.
+// CATATAN: sejak perbaikan deteksi suara di HP, MicOverlay memakai animasi CSS
+// murni (tanpa getUserMedia) supaya tidak merebut mikrofon dari
+// SpeechRecognition. Helper di sini tetap dipakai untuk pemrosesan sinyal
+// (dan test-nya), tersedia bila meter real dibutuhkan lagi (mis. di desktop
+// dengan izin mic terpisah).
 
 export const MIC_BAR_COUNT = 20;
 
