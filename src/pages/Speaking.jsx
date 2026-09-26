@@ -7,6 +7,7 @@ import { Furigana } from '../features/speaking/Furigana';
 import {
   kanaSpeakItems, kotobaSpeakItems, kanjiSpeakItems, filterKanaByType,
   SPEAK_LEVELS, DEFAULT_SPEAK_LEVEL,
+  POEM_THEMES, filterPoemsByTheme,
 } from '../features/speaking/speaking';
 import { isSpeechRecognitionSupported } from '../features/speaking/useSpeechRecognition';
 import { useItemProgress } from '../features/progress/ProgressContext';
@@ -48,6 +49,7 @@ export function Speaking() {
   const [kanaType, setKanaType] = useState('all');
   const [kotobaCategory, setKotobaCategory] = useState(() => kotobaData[0]?.category || '');
   const [kanjiCategory, setKanjiCategory] = useState(() => kanjiData[0]?.category || '');
+  const [poemTheme, setPoemTheme] = useState('all');
   const [session, setSession] = useState(null);   // { items, index }
   const [poem, setPoem] = useState(null);
   const [level, setLevel] = useState(DEFAULT_SPEAK_LEVEL);
@@ -69,6 +71,8 @@ export function Speaking() {
     () => kanjiSpeakItems(kanjiData.filter((d) => d.category === kanjiCategory)),
     [kanjiCategory],
   );
+  const themedPoems = useMemo(() => filterPoemsByTheme(poemsData, poemTheme), [poemTheme]);
+  const poemCount = (themeKey) => filterPoemsByTheme(poemsData, themeKey).length;
 
   if (session) {
     return (
@@ -213,8 +217,15 @@ export function Speaking() {
 
       {tab === 'poem' && (
         <section>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {POEM_THEMES.map((t) => (
+              <button key={t.key} type="button" onClick={() => setPoemTheme(t.key)} className={chip(poemTheme === t.key)}>
+                {id ? t.label : t.labelEn} {poemCount(t.key)}
+              </button>
+            ))}
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {poemsData.map((p) => (
+            {themedPoems.map((p) => (
               <motion.div
                 key={p.id}
                 whileHover={{ y: -3 }}
@@ -225,7 +236,7 @@ export function Speaking() {
                   <Furigana segments={p.lines[0]?.segments} />
                 </div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sumi/50">
-                  {p.author} · {p.type}{p.excerpt ? (id ? ' · kutipan' : ' · excerpt') : ''}
+                  {p.author} · {p.type} · {p.lines.length} {id ? 'baris' : 'lines'}{p.excerpt ? (id ? ' · kutipan' : ' · excerpt') : ''}
                 </p>
               </motion.div>
             ))}

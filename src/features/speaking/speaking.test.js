@@ -5,6 +5,7 @@ import {
   lineText, lineReading,
   kanaSpeakItems, kotobaSpeakItems, kanjiSpeakItems, poemLineItems,
   filterKanaByType,
+  POEM_THEMES, filterPoemsByTheme,
 } from './speaking.js';
 
 test('speakXpFor: XP dasar per jenis konten (level default = guide)', () => {
@@ -107,4 +108,26 @@ test('filterKanaByType: all / seion / yoon', () => {
   assert.equal(filterKanaByType(data, 'all').length, 3);
   assert.deepEqual(filterKanaByType(data, 'yoon').map((d) => d.id), ['c']);
   assert.deepEqual(filterKanaByType(null, 'all'), []);
+});
+
+test('POEM_THEMES: Semua + Klasik + 4 tema bertema (urutan tetap)', () => {
+  assert.deepEqual(POEM_THEMES.map((t) => t.key), ['all', 'classic', 'love', 'sadness', 'joy', 'gratitude']);
+  for (const t of POEM_THEMES) {
+    assert.ok(t.label, `tema ${t.key} tanpa label`);
+    assert.ok(t.labelEn, `tema ${t.key} tanpa labelEn`);
+  }
+});
+
+test('filterPoemsByTheme: all / classic / tema / null-safe', () => {
+  const poems = [
+    { id: 'a', theme: 'love' },
+    { id: 'b', theme: 'sadness' },
+    { id: 'c', theme: 'love' },
+    { id: 'd' },
+  ];
+  assert.equal(filterPoemsByTheme(poems, 'all').length, 4);
+  assert.deepEqual(filterPoemsByTheme(poems, 'classic').map((p) => p.id), ['d']);
+  assert.deepEqual(filterPoemsByTheme(poems, 'love').map((p) => p.id), ['a', 'c']);
+  assert.deepEqual(filterPoemsByTheme(poems, 'joy'), []);
+  assert.deepEqual(filterPoemsByTheme(null, 'love'), []);
 });
