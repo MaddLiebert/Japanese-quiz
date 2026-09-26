@@ -136,11 +136,12 @@ The product currently exists as a functional prototype containing:
 * *Level 1 — Trace:* outline always visible; hint after 3 misses; leniency 1.4; backwards strokes accepted. **10 XP** (kana) / **15 XP** (kanji).
 * *Level 2 — Memory:* the stroke animation plays once, then the character is hidden; hint after 5 misses; leniency 1.1. **15 XP** / **20 XP**.
 * *Level 3 — Blind:* no outline, no hint; leniency 0.85; backwards strokes counted wrong. **25 XP** / **35 XP**.
-* Levels are freely selectable (no unlock gating yet).
+* Levels are gated per character: passing level N unlocks level N+1 for that character (passing Blind on a character keeps it open).
 * **[EXISTING]** Grouped by row (Kana) and category (Kanji); mastered/XP integrated with existing progress system.
 * **[EXISTING]** Offline-first stroke data vendored to `public/strokes/` (Arphic Public License + LGPL animCJK).
+* **[EXISTING]** Dark-mode ink palette per theme (`writeColorsFor`); contrast ≥ 3:1 (WCAG non-text) enforced by tests.
+* **[EXISTING]** Writing achievements: First Stroke (平, pass any Trace), Blind Writer (盲, pass any Blind), Dark Ink (闇, pass Blind on 10 characters).
 * **[PLANNED]** Yōon combinations (きゃ, しゃ) — 2-character combos are currently read-only.
-* **[PROPOSED]** Level gating (unlock 2/3 after completing the previous one per character) or a dedicated writing achievement.
 
 ### 9.10 N5 Challenge
 
