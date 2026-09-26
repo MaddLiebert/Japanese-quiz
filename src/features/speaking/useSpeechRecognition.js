@@ -59,6 +59,7 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
     settleRef.current = settle;
 
     rec.onresult = (e) => {
+      if (settled) return;   // sesi sudah selesai/dibatalkan: abaikan event telat
       const finals = [];
       let partial = '';
       try {
@@ -79,6 +80,7 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
       if (partial) setInterim(partial);
     };
     rec.onerror = (e) => {
+      if (settled) return;   // sesi sudah selesai/dibatalkan: abaikan event telat
       const code = e?.error || 'unknown';
       if (code === 'aborted') { finish([]); return; }   // tombol Batal: bukan error
       setError(code);
