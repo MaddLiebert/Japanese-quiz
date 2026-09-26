@@ -32,6 +32,8 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   const [busy, setBusy] = useState(false);
   const [lineXp, setLineXp] = useState(0);      // total XP baris pada sesi ini
   const awardedRef = useRef(false);             // guard StrictMode double-effect
+  const [speakingLine, setSpeakingLine] = useState(null);  // baris yang sedang diucapkan (auto-scroll)
+  const lineRefs = useRef([]);                             // ref tiap baris puisi
 
   const allPassed = lines.length > 0 && lines.every((_, i) => passed[i]);
 
@@ -52,6 +54,14 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
     if (count >= 3) unlockAchievement?.('poem_reciter');
   }, [itemProgress, unlockAchievement]);
 
+  // Mic menyala → gulir baris yang diucapkan ke tengah viewport supaya tidak
+  // tertutup panel mic (bottom sheet) di bagian bawah layar.
+  useEffect(() => {
+    if (!listening || speakingLine == null) return;
+    const el = lineRefs.current[speakingLine];
+    if (el?.scrollIntoView) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, [listening, speakingLine]);
+
   const markPassed = (i) => {
     setPassed((p) => ({ ...p, [i]: true }));
     const nextUnpassed = lines.findIndex((_, idx) => idx > i && !passed[idx] && idx !== i);
@@ -62,6 +72,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
     if (selfAssess) { markPassed(i); return; }   // mode mandiri: tandai dibaca, tanpa nilai/XP
     const item = poemLineItems(poem)[i];
     if (!item || busy || listening) return;
+    setSpeakingLine(i);
     setBusy(true);
     clearError();
     setResult(null);
@@ -84,7 +95,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   if (!poem) return null;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-8 pt-14 pb-8 sm:py-16 min-h-screen flex flex-col">
+    <div className={`max-w-2xl mx-auto px-4 sm:px-8 pt-14 sm:pt-16 ${listening ? 'pb-44' : 'pb-8 sm:pb-16'} min-h-screen flex flex-col`}>
       <MicOverlay open={listening} interim={interim} onCancel={cancel} />
       <div className="flex items-center justify-between mb-6">
         <button
@@ -124,6 +135,8 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
           return (
             <div
               key={i}
+              ref={(el) => { lineRefs.current[i] = el; }}
+              data-poem-line={i}
               className={`border-[3px] border-sumi p-4 transition-colors ${
                 passed[i] ? 'bg-matcha/15 border-matcha' : active === i ? 'bg-kinari shadow-[4px_4px_0_0_#1a1a1a]' : 'bg-kinari/60'
               }`}
@@ -135,7 +148,8 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
                 <button
                   type="button"
                   onClick={() => playDramaticAudio(lineReading(line))}
-                  className="shrink-0 w-9 h-9 border-[2px] border-sumi flex items-center justify-center active:translate-y-[2px] transition-all"
+                  disabled={busy || listening}
+                  className="shrink-0 w-9 h-9 border-[2px] border-sumi flex items-center justify-center active:translate-y-[2px] transition-all disabled:opacity-50"
                   title={id ? 'Dengar' : 'Listen'}
                 >
                   <Volume2 size={15} />

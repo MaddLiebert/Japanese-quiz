@@ -105,7 +105,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
   const errText = error ? (ERROR_TEXT[error] || { id: 'Gagal merekam. Coba lagi.', en: 'Recording failed. Try again.' })[id ? 'id' : 'en'] : null;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-8 pt-14 pb-8 sm:py-16 min-h-screen flex flex-col">
+    <div className={`max-w-2xl mx-auto px-4 sm:px-8 pt-14 sm:pt-16 ${listening ? 'pb-44' : 'pb-8 sm:pb-16'} min-h-screen flex flex-col`}>
       <MicOverlay open={listening} interim={interim} onCancel={cancel} />
       <div className="flex items-center justify-between mb-8">
         <button
@@ -152,7 +152,8 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
           <button
             type="button"
             onClick={handleListen}
-            className="flex items-center gap-2 px-5 py-3 bg-kinari border-[3px] border-sumi font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all"
+            disabled={busy || listening}
+            className="flex items-center gap-2 px-5 py-3 bg-kinari border-[3px] border-sumi font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-50"
           >
             <Volume2 size={16} /> {id ? 'Dengar' : 'Listen'}
           </button>
@@ -179,7 +180,8 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
           <button
             type="button"
             onClick={next}
-            className="flex items-center gap-2 px-5 py-3 bg-kinari border-[3px] border-sumi/30 text-sumi/60 font-black text-xs uppercase tracking-widest active:translate-y-[2px] transition-all"
+            disabled={busy || listening}
+            className="flex items-center gap-2 px-5 py-3 bg-kinari border-[3px] border-sumi/30 text-sumi/60 font-black text-xs uppercase tracking-widest active:translate-y-[2px] transition-all disabled:opacity-50"
           >
             <SkipForward size={16} /> {id ? 'Lewati' : 'Skip'}
           </button>
