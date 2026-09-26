@@ -1,11 +1,53 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { WRITE_COLORS, WRITE_LEVELS, writeCanvasSize, writeQuizOptions } from './writeQuiz.js';
+import { WRITE_COLORS, WRITE_LEVELS, writeCanvasSize, writeQuizOptions, writeColorsFor } from './writeQuiz.js';
 
 test('WRITE_COLORS: semua field warna hex valid', () => {
   for (const [k, v] of Object.entries(WRITE_COLORS)) {
     assert.match(v, /^#[0-9a-fA-F]{6}$/, `warna ${k} tidak valid: ${v}`);
   }
+});
+
+test('writeColorsFor: light pakai palet tinta gelap di kertas terang', () => {
+  const c = writeColorsFor('light');
+  // tinta gelap (sumi asli #1a1a1a) di atas kertas kinari terang
+  assert.equal(c.strokeColor, WRITE_COLORS.strokeColor);
+  assert.equal(c.outlineColor, WRITE_COLORS.outlineColor);
+});
+
+test('writeColorsFor: dark pakai tinta terang supaya tidak menyatu dengan kanvas', () => {
+  const dark = writeColorsFor('dark');
+  // sumi di dark mode = #f3efe6 (krem) — kontras tinggi di kanvas #1c1d21
+  assert.equal(dark.strokeColor, '#f3efe6');
+  // outline harus terang juga, bukan abu kertas
+  assert.notEqual(dark.outlineColor, WRITE_COLORS.outlineColor);
+  // coretan user tetap shu (aksen) — di dark shu = #ef4c3c
+  assert.equal(dark.drawingColor, '#ef4c3c');
+});
+
+test('writeColorsFor: kontras tinta vs kanvas minimal 3:1 di kedua tema (WCAG non-teks)', () => {
+  const lum = (hex) => {
+    const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+      .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  };
+  const ratio = (a, b) => {
+    const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+    return (x + 0.05) / (y + 0.05);
+  };
+  const CANVAS = { light: '#fdfcf9', dark: '#1c1d21' };
+  for (const theme of ['light', 'dark']) {
+    const c = writeColorsFor(theme);
+    for (const key of ['strokeColor', 'drawingColor']) {
+      const r = ratio(c[key], CANVAS[theme]);
+      assert.ok(r >= 3, `${theme}.${key} kontras ${r.toFixed(2)}:1 < 3:1`);
+    }
+  }
+});
+
+test('writeColorsFor: tema tak dikenal → light (aman)', () => {
+  assert.deepEqual(writeColorsFor('zzz'), writeColorsFor('light'));
+  assert.deepEqual(writeColorsFor(), writeColorsFor('light'));
 });
 
 test('writeCanvasSize: dibatasi rentang wajar (>=220 dan <=360)', () => {
