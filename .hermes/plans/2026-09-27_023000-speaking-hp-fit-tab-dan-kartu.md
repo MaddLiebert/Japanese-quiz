@@ -145,6 +145,9 @@ Status: **SELESAI**. Semua target gate terpenuhi, diukur di headless Chrome (CDP
 ### Gate akhir
 `npm test` → **201 pass / 0 fail** · `npm run lint` → exit 0 (0 warning dari file yang diubah) · `npm run build` → ✓ built, semua kelas Tailwind baru ada di dist CSS.
 
+### Putaran kedua — label arti kotoba (commit `60c7c17`)
+Label arti dulu `truncate` → **24% (210/876) terpotong** di HP. Perbaikan: `line-clamp-2` (kana/kanji) / `line-clamp-5` (kotoba) + `shrink-0` (flex sempat mengompres label). Hasil final terukur di 320/360/390px: **0 terpotong, 0 spill, 0 overflow** untuk seluruh 104 hiragana + 46 katakana + 13 kanji + 876 kotoba (103 kategori) — 12/12 kombinasi bersih.
+
 ### Catatan penyimpangan dari plan
 1. **Dua bug ditemukan saat verifikasi (bukan dari plan)**: (a) `whitespace-nowrap` yang diterapkan ke kotoba membuat teks meluber keluar kartu (31/34 kartu) — diperbaiki: nowrap hanya untuk kana/kanji; (b) ukuran font sesi dihitung dari teks tersembunyi di mode Buta — diperbaiki agar memakai teks yang benar-benar tampil.
 2. **Batas `gridTextSize` digeser** dari rencana awal (4/7) ke (4/6) setelah pengukuran aktual: `じゅういちじ` (6 huruf) aman di `md`, `こうちょうしつ` (7 huruf) butuh `sm` agar tidak 3 baris di 320px.
