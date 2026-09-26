@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Volume2, Mic, Check } from 'lucide-react';
 import { Furigana } from './Furigana';
 import { useSpeechRecognition } from './useSpeechRecognition';
+import { MicOverlay } from './MicOverlay';
 import { matchSpeech, verdictOf } from './speechMatch';
 import { lineReading, poemLineItems, speakXpFor, lineXpFor, speakLevel, DEFAULT_SPEAK_LEVEL } from './speaking';
 import { useItemProgress, useAchievements, useUserStats } from '../progress/ProgressContext';
@@ -18,7 +19,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   const { unlockAchievement } = useAchievements();
   const { addXp } = useUserStats();
   const { triggerEffect } = useEffectLayer();
-  const { listenOnce, listening, error, clearError, supported } = useSpeechRecognition();
+  const { listenOnce, listening, interim, error, clearError, cancel, supported } = useSpeechRecognition();
   const selfAssess = !supported;   // mode mandiri: tanpa penilaian, tanpa XP, tanpa SRS
 
   const lines = poem?.lines || [];
@@ -84,6 +85,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-8 pt-14 pb-8 sm:py-16 min-h-screen flex flex-col">
+      <MicOverlay open={listening} interim={interim} onCancel={cancel} />
       <div className="flex items-center justify-between mb-6">
         <button
           type="button"
