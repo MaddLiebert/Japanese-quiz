@@ -101,3 +101,23 @@ export const poemLineItems = (poem) =>
 // Filter kana per tipe (seion/dakuon/handakuon/yoon) — 'all' mengembalikan semua.
 export const filterKanaByType = (data, type) =>
   !type || type === 'all' ? (data || []) : (data || []).filter((d) => d.type === type);
+
+// ── Tema puisi (filter tab Puisi) ───────────────────────────────────────────
+// Urutan tetap: Semua → Klasik → tema bertema. `label` (id) & `labelEn` dipakai
+// chip UI sesuai bahasa aktif; `ja` untuk aksen aksara Jepang.
+export const POEM_THEMES = [
+  { key: 'all', label: 'Semua', labelEn: 'All', ja: '' },
+  { key: 'classic', label: 'Klasik', labelEn: 'Classic', ja: '古典' },
+  { key: 'love', label: 'Cinta', labelEn: 'Love', ja: '愛' },
+  { key: 'sadness', label: 'Kesedihan', labelEn: 'Sadness', ja: '悲しみ' },
+  { key: 'joy', label: 'Kesenangan', labelEn: 'Joy', ja: '喜び' },
+  { key: 'gratitude', label: 'Bersyukur', labelEn: 'Gratitude', ja: '感謝' },
+];
+
+// Filter puisi per tema — 'all' = semua; 'classic' = puisi lama tanpa tema.
+export const filterPoemsByTheme = (poems, theme) => {
+  const list = poems || [];
+  if (!theme || theme === 'all') return list;
+  if (theme === 'classic') return list.filter((p) => !p.theme);
+  return list.filter((p) => p.theme === theme);
+};

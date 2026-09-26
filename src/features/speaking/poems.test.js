@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { hasKanji } from './speechMatch.js';
-import { lineReading } from './speaking.js';
+import { lineReading, POEM_THEMES } from './speaking.js';
 
 // Modul murni tidak meng-import JSON; test memuat sendiri (pola fitur writing).
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
@@ -14,7 +14,8 @@ const KANA_ONLY = /^[\u3041-\u309f\u30a0-\u30ffー]+$/;
 // Bacaan baris boleh memuat tanda baca & spasi (puisi panjang), tapi BUKAN kanji/latin/digit.
 const NON_KANA_CHARS = /[\u4e00-\u9faf\u3400-\u4dbfA-Za-z0-9]/;
 
-const THEMES = ['love', 'sadness', 'joy', 'gratitude'];
+// Daftar tema diambil dari POEM_THEMES (satu sumber kebenaran dengan UI).
+const THEMES = POEM_THEMES.filter((t) => t.key !== 'all' && t.key !== 'classic').map((t) => t.key);
 
 test('poems.json: 19 puisi (7 klasik + 12 bertema), id unik, field wajib lengkap', () => {
   assert.equal(POEMS.length, 19);
