@@ -79,7 +79,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   if (!poem) return null;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen flex flex-col">
+    <div className="max-w-2xl mx-auto px-4 sm:px-8 pt-14 pb-8 sm:py-16 min-h-screen flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <button
           type="button"
