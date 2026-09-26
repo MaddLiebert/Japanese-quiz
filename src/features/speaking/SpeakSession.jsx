@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { Volume2, Mic, SkipForward, Check } from 'lucide-react';
 import { useSpeechRecognition } from './useSpeechRecognition';
+import { MicOverlay } from './MicOverlay';
 import { matchSpeech, verdictOf } from './speechMatch';
 import { speakXpFor, speakLevel, speakPromptKind, DEFAULT_SPEAK_LEVEL } from './speaking';
 import { useItemProgress, useAchievements } from '../progress/ProgressContext';
@@ -23,7 +24,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
   const { recordAnswer } = useItemProgress();
   const { unlockAchievement } = useAchievements();
   const { triggerEffect } = useEffectLayer();
-  const { listenOnce, listening, error, clearError, supported } = useSpeechRecognition();
+  const { listenOnce, listening, interim, error, clearError, cancel, supported } = useSpeechRecognition();
   const lv = speakLevel(level);
   const selfAssess = !supported;   // mode mandiri: tanpa penilaian, tanpa XP
 
@@ -105,6 +106,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-8 pt-14 pb-8 sm:py-16 min-h-screen flex flex-col">
+      <MicOverlay open={listening} interim={interim} onCancel={cancel} />
       <div className="flex items-center justify-between mb-8">
         <button
           type="button"
