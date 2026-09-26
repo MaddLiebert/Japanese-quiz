@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Volume2 } from 'lucide-react';
 import { StrokeCanvas } from '../features/writing/StrokeCanvas';
 import { writingGroups, isWritable, writeXpFor } from '../features/writing/writing';
+import { WRITE_LEVELS, DEFAULT_WRITE_LEVEL } from '../features/writing/writeQuiz';
 import { useItemProgress, useUserStats } from '../features/progress/ProgressContext';
 import { useEffectLayer } from '../features/effects/EffectContext';
 import { playDramaticAudio } from '../utils/audio';
@@ -31,6 +32,7 @@ export function Writing() {
   const [activeGroupKey, setActiveGroupKey] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [tab, setTab] = useState('animate');       // 'animate' | 'quiz'
+  const [level, setLevel] = useState(DEFAULT_WRITE_LEVEL);  // 'trace' | 'memory' | 'blind'
   const [playKey, setPlayKey] = useState(0);
   const [strokeTotal, setStrokeTotal] = useState(0);
   const [correctStrokes, setCorrectStrokes] = useState(0);
@@ -56,7 +58,7 @@ export function Writing() {
   const handleComplete = () => {
     setFinished(true);
     if (!item) return;
-    recordAnswer(item.id, true, writeXpFor(item));
+    recordAnswer(item.id, true, writeXpFor(item, level));
     triggerEffect('correct');
   };
 
@@ -191,6 +193,32 @@ export function Writing() {
         ))}
       </div>
 
+      {/* Level kuis (hanya di tab kuis) */}
+      {tab === 'quiz' && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          {[
+            { key: 'trace', text: id ? '1 · Jiplak' : '1 · Trace', sub: id ? 'bayangan tampak' : 'outline shown' },
+            { key: 'memory', text: id ? '2 · Ingat' : '2 · Memory', sub: id ? 'lihat sekali' : 'peek once' },
+            { key: 'blind', text: id ? '3 · Buta' : '3 · Blind', sub: id ? 'tanpa bantuan' : 'no help' },
+          ].map((l) => (
+            <button
+              key={l.key}
+              onClick={() => { setLevel(l.key); resetSession(); }}
+              className={`px-4 py-2 border-[3px] text-left transition-all ${
+                level === l.key
+                  ? 'bg-shu text-kinari-light border-sumi shadow-[3px_3px_0_0_rgba(var(--sumi-val),1)]'
+                  : 'bg-kinari text-sumi/60 border-sumi/30 hover:border-sumi'
+              }`}
+            >
+              <div className="text-[11px] font-black uppercase tracking-widest">{l.text}</div>
+              <div className={`text-[9px] font-bold uppercase tracking-wider ${level === l.key ? 'text-kinari-light/70' : 'text-sumi/40'}`}>
+                {l.sub} · +{WRITE_LEVELS[l.key].xp[item?.type === 'kanji' ? 'kanji' : 'kana']} XP
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+
       {!writable ? (
         <div className="bg-kinari border-[3px] border-sumi/30 p-8 text-center text-sumi/60 font-bold uppercase tracking-widest text-sm">
           {id ? 'Karakter ini 2 huruf — latihan baca dulu, tulis menyusul.' : 'This is a 2-character combo — read it first, writing comes later.'}
@@ -198,12 +226,11 @@ export function Writing() {
       ) : (
         <div className="flex flex-col items-center gap-8">
           <StrokeCanvas
-            key={`${item.id}-${tab}`}
+            key={`${item.id}-${tab}-${level}`}
             char={item.char}
             mode={tab}
-            quizMode="light"
+            level={level}
             playKey={playKey}
-            showOutline={tab === 'quiz'}
             onStrokeCount={setStrokeTotal}
             handlers={{
               onCorrectStroke: () => { setCorrectStrokes((n) => n + 1); },
@@ -226,10 +253,14 @@ export function Writing() {
                   : 'bg-kinari border-sumi/20 text-sumi/50'
               }`}>
                 {finished
-                  ? (id ? `✓ Selesai! +${writeXpFor(item)} XP` : `✓ Complete! +${writeXpFor(item)} XP`)
+                  ? (id ? `✓ Selesai! +${writeXpFor(item, level)} XP` : `✓ Complete! +${writeXpFor(item, level)} XP`)
                   : mistakes > 0
                     ? (id ? `✗ ${mistakes}× meleset — coba lagi` : `✗ ${mistakes} miss — try again`)
-                    : (id ? 'Tulis mengikuti bayangan' : 'Trace the outline')}
+                    : level === 'trace'
+                      ? (id ? 'Tulis mengikuti bayangan' : 'Trace the outline')
+                      : level === 'memory'
+                        ? (id ? 'Ingat bentuknya — tanpa bayangan' : 'From memory — no outline')
+                        : (id ? 'Buta — tanpa bantuan' : 'Blind — no help')}
               </div>
             )}
 

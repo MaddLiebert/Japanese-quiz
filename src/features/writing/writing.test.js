@@ -5,7 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   strokeHex, strokeDataPath, isWritable, writingGroups,
-  WRITE_XP_PER_STROKE, writeXpFor,
+  writeXpFor,
 } from './writing.js';
 
 // Modul writing.js sengaja TIDAK import JSON (biar aman di node & Vite sekaligus);
@@ -45,12 +45,27 @@ test('isWritable: hanya karakter 1 code point', () => {
   assert.equal(isWritable(null), false);
 });
 
-test('writeXpFor: kana 10 XP, kanji 15 XP, per karakter (bukan per goresan)', () => {
-  assert.equal(WRITE_XP_PER_STROKE.kana, 10);
-  assert.equal(WRITE_XP_PER_STROKE.kanji, 15);
+test('writeXpFor: XP naik per level, kana < kanji (per karakter, bukan per goresan)', () => {
+  // trace (level 1)
+  assert.equal(writeXpFor({ type: 'seion' }, 'trace'), 10);
+  assert.equal(writeXpFor({ type: 'dakuon' }, 'trace'), 10);
+  assert.equal(writeXpFor({ type: 'kanji' }, 'trace'), 15);
+  // memory (level 2)
+  assert.equal(writeXpFor({ type: 'seion' }, 'memory'), 15);
+  assert.equal(writeXpFor({ type: 'kanji' }, 'memory'), 20);
+  // blind (level 3)
+  assert.equal(writeXpFor({ type: 'seion' }, 'blind'), 25);
+  assert.equal(writeXpFor({ type: 'kanji' }, 'blind'), 35);
+  // tiap level kanji > kana
+  for (const lv of ['trace', 'memory', 'blind']) {
+    assert.ok(writeXpFor({ type: 'kanji' }, lv) > writeXpFor({ type: 'seion' }, lv), lv);
+  }
+});
+
+test('writeXpFor: level default & level tak dikenal → trace (aman)', () => {
   assert.equal(writeXpFor({ type: 'seion' }), 10);
-  assert.equal(writeXpFor({ type: 'dakuon' }), 10);
   assert.equal(writeXpFor({ type: 'kanji' }), 15);
+  assert.equal(writeXpFor({ type: 'kanji' }, 'zzz'), 15);
   assert.equal(writeXpFor(null), 10);
 });
 
