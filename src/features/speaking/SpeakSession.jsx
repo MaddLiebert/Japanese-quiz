@@ -25,6 +25,9 @@ const ERROR_TEXT = {
   'no-speech': { id: 'Tidak terdengar suara — coba lagi lebih dekat ke mikrofon.', en: 'No speech detected — try again closer to the mic.' },
   'audio-capture': { id: 'Mikrofon tidak ditemukan.', en: 'No microphone found.' },
   network: { id: 'Pengenalan suara butuh koneksi internet.', en: 'Speech recognition needs an internet connection.' },
+  insecure: { id: 'Pengenalan suara butuh koneksi aman — buka lewat https:// atau localhost.', en: 'Speech recognition needs a secure context — use https:// or localhost.' },
+  'service-not-allowed': { id: 'Layanan pengenalan suara diblokir. Cek izin mikrofon untuk situs ini di pengaturan browser.', en: "Speech service blocked. Check this site's microphone permission in browser settings." },
+  'language-not-supported': { id: 'Pengenalan suara bahasa Jepang tidak tersedia di perangkat ini.', en: 'Japanese speech recognition is unavailable on this device.' },
 };
 
 export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK_LEVEL, onExit }) {
