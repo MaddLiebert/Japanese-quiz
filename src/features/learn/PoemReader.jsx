@@ -94,30 +94,31 @@ export function PoemReader() {
           </div>
         </header>
 
-        <div className="flex flex-col gap-3">
-          {open.lines.map((line, i) => {
-            const tr = translatedLine(poemTranslations, open.id, i);
-            return (
-              <div key={i} className="border-[3px] border-sumi p-4 bg-kinari">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl sm:text-3xl font-serif font-black text-sumi flex-grow leading-relaxed">
+        {/* Satu halaman puisi — baris mengalir di dalam satu kertas, bukan kotak per baris */}
+        <div className="border-[3px] border-sumi bg-kinari px-4 py-8 sm:px-10 sm:py-12">
+          <div className="flex flex-col gap-6 sm:gap-7">
+            {open.lines.map((line, i) => {
+              const tr = translatedLine(poemTranslations, open.id, i);
+              return (
+                <div key={i} className="relative px-8 sm:px-10">
+                  <p className="text-center text-2xl sm:text-3xl font-serif font-black text-sumi leading-loose">
                     <Furigana segments={line.segments} show={showFurigana} />
-                  </span>
+                  </p>
+                  {showTranslation && tr && (
+                    <p className="mt-1.5 text-center text-sm sm:text-base text-sumi/70 italic leading-relaxed">{tr}</p>
+                  )}
                   <button
                     type="button"
                     onClick={() => playDramaticAudio(lineReading(line))}
-                    className="shrink-0 w-9 h-9 border-[2px] border-sumi flex items-center justify-center active:translate-y-[2px] transition-all"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 border-[2px] border-sumi/25 text-sumi/45 hover:text-sumi hover:border-sumi flex items-center justify-center transition-colors"
                     title={id ? 'Dengar' : 'Listen'}
                   >
-                    <Volume2 size={15} />
+                    <Volume2 size={14} />
                   </button>
                 </div>
-                {showTranslation && tr && (
-                  <p className="mt-2 text-sm sm:text-base text-sumi/70 italic leading-relaxed">{tr}</p>
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         <p className="mt-8 text-center text-xs font-bold text-sumi/60">
