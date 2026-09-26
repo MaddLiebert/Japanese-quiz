@@ -11,6 +11,27 @@ konten — **Hiragana, Katakana, Kotoba, Kanji, dan Puisi Jepang** — di mana u
 mengucapkan kata/kalimat lewat mikrofon, app menilai ucapannya dengan Web Speech
 API, dan **puisi ditampilkan dengan furigana (ruby) di atas kanji**.
 
+### Revisi 26/09 — keputusan user (WAJIB, mengikat test contract)
+
+1. **3 level kesulitan bebas dipilih (tanpa gating)** — satu tabel `SPEAK_LEVELS`
+   di `speaking.js` sebagai SATU-SATUNYA sumber perilaku + pengali XP:
+   * `guide` (Pandu): teks + bacaan + arti tampil; XP ×1.
+   * `recall` (Ingat): hanya teks Jepang; bacaan & arti disembunyikan; XP ×1.5.
+   * `blind` (Buta): teks & bacaan disembunyikan, hanya arti (atau audio) yang
+     tampil — user mengucapkan dari ingatan; XP ×2.
+   Level dipilih lewat chip di halaman `/speaking`, diteruskan sebagai prop `level`
+   ke `SpeakSession` & `PoemSession`. Level tak dikenal → `guide` (tidak throw).
+   XP per level = `round(base × xpMult)` — tidak ada tabel XP kedua.
+2. **XP per baris puisi**: setiap baris yang lulus memberi `SPEAK_XP['poem-line']`
+   (5) lewat `addXp` (BUKAN `recordAnswer`); saat SEMUA baris lulus, puisi dicatat
+   `recordAnswer(poem.id, true, speakXpFor({kind:'poem'}, level))` (25 × mult) — SRS
+   tetap 1 item per puisi; achievement `poem_reciter` tetap menghitung id `poem_*`
+   (baris tidak masuk SRS).
+3. **Fallback latihan mandiri** untuk browser tanpa `SpeechRecognition` (Firefox):
+   tombol mikrofon diganti tombol "Sudah Baca" per item/baris — TANPA penilaian,
+   TANPA XP, TANPA SRS. Banner halaman menyebutkan mode ini.
+4. Puisi tambahan / kategori puisi baru: **belum** — di luar scope revisi ini.
+
 ## Current context / assumptions (sudah diverifikasi di repo)
 
 * Repo: `C:\Users\maddo\Documents\japanese-quiz` (git-bash: `/c/Users/maddo/Documents/japanese-quiz`), branch `main`.
@@ -43,11 +64,11 @@ API, dan **puisi ditampilkan dengan furigana (ruby) di atas kanji**.
 
 Tiga lapis, mengikuti pola fitur Writing yang sudah terbukti:
 
-1. **Lapisan murni & teruji (`src/features/speaking/speechMatch.js`, `speaking.js`)** — normalisasi teks Jepang (katakana→hiragana, buang tanda baca), Levenshtein similarity, pemecahan bacaan kanji, penilaian ucapan (verdict), pembentukan item latihan, tabel XP. Semua tanpa DOM → bisa dites `node --test`.
+1. **Lapisan murni & teruji (`src/features/speaking/speechMatch.js`, `speaking.js`)** — normalisasi teks Jepang (katakana→hiragana, buang tanda baca), Levenshtein similarity, pemecahan bacaan kanji, penilaian ucapan (verdict), pembentukan item latihan, tabel XP + tabel level kesulitan (`SPEAK_LEVELS`). Semua tanpa DOM → bisa dites `node --test`.
 2. **Lapisan browser tipis (`useSpeechRecognition.js`)** — pembungkus `SpeechRecognition` (Chrome/Edge). Constructor diambil **saat `start()` dipanggil** (bukan saat modul dimuat) supaya bisa di-mock di E2E dan aman di environment tanpa `window`.
 3. **Lapisan UI (`src/pages/Speaking.jsx` + `SpeakSession.jsx` + `PoemSession.jsx` + `Furigana.jsx`)** — 5 tab konten; tiap item: tombol 🔊 Dengar (TTS), 🎤 Ucapkan (rekam → nilai), dan Lewati. Puisi dirender baris-per-baris dengan `<ruby>` furigana, selesai semua baris → item puisi masuk SRS + XP.
 
-XP diberikan lewat `recordAnswer(item.id, true, speakXpFor(item))` → otomatis nyambung ke stats, SRS, streak bonus, dan badge. Item puisi (`poem_*`) ditambahkan ke `allData` Review supaya tidak "hilang" dari Review/weak-items.
+XP item utama diberikan lewat `recordAnswer(item.id, true, speakXpFor(item, level))` → otomatis nyambung ke stats, SRS, streak bonus, dan badge. XP baris puisi diberikan lewat `addXp(lineXpFor(level))` (tanpa SRS); puisi yang lulus semua baris dicatat SEKALI lewat `recordAnswer(poem.id, true, speakXpFor({kind:'poem'}, level))`. Item puisi (`poem_*`) ditambahkan ke `allData` Review supaya tidak "hilang" dari Review/weak-items. Mode mandiri (tanpa `SpeechRecognition`) tidak mencatat XP & SRS sama sekali.
 
 ## File map (semua file baru/kecuali disebut lain)
 
@@ -691,20 +712,43 @@ Buat `src/features/speaking/speaking.test.js`:
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  SPEAK_XP, speakXpFor, lineText, lineReading,
+  SPEAK_XP, SPEAK_LEVELS, DEFAULT_SPEAK_LEVEL, speakLevel, speakXpFor, lineXpFor,
+  lineText, lineReading,
   kanaSpeakItems, kotobaSpeakItems, kanjiSpeakItems, poemLineItems,
   filterKanaByType,
 } from './speaking.js';
 
-test('speakXpFor: XP per jenis konten, aman untuk input aneh', () => {
+test('speakXpFor: XP dasar per jenis konten (level default = guide)', () => {
   assert.equal(speakXpFor({ kind: 'hiragana' }), SPEAK_XP.hiragana);
   assert.equal(speakXpFor({ kind: 'katakana' }), SPEAK_XP.katakana);
   assert.equal(speakXpFor({ kind: 'kotoba' }), SPEAK_XP.kotoba);
   assert.equal(speakXpFor({ kind: 'kanji' }), SPEAK_XP.kanji);
   assert.equal(speakXpFor({ kind: 'poem' }), SPEAK_XP.poem);
-  assert.equal(speakXpFor({ kind: 'poem-line' }), 0);
+  assert.equal(speakXpFor({ kind: 'poem-line' }), SPEAK_XP['poem-line']);
   assert.equal(speakXpFor(null), 0);
   assert.equal(speakXpFor({}), 0);
+});
+
+test('speakLevel: 3 level bebas + normalisasi input ngawur ke guide', () => {
+  assert.equal(SPEAK_LEVELS.guide.xpMult, 1);
+  assert.equal(SPEAK_LEVELS.recall.xpMult, 1.5);
+  assert.equal(SPEAK_LEVELS.blind.xpMult, 2);
+  assert.equal(SPEAK_LEVELS.guide.showText, true);
+  assert.equal(SPEAK_LEVELS.recall.showReading, false);
+  assert.equal(SPEAK_LEVELS.blind.showText, false);
+  assert.equal(speakLevel('recall'), SPEAK_LEVELS.recall);
+  assert.equal(speakLevel('ngawur'), SPEAK_LEVELS[DEFAULT_SPEAK_LEVEL]);
+  assert.equal(speakLevel(undefined), SPEAK_LEVELS[DEFAULT_SPEAK_LEVEL]);
+});
+
+test('speakXpFor + level: XP = dasar × pengali (dibulatkan)', () => {
+  assert.equal(speakXpFor({ kind: 'kotoba' }, 'recall'), 15);      // 10 × 1.5
+  assert.equal(speakXpFor({ kind: 'kanji' }, 'blind'), 24);        // 12 × 2
+  assert.equal(speakXpFor({ kind: 'poem' }, 'recall'), 38);        // round(25 × 1.5)
+  assert.equal(speakXpFor({ kind: 'poem-line' }, 'blind'), 10);    // 5 × 2
+  assert.equal(speakXpFor({ kind: 'ngawur' }, 'blind'), 0);        // kind tak dikenal
+  assert.equal(lineXpFor('guide'), 5);
+  assert.equal(lineXpFor('recall'), 8);                            // round(5 × 1.5)
 });
 
 test('lineText & lineReading: gabung segmen', () => {
@@ -784,13 +828,33 @@ Buat `src/features/speaking/speaking.js`:
 // Data dilewatkan sebagai parameter (pola sama dengan features/writing/writing.js).
 import { readingsFromKanji } from './speechMatch.js';
 
-// XP per jenis konten — SATU-SATUNYA sumber angka (dipakai UI & test).
-export const SPEAK_XP = { hiragana: 8, katakana: 8, kotoba: 10, kanji: 12, poem: 25 };
-
-export const speakXpFor = (item) => {
-  if (!item || !item.kind) return 0;
-  return SPEAK_XP[item.kind] ?? 0;
+// ── Level kesulitan (bebas dipilih, TANPA gating) ───────────────────────────
+// SATU-SATUNYA sumber perilaku tampilan + pengali XP per level:
+// guide  = semua petunjuk tampil (teks + bacaan + arti), XP ×1
+// recall = hanya teks Jepang (bacaan & arti disembunyikan), XP ×1.5
+// blind  = teks disembunyikan, arti jadi petunjuk, XP ×2
+export const SPEAK_LEVELS = {
+  guide:  { key: 'guide',  label: 'Pandu', xpMult: 1,   showText: true,  showReading: true,  showMeaning: true },
+  recall: { key: 'recall', label: 'Ingat', xpMult: 1.5, showText: true,  showReading: false, showMeaning: false },
+  blind:  { key: 'blind',  label: 'Buta',  xpMult: 2,   showText: false, showReading: false, showMeaning: true },
 };
+export const DEFAULT_SPEAK_LEVEL = 'guide';
+
+// Level tak dikenal / kosong → guide (normalisasi, tidak throw).
+export const speakLevel = (level) => SPEAK_LEVELS[level] || SPEAK_LEVELS[DEFAULT_SPEAK_LEVEL];
+
+// XP dasar per jenis konten — SATU-SATUNYA sumber angka (dipakai UI & test).
+export const SPEAK_XP = { hiragana: 8, katakana: 8, kotoba: 10, kanji: 12, 'poem-line': 5, poem: 25 };
+
+// XP final = dasar × pengali level (dibulatkan). Item tanpa kind → 0.
+export const speakXpFor = (item, level) => {
+  if (!item || !item.kind) return 0;
+  const base = SPEAK_XP[item.kind] ?? 0;
+  return base ? Math.round(base * speakLevel(level).xpMult) : 0;
+};
+
+// XP satu baris puisi pada level tertentu (dipakai PoemSession).
+export const lineXpFor = (level) => speakXpFor({ kind: 'poem-line' }, level);
 
 // Teks permukaan satu baris puisi (gabungan t).
 export const lineText = (line) =>
@@ -859,7 +923,7 @@ export const filterKanaByType = (data, type) =>
 node --test src/features/speaking/speaking.test.js 2>&1 | grep -E "^ℹ (tests|pass|fail)"
 ```
 
-Expected: `tests 7`, `pass 7`, `fail 0`.
+Expected: `tests 8`, `pass 8`, `fail 0`.
 
 Task 4 memakai helper lokal di `poems.test.js`. **Ganti sekarang** menjadi import:
 
@@ -875,7 +939,7 @@ lalu jalankan `node --test src/features/speaking/poems.test.js` → `pass 4 / fa
 
 ```bash
 git add src/features/speaking/speaking.js src/features/speaking/speaking.test.js src/features/speaking/poems.test.js
-git commit -m "feat(speaking): item latihan (kana/kotoba/kanji/puisi) + tabel XP + 7 test"
+git commit -m "feat(speaking): item latihan (kana/kotoba/kanji/puisi) + tabel XP & 3 level + 8 test"
 ```
 
 ---
@@ -1031,10 +1095,10 @@ Buat file:
 ```jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { Volume2, Mic, SkipForward } from 'lucide-react';
+import { Volume2, Mic, SkipForward, Check } from 'lucide-react';
 import { useSpeechRecognition } from './useSpeechRecognition';
 import { matchSpeech, verdictOf } from './speechMatch';
-import { speakXpFor } from './speaking';
+import { speakXpFor, speakLevel, DEFAULT_SPEAK_LEVEL } from './speaking';
 import { useItemProgress, useAchievements } from '../progress/ProgressContext';
 import { useEffectLayer } from '../effects/EffectContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -1048,13 +1112,15 @@ const ERROR_TEXT = {
   network: { id: 'Pengenalan suara butuh koneksi internet.', en: 'Speech recognition needs an internet connection.' },
 };
 
-export function SpeakSession({ items = [], startIndex = 0, onExit }) {
+export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   const { language } = useLanguage();
   const id = language === 'id';
   const { recordAnswer } = useItemProgress();
   const { unlockAchievement } = useAchievements();
   const { triggerEffect } = useEffectLayer();
-  const { listenOnce, listening, error, clearError } = useSpeechRecognition();
+  const { listenOnce, listening, error, clearError, supported } = useSpeechRecognition();
+  const lv = speakLevel(level);
+  const selfAssess = !supported;   // mode mandiri: tanpa penilaian, tanpa XP
 
   const [index, setIndex] = useState(Math.min(startIndex, Math.max(items.length - 1, 0)));
   const [result, setResult] = useState(null); // { verdict, heard, xp }
@@ -1065,6 +1131,11 @@ export function SpeakSession({ items = [], startIndex = 0, onExit }) {
   useEffect(() => () => clearTimeout(advanceRef.current), []);
 
   const item = items[index] || null;
+  // Baris arti (prompt level Buta) & baris bacaan (romaji kana / arti kotoba / onyomi+kunyomi kanji).
+  const artiText = item ? ((id ? (item.meaningId || item.meaning) : item.meaning) || '') : '';
+  const readingText = item
+    ? (item.kind === 'kanji' ? (item.readings || []).join('、') : (item.kind === 'kotoba' ? artiText : (item.meaning || '')))
+    : '';
 
   const next = () => {
     clearTimeout(advanceRef.current);
@@ -1092,7 +1163,7 @@ export function SpeakSession({ items = [], startIndex = 0, onExit }) {
       setResult({ verdict, heard: best.heard, xp: 0 });
       return;
     }
-    const xp = speakXpFor(item);
+    const xp = speakXpFor(item, level);
     recordAnswer(item.id, true, xp);
     triggerEffect('correct');
     unlockAchievement?.('first_voice');
@@ -1146,9 +1217,17 @@ export function SpeakSession({ items = [], startIndex = 0, onExit }) {
         className="flex-grow flex flex-col items-center justify-center text-center"
       >
         <div className="text-[80px] sm:text-[120px] font-serif font-black text-sumi leading-none mb-6 select-none">
-          {item.display}
+          {lv.showText ? item.display : '？'}
         </div>
-        <p className="text-sm font-bold text-sumi/60 mb-2">{item.meaning || ''}</p>
+        {lv.showReading && readingText && (
+          <p className="text-sm font-bold text-sumi/60 mb-2">{readingText}</p>
+        )}
+        {lv.showMeaning && item.kind === 'kanji' && (
+          <p className="text-sm font-bold text-sumi/60 mb-2">{artiText}</p>
+        )}
+        {!lv.showText && (
+          <p className="text-lg font-serif font-bold text-sumi mb-2">{artiText || '…'}</p>
+        )}
         {item.sub && (
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-sumi/40 mb-6">{item.sub}</span>
         )}
@@ -1161,16 +1240,26 @@ export function SpeakSession({ items = [], startIndex = 0, onExit }) {
           >
             <Volume2 size={16} /> {id ? 'Dengar' : 'Listen'}
           </button>
-          <button
-            type="button"
-            onClick={handleSpeak}
-            disabled={busy || listening}
-            className={`flex items-center gap-2 px-6 py-3 border-[3px] border-sumi font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-60 ${
-              listening ? 'bg-shu text-kinari-light animate-pulse' : 'bg-ai text-kinari-light'
-            }`}
-          >
-            <Mic size={16} /> {listening ? (id ? 'Mendengar…' : 'Listening…') : (id ? 'Ucapkan' : 'Speak')}
-          </button>
+          {selfAssess ? (
+            <button
+              type="button"
+              onClick={next}
+              className="flex items-center gap-2 px-6 py-3 bg-matcha text-kinari-light border-[3px] border-sumi font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all"
+            >
+              <Check size={16} /> {id ? 'Sudah Baca' : 'Read ✓'}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSpeak}
+              disabled={busy || listening}
+              className={`flex items-center gap-2 px-6 py-3 border-[3px] border-sumi font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-60 ${
+                listening ? 'bg-shu text-kinari-light animate-pulse' : 'bg-ai text-kinari-light'
+              }`}
+            >
+              <Mic size={16} /> {listening ? (id ? 'Mendengar…' : 'Listening…') : (id ? 'Ucapkan' : 'Speak')}
+            </button>
+          )}
           <button
             type="button"
             onClick={next}
@@ -1223,7 +1312,7 @@ Commit:
 
 ```bash
 git add src/features/speaking/SpeakSession.jsx
-git commit -m "feat(speaking): SpeakSession - dengar/ucapkan/nilai + XP + pesan error mikrofon"
+git commit -m "feat(speaking): SpeakSession - 3 level (pandu/ingat/buta) + mode mandiri + XP per level"
 ```
 
 ---
@@ -1236,23 +1325,25 @@ Buat file:
 
 ```jsx
 import React, { useEffect, useRef, useState } from 'react';
-import { Volume2, Mic } from 'lucide-react';
+import { Volume2, Mic, Check } from 'lucide-react';
 import { Furigana } from './Furigana';
 import { useSpeechRecognition } from './useSpeechRecognition';
 import { matchSpeech, verdictOf } from './speechMatch';
-import { lineReading, poemLineItems, SPEAK_XP } from './speaking';
-import { useItemProgress, useAchievements } from '../progress/ProgressContext';
+import { lineReading, poemLineItems, speakXpFor, lineXpFor, DEFAULT_SPEAK_LEVEL } from './speaking';
+import { useItemProgress, useAchievements, useUserStats } from '../progress/ProgressContext';
 import { useEffectLayer } from '../effects/EffectContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { playDramaticAudio } from '../../utils/audio';
 
-export function PoemSession({ poem, onExit }) {
+export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   const { language } = useLanguage();
   const id = language === 'id';
   const { recordAnswer, itemProgress } = useItemProgress();
   const { unlockAchievement } = useAchievements();
+  const { addXp } = useUserStats();
   const { triggerEffect } = useEffectLayer();
-  const { listenOnce, listening, error, clearError } = useSpeechRecognition();
+  const { listenOnce, listening, error, clearError, supported } = useSpeechRecognition();
+  const selfAssess = !supported;   // mode mandiri: tanpa penilaian, tanpa XP, tanpa SRS
 
   const lines = poem?.lines || [];
   const [passed, setPassed] = useState({});     // { [lineIndex]: true }
@@ -1260,18 +1351,20 @@ export function PoemSession({ poem, onExit }) {
   const [showFurigana, setShowFurigana] = useState(true);
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [lineXp, setLineXp] = useState(0);      // total XP baris pada sesi ini
   const awardedRef = useRef(false);             // guard StrictMode double-effect
 
   const allPassed = lines.length > 0 && lines.every((_, i) => passed[i]);
 
-  // Selesai semua baris → catat 1x ke SRS + XP puisi.
+  // Selesai semua baris → efek + achievement; SRS & XP puisi SEKALI (bukan mode mandiri).
   useEffect(() => {
     if (!allPassed || awardedRef.current) return;
     awardedRef.current = true;
-    recordAnswer(poem.id, true, SPEAK_XP.poem);
     triggerEffect('correct');
+    if (selfAssess) return;   // mode mandiri: tanpa penilaian, tanpa XP, tanpa SRS
     unlockAchievement?.('first_voice');
-  }, [allPassed, poem?.id, recordAnswer, triggerEffect, unlockAchievement]);
+    recordAnswer(poem.id, true, speakXpFor({ kind: 'poem' }, level));
+  }, [allPassed, selfAssess, poem?.id, level, recordAnswer, triggerEffect, unlockAchievement]);
 
   // Badge pembaca puisi: 3 puisi berbeda dengan correctCount >= 1.
   useEffect(() => {
@@ -1280,7 +1373,14 @@ export function PoemSession({ poem, onExit }) {
     if (count >= 3) unlockAchievement?.('poem_reciter');
   }, [itemProgress, unlockAchievement]);
 
+  const markPassed = (i) => {
+    setPassed((p) => ({ ...p, [i]: true }));
+    const nextUnpassed = lines.findIndex((_, idx) => idx > i && !passed[idx] && idx !== i);
+    if (nextUnpassed >= 0) setActive(nextUnpassed);
+  };
+
   const speakLine = async (i) => {
+    if (selfAssess) { markPassed(i); return; }   // mode mandiri: tandai dibaca, tanpa nilai/XP
     const item = poemLineItems(poem)[i];
     if (!item || busy || listening) return;
     setBusy(true);
@@ -1295,10 +1395,11 @@ export function PoemSession({ poem, onExit }) {
       setResult({ line: i, verdict, heard: best.heard });
       return;
     }
-    setPassed((p) => ({ ...p, [i]: true }));
-    setResult({ line: i, verdict, heard: best.heard });
-    const nextUnpassed = lines.findIndex((_, idx) => idx > i && !passed[idx] && idx !== i);
-    if (nextUnpassed >= 0) setActive(nextUnpassed);
+    const xp = lineXpFor(level);
+    addXp(xp);                      // XP per baris (tanpa SRS)
+    setLineXp((t) => t + xp);
+    markPassed(i);
+    setResult({ line: i, verdict, heard: best.heard, xp });
   };
 
   if (!poem) return null;
@@ -1354,9 +1455,9 @@ export function PoemSession({ poem, onExit }) {
               className={`shrink-0 w-9 h-9 border-[2px] border-sumi flex items-center justify-center transition-all disabled:opacity-50 ${
                 passed[i] ? 'bg-matcha text-kinari-light' : 'bg-ai text-kinari-light active:translate-y-[2px]'
               }`}
-              title={id ? 'Ucapkan baris ini' : 'Speak this line'}
+              title={selfAssess ? (id ? 'Tandai sudah dibaca' : 'Mark as read') : (id ? 'Ucapkan baris ini' : 'Speak this line')}
             >
-              {passed[i] ? '✓' : <Mic size={15} />}
+              {passed[i] ? '✓' : (selfAssess ? <Check size={15} /> : <Mic size={15} />)}
             </button>
           </div>
         ))}
@@ -1370,7 +1471,7 @@ export function PoemSession({ poem, onExit }) {
         >
           {result.verdict === 'retry'
             ? (id ? `Baris ${result.line + 1} belum pas — coba lagi.` : `Line ${result.line + 1} not quite — try again.`)
-            : (id ? `Baris ${result.line + 1} ✓` : `Line ${result.line + 1} ✓`)}
+            : (id ? `Baris ${result.line + 1} ✓ +${result.xp} XP` : `Line ${result.line + 1} ✓ +${result.xp} XP`)}
           {result.heard && (
             <span className="block text-[11px] font-bold opacity-70 mt-1">
               {id ? 'Terdengar: ' : 'Heard: '}{result.heard}
@@ -1392,7 +1493,13 @@ export function PoemSession({ poem, onExit }) {
           <p className="text-lg font-serif font-black text-sumi mb-1">
             {id ? 'Puisi selesai! 🎉' : 'Poem complete! 🎉'}
           </p>
-          <p className="text-xs font-bold text-sumi/60 mb-4">+{SPEAK_XP.poem} XP</p>
+          <p className="text-xs font-bold text-sumi/60 mb-4">
+            {selfAssess
+              ? (id ? 'Mode mandiri — tanpa XP' : 'Self-assess — no XP')
+              : (id
+                ? `+${speakXpFor({ kind: 'poem' }, level)} XP puisi · +${lineXp} XP dari baris`
+                : `+${speakXpFor({ kind: 'poem' }, level)} XP poem · +${lineXp} XP from lines`)}
+          </p>
           <p className="text-xs font-bold text-sumi/70 mb-4">{id ? poem.meaning_id : poem.meaning}</p>
           <button
             type="button"
@@ -1423,7 +1530,7 @@ Commit:
 
 ```bash
 git add src/features/speaking/PoemSession.jsx
-git commit -m "feat(speaking): PoemSession - baris-per-baris + furigana toggle + XP puisi"
+git commit -m "feat(speaking): PoemSession - XP per baris + XP puisi per level + mode mandiri"
 ```
 
 ---
@@ -1443,6 +1550,7 @@ import { SpeakSession } from '../features/speaking/SpeakSession';
 import { Furigana } from '../features/speaking/Furigana';
 import {
   kanaSpeakItems, kotobaSpeakItems, kanjiSpeakItems, filterKanaByType,
+  SPEAK_LEVELS, DEFAULT_SPEAK_LEVEL,
 } from '../features/speaking/speaking';
 import { isSpeechRecognitionSupported } from '../features/speaking/useSpeechRecognition';
 import { useItemProgress } from '../features/progress/ProgressContext';
@@ -1486,6 +1594,7 @@ export function Speaking() {
   const [kanjiCategory, setKanjiCategory] = useState(() => kanjiData[0]?.category || '');
   const [session, setSession] = useState(null);   // { items, index }
   const [poem, setPoem] = useState(null);
+  const [level, setLevel] = useState(DEFAULT_SPEAK_LEVEL);
 
   const supported = isSpeechRecognitionSupported();
 
@@ -1510,12 +1619,13 @@ export function Speaking() {
       <SpeakSession
         items={session.items}
         startIndex={session.index}
+        level={level}
         onExit={() => setSession(null)}
       />
     );
   }
   if (poem) {
-    return <PoemSession poem={poem} onExit={() => setPoem(null)} />;
+    return <PoemSession poem={poem} level={level} onExit={() => setPoem(null)} />;
   }
 
   const mastered = (itemId) => itemProgress[itemId]?.status === 'mastered';
@@ -1554,18 +1664,30 @@ export function Speaking() {
         </h1>
         <p className="text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-sumi/60 mt-4 sm:mt-6 relative z-10">
           {id
-            ? 'Ucapkan kana, kotoba, kanji & puisi — dinilai otomatis lewat mikrofon'
-            : 'Speak kana, words, kanji & poems — auto-scored via microphone'}
+            ? 'Ucapkan kana, kotoba, kanji & puisi — 3 level: Pandu / Ingat / Buta'
+            : 'Speak kana, words, kanji & poems — 3 levels: Guide / Recall / Blind'}
         </p>
       </header>
 
       {!supported && (
         <div className="mb-8 px-5 py-4 border-[3px] border-dashed border-shu/50 text-shu text-xs font-bold">
           {id
-            ? '⚠️ Browser ini tidak mendukung pengenalan suara (coba Chrome/Edge). Tombol 🎤 akan menampilkan pesan ini.'
-            : '⚠️ This browser does not support speech recognition (try Chrome/Edge). The 🎤 button will show this message.'}
+            ? '⚠️ Browser ini tidak mendukung pengenalan suara (coba Chrome/Edge). Mode latihan mandiri aktif: tombol "Sudah Baca" — tanpa penilaian & XP.'
+            : '⚠️ This browser does not support speech recognition (try Chrome/Edge). Self-assess mode is active: "Read ✓" — no scoring & XP.'}
         </div>
       )}
+
+      {/* Level kesulitan — bebas dipilih, tanpa gating */}
+      <div className="flex flex-wrap items-center gap-2 mb-8">
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-sumi/50 mr-1">
+          Level
+        </span>
+        {Object.values(SPEAK_LEVELS).map((l) => (
+          <button key={l.key} type="button" onClick={() => setLevel(l.key)} className={chip(level === l.key)}>
+            {l.label} · ×{l.xpMult}
+          </button>
+        ))}
+      </div>
 
       {/* Tabs */}
       <div className="flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 mb-8 overflow-x-auto no-scrollbar">
@@ -1673,7 +1795,7 @@ Commit:
 
 ```bash
 git add src/pages/Speaking.jsx
-git commit -m "feat(speaking): halaman /speaking - 5 tab (kana/kotoba/kanji/puisi) + grid item"
+git commit -m "feat(speaking): halaman /speaking - 5 tab + chip level (pandu/ingat/buta)"
 ```
 
 ---
@@ -1691,7 +1813,7 @@ import { PoemSession } from '../features/speaking/PoemSession';
 2. Tambahkan blok sebelum `return` utama (setelah blok `if (session)`):
 ```jsx
   if (poem) {
-    return <PoemSession poem={poem} onExit={() => setPoem(null)} />;
+    return <PoemSession poem={poem} level={level} onExit={() => setPoem(null)} />;
   }
 ```
 
@@ -1840,10 +1962,11 @@ git commit -m "feat(speaking): achievement first_voice/poem_reciter + Review duk
 * **[EXISTING]** Speech practice for Hiragana (104 incl. yoon), Katakana (46), Kotoba (876), Kanji (86), and Japanese poems (8 public-domain classics).
 * **[EXISTING]** Pronunciation scored via Web Speech API (`ja-JP`) with kana-normalized fuzzy matching (katakana→hiragana, punctuation stripped, Levenshtein similarity ≥ 0.7 to pass).
 * **[EXISTING]** Kanji items accept any onyomi/kunyomi reading (readings split from `、`, okurigana markers handled).
-* **[EXISTING]** Poems render line-by-line with furigana (`<ruby>`), toggleable; a poem completes when every line passes and is recorded as one SRS item.
-* **[EXISTING]** XP per content type: kana 8, kotoba 10, kanji 12, poem 25. Achievements: First Voice (声), Poem Reciter (詩, 3 poems).
-* **[PLANNED]** Per-line scoring for poems and self-assess fallback for browsers without SpeechRecognition (Firefox).
-* **[PLANNED]** Difficulty levels for speaking (mirroring writing levels) if requested.
+* **[EXISTING]** Three free-select difficulty levels (no gating): Pandu (all hints, ×1 XP), Ingat (text only, ×1.5), Buta (text hidden, meaning as prompt, ×2).
+* **[EXISTING]** Poems render line-by-line with furigana (`<ruby>`), toggleable; each passed line awards 5 XP × level, and a completed poem is recorded as one SRS item (+25 XP × level).
+* **[EXISTING]** XP base per content type: kana 8, kotoba 10, kanji 12, poem line 5, poem 25. Achievements: First Voice (声), Poem Reciter (詩, 3 poems).
+* **[EXISTING]** Self-assess fallback ("Sudah Baca") for browsers without SpeechRecognition (Firefox) — no scoring, no XP, no SRS.
+* **[PLANNED]** Poem categories (e.g. 百人一首) if requested.
 ```
 
 3. (Opsional, konsisten) Di bagian IA/overview yang menyebut daftar fitur (baris ~48 dan ~61), tambahkan baris:
@@ -1879,7 +2002,7 @@ npm run build 2>&1 | grep -iE "built in|error" | head -2
 git status -sb | head -1
 ```
 
-Expected: `fail 0` dan total test **≥ 180** (155 lama + ~11 speechMatch + ~7 speaking + ~4 poems + …); `lint exit: 0`; `✓ built`; branch `main...origin/main [ahead N]` (belum di-push — sesuai instruksi).
+Expected: `fail 0` dan total test **= 179** (155 lama + 11 speechMatch + 9 speaking + 4 poems); `lint exit: 0`; `✓ built`; branch `main...origin/main [ahead N]` (belum di-push — sesuai instruksi).
 
 ### 16b. Jalankan dev server
 
@@ -1918,10 +2041,12 @@ Pakai browser tool. Urutan langkah:
    ```js
    js("[...document.querySelectorAll('button')].find(b=>/Ucapkan|Speak/.test(b.innerText)).click()")
    ```
-   Expected: muncul teks `Bagus!`/`Sempurna!` + `+8 XP`; `localStorage` XP naik ≥ 8; `itemProgress['hira_a'].streak >= 1`:
+   Expected: chip level default = **Pandu**; muncul teks `Bagus!`/`Sempurna!` + `+8 XP`; `localStorage` XP naik **+8** (base 8, bonus streak round(8×1.05)=8); `itemProgress['hira_a'].streak >= 1`:
    ```js
    js("JSON.parse(localStorage.getItem('item_progress_v2'))['hira_a'].streak")
    ```
+
+3b. **XP per level**: kembali ke `/speaking`, klik chip `Ingat · ×1.5`, buka item berikutnya, klik `Ucapkan` (mock `い`) → Expected: `+12 XP` (8 × 1.5); XP `localStorage` naik **+13** (round(12×1.05)). Chip `Buta · ×2` → `+16 XP` (round(16×1.05)=17).
 
 4. **Sesi retry** (tanpa XP): set mock ke kata yang salah lalu klik `Ucapkan` lagi pada item berikutnya:
    ```js
@@ -1939,7 +2064,7 @@ Pakai browser tool. Urutan langkah:
    ```
    Klik `Ucapkan` → Expected: pesan izin mikrofon muncul (teks `Izin mikrofon ditolak`).
 
-6. **Not-supported path**: `js("delete window.SpeechRecognition; delete window.webkitSpeechRecognition; location.reload()")` → setelah reload, klik `Ucapkan` → Expected: `Browser ini tidak mendukung pengenalan suara.`
+6. **Mode mandiri (not-supported)**: `js("delete window.SpeechRecognition; delete window.webkitSpeechRecognition; location.reload()")` → setelah reload: banner menyebut `Mode latihan mandiri aktif`, tombol utama jadi `Sudah Baca` (bukan `Ucapkan`). Klik `Sudah Baca` → item lanjut TANPA perubahan XP/SRS (`itemProgress` & XP `localStorage` tidak berubah).
 
 7. **Sesi puisi + furigana**: buka tab `Puisi 詩` → klik kartu pertama (古池や) → cek `<ruby>`/`<rt>` ada dan berisi bacaan:
    ```js
@@ -1952,7 +2077,7 @@ Pakai browser tool. Urutan langkah:
    js("window.__mockSpeech(['かわずとびこむ'])") // klik mic baris 2
    js("window.__mockSpeech(['みずのおと'])")    // klik mic baris 3
    ```
-   Expected: ketiga baris `✓`, banner `Puisi selesai!`, XP +25 (tersimpan `round(25*1.05)=26`), dan `item_progress_v2['poem_basho_furuike'].correctCount === 1`.
+   Expected: tiap baris `✓` dan menampilkan `+5 XP`; banner `Puisi selesai!` dengan `+25 XP puisi · +15 XP dari baris`; XP `localStorage` naik **+41** (3 × round(5×1.05)=5 + round(25×1.05)=26); dan `item_progress_v2['poem_basho_furuike'].correctCount === 1` (baris TIDAK masuk SRS — cek tidak ada key `poem_basho_furuike_l0`).
 
 8. **Review menampilkan puisi**: buka `/review` → Expected: `古池や` muncul di daftar target review (membuktikan Task 14 jalan).
 
@@ -1984,9 +2109,9 @@ Expected: rangkaian commit `feat(speaking): ...` terlihat; `git status -sb` → 
 | File test | Fokus | Perkiraan test |
 |---|---|---|
 | `src/features/speaking/speechMatch.test.js` | normalisasi, Levenshtein, verdict, bacaan kanji | ~11 |
-| `src/features/speaking/speaking.test.js` | item latihan, XP, helper puisi, filter | ~7 |
+| `src/features/speaking/speaking.test.js` | item latihan, XP, level, helper puisi, filter | ~9 |
 | `src/features/speaking/poems.test.js` | integritas data puisi + furigana wajib | ~4 |
-| E2E browser (Task 16c) | alur sukses/retry/error/not-supported, furigana, XP, SRS, Review | manual script |
+| E2E browser (Task 16c) | alur sukses/retry/level/mode mandiri, furigana, XP, SRS, Review | manual script |
 
 Aturan tetap: setiap task TDD (RED → GREEN → commit); `npm test` hijau penuh di akhir; `npm run lint` exit 0; `npm run build` sukses.
 
@@ -2010,3 +2135,42 @@ Aturan tetap: setiap task TDD (RED → GREEN → commit); `npm test` hijau penuh
 2. Perlu XP per baris puisi? Sekarang 25 XP saat puisi selesai.
 3. Perlu lebih banyak puisi / kategori puisi (mis. 百人一首 khusus)? Data tinggal ditambah di `poems.json` mengikuti skema.
 4. Perlu level kesulitan speaking seperti fitur Writing (bebas dipilih)?
+
+
+---
+
+## Log Eksekusi (26/09/2026)
+
+Status: **SELESAI** — 12 commit lokal (`acb607b..55770fc`), belum di-push (sesuai aturan repo).
+
+| Task | Commit | Hasil gate |
+|---|---|---|
+| 1 — normalisasi teks | `acb607b` | speechMatch 3/3 |
+| 2 — similarity + verdict | `49e6c3e` | speechMatch 8/8 |
+| 3 — bacaan kanji | `802fc12` | speechMatch 11/11 |
+| 4+5 — data puisi (digabung, lihat catatan) | `4c299d7` | poems 4/4 |
+| 6 — item latihan + XP + 3 level | `0d0c76a` | speaking 9/9, poems 4/4 |
+| 7+8 — Furigana + hook | `d97862c` | lint exit 0 |
+| 9 — SpeakSession | `bbce12d` | lint clean |
+| 10 — PoemSession | `0d837e5` | lint clean |
+| 11+12 — halaman + wiring puisi | `95f0371` | lint clean |
+| 13 — route + kartu Home | `1617ee4` | build ✓, bundle memuat halaman (grep "Latihan Bicara" di dist) |
+| 14 — achievement + Review puisi | `8e4f29b` | build ✓ |
+| 15 — PRD 9.10/9.11 | `55770fc` | grep 2 baris ✓ |
+| 16 — final gate | — | **179 pass / 0 fail** · lint exit 0 · build ✓ · `main` ahead 12 |
+
+**Catatan penyimpangan dari plan (test contract menang):**
+1. Task 4 & 5 digabung satu commit: test integritas Task 4 sudah mengunci `POEMS.length === 8`, jadi memisah 4+4 akan meninggalkan commit merah. Data ditulis 8 sekaligus.
+2. Task 6 jumlah test aktual **9** (plan menulis 8 setelah revisi — test level menambah 2 blok, test XP lama jadi 1 blok baru; total suite tetap 179 = prediksi gate).
+3. Task 12 tanpa perubahan kode (wiring sudah ada di Task 11, sesuai catatan plan).
+
+**Bukti browser (mock SpeechRecognition, tanpa mikrofon asli):**
+- `/speaking`: 5 tab render, grid hiragana **104 tombol** (46 seion + 20 dakuon + 5 handakuon + 33 yoon), 3 chip level.
+- Sukses kana `あ` → `Perfect! +8 XP`, XP 8, SRS `hira_a` streak 1.
+- Level Ingat `い` → `+12 XP` (8×1.5), stored +13 (round 12×1.05).
+- Retry `んんん` → `Not quite — try again.`, XP tidak berubah (21→21).
+- Error `not-allowed` → pesan izin mikrofon tampil.
+- Mode mandiri (API dihapus + re-render) → tombol `Read ✓`, XP & SRS tidak berubah.
+- Puisi 古池や: furigana `<ruby>/<rt>` tampil (toggle 6→0→6), 3 baris `✓ +5 XP`, selesai → `+25 XP poem · +15 XP from lines`, XP total 62, SRS `poem_basho_furuike` correctCount 1, **tidak ada key baris** (`_l`) di SRS.
+- `/review`: 古池や muncul di daftar target + sesi review menampilkan soal puisi (distractor dari puisi lain, tidak crash).
+- Level Buta kanji 一 → teks `？` + arti sebagai prompt; ucapkan `いち` → `Perfect! +24 XP` (12×2).
