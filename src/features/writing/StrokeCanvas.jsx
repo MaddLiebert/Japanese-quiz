@@ -1,27 +1,34 @@
 import { useEffect, useRef } from 'react';
 import HanziWriter from 'hanzi-writer';
-import { WRITE_COLORS, writeCanvasSize, writeQuizOptions } from './writeQuiz.js';
+import { WRITE_COLORS, writeCanvasSize, writeQuizOptions, writeLevel, DEFAULT_WRITE_LEVEL } from './writeQuiz.js';
 import { localCharDataLoader } from './strokeLoader.js';
 
 /**
  * mode: 'animate' → putar animasi urutan goresan (sekali)
  *       'quiz'    → user menulis; tiap goresan dinilai
+ * level (mode quiz): 'trace' | 'memory' | 'blind' — lihat WRITE_LEVELS.
+ *   - trace : bayangan selalu tampak (jiplak)
+ *   - memory: animasi diputar SEKALI dulu, lalu kuis tanpa bayangan
+ *   - blind : langsung kuis tanpa bayangan
  * handlers (mode quiz): { onCorrectStroke, onMistake, onComplete }
  */
 export function StrokeCanvas({
   char,
   size,
   mode = 'animate',
-  quizMode = 'light',
+  level = DEFAULT_WRITE_LEVEL,
   handlers = {},
   onStrokeCount,
   playKey = 0,          // naikkan angka ini untuk memutar ulang animasi
-  showOutline = true,
 }) {
   const mountRef = useRef(null);
   const writerRef = useRef(null);
 
-  // (Re)buat writer setiap ganti karakter / mode / playKey.
+  const cfg = writeLevel(level);
+  const showOutline = mode === 'quiz' ? cfg.showOutline : true;
+  const preview = mode === 'quiz' && cfg.preview;
+
+  // (Re)buat writer setiap ganti karakter / mode / level / playKey.
   useEffect(() => {
     const el = mountRef.current;
     if (!el || !char) return;
@@ -30,13 +37,40 @@ export function StrokeCanvas({
     el.innerHTML = '';
     const px = size || writeCanvasSize(typeof window !== 'undefined' ? window.innerWidth : 360);
 
-    const writer = HanziWriter.create(el, char, {
+    let writer = null;
+    let started = false;
+
+    // Kuis/animasi baru dijalankan setelah data termuat — biar preview
+    // (level 'memory') tidak balapan dengan proses load.
+    const run = () => {
+      if (started || !writer) return;
+      started = true;
+
+      if (mode === 'animate') {
+        writer.animateCharacter();
+        return;
+      }
+      if (preview) {
+        // Level 'memory': lihat bentuknya sekali, baru tulis dari ingatan.
+        writer.showCharacter();
+        writer.animateCharacter({
+          onComplete: () => {
+            writer.hideCharacter();
+            writer.quiz(writeQuizOptions(level, handlers));
+          },
+        });
+      } else {
+        writer.quiz(writeQuizOptions(level, handlers));
+      }
+    };
+
+    // showCharacter=false di DUA mode: mode animate menggambar goresan satu-satu,
+    // mode quiz cuma menampilkan bayangan (kalau level-nya mengizinkan) supaya user menulis sendiri.
+    writer = HanziWriter.create(el, char, {
       width: px,
       height: px,
       padding: Math.round(px * 0.08),
       showOutline,
-      // showCharacter=false di DUA mode: mode animate menggambar goresan satu-satu,
-      // mode quiz cuma menampilkan bayangan (outline) supaya user menulis sendiri.
       showCharacter: false,
       strokeColor: WRITE_COLORS.strokeColor,
       outlineColor: WRITE_COLORS.outlineColor,
@@ -50,6 +84,7 @@ export function StrokeCanvas({
       charDataLoader: localCharDataLoader,
       onLoadCharDataSuccess: (data) => {
         onStrokeCount?.(data?.strokes?.length ?? 0);
+        run();
       },
       onLoadCharDataError: () => {
         onStrokeCount?.(0);
@@ -57,19 +92,13 @@ export function StrokeCanvas({
     });
     writerRef.current = writer;
 
-    if (mode === 'animate') {
-      writer.animateCharacter();
-    } else {
-      writer.quiz(writeQuizOptions(quizMode, handlers));
-    }
-
     return () => {
-      try { writer.cancelQuiz(); } catch { /* noop */ }
+      try { writer?.cancelQuiz(); } catch { /* noop */ }
       writerRef.current = null;
       el.innerHTML = '';
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [char, mode, quizMode, playKey, size, showOutline]);
+  }, [char, mode, level, playKey, size]);
 
   return (
     <div className="relative inline-block">

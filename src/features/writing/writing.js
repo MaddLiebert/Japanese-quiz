@@ -3,9 +3,11 @@
 // (`with { type: 'json' }`) sedangkan Vite tidak — supaya modul ini bisa dites
 // `node --test` DAN dipakai browser tanpa trik, data masuk lewat argumen saja.
 // Data goresan: public/strokes/<hex>.json hasil scripts/vendor-stroke-data.mjs
+import { writeLevel, DEFAULT_WRITE_LEVEL } from './writeQuiz.js';
 
 // XP per karakter yang diselesaikan (bukan per goresan — biar tidak eksploitatif).
-export const WRITE_XP_PER_STROKE = { kana: 10, kanji: 15 };
+// Angka ada di WRITE_LEVELS (writeQuiz.js) supaya level & XP tidak pernah beda sumber.
+export const WRITE_XP = (level = DEFAULT_WRITE_LEVEL) => writeLevel(level).xp;
 
 // 'あ' → '03042' (5 digit hex). Hanya untuk 1 code point; lainnya null.
 export const strokeHex = (char) => {
@@ -24,9 +26,11 @@ export const strokeDataPath = (char) => {
 // Karakter bisa dilatih tulis kalau 1 code point.
 export const isWritable = (item) => Boolean(item && strokeHex(item.char));
 
-// XP untuk menyelesaikan 1 karakter.
-export const writeXpFor = (item) =>
-  item?.type === 'kanji' ? WRITE_XP_PER_STROKE.kanji : WRITE_XP_PER_STROKE.kana;
+// XP untuk menyelesaikan 1 karakter pada level tertentu.
+export const writeXpFor = (item, level = DEFAULT_WRITE_LEVEL) => {
+  const xp = WRITE_XP(level);
+  return item?.type === 'kanji' ? xp.kanji : xp.kana;
+};
 
 // Susun grup latihan dari dataset yang ada.
 // Hiragana/Katakana dikelompokkan per `row`; Kanji per `category`.
