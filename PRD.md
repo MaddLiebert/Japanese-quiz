@@ -46,6 +46,7 @@ The core loop is strict and cyclic:
 * **Learn:** Sequential flashcard modules for Kana and Kotoba.
 * **Practice:** Configurable quiz setup.
 * **Writing:** Stroke-order animation and writing quiz for Hiragana, Katakana, and Kanji.
+* **Speaking:** Microphone pronunciation practice for kana, kotoba, kanji, and poems (with furigana).
 * **Review:** Dedicated mode for addressing weak/failed items.
 * **Progress:** Detailed statistics, mastery percentages, and achievements.
 
@@ -59,6 +60,7 @@ The product currently exists as a functional prototype containing:
 * Mixed Quiz (Hiragana + Kotoba).
 * Basic Weak Characters review system.
 * Writing practice (Hiragana, Katakana, Kanji) with stroke-order animation and writing quiz.
+* Speaking practice (kana, kotoba, kanji, poems) with microphone scoring, 3 difficulty levels, and furigana poems.
 * LocalStorage-based progress tracking (XP, level, streak, achievements).
 
 ## 9. Feature Requirements
@@ -143,7 +145,18 @@ The product currently exists as a functional prototype containing:
 * **[EXISTING]** Writing achievements: First Stroke (平, pass any Trace), Blind Writer (盲, pass any Blind), Dark Ink (闇, pass Blind on 10 characters).
 * **[PLANNED]** Yōon combinations (きゃ, しゃ) — 2-character combos are currently read-only.
 
-### 9.10 N5 Challenge
+### 9.10 Speaking Practice (話)
+
+* **[EXISTING]** Speech practice for Hiragana (104 incl. yoon), Katakana (46), Kotoba (876), Kanji (86), and Japanese poems (8 public-domain classics).
+* **[EXISTING]** Pronunciation scored via Web Speech API (`ja-JP`) with kana-normalized fuzzy matching (katakana→hiragana, punctuation stripped, Levenshtein similarity ≥ 0.7 to pass).
+* **[EXISTING]** Kanji items accept any onyomi/kunyomi reading (readings split from `、`, okurigana markers handled).
+* **[EXISTING]** Three free-select difficulty levels (no gating): Pandu (all hints, ×1 XP), Ingat (text only, ×1.5), Buta (text hidden, meaning as prompt, ×2).
+* **[EXISTING]** Poems render line-by-line with furigana (`<ruby>`), toggleable; each passed line awards 5 XP × level, and a completed poem is recorded as one SRS item (+25 XP × level).
+* **[EXISTING]** XP base per content type: kana 8, kotoba 10, kanji 12, poem line 5, poem 25. Achievements: First Voice (声), Poem Reciter (詩, 3 poems).
+* **[EXISTING]** Self-assess fallback ("Sudah Baca") for browsers without SpeechRecognition (Firefox) — no scoring, no XP, no SRS.
+* **[PLANNED]** Poem categories (e.g. 百人一首) if requested.
+
+### 9.11 N5 Challenge
 
 * **[PLANNED]** Final singleplayer exam mode combining all categories.
 * **[PLANNED]** Results breakdown by category to recommend next study steps.
