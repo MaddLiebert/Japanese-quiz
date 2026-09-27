@@ -111,7 +111,15 @@ export const VOICES = {
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  yuta:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  // VP Yuta Okkotsu (pack_12) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  yuta: {
+    files: {
+      correct: ['/voices/yuta/correct_1.mp3', '/voices/yuta/correct_2.mp3', '/voices/yuta/correct_3.mp3'],
+      wrong:   ['/voices/yuta/wrong_1.mp3',   '/voices/yuta/wrong_2.mp3',   '/voices/yuta/wrong_3.mp3'],
+      streak:  ['/voices/yuta/streak_1.mp3',  '/voices/yuta/streak_2.mp3',  '/voices/yuta/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
   toji:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
   sukuna: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
 };
