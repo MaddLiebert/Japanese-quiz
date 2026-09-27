@@ -84,7 +84,15 @@ export const VOICES = {
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  yuji:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  // VP Yuji Itadori (pack_09) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  yuji: {
+    files: {
+      correct: ['/voices/yuji/correct_1.mp3', '/voices/yuji/correct_2.mp3', '/voices/yuji/correct_3.mp3'],
+      wrong:   ['/voices/yuji/wrong_1.mp3',   '/voices/yuji/wrong_2.mp3',   '/voices/yuji/wrong_3.mp3'],
+      streak:  ['/voices/yuji/streak_1.mp3',  '/voices/yuji/streak_2.mp3',  '/voices/yuji/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
   megumi: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
   nanami: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
   yuta:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
