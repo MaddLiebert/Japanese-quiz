@@ -22,61 +22,67 @@ import { getVoice } from "./features/audio/voices";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
-// Floating top controls (Theme + Language + Profile) — shown on every page
+// Floating top controls (Shop + Backpack + Profile + Theme) — shown on every page.
+// Digabung jadi SATU bar menyatu (border & shadow tunggal) supaya hemat tempat,
+// tiap tombol tetap punya ikon + tooltip yang jelas fungsinya.
 function TopControls() {
-  const { language, toggleLanguage } = useLanguage();
+  const { language } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const { progress } = useUserStats();
   const navigate = useNavigate();
 
+  // Kelas dasar tiap tombol di dalam bar (tanpa border/shadow sendiri).
+  const itemCls =
+    'flex items-center justify-center gap-1.5 h-8 px-2.5 transition-colors hover:bg-sumi/10 active:bg-sumi/15 cursor-pointer select-none';
+  const divider = <span className="w-[2px] self-stretch bg-sumi/15" aria-hidden="true" />;
+
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+    <div className="fixed top-4 right-4 z-50 flex items-stretch border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] overflow-hidden">
       {/* Shop / Medaru chip */}
       <button
         onClick={() => navigate('/shop')}
-        className="flex items-center gap-1.5 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all px-3 h-8 cursor-pointer select-none"
-        title="Warung Kakek"
+        className={itemCls}
+        title={language === 'id' ? 'Warung Kakek' : "Grandpa's Shop"}
+        aria-label={language === 'id' ? 'Warung Kakek' : "Grandpa's Shop"}
       >
         <span className="text-xs">🏪</span>
         <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()}</span>
       </button>
 
-      {/* Backpack / Inventory button */}
+      {divider}
+
+      {/* Backpack / Inventory */}
       <button
         onClick={() => navigate('/inventory')}
-        className="flex items-center justify-center w-8 h-8 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all text-xs cursor-pointer select-none"
+        className={itemCls}
         title={language === 'id' ? 'Tas Punggung' : 'Backpack'}
+        aria-label={language === 'id' ? 'Tas Punggung' : 'Backpack'}
       >
-        🎒
+        <span className="text-xs">🎒</span>
       </button>
 
-      {/* Profile button */}
+      {divider}
+
+      {/* Profile */}
       <button
         onClick={() => navigate('/profile')}
-        className="flex items-center justify-center w-8 h-8 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all text-xs cursor-pointer select-none font-black"
-        title="Player Profile"
+        className={itemCls}
+        title={language === 'id' ? 'Profil Pemain' : 'Player Profile'}
+        aria-label={language === 'id' ? 'Profil Pemain' : 'Player Profile'}
       >
-        👺
+        <span className="text-xs">👺</span>
       </button>
+
+      {divider}
 
       {/* Theme toggle */}
       <button
         onClick={toggleTheme}
-        className="flex items-center justify-center w-8 h-8 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all text-xs cursor-pointer select-none"
+        className={itemCls}
         title={theme === 'dark' ? 'Ganti ke Mode Terang / Light Mode' : 'Ganti ke Mode Gelap / Dark Mode'}
+        aria-label={theme === 'dark' ? 'Light mode' : 'Dark mode'}
       >
-        {theme === 'dark' ? '☀️' : '🌙'}
-      </button>
-
-      {/* Language toggle */}
-      <button
-        onClick={toggleLanguage}
-        className="flex items-center gap-1 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all px-3 py-1.5 h-8 cursor-pointer select-none"
-        title="Toggle language"
-      >
-        <span className={`text-[10px] font-black tracking-[0.2em] transition-colors ${ language === 'en' ? 'text-sumi' : 'text-sumi/30' }`}>EN</span>
-        <span className="text-sumi/20 text-[10px] font-bold">/</span>
-        <span className={`text-[10px] font-black tracking-[0.2em] transition-colors ${ language === 'id' ? 'text-sumi' : 'text-sumi/30' }`}>ID</span>
+        <span className="text-xs">{theme === 'dark' ? '☀️' : '🌙'}</span>
       </button>
     </div>
   );
