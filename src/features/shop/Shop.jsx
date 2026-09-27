@@ -14,6 +14,7 @@ const RARITY_BADGE = {
   common:    'bg-kinari-light/90 text-sumi',
   rare:      'bg-ai text-kinari-light',
   legendary: 'bg-[#ffd700] text-sumi',
+  special:   'bg-[#9c27b0] text-kinari-light',
 };
 
 export function Shop() {
@@ -148,8 +149,8 @@ export function Shop() {
               </div>
               <p className="text-[11px] font-bold mt-4 text-kinari-light/80">
                 {language === 'id'
-                  ? 'Duplikat di-refund 50 🪙. Peluang: common 50% · rare 30% · legendary 20%.'
-                  : 'Duplicates refund 50 🪙. Odds: common 50% · rare 30% · legendary 20%.'}
+                  ? 'Duplikat di-refund 50 🪙. Peluang: common 50% · rare 30% · legendary 18% · special 2%.'
+                  : 'Duplicates refund 50 🪙. Odds: common 50% · rare 30% · legendary 18% · special 2%.'}
               </p>
               <p className="text-[11px] font-bold mt-1 text-kinari-light/70">
                 {language === 'id'

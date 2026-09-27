@@ -46,10 +46,13 @@ export function Review() {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const timerRef = useRef(null);
-  const { triggerEffect, resetEffectStreak } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
 
   // Streak efek di-review mulai dari 0 setiap sesi.
   useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
+
+  // Keluar dari halaman review → bar energi kutukan ikut hilang.
+  useEffect(() => () => endQuizSession(), [endQuizSession]);
 
   useEffect(() => {
     return () => {
@@ -169,11 +172,12 @@ export function Review() {
   // Check end of review session
   useEffect(() => {
     if (isReviewing && currentIndex >= sessionQueue.length) {
+      endQuizSession();    // Sesi review kelar → domain & bar padam
       setIsReviewing(false);
       setCurrentIndex(0);
       setSessionQueue([]); // Bersihin antrean pas kelar
     }
-  }, [isReviewing, currentIndex, sessionQueue.length]);
+  }, [isReviewing, currentIndex, sessionQueue.length, endQuizSession]);
 
   // View 1: Empty State
   if (!isReviewing && globalWeakCharacters.length === 0) {
@@ -256,7 +260,7 @@ export function Review() {
     const isKana = !isKotoba && !isKanji && !isGrammar && !isPoem;
 
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+      <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
         <header className="flex justify-between items-end mb-12 border-b-[4px] border-sumi pb-6 relative z-10">
@@ -265,6 +269,7 @@ export function Review() {
           </div>
           <button
             onClick={() => {
+              endQuizSession();   // Keluar di tengah sesi → domain & bar padam
               setIsReviewing(false);
               setCurrentIndex(0);
               setSessionQueue([]);
@@ -392,6 +397,7 @@ export function Review() {
                 <motion.button
                   key={option.id}
                   onClick={() => handleOptionClick(option)}
+                  data-correct={isThisCorrect || undefined}
                   animate={
                     showCorrect && isThisSelected ? { scale: [1, 1.05, 1] }
                       : showWrong ? { x: [0, -10, 10, -10, 10, 0] }
