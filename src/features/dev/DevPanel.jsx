@@ -15,9 +15,12 @@ import { useEffect, useState } from "react";
 import { useUserStats } from "../progress/ProgressContext";
 import { useEffectLayer } from "../effects/EffectContext";
 import { startDomainBgm, stopDomainBgm, setBallHum, stopBallHum } from "../../utils/gojoAmbience";
+import { playClipFile } from "../../utils/sfx";
 import { useLanguage } from "../../context/LanguageContext";
-import { PACKS } from "../packs/packs";
+import { PACKS, getPack, isPackReady } from "../packs/packs";
+import { getVoice } from "../audio/voices.js";
 import { SHOP_ITEMS, countItems } from "../items/items";
+import { reviewClips, nextClip } from "./reviewClips.js";
 
 // Kunci localStorage yang dipakai ProgressContext
 const PROGRESS_KEY = "user_progress_v2";
@@ -52,9 +55,13 @@ function writeProgress(patch) {
 export function DevPanel() {
   const { language } = useLanguage();
   const { progress, buyPack, togglePack } = useUserStats();
-  const { previewStreak, castDomain } = useEffectLayer();
+  const { previewStreak, castDomain, triggerEffect } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
+  // Review suara & skill (dev): karakter terpilih, kursor rotasi klip, status.
+  const [reviewVoice, setReviewVoice] = useState(() => progress.activePack || PACKS[0]?.id);
+  const [cursors, setCursors] = useState({});
+  const [reviewStatus, setReviewStatus] = useState("");
 
   // Begitu pack Gojo aktif (state sudah ter-update), tembak preview-nya.
   useEffect(() => {
@@ -140,6 +147,44 @@ export function DevPanel() {
   const castNow = () => {
     if (progress.activePack === GOJO_PACK_ID) { castDomain(); return; }
     previewGojo(20);
+  };
+
+  // ── Review suara & skill (dev) ────────────────────────────────────────────
+  // Klik karakter = langsung pakai pack-nya (beli otomatis bila perlu) supaya
+  // tombol Skill menembak efek pack yang benar. Tombol Suara memutar klip asli
+  // berurutan (rotasi kursor), tidak lewat quiz.
+  const reviewPack = getPack(reviewVoice);
+  const reviewVoiceKey = reviewPack?.voice || null;
+  const reviewVoiceDef = getVoice(reviewVoiceKey);
+  const clipCount = (kind) => reviewClips(reviewVoiceDef, kind).length;
+
+  const selectReviewPack = (packId) => {
+    setReviewVoice(packId);
+    setReviewStatus("");
+    if (progress.activePack === packId) return;
+    const owned = (progress.ownedPacks || []).includes(packId);
+    if (owned) { togglePack(packId); return; }
+    const res = buyPack(packId);
+    if (res === "poor") giveMedaru();   // medaru + reload → klik sekali lagi
+  };
+
+  const playReview = (kind) => {
+    const clips = reviewClips(reviewVoiceDef, kind);
+    if (clips.length === 0) {
+      setReviewStatus(`${kind}: tidak ada klip → saat kuis pakai synth (gong/thud).`);
+      return;
+    }
+    const key = `${reviewVoiceKey}:${kind}`;
+    const r = nextClip(clips, cursors[key] || 0);
+    playClipFile(r.path);
+    setCursors((c) => ({ ...c, [key]: r.cursor }));
+    setReviewStatus(`${r.path} (${r.index + 1}/${clips.length})`);
+  };
+
+  const fireSkill = (type) => {
+    if (!progress.activePack) { setReviewStatus("Tidak ada pack aktif — klik karakter dulu."); return; }
+    triggerEffect(type);
+    setReviewStatus(`skill ${type} → pack ${getPack(progress.activePack)?.name || progress.activePack}`);
   };
 
   const btn =
@@ -242,6 +287,54 @@ export function DevPanel() {
               🔊 {id ? "Tes Hum Bola" : "Test Ball Hum"}
             </button>
           </div>
+        </div>
+
+        {/* DEV-ONLY — Review suara & skill per karakter (tanpa quiz) */}
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10">
+          <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 mb-2">
+            {id ? "Review Suara & Skill (tanpa quiz)" : "Voice & Skill Review (no quiz)"}
+          </p>
+          <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
+            {id
+              ? "Klik karakter → pack langsung dipakai (dibeli otomatis bila perlu). Tombol Suara memutar klip asli berurutan tiap klik; Skill menembak efek pack yang sedang aktif."
+              : "Click a character → pack is equipped (bought automatically if needed). Voice plays the real clips in order on each click; Skill fires the active pack's effect."}
+          </p>
+
+          <div className="flex flex-wrap gap-2 mb-4">
+            {PACKS.filter(isPackReady).map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => selectReviewPack(p.id)}
+                className={`${btn} ${reviewVoice === p.id ? "bg-sumi text-kinari-light" : "bg-kinari-light text-sumi"}`}
+              >
+                {p.icon} {p.name}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {["correct", "wrong", "streak"].map((kind) => (
+              <button
+                key={kind}
+                type="button"
+                onClick={() => playReview(kind)}
+                className={`${btn} bg-kinari-light text-sumi`}
+              >
+                🎙️ {kind} ({clipCount(kind)})
+              </button>
+            ))}
+            <button type="button" onClick={() => fireSkill("correct")} className={`${btn} bg-matcha text-kinari-light`}>
+              ⚡ Skill Benar
+            </button>
+            <button type="button" onClick={() => fireSkill("wrong")} className={`${btn} bg-shu text-kinari-light`}>
+              💥 Skill Salah
+            </button>
+          </div>
+
+          <p className="text-[10px] font-mono text-sumi/50 mt-4">
+            {reviewStatus || `aktif: ${reviewPack ? `${reviewPack.icon} ${reviewPack.name}` : "—"} · voice: ${reviewVoiceKey || "—"}`}
+          </p>
         </div>
 
         <div className="mt-6 pt-6 border-t-[2px] border-sumi/10 text-[10px] font-mono text-sumi/50">
