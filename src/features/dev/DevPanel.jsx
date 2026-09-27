@@ -54,7 +54,7 @@ function writeProgress(patch) {
 
 export function DevPanel() {
   const { language } = useLanguage();
-  const { progress, buyPack, togglePack } = useUserStats();
+  const { progress, togglePack } = useUserStats();
   const { previewStreak, castDomain, triggerEffect } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
@@ -121,7 +121,7 @@ export function DevPanel() {
     reload();
   };
 
-  // Preview efek Gojo tanpa quiz. Otomatis menyiapkan pack Gojo (beli/aktifkan),
+  // Preview efek Gojo tanpa quiz. Otomatis menyiapkan pack Gojo (aktifkan),
   // lalu menembak satu 'correct' yang mendarat TEPAT di streak target — lewat
   // pipeline yang sama dengan jawaban sungguhan.
   const previewGojo = (target) => {
@@ -135,11 +135,14 @@ export function DevPanel() {
       setPending(target);
       return;
     }
-    const res = buyPack(GOJO_PACK_ID);
-    if (res === "poor") { giveMedaru(); return; }          // medaru + reload → klik sekali lagi
-    if (res === "bought") { setPending(target); return; }  // activePack sudah diset buyPack
-    if (res === "owned") { togglePack(GOJO_PACK_ID); setPending(target); }
-    // res === "invalid" → pack tidak siap; tidak ada yang bisa dilakukan
+    // Belum dimiliki → tulis localStorage langsung (pola DevPanel: pack hanya
+    // dari gacha, tidak ada jalur beli) + reload → klik sekali lagi.
+    writeProgress({
+      medaru: 999999,
+      ownedPacks: [...(progress.ownedPacks || []), GOJO_PACK_ID],
+      activePack: GOJO_PACK_ID,
+    });
+    reload();
   };
 
   // Cast domain langsung (dev). Kalau pack Gojo belum aktif → aktifkan dulu
@@ -150,9 +153,10 @@ export function DevPanel() {
   };
 
   // ── Review suara & skill (dev) ────────────────────────────────────────────
-  // Klik karakter = langsung pakai pack-nya (beli otomatis bila perlu) supaya
-  // tombol Skill menembak efek pack yang benar. Tombol Suara memutar klip asli
-  // berurutan (rotasi kursor), tidak lewat quiz.
+  // Klik karakter = langsung pakai pack-nya (tulis localStorage bila belum
+  // dimiliki — pack hanya dari gacha, tidak ada jalur beli) supaya tombol Skill
+  // menembak efek pack yang benar. Tombol Suara memutar klip asli berurutan
+  // (rotasi kursor), tidak lewat quiz.
   const reviewPack = getPack(reviewVoice);
   const reviewVoiceKey = reviewPack?.voice || null;
   const reviewVoiceDef = getVoice(reviewVoiceKey);
@@ -164,8 +168,13 @@ export function DevPanel() {
     if (progress.activePack === packId) return;
     const owned = (progress.ownedPacks || []).includes(packId);
     if (owned) { togglePack(packId); return; }
-    const res = buyPack(packId);
-    if (res === "poor") giveMedaru();   // medaru + reload → klik sekali lagi
+    // Belum dimiliki → tulis localStorage langsung + reload → klik sekali lagi.
+    writeProgress({
+      medaru: 999999,
+      ownedPacks: [...(progress.ownedPacks || []), packId],
+      activePack: packId,
+    });
+    reload();
   };
 
   const playReview = (kind) => {
