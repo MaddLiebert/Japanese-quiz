@@ -19,6 +19,7 @@ import { getPack } from "./features/packs/packs";
 import { setActiveVoice, preloadVoice, primeVoice } from "./utils/sfx";
 import { preloadHinaGifs } from "./features/effects/hinaGifs";
 import { preloadGojoGifs } from "./features/effects/gojoGifs";
+import { preloadYujiGifs } from "./features/effects/yujiGifs";
 import { getVoice } from "./features/audio/voices";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
@@ -106,6 +107,9 @@ function VoiceSync() {
     // Pack visual 'gojo' → preload + decode GIF (kalah/murasaki/ryoiki), supaya
     // GIF tampil instan saat jawaban & cast (tanpa jeda decode frame pertama).
     if (pack?.visual === 'gojo') preloadGojoGifs();
+    // Pack visual 'yuji' → preload + decode GIF (keiteiken/kokusen/fuga/takeover/
+    // wrong/zakome), supaya GIF tampil instan saat jawaban & cast takeover.
+    if (pack?.visual === 'yuji') preloadYujiGifs();
   }, [progress.activePack]);
   return null;
 }
