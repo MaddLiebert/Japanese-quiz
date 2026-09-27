@@ -42,7 +42,7 @@ export function useN5Exam() {
   const phaseRef = useRef('intro');
 
   const { recordAnswer } = useItemProgress();
-  const { completeQuiz } = useUserStats();
+  const { completeQuiz, recordN5Exam } = useUserStats();
   const { triggerEffect, resetEffectStreak } = useEffectLayer();
 
   useEffect(() => { phaseRef.current = phase; }, [phase]);
@@ -88,9 +88,17 @@ export function useN5Exam() {
     const totalQ = answersRef.current.length;
     const correct = answersRef.current.filter(Boolean).length;
     completeQuiz(scored.passed, 'hard', 1, totalQ - correct, totalQ);
+    // Simpan rekor ujian → memicu badge 合格/優良/満点 + sertifikat (sekali per run).
+    recordN5Exam({
+      total: scored.total,
+      lkrScaled: scored.lkrScaled,
+      listeningScaled: scored.listeningScaled,
+      passed: scored.passed,
+      at: new Date().toISOString(),
+    });
     setResult(scored);
     setPhase('results');
-  }, [completeQuiz]);
+  }, [completeQuiz, recordN5Exam]);
 
   // Akhiri seksi sekarang: maju ke jeda (seksi berikutnya) atau ke hasil.
   const endSection = useCallback((timedOut) => {

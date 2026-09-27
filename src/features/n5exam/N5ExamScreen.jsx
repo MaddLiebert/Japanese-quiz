@@ -310,6 +310,14 @@ export function N5ExamScreen() {
               >
                 {id ? 'Ulangi Ujian' : 'Retry Exam'}
               </button>
+              {r.passed && (
+                <button
+                  onClick={() => { s.quit(); navigate('/profile'); }}
+                  className="flex-1 py-4 border-[4px] border-shu bg-shu text-kinari-light font-black uppercase tracking-[0.25em] text-sm shadow-[6px_6px_0_0_#1a1a1a] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[3px_3px_0_0_#1a1a1a] transition-all cursor-pointer"
+                >
+                  {id ? '🏆 Lihat Sertifikat' : '🏆 View Certificate'}
+                </button>
+              )}
               <button
                 onClick={() => { s.quit(); navigate('/'); }}
                 className="flex-1 py-4 border-[4px] border-sumi bg-kinari text-sumi font-black uppercase tracking-[0.25em] text-sm shadow-[6px_6px_0_0_#1a1a1a] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[3px_3px_0_0_#1a1a1a] transition-all cursor-pointer"

@@ -3,6 +3,7 @@ import { rollPackId } from '../packs/packs';
 import { getItem, addItem, removeItem } from '../items/items';
 import { applyStreakBonus } from './streak';
 import { WRITE_GATE_KEY } from '../writing/writeGate';
+import { emptyExamRecord, mergeExamRecord, n5BadgesFor } from '../n5exam/certificate';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -52,6 +53,7 @@ const DEFAULT_PROGRESS = {
   ownedPacks: [],
   activePack: null,
   ownedItems: {},
+  n5Exam: emptyExamRecord(),
   lastActiveDate: getLocalDateString()
 };
 
@@ -137,6 +139,10 @@ export const ACHIEVEMENT_META = {
   venerable: { label: '伯', title: 'Venerable', desc: '5,000 XP' },
   grand_shogun: { label: '将', title: 'Grand Shogun', desc: '10,000 XP' },
   zenith: { label: '頂', title: 'The Zenith', desc: 'Level 1000 Achieved' },
+  // N5 Exam 模擬試験 (3) — sertifikat kelulusan ujian tiruan JLPT N5
+  n5_gokaku: { label: '合', title: 'N5 合格', desc: 'Lulus Ujian N5 模擬試験' },
+  n5_yuushuu: { label: '優', title: 'N5 優良', desc: 'Lulus dengan skor ≥140/180' },
+  n5_kanpeki: { label: '満', title: 'N5 満点', desc: 'Skor sempurna 180/180' },
 };
 
 // ── Migrasi state lama (ownedEffects/activeEffect) → packs ──────────────────
@@ -247,6 +253,9 @@ export const ProgressProvider = ({ children }) => {
       if (weakItems.length === 0 && progress.totalAnswered > 10) {
         add('purifier');
       }
+
+      // Badge kelulusan Ujian N5 (合/優/満) dari rekor ujian tersimpan.
+      n5BadgesFor(progress.n5Exam).forEach(add);
       if (progress.totalAnswered >= 50) { add('kanji_slayer'); add('kanji_hell'); }
       if (progress.totalAnswered >= 500) add('eagle_eye');
       if (progress.totalAnswered >= 1000) add('master_calligrapher');
@@ -263,7 +272,7 @@ export const ProgressProvider = ({ children }) => {
 
       return next;
     });
-  }, [progress.totalAnswered, progress.xp, progress.maxStreak, progress.level, progress.streak, weakItems.length]);
+  }, [progress.totalAnswered, progress.xp, progress.maxStreak, progress.level, progress.streak, weakItems.length, progress.n5Exam]);
 
   useEffect(() => {
     checkAchievements();
@@ -452,6 +461,14 @@ export const ProgressProvider = ({ children }) => {
     });
   }, []);
 
+  // Rekor Ujian N5 (sertifikat & badge kelulusan). Dipanggil sekali saat ujian selesai.
+  const recordN5Exam = useCallback((result) => {
+    setProgress(prev => ({
+      ...prev,
+      n5Exam: mergeExamRecord(prev.n5Exam || emptyExamRecord(), result),
+    }));
+  }, []);
+
   // Penalti XP (Death Quiz): kurangi XP, clamp di 0, hitung ulang level.
   // Sengaja TIDAK lewat addXp — addXp kena bonus streak & logika streak harian.
   // Return nominal yang BENAR-BENAR terpotong (dibaca dari ref sebelum setter).
@@ -578,7 +595,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, completeQuiz, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}

@@ -171,6 +171,7 @@ The product currently exists as a functional prototype containing:
 * **[EXISTING]** **Bank hibrida**: tipe yang bisa dibangun otomatis dari pool lama — 漢字読み dari `kanji.json`, 文の文法1 dari `grammar.json`, listening (課題理解/ポイント理解) dari `mondai.json` + mp3 asli. Sisanya (表記/文脈規定/言い換え/★/文章の文法/読解/情報検索/発話/即時応答) di-author di `src/data/n5-exam.json`.
 * **[EXISTING]** **Furigana**: semua teks Jepang ber-kanji (passage, prompt, opsi, explanation) dirender lewat `<Furigana/>` (format `漢字[かんじ]`) supaya pembaca N5 tetap bisa membaca soal kanji.
 * **[EXISTING]** Reward: +15 XP tiap jawaban benar via `recordAnswer`; run selesai lewat `completeQuiz` (menambah win-rate berbobot + Medaru seperti kuis lain). Keluar sukarela = tanpa penalti.
+* **[EXISTING]** **Sertifikat & badge kelulusan (fiktif, in-app):** tiap run disimpan ke `progress.n5Exam` lewat `recordN5Exam(result)` (rekor terbaik, `passed` lengket, tidak dicabut). Membuka 3 badge hanko — **合 N5 合格**, **優 N5 優良** (skor ≥140/180), **満 N5 満点** (180/180) — dan sebuah **合格証書** (sertifikat) di Profil → tab "🏆 Sertifikat", lengkap dengan nama, skor per seksi, nomor sertifikat deterministik (`N5-<tahun>-<6digit>`), predikat (合格/優良/満点), tanggal, dan tombol Cetak/Simpan PDF (CSS `@media print` → hanya kartu sertifikat yang tercetak). Sertifikat diberi label jelas **fiktif, BUKAN sertifikat JLPT resmi**.
 
 ### 9.12 Death Quiz 死闘
 
