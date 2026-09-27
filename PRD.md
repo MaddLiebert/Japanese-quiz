@@ -167,6 +167,18 @@ The product currently exists as a functional prototype containing:
 * **[PLANNED]** Final singleplayer exam mode combining all categories.
 * **[PLANNED]** Results breakdown by category to recommend next study steps.
 
+### 9.12 Death Quiz 死闘
+
+* **[EXISTING]** Endless mode exclusive to **Shogun rank** (XP ≥ 20.000) — gate derived from the rank string (`getRank`), not a second XP threshold, so it can never drift.
+* **[EXISTING]** Content = all multiple-choice pools (hiragana 104 + katakana 46 + kotoba 876 + grammar 53 + kanji 86 = 1.165 items). **Mondai is excluded**: its audio runs 30–60 s, incompatible with the 7 s per-question timer (consistent with the user's own spec "ada waktunya sama kaya quiz lain").
+* **[EXISTING]** Endless queue: the pool is shuffled and auto-refilled when exhausted; the same item never appears twice in a row (guarded across the refill boundary). A run ends only on death (lives 0) or a voluntary, confirmed quit.
+* **[EXISTING]** 3 lives (命). A wrong answer **or** a timeout costs 1 life. At 0 lives → death.
+* **[EXISTING]** 7 s timer per question (same as Hard mode), reset each question, turns red/pulses at ≤ 3 s.
+* **[EXISTING]** Economy: **+40 XP** per correct (through the existing `recordAnswer` → SRS + weak items + streak bonus are kept), **−300 XP** on death only, applied via a dedicated `loseXp` action (clamped ≥ 0, level recomputed; does NOT touch streak/achievements). Win-rate and Medaru are untouched (a "answer 1, then quit" run must not count as a win). A voluntary quit costs nothing.
+* **[EXISTING]** `kabel_jumper` (Kabel Jumper, 800 Medaru) is the revive item: at 0 lives, if the player owns one, a revive screen offers "Pakai Kabel Jumper" → consumes 1 item, restores 1 life, and the run continues with score/queue intact. In Inventory the jumper shows an info label ("Dipakai otomatis di Death Quiz") instead of the generic PAKAI button so it cannot be wasted elsewhere.
+* **[EXISTING]** Voicepacks run automatically (all packs) via `triggerEffect('correct'|'wrong')` + `resetEffectStreak()` on start — visual + voice behave exactly as in the other quizzes.
+* **[EXISTING]** Home shows a 6th card ("Death Quiz", 死) always visible: unlocked → active; locked → dimmed with a "🔒 Rank Shogun" subtitle, routing to a locked screen that shows the current rank and XP progress toward 20.000.
+
 ## 10. UX Requirements
 
 * **Focus:** No distractions. The UI must support the learning loop directly.
@@ -277,6 +289,7 @@ The UI must NOT resemble a generic SaaS dashboard, a Duolingo clone, or rely on 
 * **[PROPOSED]** Streak multiplier: +5% XP for every consecutive day, capped at +50% (10 days).
 * **[EXISTING]** Level thresholds scale progressively.
 * **[EXISTING]** Local evaluation of Achievement triggers at the end of every quiz session.
+* **[EXISTING]** Death Quiz penalty: on death the run subtracts 300 XP through a dedicated `loseXp(amount)` action — clamped at 0, level recomputed, and it deliberately bypasses `addXp` so the daily streak and its +5% bonus are not touched. A voluntary quit applies no penalty; win-rate and Medaru are never changed by this mode.
 
 ## 17. Data Model
 
