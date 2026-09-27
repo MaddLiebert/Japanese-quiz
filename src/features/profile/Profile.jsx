@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useUserStats, useItemProgress, getRank, useAchievements, ACHIEVEMENT_META } from '../progress/ProgressContext';
 import { N5Certificate } from '../n5exam/N5Certificate';
+import { isLegendary, badgeCircleClass } from '../progress/badgeSeal';
+import { LegendaryDecor } from '../progress/BadgeDecor';
 import hiraganaData from '../../data/hiragana.json';
 import katakanaData from '../../data/katakana.json';
 import kotobaData from '../../data/kotoba.json';
@@ -343,7 +345,8 @@ export function Profile() {
                                 isSelected ? 'bg-ai text-kinari-light' : 'bg-kinari'
                               }`}
                             >
-                              <div className="w-12 h-12 rounded-full border-[3px] border-shu text-shu flex items-center justify-center font-serif font-black text-xl bg-kinari-light flex-shrink-0">
+                              <div className={`w-12 h-12 rounded-full text-shu flex items-center justify-center font-serif font-black text-xl bg-kinari-light flex-shrink-0 relative ${badgeCircleClass(id).replace('border-[5px]', 'border-[3px]')}`}>
+                                {isLegendary(id) && <LegendaryDecor />}
                                 {meta.label}
                               </div>
                               <div>
@@ -359,7 +362,8 @@ export function Profile() {
                           if (!meta) return null;
                           return (
                             <div key={id} className="border-[3px] border-sumi bg-kinari p-4 shadow-[4px_4px_0_0_#1a1a1a] flex items-center gap-4">
-                              <div className="w-12 h-12 rounded-full border-[3px] border-shu text-shu flex items-center justify-center font-serif font-black text-xl bg-kinari-light flex-shrink-0">
+                              <div className={`w-12 h-12 rounded-full text-shu flex items-center justify-center font-serif font-black text-xl bg-kinari-light flex-shrink-0 relative ${badgeCircleClass(id).replace('border-[5px]', 'border-[3px]')}`}>
+                                {isLegendary(id) && <LegendaryDecor />}
                                 {meta.label}
                               </div>
                               <div>

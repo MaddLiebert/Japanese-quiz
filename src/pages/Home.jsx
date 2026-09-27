@@ -8,6 +8,8 @@ import { useLanguage } from "../context/LanguageContext";
 import { countMasteredKanji, isN5ExamUnlocked, N5_EXAM_MIN_MASTERED_KANJI } from "../features/n5exam/n5exam";
 
 import { StreakIndicator } from "../components/StreakIndicator";
+import { isLegendary, badgeCircleClass } from "../features/progress/badgeSeal";
+import { LegendaryDecor } from "../features/progress/BadgeDecor";
 // Hanko Stamp component — reused for level and achievements
 const HankoStamp = ({ text, label, delay = 0.5 }) => (
   <motion.div
@@ -23,15 +25,16 @@ const HankoStamp = ({ text, label, delay = 0.5 }) => (
 );
 
 // Achievement stamp component
-const AchievementStamp = ({ meta, index }) => (
+const AchievementStamp = ({ id, meta, index }) => (
   <motion.div
     initial={{ scale: 2, opacity: 0, rotate: 15 }}
     animate={{ scale: 1, opacity: 1, rotate: (index % 2 === 0 ? -6 : 4) }}
     transition={{ type: "spring", stiffness: 160, damping: 10, delay: 0.1 * index }}
     className="flex flex-col items-center gap-3"
   >
-    <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full border-[5px] border-shu text-shu overflow-hidden bg-kinari-light shadow-md">
-      <div className="absolute inset-0 border-[2px] border-shu opacity-50 m-1.5 rounded-full"></div>
+    <div className={`relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full text-shu bg-kinari-light shadow-md ${badgeCircleClass(id)}`}>
+      <div className="absolute inset-0 border-[2px] border-current opacity-50 m-1.5 rounded-full"></div>
+      {isLegendary(id) && <LegendaryDecor />}
       <span className="text-3xl sm:text-4xl font-serif font-black leading-none z-10">{meta.label}</span>
     </div>
     <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-sumi/60 text-center max-w-[5rem]">{meta.title}</span>

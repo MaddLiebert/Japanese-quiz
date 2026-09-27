@@ -2,18 +2,21 @@ import { motion } from "motion/react";
 import { useLanguage } from "../../context/LanguageContext";
 import { gradeLabel, certificateNo, n5BadgesFor, N5_YUUSHUU_MIN, N5_KANPEKI_TOTAL } from "./certificate";
 import { N5_PASS_TOTAL, N5_PASS_LKR, N5_PASS_LISTENING, LKR_MAX, LISTENING_MAX } from "./n5exam";
+import { badgeCircleClass } from "../progress/badgeSeal";
+import { LegendaryDecor } from "../progress/BadgeDecor";
 
 // Stempel hanko merah untuk badge kelulusan (合/優/満).
-const Stamp = ({ label, title, on, delay = 0 }) => (
+const Stamp = ({ label, title, on, delay = 0, legendary = false }) => (
   <motion.div
     initial={{ scale: 1.6, opacity: 0, rotate: 12 }}
     animate={{ scale: 1, opacity: 1, rotate: -5 }}
     transition={{ type: "spring", stiffness: 150, damping: 10, delay }}
     className={`flex flex-col items-center gap-2 ${on ? '' : 'opacity-25 grayscale'}`}
   >
-    <div className="relative w-16 h-16 rounded-full border-[4px] border-shu text-shu flex items-center justify-center bg-kinari-light">
-      <div className="absolute inset-0 border-[2px] border-shu opacity-60 m-1 rounded-full"></div>
-      <span className="text-2xl font-serif font-black leading-none">{label}</span>
+    <div className={`relative w-16 h-16 rounded-full text-shu flex items-center justify-center bg-kinari-light ${legendary && on ? badgeCircleClass('n5_kanpeki').replace('border-[5px]', 'border-[4px]') : 'border-[4px] border-shu'}`}>
+      <div className="absolute inset-0 border-[2px] border-current opacity-60 m-1 rounded-full"></div>
+      {legendary && on && <LegendaryDecor />}
+      <span className="text-2xl font-serif font-black leading-none z-10">{label}</span>
     </div>
     <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-sumi/60">{title}</span>
   </motion.div>
@@ -108,7 +111,7 @@ export function N5Certificate({ record, username = '' }) {
           <div className="flex items-end justify-center gap-8 mb-8">
             <Stamp label="合" title="合格" on={badges.includes('n5_gokaku')} delay={0.1} />
             <Stamp label="優" title="優良" on={badges.includes('n5_yuushuu')} delay={0.2} />
-            <Stamp label="満" title="満点" on={badges.includes('n5_kanpeki')} delay={0.3} />
+            <Stamp label="満" title="満点" on={badges.includes('n5_kanpeki')} delay={0.3} legendary />
           </div>
 
           {/* Footer: nomor + tanggal + grade */}
