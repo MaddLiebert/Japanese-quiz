@@ -102,7 +102,15 @@ export const VOICES = {
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  nanami: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  // VP Nanami Kento (pack_11) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  nanami: {
+    files: {
+      correct: ['/voices/nanami/correct_1.mp3', '/voices/nanami/correct_2.mp3', '/voices/nanami/correct_3.mp3'],
+      wrong:   ['/voices/nanami/wrong_1.mp3',   '/voices/nanami/wrong_2.mp3',   '/voices/nanami/wrong_3.mp3'],
+      streak:  ['/voices/nanami/streak_1.mp3',  '/voices/nanami/streak_2.mp3',  '/voices/nanami/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
   yuta:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
   toji:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
   sukuna: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
