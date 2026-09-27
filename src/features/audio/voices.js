@@ -120,7 +120,15 @@ export const VOICES = {
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  toji:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  // VP Toji Fushiguro (pack_13) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  toji: {
+    files: {
+      correct: ['/voices/toji/correct_1.mp3', '/voices/toji/correct_2.mp3', '/voices/toji/correct_3.mp3'],
+      wrong:   ['/voices/toji/wrong_1.mp3',   '/voices/toji/wrong_2.mp3',   '/voices/toji/wrong_3.mp3'],
+      streak:  ['/voices/toji/streak_1.mp3',  '/voices/toji/streak_2.mp3',  '/voices/toji/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
   sukuna: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
 };
 
