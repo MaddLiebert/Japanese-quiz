@@ -160,10 +160,10 @@ export function Home() {
               </div>
               <div className="flex flex-col">
                 <span className="text-xs uppercase tracking-[0.4em] font-bold text-sumi">
-                  {language === 'id' ? 'Kuis Bahasa Jepang' : 'Japanese Language Quiz'}
+                  日本語学園 · Nihongo Gakuen
                 </span>
                 <span className="text-[10px] text-sumi/60 uppercase tracking-widest mt-0.5">
-                  {language === 'id' ? 'Kursus Dasar N5' : 'N5 Foundation Course'}
+                  {language === 'id' ? 'Kuis Bahasa Jepang · Kursus Dasar N5' : 'Japanese Language Quiz · N5 Foundation Course'}
                 </span>
               </div>
             </motion.div>
