@@ -452,6 +452,22 @@ export const ProgressProvider = ({ children }) => {
     });
   }, []);
 
+  // Penalti XP (Death Quiz): kurangi XP, clamp di 0, hitung ulang level.
+  // Sengaja TIDAK lewat addXp — addXp kena bonus streak & logika streak harian.
+  // Return nominal yang BENAR-BENAR terpotong (dibaca dari ref sebelum setter).
+  const loseXp = useCallback((amount) => {
+    const loss = Number(amount) || 0;
+    if (loss <= 0) return 0;
+    const applied = Math.min(progressRef.current?.xp || 0, loss);
+    setProgress(prev => {
+      const cur = prev.xp || 0;
+      const newXp = Math.max(0, cur - loss);
+      const newLevel = Math.min(Math.floor(newXp / 100) + 1, 1000);
+      return { ...prev, xp: newXp, level: newLevel };
+    });
+    return applied;
+  }, []);
+
   // Belanja medaru. Return true kalau cukup & berhasil, false kalau saldo kurang.
   const spendMedaru = useCallback((amount) => {
     const balance = progressRef.current?.medaru || 0;
@@ -554,7 +570,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, completeQuiz, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, completeQuiz, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}
