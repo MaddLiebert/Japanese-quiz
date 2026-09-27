@@ -196,3 +196,18 @@ Dev server: **reuse** yang sudah jalan (5173/5174) — jangan kill proses user.
 - Commit lokal per fase — **TIDAK push** (perintah user eksplisit).
 - Komentar & pesan commit Bahasa Indonesia.
 - Log Eksekusi ditambahkan ke file ini setelah selesai.
+
+---
+
+## Log Eksekusi (2026-09-27)
+
+- **Task 1** — commit `eff34b9` (questionBuilder murni + 8 test).
+- **Task 2** — commit `aaa5bcf` (deathQuiz.js murni + 12 test).
+- **Task 3** — commit `74ddd77` (hook + UI 4 layar + route + kartu Home + `loseXp` + Inventory jumper).
+- **Task 4** — commit `931fd3d` (PRD §9.12 + §16 + plan ini).
+- **Gate akhir**: `npm test` **223 pass / 0 fail**, `npm run lint` **0 error** (22 warning pre-existing), `npm run build` ✓.
+- **E2E CDP** (`scripts/cdp-verify.mjs` dari skill, headless Chrome):
+  - Skenario A (seed xp 25000, jumper ×2, pack_06 ink, bahasa id): **12/12 PASS** — intro, HUD `命 ×3`/`Skor 0`/`Waktu 7s`, nyawa turun tiap salah, layar revive, pakai jumper 2→1→0, efek pack jalan (svg>0), game over, **XP turun tepat −300 (25000→24700)**, Main Lagi → run baru `命 ×3`. **0 console error, 0 page error.**
+  - Skenario B (seed xp 15000 = Sensei): **4/4 PASS** — layar terkunci (Rank Shogun + rank sekarang + progress 15.000/20.000), tidak ada tombol Mulai, kartu Home terkunci (🔒). **0 console error, 0 page error.**
+- **Tidak di-push** (perintah user). Working tree bersih, `main` ahead 4.
+- Catatan tooling: `cdp-verify.mjs` dipatch agar tahan race `-32000 "Inspected target navigated or closed"` (retry, bukan fatal) — ini bikin re-`navigate()` saat seeding tidak lagi crash.
