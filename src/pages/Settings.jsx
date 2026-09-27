@@ -7,7 +7,7 @@ import { DevPanel } from "../features/dev/DevPanel"; // DEV-ONLY — hapus baris
 
 export function Settings() {
   const { resetProgress } = useUserStats();
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
 
@@ -100,6 +100,44 @@ export function Settings() {
                     }`}
                   >
                     <span>🌙</span> {language === 'id' ? 'Gelap' : 'Dark'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Language Selector */}
+              <div className="border-[3px] border-sumi/20 bg-kinari p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-1">
+                    {language === 'id' ? 'Bahasa Aplikasi' : 'App Language'}
+                  </label>
+                  <p className="text-xs text-sumi/70 font-semibold">
+                    {language === 'id'
+                      ? 'Pilih bahasa antarmuka: Indonesia atau Inggris.'
+                      : 'Choose the interface language: English or Indonesian.'}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 min-w-[240px]">
+                  <button
+                    type="button"
+                    onClick={() => setLanguage('id')}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      language === 'id'
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    <span>🇮🇩</span> Indonesia
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLanguage('en')}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      language === 'en'
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    <span>🇬🇧</span> English
                   </button>
                 </div>
               </div>

@@ -3,12 +3,20 @@ import { createContext, useContext, useState } from 'react';
 const LanguageContext = createContext(null);
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState(() => {
+  const [language, setLanguageState] = useState(() => {
     return localStorage.getItem('ui_language') || 'en';
   });
 
+  // Pilih bahasa secara eksplisit ('en' | 'id') — dipakai di halaman Settings.
+  const setLanguage = (lang) => {
+    const next = lang === 'id' ? 'id' : 'en';
+    localStorage.setItem('ui_language', next);
+    setLanguageState(next);
+  };
+
+  // Toggle cepat (EN ⇄ ID).
   const toggleLanguage = () => {
-    setLanguage(prev => {
+    setLanguageState((prev) => {
       const next = prev === 'en' ? 'id' : 'en';
       localStorage.setItem('ui_language', next);
       return next;
@@ -16,7 +24,7 @@ export const LanguageProvider = ({ children }) => {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, toggleLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage }}>
       {children}
     </LanguageContext.Provider>
   );
