@@ -129,7 +129,9 @@ export function useQuizSession({ frozen = false } = {}) {
   }, [timeLeft, isFinished, recordAnswer]);
 
   // selectAnswer: records the click, updates score. Uses refs to avoid stale closures.
-  const selectAnswer = useCallback((selectedOptionId) => {
+  // opts.xpMultiplier: finisher 開 Yuji → XP soal itu dobel (dari pemanggil,
+  // hook tidak menebak soal efek). Di-clamp aman.
+  const selectAnswer = useCallback((selectedOptionId, opts = {}) => {
     if (isAnsweredRef.current) return; // prevent double-click via ref (always fresh)
     isAnsweredRef.current = true;
 
@@ -149,6 +151,8 @@ export function useQuizSession({ frozen = false } = {}) {
     let xpReward = 10;
     if (difficultyRef.current === 'medium') xpReward = 20;
     if (difficultyRef.current === 'hard') xpReward = 35;
+    const mult = (Number.isFinite(opts?.xpMultiplier) && opts.xpMultiplier > 0) ? opts.xpMultiplier : 1;
+    xpReward = Math.round(xpReward * mult);
 
     // Record to persistent storage
     recordAnswer(currentQ.target.id, correct, xpReward);
@@ -190,8 +194,9 @@ export function useQuizSession({ frozen = false } = {}) {
   }, [completeQuiz]); // reads from refs except for completeQuiz
 
   // Legacy shim for kana mode: select + auto-advance after 1500ms
-  const answerQuestion = useCallback((selectedOptionId) => {
-    selectAnswer(selectedOptionId);
+  // Legacy shim for kana mode: select + auto-advance after 1500ms
+  const answerQuestion = useCallback((selectedOptionId, opts) => {
+    selectAnswer(selectedOptionId, opts);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       advanceQuestion();

@@ -187,6 +187,14 @@ test('pack_07 = Gojo Satoru, rarity special, visual/voice gojo', () => {
   assert.equal(p.icon, '🟣');
 });
 
+test('pack_09 = Yuji Itadori, visual yuji (bukan dummy lagi)', () => {
+  const p = getPack('pack_09');
+  assert.equal(p.visual, 'yuji');
+  assert.equal(p.voice, 'yuji');
+  assert.ok(!/dummy|menyusul|coming/i.test(p.desc), 'desc tidak boleh "menyusul/dummy"');
+  assert.ok(!/dummy|menyusul|coming/i.test(p.desc_en), 'desc_en tidak boleh "menyusul/dummy"');
+});
+
 
 // ── Seri Jujutsu Kaisen: 7 pack (dummy → VP) ─────────────────────────────────
 
