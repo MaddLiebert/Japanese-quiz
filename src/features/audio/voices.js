@@ -84,13 +84,24 @@ export const VOICES = {
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  // VP Yuji Itadori (pack_09) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  // VP Yuji Itadori (pack_09) — aset user di public/voices/yuji/.
+  //   wrong : 3 klip meme "Yuji kalah" (dipilih acak tiap salah); pas takeover
+  //           ganti deterministik ke zakome (Sukuna) — diatur EffectContext.
+  //   clips : klip jalur khusus (keiteiken/manjigeri/kokusen/senketsu + kai/
+  //           hachi/fuga/zakome) — diputar DETERMINISTIK oleh playYujiTechnique.
+  //   correct/streak: KOSONG (benar = suara teknik deterministik; 宿儺の器 = teks doang).
   yuji: {
     files: {
-      correct: ['/voices/yuji/correct_1.mp3', '/voices/yuji/correct_2.mp3', '/voices/yuji/correct_3.mp3'],
-      wrong:   ['/voices/yuji/wrong_1.mp3',   '/voices/yuji/wrong_2.mp3',   '/voices/yuji/wrong_3.mp3'],
-      streak:  ['/voices/yuji/streak_1.mp3',  '/voices/yuji/streak_2.mp3',  '/voices/yuji/streak_3.mp3'],
+      correct: [],
+      wrong: ['/voices/yuji/kuso.mp3', '/voices/yuji/madada.mp3', '/voices/yuji/shimata.mp3'],
+      streak: [],
     },
+    clips: [
+      '/voices/yuji/keiteiken.mp3', '/voices/yuji/manjigeri.mp3',
+      '/voices/yuji/kokusen.mp3', '/voices/yuji/senketsu.mp3',
+      '/voices/yuji/kai.mp3', '/voices/yuji/hachi.mp3', '/voices/yuji/fuga.mp3',
+      '/voices/yuji/zakome.mp3',
+    ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
   // VP Megumi Fushiguro (pack_10) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.

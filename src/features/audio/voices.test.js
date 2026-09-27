@@ -84,15 +84,16 @@ test('voice nobara: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
 });
 
 
-test('voice yuji: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
+test('voice yuji: 3 klip kalah (wrong) + 8 klip teknik (clips) — pola Gojo', () => {
   const v = VOICES.yuji;
   assert.ok(v, 'VOICES.yuji harus ada');
-  assert.equal(v.files.correct.length, 3);
-  assert.equal(v.files.wrong.length, 3);
-  assert.equal(v.files.streak.length, 3);
-  const all = [...v.files.correct, ...v.files.wrong, ...v.files.streak];
-  assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
-  for (const p of all) assert.match(p, /^\/voices\/yuji\/[a-z0-9_]+\.mp3$/);
+  assert.deepEqual(v.files.correct, [], 'teknik diputar deterministik, bukan random');
+  assert.equal(v.files.wrong.length, 3, '3 klip kalah: kuso/madada/shimata');
+  assert.deepEqual(v.files.streak, [], '宿儺の器 = teks doang, tanpa klip streak');
+  assert.equal(v.clips.length, 8, 'keiteiken, manjigeri, kokusen, senketsu, kai, hachi, fuga, zakome');
+  for (const p of [...v.files.wrong, ...v.clips]) assert.match(p, /^\/voices\/yuji\/[a-z0-9_]+\.mp3$/);
+  assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 11, 'tidak boleh duplikat');
+  assert.equal(getVoice('yuji'), VOICES.yuji);
 });
 
 
