@@ -12,6 +12,10 @@ import {
   refillDeathQueue,
   drawNextDeathItem,
   applyDeathPenalty,
+  deathMedaruReward,
+  DEATH_MEDARU_PER_CORRECT,
+  DEATH_MEDARU_MILESTONE_BONUS,
+  DEATH_MEDARU_MIN_SCORE,
 } from './deathQuiz.js';
 
 // Data asli dibaca manual di test (aturan repo: modul murni dilarang import JSON).
@@ -55,6 +59,9 @@ test('konstanta desain terkunci', () => {
   assert.equal(DEATH_XP_PER_CORRECT, 40);
   assert.equal(DEATH_XP_PENALTY, 300);
   assert.equal(DEATH_UNLOCK_XP, 20000);
+  assert.equal(DEATH_MEDARU_PER_CORRECT, 5);
+  assert.equal(DEATH_MEDARU_MILESTONE_BONUS, 25);
+  assert.equal(DEATH_MEDARU_MIN_SCORE, 5);
 });
 
 test('applyDeathPenalty: 25000 → 24700', () => {
@@ -71,6 +78,38 @@ test('applyDeathPenalty: input aneh → 0 (tidak throw)', () => {
   assert.equal(applyDeathPenalty(NaN), 0);
   assert.equal(applyDeathPenalty(-50), 0);
   assert.equal(applyDeathPenalty(undefined), 0);
+});
+
+test('deathMedaruReward: skema escalating (base + bonus kelipatan 10)', () => {
+  assert.equal(deathMedaruReward(0), 0);
+  assert.equal(deathMedaruReward(4), 0);          // di bawah minimum → 0
+  assert.equal(deathMedaruReward(5), 25);         // 5×5, belum ada bonus
+  assert.equal(deathMedaruReward(9), 45);
+  assert.equal(deathMedaruReward(10), 75);        // 50 + 25
+  assert.equal(deathMedaruReward(20), 150);       // 100 + 50
+  assert.equal(deathMedaruReward(40), 300);       // 200 + 100
+  assert.equal(deathMedaruReward(100), 750);      // 500 + 250
+});
+
+test('deathMedaruReward: anti-farm — skor < 5 tidak dapat medaru', () => {
+  assert.equal(deathMedaruReward(1), 0);
+  assert.equal(deathMedaruReward(2), 0);
+});
+
+test('deathMedaruReward: input aneh → 0 (tidak throw)', () => {
+  assert.equal(deathMedaruReward(NaN), 0);
+  assert.equal(deathMedaruReward(-10), 0);
+  assert.equal(deathMedaruReward(undefined), 0);
+  assert.equal(deathMedaruReward('abc'), 0);
+});
+
+test('deathMedaruReward: monoton naik (makin jauh makin besar)', () => {
+  let prev = -1;
+  for (let s = 0; s <= 60; s++) {
+    const r = deathMedaruReward(s);
+    assert.ok(r >= prev, `reward turun di skor ${s}`);
+    prev = r;
+  }
 });
 
 test('allQuizItems: 1165 item, urutan pool hiragana→katakana→kotoba→grammar→kanji', () => {

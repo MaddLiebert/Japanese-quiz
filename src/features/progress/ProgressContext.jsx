@@ -468,6 +468,14 @@ export const ProgressProvider = ({ children }) => {
     return applied;
   }, []);
 
+  // Hadiah medaru (Death Quiz): tambah saldo. Return nominal yang benar-benar ditambah.
+  const gainMedaru = useCallback((amount) => {
+    const gain = Number(amount) || 0;
+    if (gain <= 0) return 0;
+    setProgress(prev => ({ ...prev, medaru: (prev.medaru || 0) + gain }));
+    return gain;
+  }, []);
+
   // Belanja medaru. Return true kalau cukup & berhasil, false kalau saldo kurang.
   const spendMedaru = useCallback((amount) => {
     const balance = progressRef.current?.medaru || 0;
@@ -570,7 +578,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, completeQuiz, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, completeQuiz, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}

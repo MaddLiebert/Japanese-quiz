@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { useDeathQuizSession } from "./useDeathQuizSession";
-import { isDeathQuizUnlocked, DEATH_UNLOCK_XP, DEATH_XP_PENALTY, DEATH_START_LIVES } from "./deathQuiz";
+import { isDeathQuizUnlocked, DEATH_UNLOCK_XP, DEATH_XP_PENALTY, DEATH_START_LIVES, deathMedaruReward } from "./deathQuiz";
 
 // Kartu statistik kecil (nyawa/skor/waktu) — gaya neo-brutalist repo.
 function StatChip({ label, value, accent }) {
@@ -149,7 +149,7 @@ export function DeathQuizScreen() {
             {id ? 'Kamu Mati' : 'You Died'}
           </h1>
 
-          <div className="flex gap-4 mb-8">
+          <div className="flex gap-4 mb-8 flex-wrap justify-center">
             <StatChip label={id ? 'Skor' : 'Score'} value={runResult?.score ?? score} />
             <StatChip label="命" value={`×${lives}`} />
             <StatChip
@@ -157,12 +157,22 @@ export function DeathQuizScreen() {
               value={`−${runResult?.penaltyApplied ?? DEATH_XP_PENALTY}`}
               accent="!bg-shu/10 !border-shu"
             />
+            <StatChip
+              label="Medaru"
+              value={`+${runResult?.medaruGained ?? 0}`}
+              accent="!bg-kinari"
+            />
           </div>
 
-          <p className="text-sm font-bold text-sumi/70 mb-8 leading-relaxed">
+          <p className="text-sm font-bold text-sumi/70 mb-2 leading-relaxed">
             {id
               ? `Kamu kehilangan ${runResult?.penaltyApplied ?? DEATH_XP_PENALTY} XP.`
               : `You lost ${runResult?.penaltyApplied ?? DEATH_XP_PENALTY} XP.`}
+          </p>
+          <p className="text-sm font-black text-sumi mb-8 leading-relaxed">
+            {(runResult?.medaruGained ?? 0) > 0
+              ? (id ? `🪙 Kompensasi: +${runResult.medaruGained} Medaru` : `🪙 Compensation: +${runResult.medaruGained} Medaru`)
+              : (id ? 'Skor belum cukup untuk kompensasi Medaru (min. 5).' : 'Score too low for Medaru compensation (min. 5).')}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full">
@@ -251,6 +261,10 @@ export function DeathQuizScreen() {
               <span className="text-shu">▶</span>
               {id ? 'Mati = kehilangan XP. Kabel jumper bisa menghidupkanmu kembali.' : 'Death = XP loss. A jumper cable can bring you back.'}
             </li>
+            <li className="flex gap-3">
+              <span className="text-shu">▶</span>
+              {id ? 'Kompensasi: dapat Medaru makin banyak tiap jawaban benar (min. skor 5).' : 'Compensation: earn Medaru for every correct answer (min. score 5).'}
+            </li>
           </ul>
 
           <button
@@ -291,6 +305,7 @@ export function DeathQuizScreen() {
         <div className="flex gap-3">
           <StatChip label="命" value={`×${lives}`} accent={lives <= 1 ? '!bg-shu/15 !border-shu' : ''} />
           <StatChip label={id ? 'Skor' : 'Score'} value={score} />
+          <StatChip label="🪙" value={`+${deathMedaruReward(score)}`} />
         </div>
         <div className="flex items-center gap-3">
           {timeLeft !== null && (
