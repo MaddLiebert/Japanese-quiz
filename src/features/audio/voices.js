@@ -71,6 +71,17 @@ export const VOICES = {
     clips: ['/voices/gojo/ao.mp3', '/voices/gojo/aka.mp3', '/voices/gojo/Murasaki.mp3', '/voices/gojo/ryoiki tenkai.mp3'],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
+
+  // ── Seri Jujutsu Kaisen (pack_08..pack_14) — placeholder DUMMY ──────────────
+  // files kosong → otomatis fallback synth (gong/thud), perilakunya sama
+  // seperti voice 'dummy'. Klip mp3 diisi bertahap oleh task "VP <karakter>".
+  nobara: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  yuji:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  megumi: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  nanami: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  yuta:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  toji:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  sukuna: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
 };
 
 export const getVoice = (key) => VOICES[key] || VOICES.taiko;
