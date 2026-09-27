@@ -326,7 +326,7 @@ export const playDomainBoom = (kind = 'cast') => {
 
 // ── Suara khusus Gojo (pack_07) ─────────────────────────────────────────────
 // Teknik diputar DETERMINISTIK (bukan pickFile acak): 蒼 → ao.mp3, 赫 → aka.mp3.
-// 茈 (murasaki) belum punya klip — GIF murasaki yang tampil, jadi senyap.
+// 茈 → Murasaki.mp3 (klip asli; GIF 茈 ikut tampil bareng).
 export const GOJO_TECHNIQUE_FILES = {
   ao: '/voices/gojo/ao.mp3',
   aka: '/voices/gojo/aka.mp3',

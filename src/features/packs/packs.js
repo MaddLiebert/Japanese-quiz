@@ -50,12 +50,11 @@ export const PACKS = [
     price: 2500, rarity: 'legendary', visual: 'ink', voice: 'taiko',
   },
   {
-    // Pack #7 — Gojo Satoru. Sementara DUMMY dulu: pakai visual 'gojo'
-    // (placeholder ungu) + voice 'gojo' (synth). Efek mewah 蒼→赫→茈→無量空処
-    // & aset suara menyusul.
+    // Pack #7 — Gojo Satoru (SPECIAL 特別). Efek berlapis 蒼→赫→茈→無量空処
+    // + aset suara user (public/voices/gojo/) + ambience BGM — sudah live.
     id: 'pack_07', name: 'Gojo Satoru', kanji: '五条悟', icon: '🟣',
-    desc: 'Domain & Infinity: 蒼→赫→茈 (efek menyusul)',
-    desc_en: 'Domain & Infinity: Ao→Aka→Murasaki (FX coming)',
+    desc: 'Domain & Infinity: 蒼→赫→茈→無量空処',
+    desc_en: 'Domain & Infinity: Ao→Aka→Murasaki→Domain',
     price: 2500, rarity: 'special', visual: 'gojo', voice: 'gojo',
   },
 ];
