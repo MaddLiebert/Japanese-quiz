@@ -1,4 +1,4 @@
-# Product Requirements Document — Japanese Quiz
+# Product Requirements Document — 日本語学園 · Nihongo Gakuen
 
 ## 1. Product Overview
 

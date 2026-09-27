@@ -12,9 +12,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['**/*'],
       manifest: {
-        name: 'Japanese Quiz',
-        short_name: 'JLPT N5',
-        description: 'Offline capable Japanese Quiz app',
+        name: '日本語学園 · Nihongo Gakuen',
+        short_name: 'Nihongo Gakuen',
+        description: '日本語学園 Nihongo Gakuen — offline-capable JLPT N5 study app',
         theme_color: '#182b49',
         icons: [
           {

@@ -152,7 +152,7 @@ export function Settings() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-px border-[3px] border-sumi/20 bg-sumi/10">
               {[
-                { label: language === 'id' ? "Aplikasi" : "Application", value: "Japanese Quiz" },
+                { label: language === 'id' ? "Aplikasi" : "Application", value: "日本語学園 · Nihongo Gakuen" },
                 { label: language === 'id' ? "Dasar" : "Foundation", value: "N5 Course" },
                 { label: language === 'id' ? "Versi" : "Version", value: "1.0.0" },
               ].map((item) => (
