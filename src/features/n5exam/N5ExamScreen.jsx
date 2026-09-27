@@ -9,14 +9,7 @@ import {
   N5_SECTIONS, N5_SECTION_ORDER, N5_TOTAL_MINUTES, sectionRawTotal,
   formatClock, LKR_MAX, LISTENING_MAX, N5_PASS_TOTAL, N5_PASS_LKR, N5_PASS_LISTENING,
 } from "./n5exam";
-
-const MONDAI_LABEL = {
-  kanji_reading: '漢字読み', orthography: '表記', context_vocab: '文脈規定', paraphrase: '言い換え類義',
-  grammar_form: '文の文法1', sentence_composition: '文の文法2 ★', text_grammar: '文章の文法',
-  reading_short: '内容理解(短文)', reading_mid: '内容理解(中文)', info_retrieval: '情報検索',
-  task_comprehension: '課題理解', key_point: 'ポイント理解',
-  verbal_expression: '発話表現', quick_response: '即時応答',
-};
+import { mondaiLabel, mondaiGloss } from "./mondaiLabels";
 
 // Kartu statistik kecil (neo-brutalist, sama seperti Death Quiz).
 export function N5ExamScreen() {
@@ -185,7 +178,10 @@ export function N5ExamScreen() {
         </header>
 
         <div className="flex-1 flex flex-col relative z-10 pb-16">
-          <div className="text-[10px] uppercase tracking-[0.3em] font-black text-shu/70 mb-4">{MONDAI_LABEL[it.mondai] || it.mondai}</div>
+          <div className="text-[10px] tracking-[0.2em] font-black text-shu/70 mb-4">
+            {mondaiLabel(it.mondai)}
+            <span className="ml-2 text-sumi/50 normal-case tracking-normal font-bold">— {mondaiGloss(it.mondai, language)}</span>
+          </div>
 
           {it.passage && (
             <div className="border-[3px] border-sumi bg-kinari p-4 sm:p-6 mb-6 text-sm sm:text-base leading-loose text-sumi font-serif">
@@ -297,7 +293,10 @@ export function N5ExamScreen() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-8">
               {r.perMondai.map((row) => (
                 <div key={row.mondai} className="flex items-center justify-between border-[2px] border-sumi/30 px-3 py-2">
-                  <span className="text-xs font-bold text-sumi/80">{MONDAI_LABEL[row.mondai] || row.mondai}</span>
+                  <span className="text-xs font-bold text-sumi/80">
+                    {mondaiLabel(row.mondai)}
+                    <span className="ml-1 text-sumi/50 font-medium normal-case">· {mondaiGloss(row.mondai, language)}</span>
+                  </span>
                   <span className="text-xs font-black text-sumi">{row.correct}/{row.total}</span>
                 </div>
               ))}

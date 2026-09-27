@@ -5,7 +5,7 @@ import poemsData from '../../data/poems.json';
 import poemTranslations from '../../data/poem-translations.json';
 import { Furigana } from '../speaking/Furigana';
 import { POEM_THEMES, filterPoemsByTheme, lineReading } from '../speaking/speaking';
-import { translatedLine, translatedTitle } from '../speaking/poemTranslation';
+import { translatedLine, translatedTitle, poemTypeLabel } from '../speaking/poemTranslation';
 import { poemCredit, creditLine } from '../speaking/poemCredits';
 import { useLanguage } from '../../context/LanguageContext';
 import { playDramaticAudio } from '../../utils/audio';
@@ -74,12 +74,12 @@ export function PoemReader() {
           <h2 className="text-3xl sm:text-4xl font-serif font-black text-sumi">{open.title}</h2>
           <p className="text-xs font-bold tracking-[0.2em] text-sumi/50 mt-1">{open.titleReading}</p>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sumi/50 mt-3">
-            {open.type}{open.excerpt ? (id ? ' · kutipan' : ' · excerpt') : ''}
+            {poemTypeLabel(open.type, language)}{open.excerpt ? (id ? ' · kutipan' : ' · excerpt') : ''}
           </p>
           <PoemCredit poem={open} id={id} />
-          {translatedTitle(poemTranslations, open.id) && (
+          {translatedTitle(poemTranslations, open.id, language) && (
             <p className="text-base font-serif font-bold text-ai mt-3">
-              {translatedTitle(poemTranslations, open.id)}
+              {translatedTitle(poemTranslations, open.id, language)}
             </p>
           )}
           <div className="flex flex-wrap items-center justify-center gap-4 mt-4">
@@ -98,7 +98,7 @@ export function PoemReader() {
         <div className="border-[3px] border-sumi bg-kinari px-4 py-8 sm:px-10 sm:py-12">
           <div className="flex flex-col gap-6 sm:gap-7">
             {open.lines.map((line, i) => {
-              const tr = translatedLine(poemTranslations, open.id, i);
+              const tr = translatedLine(poemTranslations, open.id, i, language);
               return (
                 <div key={i} className="relative px-8 sm:px-10">
                   <p className="text-center text-2xl sm:text-3xl font-serif font-black text-sumi leading-loose">
@@ -150,9 +150,9 @@ export function PoemReader() {
             </div>
             <p className="text-[11px] font-bold text-sumi/60 mt-1">{creditLine(p)}</p>
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sumi/50 mt-1">
-              {p.type} · {p.lines.length} {id ? 'baris' : 'lines'}
+              {poemTypeLabel(p.type, language)} · {p.lines.length} {id ? 'baris' : 'lines'}
             </p>
-            <p className="text-sm font-serif text-ai mt-2">{translatedTitle(poemTranslations, p.id)}</p>
+            <p className="text-sm font-serif text-ai mt-2">{translatedTitle(poemTranslations, p.id, language)}</p>
           </motion.div>
         ))}
       </div>

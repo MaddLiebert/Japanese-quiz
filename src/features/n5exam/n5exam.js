@@ -36,7 +36,7 @@ export const isN5ExamUnlocked = (rank, masteredKanjiCount) =>
 export const N5_SECTIONS = {
   vocab: {
     minutes: 20,
-    label: { id: 'Pengetahuan Bahasa (Kosakata)', en: 'Language Knowledge (Vocabulary)' },
+    label: { id: 'Pengetahuan Bahasa (Kosakata)', en: 'Language Knowledge (Vocabulary)', jp: '言語知識・語彙 · gengo chishiki · goi' },
     mondai: [
       { type: 'kanji_reading', count: 7, gen: 'kanji' },
       { type: 'orthography', count: 5 },
@@ -46,7 +46,7 @@ export const N5_SECTIONS = {
   },
   grammarReading: {
     minutes: 40,
-    label: { id: 'Pengetahuan Bahasa (Tata Bahasa)・Membaca', en: 'Language Knowledge (Grammar)・Reading' },
+    label: { id: 'Pengetahuan Bahasa (Tata Bahasa)・Membaca', en: 'Language Knowledge (Grammar)・Reading', jp: '言語知識・文法・読解 · gengo chishiki · bunpō · dokkai' },
     mondai: [
       { type: 'grammar_form', count: 16, gen: 'grammar' },
       { type: 'sentence_composition', count: 5 },
@@ -58,7 +58,7 @@ export const N5_SECTIONS = {
   },
   listening: {
     minutes: 30,
-    label: { id: 'Menyimak', en: 'Listening' },
+    label: { id: 'Menyimak', en: 'Listening', jp: '聴解 · chōkai' },
     mondai: [
       { type: 'task_comprehension', count: 7, gen: 'mondai' },
       { type: 'key_point', count: 6, gen: 'mondai' },

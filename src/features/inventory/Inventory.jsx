@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { PACKS, PACK_RARITY, isPackReady } from "../packs/packs";
-import { inventoryList, countItems } from "../items/items";
+import { inventoryList, countItems, itemName, itemDesc } from "../items/items";
 
 const RARITY_STYLE = {
   common:    { bg: 'bg-kinari-light', text: 'text-sumi',         border: 'border-sumi' },
@@ -133,7 +133,7 @@ export function Inventory() {
                       <h3 className="text-xl font-serif font-black border-b-4 border-current pb-2 mb-2">
                         {pack.name}
                       </h3>
-                      <p className="text-sm font-bold mb-2 flex-grow opacity-90">{pack.desc}</p>
+                      <p className="text-sm font-bold mb-2 flex-grow opacity-90">{id ? pack.desc : (pack.desc_en || pack.desc)}</p>
                       <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-4 opacity-70">
                         🎨 {pack.visual} · 🎙️ {pack.voice}
                       </p>
@@ -181,9 +181,9 @@ export function Inventory() {
                     </span>
                     <div className="text-6xl mb-4">{item.icon}</div>
                     <h3 className="text-xl font-serif font-black border-b-4 border-sumi pb-2 mb-2 text-sumi">
-                      {item.name}
+                      {itemName(item, language)}
                     </h3>
-                    <p className="text-sm font-bold mb-6 flex-grow text-sumi/80">{item.desc}</p>
+                    <p className="text-sm font-bold mb-6 flex-grow text-sumi/80">{itemDesc(item, language)}</p>
                     {item.id === 'kabel_jumper' ? (
                       // Kabel jumper dipakai OTOMATIS di Death Quiz (bukan tombol PAKAI)
                       // — jangan sampai terbuang sia-sia di luar mode.

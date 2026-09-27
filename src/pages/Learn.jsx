@@ -89,7 +89,7 @@ export function Learn() {
                 : activeKanaType === 'kanji' ? '漢字 Kanji'
                 : activeKanaType === 'grammar' ? 'Grammar'
                 : activeKanaType === 'kurikulum' ? 'Kurikulum MNN'
-                : activeKanaType === 'poem' ? 'Puisi 詩'
+                : activeKanaType === 'poem' ? (language === 'id' ? 'Puisi 詩' : 'Poems 詩')
                 : 'Kotoba'}
             </span>
           </h1>
@@ -101,7 +101,7 @@ export function Learn() {
         <KanaTypeToggle
           active={activeKanaType}
           onChange={handleKanaTypeChange}
-          extraTabs={[{ id: 'poem', label: 'Puisi', jp: '詩' }]}
+          extraTabs={[{ id: 'poem', label: language === 'id' ? 'Puisi' : 'Poems', jp: '詩' }]}
         />
 
         {/* Kana Subtype Filter */}

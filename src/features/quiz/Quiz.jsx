@@ -5,6 +5,7 @@ import { AudioPlayer } from "../../components/MondaiComponents";
 import { useItemProgress, useUserStats } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { useEffectLayer } from "../effects/EffectContext";
+import { localized, localizedArray } from "../../utils/localize";
 
 const Quiz = ({ chapter, onComplete, onBack }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -102,7 +103,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
             {language === 'id' ? 'Bab' : 'Chapter'} {chapter.chapter}
           </span>
           <h2 className="text-2xl sm:text-3xl font-serif font-black text-sumi">
-            {chapter.title}
+            {localized(chapter, 'title', language)}
           </h2>
         </div>
         <div className="text-sm font-bold tracking-[0.3em] text-sumi bg-kinari border-[3px] border-sumi px-6 py-2 shadow-[4px_4px_0_0_rgba(26,26,26,1)]">
@@ -129,12 +130,12 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
 
           {/* Question Text */}
           <h3 className="text-xl sm:text-2xl font-bold text-sumi mb-8">
-            <Furigana text={currentQuestion.questionText} />
+            <Furigana text={localized(currentQuestion, 'questionText', language)} />
           </h3>
 
           {/* Options */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            {currentQuestion.options.map((option, index) => {
+            {localizedArray(currentQuestion, 'options', language).map((option, index) => {
               const isSelected = selectedOption === index;
               const isCorrect = index === currentQuestion.correctIndex;
               const showResult = isAnswered;
@@ -189,7 +190,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
               <span className="font-bold text-sumi uppercase tracking-widest text-xs block mb-2">
                 {language === 'id' ? 'Penjelasan:' : 'Explanation:'}
               </span>
-              <p className="text-sumi/80 font-medium">{currentQuestion.explanation}</p>
+              <p className="text-sumi/80 font-medium">{localized(currentQuestion, 'explanation', language)}</p>
             </motion.div>
           )}
         </div>

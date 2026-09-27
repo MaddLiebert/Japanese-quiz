@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
 import { useLanguage } from "../context/LanguageContext";
+import { localized } from "../utils/localize";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 
 export function AudioPlayer({
@@ -10,6 +11,8 @@ export function AudioPlayer({
   onPlay,
   onPause,
 }) {
+  const { language } = useLanguage();
+  const id = language === 'id';
   const [internalIsPlaying, setInternalIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0); // 0 sampai 100
   const [playbackRate, setPlaybackRate] = useState(1.0);
@@ -234,10 +237,14 @@ export function AudioPlayer({
       </div>
 
       <p className="font-mono text-[10px] tracking-wider uppercase font-bold text-sumi/70 mt-3">
-        [ KLIK UNTUK MEMUTAR REKAMAN PERCAKAPAN (JEPANG ALAMI) ]
+        {id
+          ? '[ KLIK UNTUK MEMUTAR REKAMAN PERCAKAPAN (JEPANG ALAMI) ]'
+          : '[ CLICK TO PLAY THE CONVERSATION RECORDING (NATURAL JAPANESE) ]'}
       </p>
       <p className="font-mono text-[9px] text-sumi/50">
-        [ KONTROL: SPACE=Play/Pause | ←/→=Seek ±3s | Speed: 0.8x/1x/1.25x ]
+        {id
+          ? '[ KONTROL: SPACE=Play/Pause | ←/→=Seek ±3s | Speed: 0.8x/1x/1.25x ]'
+          : '[ CONTROLS: SPACE=Play/Pause | ←/→=Seek ±3s | Speed: 0.8x/1x/1.25x ]'}
       </p>
     </div>
   );
@@ -310,6 +317,8 @@ export function ExplanationBox({
   onRetry,
   isPlaying = false,
 }) {
+  const { language } = useLanguage();
+  const id = language === 'id';
   return (
     <div className="w-full mt-6 space-y-4">
       {/* Banner Reward Benar / Salah */}
@@ -324,12 +333,18 @@ export function ExplanationBox({
           </span>
           <div>
             <div className="font-mono text-xs font-bold uppercase tracking-wider text-sumi">
-              {isCorrect ? "JAWABAN ANDA BENAR! (正解)" : "JAWABAN ANDA KURANG TEPAT (不正解)"}
+              {isCorrect
+                ? (id ? "JAWABAN ANDA BENAR! (正解)" : "YOUR ANSWER IS CORRECT! (正解)")
+                : (id ? "JAWABAN ANDA KURANG TEPAT (不正解)" : "YOUR ANSWER IS INCORRECT (不正解)")}
             </div>
             <div className="text-[11px] text-sumi/70 font-serif">
               {isCorrect
-                ? "Pilihan jawaban tepat berdasarkan dialog yang diperdengarkan."
-                : "Pelajari transkrip dan penjelasan di bawah untuk memahami jawaban yang benar."}
+                ? (id
+                  ? "Pilihan jawaban tepat berdasarkan dialog yang diperdengarkan."
+                  : "The answer is correct based on the dialogue you heard.")
+                : (id
+                  ? "Pelajari transkrip dan penjelasan di bawah untuk memahami jawaban yang benar."
+                  : "Study the transcript and explanation below to understand the correct answer.")}
             </div>
           </div>
         </div>
@@ -375,7 +390,7 @@ export function ExplanationBox({
       {explanation && (
         <div className="mt-4 pt-3 border-t border-sumi/20 bg-matcha/15 p-3 border border-sumi">
           <span className="block font-mono text-[10px] font-bold uppercase tracking-widest text-sumi mb-1">
-            PENJELASAN LENGKAP:
+            {id ? 'PENJELASAN LENGKAP:' : 'FULL EXPLANATION:'}
           </span>
           <p className="font-serif text-xs leading-relaxed text-sumi">
             {explanation}
@@ -389,7 +404,7 @@ export function ExplanationBox({
           onClick={onRetry}
           className="w-full sm:w-auto border-[3px] border-sumi bg-kinari-light font-mono text-xs font-bold uppercase tracking-wider px-6 py-3.5 shadow-[3px_3px_0_0_rgba(var(--sumi-val),1)] hover:bg-kinari active:translate-x-[2px] active:translate-y-[2px] flex items-center justify-center"
         >
-          ↺ ULANGI SOAL
+          ↺ {id ? 'ULANGI SOAL' : 'RETRY QUESTION'}
         </button>
 
         <button
@@ -399,7 +414,7 @@ export function ExplanationBox({
             isPlaying ? "opacity-50 cursor-not-allowed bg-ai/50" : "bg-ai text-kinari-light"
           }`}
         >
-          {isPlaying ? "⏳ AUDIO BERJALAN..." : "SOAL BERIKUTNYA →"}
+          {isPlaying ? (id ? "⏳ AUDIO BERJALAN..." : "⏳ AUDIO PLAYING...") : (id ? "SOAL BERIKUTNYA →" : "NEXT QUESTION →")}
         </button>
       </div>
     </div>
@@ -472,16 +487,16 @@ export function MondaiQuizResult({
         {wrongAnswers.length > 0 && (
           <div className="w-full bg-kinari p-6 sm:p-8 border-[4px] border-sumi shadow-[8px_8px_0_0_rgba(var(--sumi-val),1)] mb-8 relative">
             <h3 className="text-sm uppercase tracking-[0.3em] font-bold text-sumi/60 mb-4 border-b-[2px] border-sumi/20 pb-2">
-              Perlu Latihan Lagi
+              {language === 'id' ? 'Perlu Latihan Lagi' : 'Needs More Practice'}
             </h3>
             <div className="space-y-4">
               {wrongAnswers.map((idx, i) => {
                 const item = mondaiData[idx];
                 return (
                   <div key={i} className="bg-kinari-light p-4 border-[3px] border-sumi/10">
-                    <p className="font-serif text-sm text-sumi mb-2">{item?.questionText || ''}</p>
+                    <p className="font-serif text-sm text-sumi mb-2">{localized(item, 'questionText', language)}</p>
                     <p className="text-xs font-bold text-ai uppercase tracking-wider">
-                      Jawaban benar: {item?.options?.[item?.correctIndex] || ''}
+                      {language === 'id' ? 'Jawaban benar:' : 'Correct answer:'} {item?.options?.[item?.correctIndex] || ''}
                     </p>
                   </div>
                 );

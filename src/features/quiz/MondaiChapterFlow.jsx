@@ -5,6 +5,8 @@ import mondaiChaptersData from "../../data/mondai-chapters.json";
 import Quiz from "./Quiz";
 import { useLanguage } from "../../context/LanguageContext";
 
+import { localized, localizedArray } from "../../utils/localize";
+
 const MondaiChapterFlow = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -91,7 +93,7 @@ const MondaiChapterFlow = () => {
                     {language === 'id' ? 'Bab' : 'Chapter'} {chapter.chapter}
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-serif font-black text-sumi">
-                    {chapter.title}
+                    {localized(chapter, 'title', language)}
                   </h2>
                   <p className="text-sm font-medium text-sumi/70">
                     {language === 'id' ? chapter.description_id : chapter.description_en}
@@ -140,7 +142,7 @@ const MondaiChapterFlow = () => {
               {selectedChapter.chapter.toString().padStart(2, '0')}
             </span>
             <h2 className="text-3xl sm:text-4xl font-serif font-black text-sumi mb-6 relative z-10">
-              {selectedChapter.title}
+              {localized(selectedChapter, 'title', language)}
             </h2>
             
             <div className="text-left mb-8 bg-kinari-light/50 p-5 rounded-none border-[3px] border-sumi/20 relative z-10">
@@ -148,7 +150,7 @@ const MondaiChapterFlow = () => {
                 {language === 'id' ? 'Tujuan Belajar:' : 'Learning Objectives:'}
               </h3>
               <ul className="space-y-2">
-                {selectedChapter.objectives.map((obj, i) => (
+                {localizedArray(selectedChapter, 'objectives', language).map((obj, i) => (
                   <li key={i} className="flex items-start relative z-10">
                     <span className="mr-2 mt-1 text-sumi relative z-10">•</span>
                     <span className="text-sumi relative z-10">{obj}</span>

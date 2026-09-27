@@ -122,16 +122,16 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sumi/50 mt-2">
           {poem.author} {poem.excerpt ? (id ? '· kutipan' : '· excerpt') : ''}
         </p>
-        {showTranslation && translatedTitle(poemTranslations, poem.id) && (
+        {showTranslation && translatedTitle(poemTranslations, poem.id, language) && (
           <p className="text-base font-serif font-bold text-ai mt-3">
-            {translatedTitle(poemTranslations, poem.id)}
+            {translatedTitle(poemTranslations, poem.id, language)}
           </p>
         )}
       </header>
 
       <div className="flex flex-col gap-3 mb-8">
         {lines.map((line, i) => {
-          const tr = translatedLine(poemTranslations, poem.id, i);
+          const tr = translatedLine(poemTranslations, poem.id, i, language);
           return (
             <div
               key={i}
