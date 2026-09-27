@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useUserStats, useItemProgress, getRank, useAchievements, ACHIEVEMENT_META } from '../progress/ProgressContext';
+import { N5Certificate } from '../n5exam/N5Certificate';
 import hiraganaData from '../../data/hiragana.json';
 import katakanaData from '../../data/katakana.json';
 import kotobaData from '../../data/kotoba.json';
@@ -176,22 +177,30 @@ export function Profile() {
         </header>
 
         {/* Tab Navigation */}
-        <div className="grid grid-cols-2 border-b-[4px] border-sumi bg-kinari">
+        <div className="grid grid-cols-3 border-b-[4px] border-sumi bg-kinari">
           <button
             onClick={() => setActiveTab('card')}
-            className={`py-4 px-6 font-serif font-black uppercase text-sm border-r-[4px] border-sumi transition-all cursor-pointer flex items-center justify-center gap-2 ${
+            className={`py-4 px-3 sm:px-6 font-serif font-black uppercase text-xs sm:text-sm border-r-[4px] border-sumi transition-all cursor-pointer flex items-center justify-center gap-2 ${
               activeTab === 'card' ? 'bg-shu text-kinari-light shadow-inner' : 'bg-kinari-light text-sumi hover:bg-kinari'
             }`}
           >
-            📇 ID Card & Bio
+            📇 ID Card
           </button>
           <button
             onClick={() => setActiveTab('stats')}
-            className={`py-4 px-6 font-serif font-black uppercase text-sm transition-all cursor-pointer flex items-center justify-center gap-2 ${
+            className={`py-4 px-3 sm:px-6 font-serif font-black uppercase text-xs sm:text-sm border-r-[4px] border-sumi transition-all cursor-pointer flex items-center justify-center gap-2 ${
               activeTab === 'stats' ? 'bg-shu text-kinari-light shadow-inner' : 'bg-kinari-light text-sumi hover:bg-kinari'
             }`}
           >
-            📊 Statistik & Mastery
+            📊 Statistik
+          </button>
+          <button
+            onClick={() => setActiveTab('cert')}
+            className={`py-4 px-3 sm:px-6 font-serif font-black uppercase text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-2 ${
+              activeTab === 'cert' ? 'bg-shu text-kinari-light shadow-inner' : 'bg-kinari-light text-sumi hover:bg-kinari'
+            }`}
+          >
+            🏆 Sertifikat
           </button>
         </div>
 
@@ -408,6 +417,10 @@ export function Profile() {
                 </div>
               </div>
             </div>
+          )}
+
+          {activeTab === 'cert' && (
+            <N5Certificate record={progress.n5Exam} username={playerName} />
           )}
         </div>
       </motion.div>
