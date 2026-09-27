@@ -36,7 +36,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
   const { recordAnswer } = useItemProgress();
   const { unlockAchievement } = useAchievements();
   const { triggerEffect } = useEffectLayer();
-  const { listenOnce, listening, interim, error, clearError, cancel, supported } = useSpeechRecognition();
+  const { listenOnce, listening, interim, level: micLevel, error, clearError, cancel, supported } = useSpeechRecognition();
   const lv = speakLevel(level);
   const selfAssess = !supported;   // mode mandiri: tanpa penilaian, tanpa XP
 
@@ -118,7 +118,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
 
   return (
     <div className={`max-w-2xl mx-auto px-4 sm:px-8 pt-14 sm:pt-16 ${listening ? 'pb-44' : 'pb-8 sm:pb-16'} min-h-screen flex flex-col`}>
-      <MicOverlay open={listening} interim={interim} onCancel={cancel} />
+      <MicOverlay open={listening} interim={interim} level={micLevel} onCancel={cancel} />
       <div className="flex items-center justify-between mb-8">
         <button
           type="button"

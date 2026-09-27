@@ -19,7 +19,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   const { unlockAchievement } = useAchievements();
   const { addXp } = useUserStats();
   const { triggerEffect } = useEffectLayer();
-  const { listenOnce, listening, interim, error, clearError, cancel, supported } = useSpeechRecognition();
+  const { listenOnce, listening, interim, level: micLevel, error, clearError, cancel, supported } = useSpeechRecognition();
   const selfAssess = !supported;   // mode mandiri: tanpa penilaian, tanpa XP, tanpa SRS
 
   const lines = poem?.lines || [];
@@ -96,7 +96,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
 
   return (
     <div className={`max-w-2xl mx-auto px-4 sm:px-8 pt-14 sm:pt-16 ${listening ? 'pb-44' : 'pb-8 sm:pb-16'} min-h-screen flex flex-col`}>
-      <MicOverlay open={listening} interim={interim} onCancel={cancel} />
+      <MicOverlay open={listening} interim={interim} level={micLevel} onCancel={cancel} />
       <div className="flex items-center justify-between mb-6">
         <button
           type="button"
