@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { SHOP_ITEMS, itemName, itemDesc } from "../items/items";
-import { gachaPoolInfo, PACK_RARITY } from "../packs/packs";
+import { gachaPoolInfo, PACK_RARITY, rarityOdds } from "../packs/packs";
 import { GachaSlotOverlay } from "../gacha/GachaSlotOverlay";
 
 const GACHA_PRICE_1X = 100;
@@ -28,6 +28,9 @@ export function Shop() {
   const ownedItems = progress.ownedItems || {};
   const ownedPacks = progress.ownedPacks || [];
   const pool = gachaPoolInfo(ownedPacks);
+
+  // Teks odds dihitung dari pool (bukan hardcode) — aman saat pack bertambah.
+  const oddsText = rarityOdds().map((o) => `${o.label.toLowerCase()} ${o.chance}%`).join(' · ');
 
   const handlePurchase = (item) => {
     const res = buyItem(item.id);
@@ -149,8 +152,8 @@ export function Shop() {
               </div>
               <p className="text-[11px] font-bold mt-4 text-kinari-light/80">
                 {language === 'id'
-                  ? 'Duplikat di-refund 50 🪙. Peluang: common 50% · rare 30% · legendary 18% · special 2%.'
-                  : 'Duplicates refund 50 🪙. Odds: common 50% · rare 30% · legendary 18% · special 2%.'}
+                  ? `Duplikat di-refund 50 🪙. Peluang: ${oddsText}.`
+                  : `Duplicates refund 50 🪙. Odds: ${oddsText}.`}
               </p>
               <p className="text-[11px] font-bold mt-1 text-kinari-light/70">
                 {language === 'id'

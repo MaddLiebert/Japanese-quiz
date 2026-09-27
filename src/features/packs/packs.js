@@ -137,6 +137,22 @@ export const gachaPoolInfo = (ownedIds = []) => {
   }));
 };
 
+// Peluang AGREGAT per rarity (%), dihitung dari pool yang siap — dipakai teks
+// odds di Shop supaya tidak pernah basi saat pack baru ditambah.
+export const RARITY_ORDER = ['common', 'rare', 'legendary', 'special'];
+export const rarityOdds = () => {
+  const pool = PACKS.filter(isPackReady);
+  const total = pool.reduce((s, p) => s + (PACK_RARITY[p.rarity]?.weight ?? 1), 0);
+  if (total <= 0) return [];
+  return RARITY_ORDER
+    .filter((r) => pool.some((p) => p.rarity === r))
+    .map((r) => {
+      const weight = pool.filter((p) => p.rarity === r)
+        .reduce((s, p) => s + (PACK_RARITY[p.rarity]?.weight ?? 1), 0);
+      return { rarity: r, label: PACK_RARITY[r]?.label || r.toUpperCase(), chance: Math.round((weight / total) * 1000) / 10 };
+    });
+};
+
 // Undian gacha berbobot rarity. `rng` bisa di-inject untuk testing.
 // poolIds  — batasi undian ke daftar id pack tertentu (untuk BANNER EVENT).
 //            null = semua pack (perilaku lama, backward-compatible).
