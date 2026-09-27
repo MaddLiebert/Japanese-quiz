@@ -8,6 +8,7 @@
   --kinari-light-val: #fdfcf9;
   --matcha-val: #7d8f69;
   --backdrop-val: #e8e4d9;
+  --kin-val: #a9821c;
 }
 
 .dark, [data-theme="dark"] {
@@ -18,6 +19,7 @@
   --kinari-light-val: #1c1d21;
   --matcha-val: #8fa874;
   --backdrop-val: #0c0d0f;
+  --kin-val: #e8c860;
 }
 
 @theme {
@@ -27,6 +29,7 @@
   --color-kinari: var(--kinari-val);
   --color-kinari-light: var(--kinari-light-val);
   --color-matcha: var(--matcha-val);
+  --color-kin: var(--kin-val);
   
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-serif: "Noto Serif JP", "Shippori Mincho", "Yu Mincho", serif;
@@ -101,6 +104,63 @@ html, body, div, header, main, section, footer, article, nav, aside, button, inp
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ── Badge legendaris 満 (N5 満点 180/180): kilau emas + denyut + percikan ───── */
+@keyframes kin-shimmer {
+  0%   { background-position: -150% 0; }
+  60%  { background-position: 250% 0; }
+  100% { background-position: 250% 0; }
+}
+@keyframes kin-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(169, 130, 28, 0); }
+  50%      { box-shadow: 0 0 18px 3px rgba(169, 130, 28, 0.55); }
+}
+@keyframes kin-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes kin-spark {
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  50%      { opacity: 1; transform: scale(1); }
+}
+.badge-legendary {
+  position: relative;
+  border-color: var(--kin-val) !important;
+  color: var(--kin-val) !important;
+  animation: kin-glow 2.4s ease-in-out infinite;
+}
+.badge-legendary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 244, 200, 0.85) 50%, transparent 65%);
+  background-size: 220% 100%;
+  animation: kin-shimmer 3.2s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.badge-legendary .kin-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px dashed var(--kin-val);
+  opacity: 0.5;
+  animation: kin-spin 9s linear infinite;
+  pointer-events: none;
+}
+.badge-legendary .kin-spark {
+  position: absolute;
+  font-size: 10px;
+  color: var(--kin-val);
+  animation: kin-spark 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .badge-legendary, .badge-legendary::after, .badge-legendary .kin-ring, .badge-legendary .kin-spark {
+    animation: none !important;
+  }
+  .badge-legendary::after { display: none; }
 }
 
 /* Cetak sertifikat N5: hanya kartu sertifikat yang tercetak, rapi di A4. */
