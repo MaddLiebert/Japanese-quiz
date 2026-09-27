@@ -12,6 +12,28 @@ export const isYujiMilestone = (streak) => YUJI_MILESTONES.includes(streak);
 // ── Warna: biru -> hitam -> merah darah -> hitam-ungu -> api ────────────────
 export const YUJI_INK = '#0a0a0a';
 export const YUJI_FLASH = '#ffffff';
+// ── Wajah kerasukan Sukuna (kanon) ───────────────────────────────────────
+// Kanon (wiki JJK): saat Sukuna menguasai badan Yuji → (1) sepasang mata KEDUA
+// terbuka DI BAWAH mata normal, (2) mata menyempit jadi celah dengan pupil
+// ganda, (3) tato hitam: mahkota di dahi + garis batang hidung + tato pipi.
+// Koordinat di bidang 0..100 (viewBox) supaya bisa dipakai <svg> apa pun.
+export const YUJI_SUKUNA_EYES = [
+  { id: 'upper-l', cx: 33, cy: 46, rx: 12, ry: 4.2, pupil: 3.1 },
+  { id: 'upper-r', cx: 67, cy: 46, rx: 12, ry: 4.2, pupil: 3.1 },
+  { id: 'lower-l', cx: 35, cy: 57, rx: 7.5, ry: 2.6, pupil: 1.9 },
+  { id: 'lower-r', cx: 65, cy: 57, rx: 7.5, ry: 2.6, pupil: 1.9 },
+];
+
+export const YUJI_SUKUNA_MARKINGS = [
+  // Mahkota di tengah dahi (kanon: crown-like symbol).
+  { id: 'crown', d: 'M50 16 L42 30 M50 16 L50 32 M50 16 L58 30 M50 16 L34 26 M50 16 L66 26' },
+  // Garis horizontal di batang hidung (kanon).
+  { id: 'nose', d: 'M38 40 L62 40' },
+  // Tato pipi kiri/kanan (kanon: spread from cheekbones).
+  { id: 'cheek-l', d: 'M22 50 L34 62 M20 58 L30 68 M26 44 L38 55' },
+  { id: 'cheek-r', d: 'M78 50 L66 62 M80 58 L70 68 M74 44 L62 55' },
+];
+
 export const YUJI_STYLE = {
   keiteiken: { kanji: '逕庭拳', color: '#00b0ff', label: '逕庭拳 · Keiteiken' },
   manjigeri: { kanji: '卍蹴り', color: '#00b0ff', label: '卍蹴り · Manji-geri' },
