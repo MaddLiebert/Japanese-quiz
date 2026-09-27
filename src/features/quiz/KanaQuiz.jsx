@@ -17,11 +17,12 @@ export function KanaQuiz({
   onOptionClick,
   onBack,
   isGrammarMode = false,
+  frozen = false,
 }) {
   const { language } = useLanguage();
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+    <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
       <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
       <button
@@ -36,8 +37,8 @@ export function KanaQuiz({
         </div>
         <div className="flex items-center gap-4">
           {difficulty === 'Hard' && timeLeft !== null && (
-            <span className="text-xs font-bold tracking-widest uppercase text-shu">
-              {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+            <span className={`text-xs font-bold tracking-widest uppercase ${frozen ? 'text-ai' : 'text-shu'}`}>
+              {frozen ? '❄ ' : ''}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
             </span>
           )}
           <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
@@ -109,6 +110,7 @@ export function KanaQuiz({
               <motion.button
                 key={option.id}
                 onClick={() => onOptionClick(option)}
+                data-correct={isThisCorrect || undefined}
                 animate={
                   showCorrect && isThisSelected ? { scale: [1, 1.05, 1] }
                     : showWrong ? { x: [0, -10, 10, -10, 10, 0] }

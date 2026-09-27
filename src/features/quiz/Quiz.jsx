@@ -17,9 +17,12 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
   const { recordAnswer } = useItemProgress();
   const { completeQuiz } = useUserStats();
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
 
   useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
+
+  // Keluar dari kuis (chapter /mondai) → bar energi kutukan ikut hilang.
+  useEffect(() => () => endQuizSession(), [endQuizSession]);
 
   const questions = chapter.questions;
   const currentQuestion = questions[currentQuestionIndex];
@@ -84,7 +87,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
   if (!currentQuestion) return null;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+    <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
       <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none"></div>
 
       {onBack && (
@@ -163,6 +166,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
                   whileHover={!isAnswered ? { scale: 1.01 } : {}}
                   whileTap={!isAnswered ? { scale: 0.99 } : {}}
                   onClick={() => handleSelectOption(index)}
+                  data-correct={isCorrect || undefined}
                   disabled={isAnswered || isPlaying}
                   className={`
                     p-4 sm:p-6 text-left font-bold transition-all

@@ -3,6 +3,8 @@ import { getVoice, pickFile } from '../features/audio/voices.js';
 let audioCtx;
 
 const initAudioContext = () => {
+  // Guard: node/test tak punya window → kembalikan null (pemutar jadi no-op, tanpa throw).
+  if (typeof window === 'undefined') return null;
   if (!audioCtx) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (AudioContext) audioCtx = new AudioContext();
@@ -40,6 +42,7 @@ export const voiceFilePaths = (voice) => {
   const groups = [
     voice.files?.correct, voice.files?.wrong, voice.files?.streak,
     voice.overlays?.correct, voice.overlays?.wrong,
+    voice.clips,   // klip jalur khusus (mis. Gojo: ao/aka/ryoiki) — tetap di-preload
   ];
   const out = [];
   for (const g of groups) {
@@ -239,6 +242,106 @@ const synthGong = (level = 0) => {
   }
 };
 
+// ── Dentuman domain 領域展開 (cinematic, BUKAN voice) ───────────────────────
+// kind: 'cast' (saat tombol ditekan) | 'bang' (saat bigbang di tengah).
+// Murni synth: sweep sine turun (dentuman) + burst noise lowpass (desis ruang)
+// + PUNCH mid (triangle pendek) — v2 tuning: sub-bass 28-92Hz tidak terdengar
+// di speaker HP, punch mid inilah yang bikin "nendang" di device asli.
+export function domainBoomParams(kind = 'cast') {
+  const bang = kind === 'bang';
+  return {
+    freqStart: bang ? 160 : 92,
+    freqEnd: bang ? 36 : 28,
+    dur: bang ? 1.4 : 1.0,
+    gain: bang ? 0.62 : 0.5,
+    noiseGain: bang ? 0.2 : 0.1,
+    noiseDur: bang ? 0.5 : 0.3,
+    punchFreq: bang ? 240 : 190,
+    punchDur: bang ? 0.28 : 0.22,
+    punchGain: bang ? 0.34 : 0.26,
+  };
+}
+
+export const playDomainBoom = (kind = 'cast') => {
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const p = domainBoomParams(kind);
+  const t = ctx.currentTime;
+
+  // Sweep turun = dentuman.
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(p.freqStart, t);
+  osc.frequency.exponentialRampToValueAtTime(p.freqEnd, t + p.dur);
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(p.gain, t + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.05);
+
+  // Desis noise (hanya kalau noiseGain > 0).
+  if (p.noiseGain > 0.001) {
+    const len = Math.max(1, Math.floor(ctx.sampleRate * p.noiseDur));
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const nf = ctx.createBiquadFilter();
+    nf.type = 'lowpass';
+    nf.frequency.setValueAtTime(900, t);
+    nf.frequency.exponentialRampToValueAtTime(120, t + p.noiseDur);
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(p.noiseGain, t);
+    ng.gain.exponentialRampToValueAtTime(0.0008, t + p.noiseDur);
+    src.connect(nf);
+    nf.connect(ng);
+    ng.connect(ctx.destination);
+    src.start(t);
+  }
+
+  // PUNCH mid (v2): triangle pendek di 190-240Hz — decay cepat seperti "thump".
+  // Inilah yang terdengar "nendang" di speaker HP (sweep sub-bass di bawahnya
+  // sering tidak diputar speaker kecil).
+  if (p.punchGain > 0.001) {
+    const po = ctx.createOscillator();
+    const pg = ctx.createGain();
+    po.type = 'triangle';
+    po.frequency.setValueAtTime(p.punchFreq, t);
+    po.frequency.exponentialRampToValueAtTime(p.punchFreq * 0.6, t + p.punchDur);
+    pg.gain.setValueAtTime(0, t);
+    pg.gain.linearRampToValueAtTime(p.punchGain, t + 0.008);
+    pg.gain.exponentialRampToValueAtTime(0.0008, t + p.punchDur);
+    po.connect(pg);
+    pg.connect(ctx.destination);
+    po.start(t);
+    po.stop(t + p.punchDur + 0.02);
+  }
+  return Math.round(p.dur * 1000);
+};
+
+// ── Suara khusus Gojo (pack_07) ─────────────────────────────────────────────
+// Teknik diputar DETERMINISTIK (bukan pickFile acak): 蒼 → ao.mp3, 赫 → aka.mp3.
+// 茈 (murasaki) belum punya klip — GIF murasaki yang tampil, jadi senyap.
+export const GOJO_TECHNIQUE_FILES = {
+  ao: '/voices/gojo/ao.mp3',
+  aka: '/voices/gojo/aka.mp3',
+  murasaki: '/voices/gojo/Murasaki.mp3',
+};
+
+export const playGojoTechnique = (technique) => {
+  const path = GOJO_TECHNIQUE_FILES[technique];
+  return path ? playFile(path) : 0;
+};
+
+// Cast 領域展開 — klip voice Gojo (diputar bareng dentuman oleh EffectProvider).
+export const GOJO_CAST_FILE = '/voices/gojo/ryoiki tenkai.mp3';
+export const playGojoCast = () => playFile(GOJO_CAST_FILE);
+
 // ── API publik ──────────────────────────────────────────────────────────────
 // Semua mengembalikan durasi klip (ms) supaya efek visual (GIF Hina) bisa
 // tampil selama suaranya berbunyi. 0 = tak ada klip (synth / tanpa pack).
@@ -333,11 +436,13 @@ export function reelTickParams() {
 }
 
 export function fanfareParams(rarity = 'common') {
-  const notes = rarity === 'legendary'
-    ? [523.25, 659.25, 783.99, 1046.5]   // C5 E5 G5 C6
-    : rarity === 'rare'
-      ? [523.25, 659.25, 783.99]         // C5 E5 G5
-      : [523.25, 659.25];                // C5 E5
+  const notes = rarity === 'special'
+    ? [523.25, 659.25, 783.99, 1046.5, 1318.51]   // C5 E5 G5 C6 E6
+    : rarity === 'legendary'
+      ? [523.25, 659.25, 783.99, 1046.5]          // C5 E5 G5 C6
+      : rarity === 'rare'
+        ? [523.25, 659.25, 783.99]                // C5 E5 G5
+        : [523.25, 659.25];                       // C5 E5
   return { notes, dur: 0.18, gap: 0.12, gain: 0.5 };
 }
 
@@ -361,11 +466,11 @@ export const playReelTick = () => {
   osc.stop(t + dur + 0.02);
 };
 
-export const playFanfare = (rarity = 'common') => {
+// Pemutar nada berurutan (dipakai fanfare gacha & chime bar 呪力 penuh — DRY).
+const playNotes = (notes, dur, gap, gain) => {
   const ctx = initAudioContext();
   if (!ctx) return;
   if (ctx.state === 'suspended') ctx.resume();
-  const { notes, dur, gap, gain } = fanfareParams(rarity);
   const start = ctx.currentTime;
   notes.forEach((freq, i) => {
     const t = start + i * gap;
@@ -381,4 +486,245 @@ export const playFanfare = (rarity = 'common') => {
     osc.start(t);
     osc.stop(t + dur + 0.05);
   });
+};
+
+export const playFanfare = (rarity = 'common') => {
+  const { notes, dur, gap, gain } = fanfareParams(rarity);
+  playNotes(notes, dur, gap, gain);
+};
+
+// ── Ambience & SFX tambahan Gojo (pack_07) — bola, bar, domain ──────────────
+// Prinsip: setiap momen VISUAL dapat lapisan SUARA non-voice supaya scene terasa
+// hidup (bukan cuma klip suara Gojo). Semua angka murni & deterministik → dites
+// di sfx.gojoAmbience.test.js. Pemutar = no-op di node (guard window).
+
+// AudioContext untuk modul ambience (gojoAmbience.js) — jangan buat context baru.
+export const getAudioContext = () => initAudioContext();
+
+// Burst noise pendek (desis/angin). Sengaja TIDAK me-refactor playDomainBoom
+// (kode lama sudah stabil & punya test sendiri) — helper ini untuk pemutar baru.
+const noiseBurst = (ctx, t, { dur, gain, type = 'lowpass', fromHz = 900, toHz = 120 }) => {
+  const len = Math.max(1, Math.floor(ctx.sampleRate * dur));
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  const f = ctx.createBiquadFilter();
+  f.type = type;
+  f.frequency.setValueAtTime(fromHz, t);
+  f.frequency.exponentialRampToValueAtTime(Math.max(30, toHz), t + dur);
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(gain, t);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+  src.connect(f);
+  f.connect(g);
+  g.connect(ctx.destination);
+  src.start(t);
+};
+
+// ── Bola 蒼/赫: suara saat muncul ───────────────────────────────────────────
+// ao = "hisap" (nada NAIK + desis bandpass tinggi) · aka = "ledak" (nada TURUN + desis berat).
+export const ballAppearParams = (technique) => {
+  if (technique === 'ao') return { type: 'sine', from: 170, to: 560, dur: 0.6, gain: 0.16, airGain: 0.05, airHz: 1600 };
+  if (technique === 'aka') return { type: 'sawtooth', from: 420, to: 110, dur: 0.5, gain: 0.18, airGain: 0.07, airHz: 900 };
+  return null;
+};
+
+export const playBallSound = (technique) => {
+  const p = ballAppearParams(technique);
+  if (!p || typeof window === 'undefined') return 0;
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = p.type;
+  osc.frequency.setValueAtTime(p.from, t);
+  osc.frequency.exponentialRampToValueAtTime(p.to, t + p.dur * 0.85);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.gain, t + 0.03);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.05);
+  noiseBurst(ctx, t, { dur: p.dur * 0.7, gain: p.airGain, type: 'bandpass', fromHz: p.airHz, toHz: p.airHz * 0.4 });
+  return Math.round(p.dur * 1000);
+};
+
+// ── 茈 (murasaki): riser sebelum tabrakan + impact saat bola bertemu ────────
+// dur riser = 0.42s = durasi slide bola ke tengah (d0 di GojoBurst/GojoSpheres).
+export const murasakiRiserParams = () => ({
+  type: 'sawtooth', from: 180, to: 1500, dur: 0.42, gain: 0.15,
+  filterFrom: 350, filterTo: 2600,
+  impact: { freqStart: 150, freqEnd: 40, dur: 0.9, gain: 0.3, noiseGain: 0.1 },
+});
+
+export const playMurasakiRiser = () => {
+  if (typeof window === 'undefined') return 0;
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const p = murasakiRiserParams();
+  const t = ctx.currentTime;
+
+  // Riser: sweep naik + filter membuka.
+  const osc = ctx.createOscillator();
+  const f = ctx.createBiquadFilter();
+  const g = ctx.createGain();
+  osc.type = p.type;
+  osc.frequency.setValueAtTime(p.from, t);
+  osc.frequency.exponentialRampToValueAtTime(p.to, t + p.dur);
+  f.type = 'lowpass';
+  f.frequency.setValueAtTime(p.filterFrom, t);
+  f.frequency.exponentialRampToValueAtTime(p.filterTo, t + p.dur);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(p.gain, t + p.dur * 0.9);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur + 0.06);
+  osc.connect(f);
+  f.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.1);
+
+  // Impact: tepat saat kedua bola bertemu (bareng ledakan visual + klip 茈).
+  const imp = p.impact;
+  const osc2 = ctx.createOscillator();
+  const g2 = ctx.createGain();
+  osc2.type = 'sine';
+  osc2.frequency.setValueAtTime(imp.freqStart, t + p.dur);
+  osc2.frequency.exponentialRampToValueAtTime(imp.freqEnd, t + p.dur + imp.dur);
+  g2.gain.setValueAtTime(0, t + p.dur);
+  g2.gain.linearRampToValueAtTime(imp.gain, t + p.dur + 0.015);
+  g2.gain.exponentialRampToValueAtTime(0.0008, t + p.dur + imp.dur);
+  osc2.connect(g2);
+  g2.connect(ctx.destination);
+  osc2.start(t + p.dur);
+  osc2.stop(t + p.dur + imp.dur + 0.05);
+  noiseBurst(ctx, t + p.dur, { dur: 0.4, gain: imp.noiseGain, type: 'lowpass', fromHz: 800, toHz: 90 });
+  return Math.round((p.dur + imp.dur) * 1000);
+};
+
+// ── Bar 呪力: tick naik tiap +1 benar + chime saat penuh ────────────────────
+// Batas 20 = GOJO_ULT_THRESHOLD (gojoFx.js); kesamaannya dikunci di test.
+const CURSE_TICK_MAX = 20;
+
+export const curseTickParams = (charge = 1) => {
+  const n = Number(charge);
+  const c = Math.min(CURSE_TICK_MAX, Math.max(1, Number.isFinite(n) ? Math.floor(n) : 1));
+  return { freq: 520 + (c - 1) * 36, dur: 0.055, gain: 0.09, type: 'triangle' };
+};
+
+export const playCurseTick = (charge = 1) => {
+  if (typeof window === 'undefined') return 0;
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const p = curseTickParams(charge);
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = p.type;
+  osc.frequency.setValueAtTime(p.freq, t);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.gain, t + 0.004);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.02);
+  return Math.round(p.dur * 1000);
+};
+
+export const curseReadyParams = () => ({ notes: [659.25, 987.77], dur: 0.16, gap: 0.1, gain: 0.2 });
+
+export const playCurseReady = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = curseReadyParams();
+  playNotes(p.notes, p.dur, p.gap, p.gain);
+  return Math.round((p.notes.length * p.gap + p.dur) * 1000);
+};
+
+// ── Domain padam (jawab salah / waktu habis) ────────────────────────────────
+export const domainCollapseParams = (kind = 'wrong') => {
+  const timeout = kind === 'timeout';
+  return {
+    freqStart: timeout ? 180 : 240,
+    freqEnd: timeout ? 46 : 52,
+    dur: timeout ? 1.6 : 1.1,
+    gain: timeout ? 0.22 : 0.32,
+    noiseGain: timeout ? 0.07 : 0.11,
+  };
+};
+
+export const playDomainCollapse = (kind = 'wrong') => {
+  if (typeof window === 'undefined') return 0;
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const p = domainCollapseParams(kind);
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(p.freqStart, t);
+  osc.frequency.exponentialRampToValueAtTime(p.freqEnd, t + p.dur);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.gain, t + 0.03);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.05);
+  noiseBurst(ctx, t, { dur: p.dur * 0.4, gain: p.noiseGain, type: 'lowpass', fromHz: 700, toHz: 90 });
+  return Math.round(p.dur * 1000);
+};
+
+// ── Cue halus 六眼 membuka ──────────────────────────────────────────────────
+export const domainCueParams = (kind) => (kind === 'eyes'
+  ? { notes: [1318.51, 1567.98], dur: 0.22, gap: 0.09, gain: 0.07 }
+  : null);
+
+export const playDomainCue = (kind) => {
+  const p = domainCueParams(kind);
+  if (!p || typeof window === 'undefined') return 0;
+  playNotes(p.notes, p.dur, p.gap, p.gain);
+  return Math.round((p.notes.length * p.gap + p.dur) * 1000);
+};
+
+// ── Rencana ambience (dipakai gojoAmbience.js; murni → dites) ───────────────
+// BGM 領域展開: drone bass (55/110Hz) + pad triangle yang filternya dibuka-tutup
+// LFO pelan (0.06Hz) → terasa "ruang bernapas", bukan lagu.
+// v2 (tuning user): level dinaikkan + konten mid ditambah — speaker HP/laptop
+// tidak memutar 55Hz, jadi BGM v1 "hilang" di device asli.
+export const domainBgmPlan = () => ({
+  level: 0.18,           // master — jelas kedengaran, tetap di bawah voice (0.18 vs 1.0)
+  fadeInMs: 1600,
+  fadeOutMs: 900,
+  drone: { freqs: [55, 110], detune: [0, -5], gain: 0.45 },
+  pad: { type: 'triangle', freqs: [165, 220, 330], filterHz: 900, lfoHz: 0.06, lfoDepth: 260, gain: 0.42 },
+});
+
+// Hum bola persist: ao = desir tinggi (highpass), aka = gemuruh rendah + crackle (bandpass).
+export const ballHumPlan = (balls = {}) => {
+  const out = {};
+  if (balls.ao) {
+    out.ao = {
+      level: 0.05, fadeInMs: 900,
+      osc: { type: 'sine', freq: 330, gain: 0.5 },
+      tremolo: { hz: 0.4, depth: 0.18 },
+      noise: { filterType: 'highpass', filterHz: 1200, gain: 0.05 },
+    };
+  }
+  if (balls.aka) {
+    out.aka = {
+      level: 0.055, fadeInMs: 900,
+      osc: { type: 'sawtooth', freq: 92, gain: 0.4 },
+      tremolo: { hz: 0.55, depth: 0.22 },
+      noise: { filterType: 'bandpass', filterHz: 1400, gain: 0.08 },
+    };
+  }
+  return out;
 };

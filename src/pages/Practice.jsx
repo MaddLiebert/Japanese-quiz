@@ -107,15 +107,15 @@ export function Practice() {
   const navigate = useNavigate();
   const timerRef = useRef(null);
 
-  // Ini penangkal petirnya: kalau komponen mati, timer dibunuh!
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn } = useEffectLayer();
+
+  // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
+  // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    endQuizSession();
+  }, [endQuizSession]);
 
   const getTranslatedRow = (row) => {
     return (language === 'id' && categoryTranslations[row]) ? categoryTranslations[row] : row;
@@ -153,7 +153,7 @@ export function Practice() {
     wrongAnswers,
     currentIndex,
     timeLeft
-  } = useQuizSession();
+  } = useQuizSession({ frozen: domainOn });   // domain Gojo → waktu kuis BEKU
 
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option) => {
@@ -185,6 +185,11 @@ export function Practice() {
   const handleNext = () => {
     advanceQuestion();
   };
+
+  // Kuis selesai → domain & bar 呪力 padam, layar skor bersih.
+  useEffect(() => {
+    if (isFinished) endQuizSession();
+  }, [isFinished, endQuizSession]);
 
   // Keyboard navigation: 1-6 for option selection, Space/Enter to advance
   useEffect(() => {
@@ -277,8 +282,8 @@ export function Practice() {
           score={score}
           totalQuestions={totalQuestions}
           wrongAnswers={wrongAnswers}
-          onPlayAgain={() => setQuizStarted(false)}
-          onGoHome={() => navigate('/')}
+          onPlayAgain={() => { endQuizSession(); setQuizStarted(false); }}
+          onGoHome={() => { endQuizSession(); navigate('/'); }}
         />
       );
     }
@@ -291,11 +296,11 @@ export function Practice() {
       // ── Kanji Quiz UI ────────────────────────────────────────────────────────
       if (isKanjiMode) {
         return (
-          <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+          <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
             <button
-              onClick={() => setQuizStarted(false)}
+              onClick={() => { endQuizSession(); setQuizStarted(false); }}
               className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit"
             >
               <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
@@ -306,8 +311,8 @@ export function Practice() {
               </div>
               <div className="flex items-center gap-4">
                 {difficulty === 'Hard' && timeLeft !== null && (
-                  <span className="text-xs font-bold tracking-widest uppercase text-shu">
-                    {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+                  <span className={`text-xs font-bold tracking-widest uppercase ${domainOn ? 'text-ai' : 'text-shu'}`}>
+                    {domainOn ? '❄ ' : ''}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
                   </span>
                 )}
                 <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
@@ -418,6 +423,7 @@ export function Practice() {
                     <motion.button
                       key={option.id}
                       onClick={() => handleKotobaOptionClick(option)}
+                      data-correct={isThisCorrect || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -471,11 +477,11 @@ export function Practice() {
       if (isKotobaMode) {
 
         return (
-          <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+          <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
             <button
-              onClick={() => setQuizStarted(false)}
+              onClick={() => { endQuizSession(); setQuizStarted(false); }}
               className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit"
             >
               <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
@@ -486,8 +492,8 @@ export function Practice() {
               </div>
               <div className="flex items-center gap-4">
                 {difficulty === 'Hard' && timeLeft !== null && (
-                  <span className="text-xs font-bold tracking-widest uppercase text-shu">
-                    {language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+                  <span className={`text-xs font-bold tracking-widest uppercase ${domainOn ? 'text-ai' : 'text-shu'}`}>
+                    {domainOn ? '❄ ' : ''}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
                   </span>
                 )}
                 <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
@@ -577,6 +583,7 @@ export function Practice() {
                     <motion.button
                       key={option.id}
                       onClick={() => handleKotobaOptionClick(option)}
+                      data-correct={isThisCorrect || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -640,8 +647,9 @@ export function Practice() {
           isAnswered={isAnswered}
           isCurrentAnswerCorrect={isCurrentAnswerCorrect}
           onOptionClick={handleKanaOptionClick}
-          onBack={() => setQuizStarted(false)}
+          onBack={() => { endQuizSession(); setQuizStarted(false); }}
           isGrammarMode={isGrammarMode}
+          frozen={domainOn}
         />
       );
     }
