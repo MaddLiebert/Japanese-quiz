@@ -129,7 +129,15 @@ export const VOICES = {
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  sukuna: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  // VP Ryomen Sukuna (pack_14) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  sukuna: {
+    files: {
+      correct: ['/voices/sukuna/correct_1.mp3', '/voices/sukuna/correct_2.mp3', '/voices/sukuna/correct_3.mp3'],
+      wrong:   ['/voices/sukuna/wrong_1.mp3',   '/voices/sukuna/wrong_2.mp3',   '/voices/sukuna/wrong_3.mp3'],
+      streak:  ['/voices/sukuna/streak_1.mp3',  '/voices/sukuna/streak_2.mp3',  '/voices/sukuna/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
 };
 
 export const getVoice = (key) => VOICES[key] || VOICES.taiko;
