@@ -6,7 +6,7 @@ import {
   YUJI_TAKEOVER_DURATION_S, yujiTakeoverLeft, yujiTakeoverStartDelayMs, YUJI_TAKEOVER_TIMELINE,
   yujiComboNext, yujiComboClip, yujiComboKanji, YUJI_COMBO_KANJI,
   YUJI_FINISHER_XP_MULT, yujiBurnedIds,
-  YUJI_STYLE,
+  YUJI_STYLE, YUJI_SUKUNA_EYES, YUJI_SUKUNA_MARKINGS,
   yujiSparks, yujiCracks, yujiEmbers, yujiBeam, yujiWindLines, yujiScissorLines,
 } from './yujiFx.js';
 import { GOJO_MILESTONES } from './gojoFx.js';
@@ -164,5 +164,34 @@ test('generator partikel: nilai dalam rentang wajar (tidak NaN)', () => {
   for (const e of yujiEmbers(2, 10)) {
     assert.ok(e.x >= 0 && e.x <= 100);
     assert.ok(Number.isFinite(e.drift) && e.drift < 0, 'bara naik = drift negatif');
+  }
+});
+
+test('wajah Sukuna: 4 mata (2 pasang) — pasangan kedua DI BAWAH & lebih kecil', () => {
+  assert.equal(YUJI_SUKUNA_EYES.length, 4);
+  const upper = YUJI_SUKUNA_EYES.filter((e) => e.id.startsWith('upper'));
+  const lower = YUJI_SUKUNA_EYES.filter((e) => e.id.startsWith('lower'));
+  assert.equal(upper.length, 2, 'mata normal = 2');
+  assert.equal(lower.length, 2, 'pasangan kedua = 2 (kanon)');
+  for (const u of upper) for (const l of lower) {
+    assert.ok(l.rx < u.rx, `${l.id} harus lebih kecil dari ${u.id}`);
+    assert.ok(l.cy > u.cy, `${l.id} harus DI BAWAH ${u.id} (kanon)`);
+  }
+  // simetris kiri-kanan (tidak juling)
+  assert.equal(upper[0].cx + upper[1].cx, 100);
+  assert.equal(lower[0].cx + lower[1].cx, 100);
+  for (const e of YUJI_SUKUNA_EYES) assert.ok(e.ry > 0 && e.ry < e.rx, `${e.id} = celah menyempit`);
+});
+
+test('marka Sukuna: mahkota dahi + batang hidung + tato pipi (kanon)', () => {
+  const ids = YUJI_SUKUNA_MARKINGS.map((m) => m.id);
+  for (const need of ['crown', 'nose', 'cheek-l', 'cheek-r']) {
+    assert.ok(ids.includes(need), `marka ${need} wajib ada`);
+  }
+  assert.equal(ids.filter((i) => i === 'crown').length, 1, 'mahkota cuma satu (di dahi)');
+  for (const m of YUJI_SUKUNA_MARKINGS) {
+    const nums = (m.d.match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+    assert.ok(nums.length >= 4, `${m.id} path terlalu pendek`);
+    assert.ok(nums.every((n) => n >= 0 && n <= 100), `${m.id} keluar bidang 0..100: ${m.d}`);
   }
 });

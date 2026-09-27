@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { motion } from 'motion/react';
 import {
   YUJI_ULT_THRESHOLD, YUJI_TAKEOVER_DURATION_S, YUJI_TAKEOVER_TIMELINE,
-  YUJI_INK, YUJI_STYLE,
+  YUJI_INK, YUJI_STYLE, YUJI_SUKUNA_EYES, YUJI_SUKUNA_MARKINGS,
 } from './yujiFx';
 import { yujiTakeoverGif } from './yujiGifs';
 
@@ -140,6 +140,68 @@ export function YujiCurseBar({ charge = 0, combo = 0, ready = false, onCast, tak
   );
 }
 
+// ── Wajah kerasukan (kanon) — 4 mata (2 pasang, pasangan kedua di BAWAH) +
+// marka Sukuna (mahkota dahi, batang hidung, tato pipi). Muncul di eyesAt,
+// tepat saat aura berubah biru → hitam-ungu. SVG murni (tajam, ringan).
+function SukunaFace({ reduced, start }) {
+  const gid = 'sukunaIris' + useId().replace(/[^a-zA-Z0-9]/g, '');
+  return (
+    <motion.div
+      data-yuji-face
+      aria-hidden="true"
+      className="absolute inset-x-0 top-[6vh] bottom-[34%] flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: reduced ? 0 : start, duration: reduced ? 0.3 : 0.45, ease: 'easeOut' }}
+    >
+      <svg viewBox="0 0 100 100" style={{ width: 'min(34vh, 62vw)', height: 'auto', overflow: 'visible' }}>
+        <defs>
+          <radialGradient id={`${gid}`} cx="50%" cy="50%" r="62%">
+            <stop offset="0%" stopColor="#ffe9e9" />
+            <stop offset="55%" stopColor="#e0241a" />
+            <stop offset="100%" stopColor="#7a0b06" />
+          </radialGradient>
+        </defs>
+
+        {/* Marka Sukuna: mahkota dahi + batang hidung + tato pipi */}
+        {YUJI_SUKUNA_MARKINGS.map((m, i) => (
+          <motion.path
+            key={m.id}
+            d={m.d}
+            fill="none"
+            stroke={YUJI_INK}
+            strokeWidth={m.id === 'crown' ? 2.4 : 1.9}
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+            pathLength={1}
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={reduced ? { pathLength: 1, opacity: 0.92 } : { pathLength: 1, opacity: 0.92 }}
+            transition={{ delay: reduced ? 0 : start + 0.08 * i, duration: reduced ? 0 : 0.32, ease: 'easeOut' }}
+          />
+        ))}
+
+        {/* 4 mata: 2 pasang. Pasangan kedua (bawah) menyempit — kanon. */}
+        {YUJI_SUKUNA_EYES.map((e, i) => (
+          <g key={e.id}>
+            <motion.ellipse
+              cx={e.cx} cy={e.cy} rx={e.rx} ry={e.ry}
+              fill="#0a0508" stroke="#e8e0ff" strokeWidth="1.6" vectorEffect="non-scaling-stroke"
+              initial={{ opacity: 0, scaleY: reduced ? 1 : 0.05 }}
+              animate={{ opacity: 1, scaleY: 1 }}
+              style={{ transformOrigin: `${e.cx}px ${e.cy}px` }}
+              transition={{ delay: reduced ? 0 : start + 0.1 + i * 0.05, duration: reduced ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+            />
+            <circle cx={e.cx} cy={e.cy} r={e.pupil} fill={`url(#${gid})`} />
+            {/* pupil ganda (kanon: double pupils) */}
+            <circle cx={e.cx - e.pupil * 0.42} cy={e.cy} r={e.pupil * 0.34} fill="#12060a" opacity="0.85" />
+            <circle cx={e.cx + e.pupil * 0.42} cy={e.cy} r={e.pupil * 0.34} fill="#12060a" opacity="0.85" />
+          </g>
+        ))}
+      </svg>
+    </motion.div>
+  );
+}
+
 // ── Cinematic cast 宿儺の器 (sekali per cast; unmount instan saat padam) ─────
 export function YujiTakeoverCine() {
   const [reduced] = useState(prefersReduced);
@@ -204,10 +266,13 @@ export function YujiTakeoverCine() {
         </motion.div>
       )}
 
+      {/* Wajah kerasukan: 4 mata + marka Sukuna (kanon), muncul di eyesAt */}
+      <SukunaFace reduced={reduced} start={t.eyesAt} />
+
       {/* Kanji 宿儺の器 (1x, ~1,5 dtk) — TEKS DOANG, tanpa voice */}
       <motion.div
         data-yuji-kanji
-        className="absolute inset-0 flex items-center justify-center"
+        className="absolute inset-x-0 bottom-[13%] flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 1, 0] }}
         transition={{
