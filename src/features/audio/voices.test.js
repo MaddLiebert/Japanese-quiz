@@ -70,3 +70,15 @@ test('voice JJK placeholder: 7 key terdaftar & reachable (bukan fallback taiko)'
     assert.equal(getVoice(k), VOICES[k], `getVoice('${k}') harus voice-nya sendiri`);
   }
 });
+
+
+test('voice nobara: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
+  const v = VOICES.nobara;
+  assert.ok(v, 'VOICES.nobara harus ada');
+  assert.equal(v.files.correct.length, 3);
+  assert.equal(v.files.wrong.length, 3);
+  assert.equal(v.files.streak.length, 3);
+  const all = [...v.files.correct, ...v.files.wrong, ...v.files.streak];
+  assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
+  for (const p of all) assert.match(p, /^\/voices\/nobara\/[a-z0-9_]+\.mp3$/);
+});

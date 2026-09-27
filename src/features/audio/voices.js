@@ -75,7 +75,15 @@ export const VOICES = {
   // ── Seri Jujutsu Kaisen (pack_08..pack_14) — placeholder DUMMY ──────────────
   // files kosong → otomatis fallback synth (gong/thud), perilakunya sama
   // seperti voice 'dummy'. Klip mp3 diisi bertahap oleh task "VP <karakter>".
-  nobara: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  // VP Nobara Kugisaki (pack_08) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  nobara: {
+    files: {
+      correct: ['/voices/nobara/correct_1.mp3', '/voices/nobara/correct_2.mp3', '/voices/nobara/correct_3.mp3'],
+      wrong:   ['/voices/nobara/wrong_1.mp3',   '/voices/nobara/wrong_2.mp3',   '/voices/nobara/wrong_3.mp3'],
+      streak:  ['/voices/nobara/streak_1.mp3',  '/voices/nobara/streak_2.mp3',  '/voices/nobara/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
   yuji:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
   megumi: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
   nanami: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
