@@ -162,10 +162,15 @@ The product currently exists as a functional prototype containing:
 * **[EXISTING]** Mobile fit: the 5 content tabs render as a fixed 5-column grid (all tabs visible at 320px — no hidden horizontal scroll), grid cards are sized by character count (`gridTextSize` — kana yoon never wraps, kotoba max 2 lines, uniform row heights via `auto-rows-fr`), and the big session text is tiered by length (`speakTextSize` — hero 80/120px for ≤3 chars, stepping down so a 10-char kotoba is 2 lines at 320px). Session action buttons wrap with compact labels and the Skip button shows icon-only below `sm`.
 * **[EXISTING]** Poem theme categories (Cinta/Kesedihan/Kesenangan/Bersyukur, 3 each) shipped 26/09; 百人一首 still [PLANNED] if requested.
 
-### 9.11 N5 Challenge
+### 9.11 N5 Exam 模擬試験 (Ujian Tiruan JLPT N5)
 
-* **[PLANNED]** Final singleplayer exam mode combining all categories.
-* **[PLANNED]** Results breakdown by category to recommend next study steps.
+* **[EXISTING]** Mock exam tiruan JLPT N5 yang meniru ujian asli semirip mungkin. Gate unlock: rank **Shogun** (XP ≥ 20.000) **DAN** minimal **30 kanji** berstatus `mastered` di `itemProgress` (id `kj_*`). Gate tunggal lewat `isN5ExamUnlocked(rank, countMasteredKanji(itemProgress))` di `src/features/n5exam/n5exam.js`.
+* **[EXISTING]** Blueprint resmi (jlpt.jp): **3 seksi berwaktu** — Pengetahuan Bahasa (Kosakata) 20 mnt, Pengetahuan Bahasa (Tata Bahasa)・Membaca 40 mnt, Menyimak 30 mnt. Total **90 menit**. Tiap seksi punya timer sendiri; waktu habis → seksi auto-kumpul, **tidak bisa balik** ke seksi sebelumnya (seperti ujian asli).
+* **[EXISTING]** **78 soal** persis komposisi sampel resmi N5 (22 / 32 / 24), mencakup 14 tipe mondai: 漢字読み, 表記, 文脈規定, 言い換え類義, 文の文法1, 文の文法2 (★), 文章の文法, 内容理解(短文), 内容理解(中文), 情報検索, 課題理解, ポイント理解, 発話表現, 即時応答.
+* **[EXISTING]** **Skoring resmi:** total 0–180, lulus **≥80**; sectional Kosakata+Tata Bahasa+Membaca **≥38/120** dan Menyimak **≥19/60**. Gagal satu seksi = gagal total. Skor dipetakan proporsional dari jumlah benar (aproksimasi offline dari IRT asli). Hasil menampilkan skor per seksi + breakdown per tipe mondai + verdict LULUS/GAGAL.
+* **[EXISTING]** **Bank hibrida**: tipe yang bisa dibangun otomatis dari pool lama — 漢字読み dari `kanji.json`, 文の文法1 dari `grammar.json`, listening (課題理解/ポイント理解) dari `mondai.json` + mp3 asli. Sisanya (表記/文脈規定/言い換え/★/文章の文法/読解/情報検索/発話/即時応答) di-author di `src/data/n5-exam.json`.
+* **[EXISTING]** **Furigana**: semua teks Jepang ber-kanji (passage, prompt, opsi, explanation) dirender lewat `<Furigana/>` (format `漢字[かんじ]`) supaya pembaca N5 tetap bisa membaca soal kanji.
+* **[EXISTING]** Reward: +15 XP tiap jawaban benar via `recordAnswer`; run selesai lewat `completeQuiz` (menambah win-rate berbobot + Medaru seperti kuis lain). Keluar sukarela = tanpa penalti.
 
 ### 9.12 Death Quiz 死闘
 
@@ -302,7 +307,7 @@ All data is stored in browser `localStorage`.
 * `achievements_unlocked`: Array of achievement IDs and timestamps.
 * `app_settings`: `{ audioEnabled: boolean, difficultyPreference: string }`
 
-*Static Data (JSON imported locally, not in localStorage):* Kana definitions, Vocabulary lists, Grammar rules.
+*Static Data (JSON imported locally, not in localStorage):* Kana definitions, Vocabulary lists, Grammar rules, `src/data/n5-exam.json` (bank soal ujian N5: 表記/文脈規定/言い換え/★/文章の文法/読解/情報検索/発話/即時応答, teks ber-kanji beranotasi furigana `漢字[かんじ]`).
 
 ## 18. Technical Constraints
 

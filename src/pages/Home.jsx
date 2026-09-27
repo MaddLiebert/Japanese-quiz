@@ -5,6 +5,7 @@ import { useUserStats, useItemProgress, useAchievements, getRank } from "../feat
 import { pickBadges, knownBadges } from "../features/progress/badges";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
+import { countMasteredKanji, isN5ExamUnlocked, N5_EXAM_MIN_MASTERED_KANJI } from "../features/n5exam/n5exam";
 
 import { StreakIndicator } from "../components/StreakIndicator";
 // Hanko Stamp component — reused for level and achievements
@@ -39,7 +40,7 @@ const AchievementStamp = ({ meta, index }) => (
 
 export function Home() {
   const { progress, username, setUsername } = useUserStats();
-  const { weakItems } = useItemProgress();
+  const { weakItems, itemProgress } = useItemProgress();
   const { achievements, ACHIEVEMENT_META, selectedBadges } = useAchievements();
   const [inputName, setInputName] = useState("");
   const navigate = useNavigate();
@@ -55,6 +56,10 @@ export function Home() {
 
   // Death Quiz 死闘 — terkunci sampai rank Shogun (gate dari getRank, sumber tunggal).
   const deathUnlocked = getRank(progress.xp || 0).startsWith('Shogun');
+
+  // N5 Exam 模擬試験 — butuh rank Shogun DAN minimal 30 kanji sudah hafal (mastered).
+  const masteredKanji = countMasteredKanji(itemProgress);
+  const n5Unlocked = isN5ExamUnlocked(getRank(progress.xp || 0), masteredKanji);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
@@ -380,6 +385,27 @@ export function Home() {
                 </div>
                 <div className={`w-14 h-14 rounded-full border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${deathUnlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
                   <span className="text-xl font-serif font-black select-none">死</span>
+                </div>
+              </motion.div>
+
+              {/* N5 Exam 模擬試験 — butuh rank Shogun + 30 kanji hafal */}
+              <motion.div onClick={() => navigate('/n5-exam')} whileHover={{ backgroundColor: "rgba(230, 0, 18, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${n5Unlocked ? '' : 'opacity-60'}`}>
+                <div className="absolute right-0 top-0 w-24 h-full bg-shu/5 transform skew-x-12 group-hover:scale-[3] transition-transform duration-700 ease-out z-0"></div>
+                <div className="flex flex-col gap-2 relative z-10">
+                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${n5Unlocked ? 'text-sumi group-hover:text-shu' : 'text-sumi/60'}`}>
+                    {language === 'id' ? 'Ujian N5' : 'N5 Exam'} 模擬試験
+                    {!n5Unlocked && <span className="text-xs font-sans">🔒</span>}
+                  </h4>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                    {n5Unlocked
+                      ? (language === 'id' ? 'Tiruan JLPT N5 · 3 Seksi · 90 Menit' : 'JLPT N5 Mock · 3 Sections · 90 Min')
+                      : (language === 'id'
+                        ? `🔒 Shogun + ${N5_EXAM_MIN_MASTERED_KANJI} Kanji (${masteredKanji}/${N5_EXAM_MIN_MASTERED_KANJI})`
+                        : `🔒 Shogun + ${N5_EXAM_MIN_MASTERED_KANJI} Kanji (${masteredKanji}/${N5_EXAM_MIN_MASTERED_KANJI})`)}
+                  </p>
+                </div>
+                <div className={`w-14 h-14 rounded-full border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${n5Unlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                  <span className="text-lg font-serif font-black select-none">試</span>
                 </div>
               </motion.div>
             </div>

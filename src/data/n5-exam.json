@@ -1,0 +1,911 @@
+{
+  "orthography": [
+    {
+      "id": "n5ort_001",
+      "prompt": "つぎの ことばを かんじで かきます。いちばん いい ものを えらんで ください。\n「せんせい」",
+      "options": [
+        "先生",
+        "先王",
+        "生先",
+        "先制"
+      ],
+      "correctIndex": 0,
+      "answer": "先生",
+      "explanation": "「せんせい」= 先生 (guru). 先 = lebih dulu/depan, 生 = hidup."
+    },
+    {
+      "id": "n5ort_002",
+      "prompt": "つぎの ことばを かんじで かきます。いちばん いい ものを えらんで ください。\n「がくせい」",
+      "options": [
+        "学生",
+        "学王",
+        "生学",
+        "学星"
+      ],
+      "correctIndex": 0,
+      "answer": "学生",
+      "explanation": "「がくせい」= 学生 (pelajar/mahasiswa)."
+    },
+    {
+      "id": "n5ort_003",
+      "prompt": "つぎの ことばを かんじで かきます。いちばん いい ものを えらんで ください。\n「でんしゃ」",
+      "options": [
+        "電車",
+        "田車",
+        "電東",
+        "車電"
+      ],
+      "correctIndex": 0,
+      "answer": "電車",
+      "explanation": "「でんしゃ」= 電車 (kereta listrik)."
+    },
+    {
+      "id": "n5ort_004",
+      "prompt": "つぎの ことばを かんじで かきます。いちばん いい ものを えらんで ください。\n「たべもの」",
+      "options": [
+        "食べ物",
+        "食べ方",
+        "食物",
+        "食ベ物"
+      ],
+      "correctIndex": 0,
+      "answer": "食べ物",
+      "explanation": "「たべもの」= 食べ物 (makanan). 食 = makan, 物 = benda."
+    },
+    {
+      "id": "n5ort_005",
+      "prompt": "つぎの ことばを かんじで かきます。いちばん いい ものを えらんで ください。\n「みず」",
+      "options": [
+        "水",
+        "木",
+        "氷",
+        "火"
+      ],
+      "correctIndex": 0,
+      "answer": "水",
+      "explanation": "「みず」= 水 (air). 木 = pohon, 火 = api."
+    },
+    {
+      "id": "n5ort_006",
+      "prompt": "つぎの ことばを かんじで かきます。いちばん いい ものを えらんで ください。\n「にほんご」",
+      "options": [
+        "日本語",
+        "日本話",
+        "日木語",
+        "本日語"
+      ],
+      "correctIndex": 0,
+      "answer": "日本語",
+      "explanation": "「にほんご」= 日本語 (bahasa Jepang)."
+    },
+    {
+      "id": "n5ort_007",
+      "prompt": "つぎの ことばを かんじで かきます。いちばん いい ものを えらんで ください。\n「かいしゃ」",
+      "options": [
+        "会社",
+        "社会",
+        "会杜",
+        "合社"
+      ],
+      "correctIndex": 0,
+      "answer": "会社",
+      "explanation": "「かいしゃ」= 会社 (perusahaan). 社 = kuil/badan."
+    },
+    {
+      "id": "n5ort_008",
+      "prompt": "つぎの ことばを かんじで かきます。いちばん いい ものを えらんで ください。\n「ともだち」",
+      "options": [
+        "友達",
+        "友立",
+        "反達",
+        "友述"
+      ],
+      "correctIndex": 0,
+      "answer": "友達",
+      "explanation": "「ともだち」= 友達 (teman)."
+    }
+  ],
+  "context_vocab": [
+    {
+      "id": "n5ctx_001",
+      "prompt": "まいあさ ７じに （　　）を たべます。",
+      "options": [
+        "ごはん",
+        "ほん",
+        "くつ",
+        "かさ"
+      ],
+      "correctIndex": 0,
+      "answer": "ごはん",
+      "explanation": "Makan pagi = ごはんを たべる. Opsi lain benda, bukan makanan."
+    },
+    {
+      "id": "n5ctx_002",
+      "prompt": "あついですね。（　　）を あけましょうか。",
+      "options": [
+        "まど",
+        "つくえ",
+        "ほん",
+        "かばん"
+      ],
+      "correctIndex": 0,
+      "answer": "まど",
+      "explanation": "Yang dibuka saat panas = まど (jendela)."
+    },
+    {
+      "id": "n5ctx_003",
+      "prompt": "きのう えいがを （　　）。",
+      "options": [
+        "みました",
+        "たべました",
+        "のみました",
+        "ききました"
+      ],
+      "correctIndex": 0,
+      "answer": "みました",
+      "explanation": "えいが (film) → みる (menonton), bentuk lampau みました."
+    },
+    {
+      "id": "n5ctx_004",
+      "prompt": "わたしは まいにち （　　）で がっこうへ いきます。",
+      "options": [
+        "バス",
+        "ペン",
+        "パン",
+        "ベッド"
+      ],
+      "correctIndex": 0,
+      "answer": "バス",
+      "explanation": "Alat transportasi = バス (bus)."
+    },
+    {
+      "id": "n5ctx_005",
+      "prompt": "つめたい みずを （　　）。",
+      "options": [
+        "のみます",
+        "たべます",
+        "みます",
+        "ききます"
+      ],
+      "correctIndex": 0,
+      "answer": "のみます",
+      "explanation": "みず (air) → のむ (minum), bentuk sopan のみます."
+    },
+    {
+      "id": "n5ctx_006",
+      "prompt": "へやが （　　）ですから、でんきを つけます。",
+      "options": [
+        "くらい",
+        "あかるい",
+        "ひろい",
+        "あたらしい"
+      ],
+      "correctIndex": 0,
+      "answer": "くらい",
+      "explanation": "Menyalakan lampu karena ruangan くらい (gelap)."
+    },
+    {
+      "id": "n5ctx_007",
+      "prompt": "あの ひとは とても （　　）です。",
+      "options": [
+        "しんせつ",
+        "たかい",
+        "からい",
+        "おもい"
+      ],
+      "correctIndex": 0,
+      "answer": "しんせつ",
+      "explanation": "Sifat orang = しんせつ (baik hati). たかい/からい/おもい bukan sifat orang."
+    },
+    {
+      "id": "n5ctx_008",
+      "prompt": "にほんごの べんきょうを （　　）います。",
+      "options": [
+        "して",
+        "たべて",
+        "のんで",
+        "いって"
+      ],
+      "correctIndex": 0,
+      "answer": "して",
+      "explanation": "べんきょうを する → べんきょうを しています (sedang belajar)."
+    },
+    {
+      "id": "n5ctx_009",
+      "prompt": "きょうは あめが （　　）います。",
+      "options": [
+        "ふって",
+        "ふいて",
+        "のんで",
+        "たって"
+      ],
+      "correctIndex": 0,
+      "answer": "ふって",
+      "explanation": "あめが ふる (hujan turun) → あめが ふっています."
+    },
+    {
+      "id": "n5ctx_010",
+      "prompt": "この かばんは とても （　　）です。",
+      "options": [
+        "おもい",
+        "おいしい",
+        "しんせつ",
+        "くらい"
+      ],
+      "correctIndex": 0,
+      "answer": "おもい",
+      "explanation": "Sifat tas = おもい (berat)."
+    }
+  ],
+  "paraphrase": [
+    {
+      "id": "n5par_001",
+      "prompt": "「この みせは あまり たかくないです。」と おなじ いみは どれですか。",
+      "options": [
+        "この みせは やすいです。",
+        "この みせは たかいです。",
+        "この みせは おおきいです。",
+        "この みせは ちいさいです。"
+      ],
+      "correctIndex": 0,
+      "answer": "この みせは やすいです。",
+      "explanation": "「あまり たかくない」= tidak begitu mahal ≈ murah (やすい)."
+    },
+    {
+      "id": "n5par_002",
+      "prompt": "「たなかさんは ごちそうさまと いいました。」と おなじ いみは どれですか。",
+      "options": [
+        "たなかさんは ごはんを たべました。",
+        "たなかさんは うちへ かえりました。",
+        "たなかさんは かいしゃへ いきました。",
+        "たなかさんは ねました。"
+      ],
+      "correctIndex": 0,
+      "answer": "たなかさんは ごはんを たべました。",
+      "explanation": "「ごちそうさま」diucapkan setelah makan."
+    },
+    {
+      "id": "n5par_003",
+      "prompt": "「ここは びょうきの とき くる ところです。」と おなじ いみは どれですか。",
+      "options": [
+        "ここは びょういんです。",
+        "ここは がっこうです。",
+        "ここは としょかんです。",
+        "ここは こうえんです。"
+      ],
+      "correctIndex": 0,
+      "answer": "ここは びょういんです。",
+      "explanation": "Tempat datang saat sakit = びょういん (rumah sakit)."
+    },
+    {
+      "id": "n5par_004",
+      "prompt": "「あの えいがは あまり おもしろくないです。」と おなじ いみは どれですか。",
+      "options": [
+        "あの えいがは つまらないです。",
+        "あの えいがは あぶないです。",
+        "あの えいがは にぎやかです。",
+        "あの えいがは たのしいです。"
+      ],
+      "correctIndex": 0,
+      "answer": "あの えいがは つまらないです。",
+      "explanation": "「あまり おもしろくない」≈ つまらない (membosankan)."
+    },
+    {
+      "id": "n5par_005",
+      "prompt": "「まいにち えきまで あるきます。」と おなじ いみは どれですか。",
+      "options": [
+        "いつも えきまで あるきます。",
+        "ときどき えきまで あるきます。",
+        "あまり えきまで あるきません。",
+        "ぜんぜん えきまで あるきません。"
+      ],
+      "correctIndex": 0,
+      "answer": "いつも えきまで あるきます。",
+      "explanation": "「まいにち」(setiap hari) ≈ いつも (selalu)."
+    },
+    {
+      "id": "n5par_006",
+      "prompt": "「ともだちに ほんを かりました。」と おなじ いみは どれですか。",
+      "options": [
+        "ともだちは わたしに ほんを かしました。",
+        "ともだちから ほんを かいました。",
+        "ともだちに ほんを かえしました。",
+        "ともだちは ほんを くれました。"
+      ],
+      "correctIndex": 0,
+      "answer": "ともだちは わたしに ほんを かしました。",
+      "explanation": "かりる (meminjam) ↔ かす (meminjamkan). Sisi berlawanan."
+    }
+  ],
+  "sentence_composition": [
+    {
+      "id": "n5cmp_001",
+      "prompt": "つぎの ことばを ならべて ぶんを つくります。★ に はいる ものを えらんで ください。\nこれは ★ ですか。（の／ほん／なん／これ）",
+      "options": [
+        "なん",
+        "の",
+        "ほん",
+        "これ"
+      ],
+      "correctIndex": 0,
+      "answer": "なん",
+      "explanation": "「これは なんですか」= ini apa?"
+    },
+    {
+      "id": "n5cmp_002",
+      "prompt": "つぎの ことばを ならべて ぶんを つくります。★ に はいる ものを えらんで ください。\nわたしは まいにち ★ へ いきます。（がっこう／に／で／を）",
+      "options": [
+        "がっこう",
+        "に",
+        "で",
+        "を"
+      ],
+      "correctIndex": 0,
+      "answer": "がっこう",
+      "explanation": "Tempat tujuan: がっこうへ いきます."
+    },
+    {
+      "id": "n5cmp_003",
+      "prompt": "つぎの ことばを ならべて ぶんを つくります。★ に はいる ものを えらんで ください。\nあの ひとは ★ です。（せんせい／の／は／を）",
+      "options": [
+        "せんせい",
+        "の",
+        "は",
+        "を"
+      ],
+      "correctIndex": 0,
+      "answer": "せんせい",
+      "explanation": "Kata benda predikat: あの ひとは せんせいです."
+    },
+    {
+      "id": "n5cmp_004",
+      "prompt": "つぎの ことばを ならべて ぶんを つくります。★ に はいる ものを えらんで ください。\nきのう ともだちと ★ を みました。（えいが／に／で／は）",
+      "options": [
+        "えいが",
+        "に",
+        "で",
+        "は"
+      ],
+      "correctIndex": 0,
+      "answer": "えいが",
+      "explanation": "Objek を みました: えいがを みました."
+    },
+    {
+      "id": "n5cmp_005",
+      "prompt": "つぎの ことばを ならべて ぶんを つくります。★ に はいる ものを えらんで ください。\nわたしは あさ ★ を たべます。（ごはん／に／で／と）",
+      "options": [
+        "ごはん",
+        "に",
+        "で",
+        "と"
+      ],
+      "correctIndex": 0,
+      "answer": "ごはん",
+      "explanation": "Objek を たべます: ごはんを たべます."
+    },
+    {
+      "id": "n5cmp_006",
+      "prompt": "つぎの ことばを ならべて ぶんを つくります。★ に はいる ものを えらんで ください。\nここは ★ です。（えき／の／を／に）",
+      "options": [
+        "えき",
+        "の",
+        "を",
+        "に"
+      ],
+      "correctIndex": 0,
+      "answer": "えき",
+      "explanation": "Kata benda predikat: ここは えきです."
+    },
+    {
+      "id": "n5cmp_007",
+      "prompt": "つぎの ことばを ならべて ぶんを つくります。★ に はいる ものを えらんで ください。\nにほんごを ★ います。（べんきょうして／に／で／を）",
+      "options": [
+        "べんきょうして",
+        "に",
+        "で",
+        "を"
+      ],
+      "correctIndex": 0,
+      "answer": "べんきょうして",
+      "explanation": "にほんごを べんきょうしています (sedang belajar)."
+    },
+    {
+      "id": "n5cmp_008",
+      "prompt": "つぎの ことばを ならべて ぶんを つくります。★ に はいる ものを えらんで ください。\nこの ほんは ★ です。（おもしろい／の／を／に）",
+      "options": [
+        "おもしろい",
+        "の",
+        "を",
+        "に"
+      ],
+      "correctIndex": 0,
+      "answer": "おもしろい",
+      "explanation": "Kata sifat predikat: この ほんは おもしろいです."
+    }
+  ],
+  "text_grammar": [
+    {
+      "id": "n5txt_001",
+      "passage": "わたしは まいにち あさ ６じに おきます。（　　）、かおを あらいます。",
+      "prompt": "（　　）に なにを いれますか。",
+      "options": [
+        "それから",
+        "しかし",
+        "でも",
+        "だから"
+      ],
+      "correctIndex": 0,
+      "answer": "それから",
+      "explanation": "Urutan kegiatan: bangun → それから (lalu) cuci muka."
+    },
+    {
+      "id": "n5txt_002",
+      "passage": "きのうは あめでした。（　　）、がっこうへ いきました。",
+      "prompt": "（　　）に なにを いれますか。",
+      "options": [
+        "でも",
+        "そして",
+        "だから",
+        "それから"
+      ],
+      "correctIndex": 0,
+      "answer": "でも",
+      "explanation": "Kontras: hujan, でも (tetap) pergi."
+    },
+    {
+      "id": "n5txt_003",
+      "passage": "わたしの かぞくは よにんです。ちちと ははと あねと （　　）です。",
+      "prompt": "（　　）に なにを いれますか。",
+      "options": [
+        "わたし",
+        "あなた",
+        "かれ",
+        "みんな"
+      ],
+      "correctIndex": 0,
+      "answer": "わたし",
+      "explanation": "Anggota keluarga keempat = わたし (saya)."
+    },
+    {
+      "id": "n5txt_004",
+      "passage": "あさごはんを たべました。（　　）、はを みがきました。",
+      "prompt": "（　　）に なにを いれますか。",
+      "options": [
+        "それから",
+        "しかし",
+        "でも",
+        "だから"
+      ],
+      "correctIndex": 0,
+      "answer": "それから",
+      "explanation": "Urutan: makan → それから sikat gigi."
+    },
+    {
+      "id": "n5txt_005",
+      "passage": "にほんの なつは あついです。（　　）、ふゆは さむいです。",
+      "prompt": "（　　）に なにを いれますか。",
+      "options": [
+        "でも",
+        "だから",
+        "そして",
+        "それから"
+      ],
+      "correctIndex": 0,
+      "answer": "でも",
+      "explanation": "Kontras musim: panas, でも musim dingin dingin."
+    },
+    {
+      "id": "n5txt_006",
+      "passage": "わたしは えいがが すきです。（　　）、よく えいがを みます。",
+      "prompt": "（　　）に なにを いれますか。",
+      "options": [
+        "だから",
+        "でも",
+        "しかし",
+        "または"
+      ],
+      "correctIndex": 0,
+      "answer": "だから",
+      "explanation": "Sebab-akibat: suka film, だから sering menonton."
+    },
+    {
+      "id": "n5txt_007",
+      "passage": "きょうは やすみです。（　　）、こうえんへ いきます。",
+      "prompt": "（　　）に なにを いれますか。",
+      "options": [
+        "だから",
+        "でも",
+        "しかし",
+        "そして"
+      ],
+      "correctIndex": 0,
+      "answer": "だから",
+      "explanation": "Sebab-akibat: hari libur, だから ke taman."
+    },
+    {
+      "id": "n5txt_008",
+      "passage": "たなかさんは がくせいです。（　　）、わたしも がくせいです。",
+      "prompt": "（　　）に なにを いれますか。",
+      "options": [
+        "そして",
+        "でも",
+        "だから",
+        "しかし"
+      ],
+      "correctIndex": 0,
+      "answer": "そして",
+      "explanation": "Penambahan: Tanaka pelajar, そして saya juga."
+    }
+  ],
+  "reading_short": [
+    {
+      "id": "n5rs_001",
+      "passage": "わたしは まいにち あさ ６じに おきます。それから シャワーを あびて、ごはんを たべます。８じに かいしゃへ いきます。",
+      "prompt": "わたしは あさ、なにを しますか。",
+      "options": [
+        "シャワーを あびます。",
+        "テレビを みます。",
+        "ほんを よみます。",
+        "うたを うたいます。"
+      ],
+      "correctIndex": 0,
+      "answer": "シャワーを あびます。",
+      "explanation": "Teks menyebut シャワーを あびて (mandi)."
+    },
+    {
+      "id": "n5rs_002",
+      "passage": "きのう わたしは ともだちと こうえんへ いきました。こうえんは しずかで きれいでした。わたしたちは おべんとうを たべました。",
+      "prompt": "きのう なにを しましたか。",
+      "options": [
+        "こうえんで おべんとうを たべました。",
+        "えいがを みました。",
+        "ほんを かいました。",
+        "プールで およぎました。"
+      ],
+      "correctIndex": 0,
+      "answer": "こうえんで おべんとうを たべました。",
+      "explanation": "Teks: こうえんへ いきました → おべんとうを たべました."
+    },
+    {
+      "id": "n5rs_003",
+      "passage": "わたしの いえは えきの ちかくに あります。とても べんりです。でも、すこし うるさいです。",
+      "prompt": "わたしの いえは どうですか。",
+      "options": [
+        "べんりですが すこし うるさいです。",
+        "しずかで きれいです。",
+        "えきから とおいです。",
+        "とても ひろいです。"
+      ],
+      "correctIndex": 0,
+      "answer": "べんりですが すこし うるさいです。",
+      "explanation": "Teks: とても べんりです。でも、すこし うるさいです."
+    },
+    {
+      "id": "n5rs_004",
+      "passage": "あしたは にちようびです。わたしは あさ おそく おきます。それから そうじを して、おんがくを ききます。",
+      "prompt": "あした わたしは なにを しますか。",
+      "options": [
+        "そうじを して おんがくを ききます。",
+        "かいしゃへ いきます。",
+        "べんきょうを します。",
+        "ともだちと あいます。"
+      ],
+      "correctIndex": 0,
+      "answer": "そうじを して おんがくを ききます。",
+      "explanation": "Teks: そうじを して、おんがくを ききます."
+    },
+    {
+      "id": "n5rs_005",
+      "passage": "たなかさんは まいにち にほんごを べんきょうします。にほんの アニメが すきですから。らいねん にほんへ いきたいです。",
+      "prompt": "たなかさんは なぜ にほんごを べんきょうしますか。",
+      "options": [
+        "にほんの アニメが すきですから。",
+        "しごとが あるから。",
+        "にほんじん だから。",
+        "りょこうが きらい だから。"
+      ],
+      "correctIndex": 0,
+      "answer": "にほんの アニメが すきですから。",
+      "explanation": "Teks: にほんの アニメが すきですから (karena suka anime)."
+    }
+  ],
+  "reading_mid": [
+    {
+      "id": "n5rm_001",
+      "passage": "わたしは 大学[だいがく]生[せい]です。毎日[まいにち] 電車[でんしゃ]で 大学[だいがく]へ 行[い]きます。電車[でんしゃ]の 中[なか]で 日本語[にほんご]を 勉強[べんきょう]します。１時間[じかん]ぐらい かかります。大学[だいがく]で 友達[ともだち]と 昼[ひる]ごはんを 食[た]べます。午後[ごご]３時[じ]に うちへ 帰[かえ]ります。夜[よる]は テレビを 見[み]たり、本[ほん]を 読[よ]んだり します。",
+      "prompt": "わたしは 電車[でんしゃ]の 中[なか]で なにを しますか。",
+      "options": [
+        "日本語[にほんご]を 勉強[べんきょう]します。",
+        "昼[ひる]ごはんを 食[た]べます。",
+        "テレビを 見[み]ます。",
+        "友達[ともだち]と 話[はな]します。"
+      ],
+      "correctIndex": 0,
+      "answer": "日本語[にほんご]を 勉強[べんきょう]します。",
+      "explanation": "Teks: 電車の 中で 日本語を 勉強します."
+    },
+    {
+      "id": "n5rm_002",
+      "passage": "せんしゅう わたしは 家族[かぞく]と 京都[きょうと]へ 行[い]きました。京都[きょうと]には 古[ふる]い お寺[てら]が たくさん あります。わたしは お寺[てら]を 見[み]に 行[い]きました。とても きれいでした。昼[ひる]ごはんは うどんを 食[た]べました。とても おいしかったです。写真[しゃしん]も たくさん 撮[と]りました。また 行[い]きたいです。",
+      "prompt": "京都[きょうと]で なにを 食[た]べましたか。",
+      "options": [
+        "うどん",
+        "すし",
+        "ラーメン",
+        "カレー"
+      ],
+      "correctIndex": 0,
+      "answer": "うどん",
+      "explanation": "Teks: 昼ごはんは うどんを 食べました."
+    },
+    {
+      "id": "n5rm_003",
+      "passage": "日本[にほん]の 春[はる]は 暖[あたた]かくて、桜[さくら]が きれいです。夏[なつ]は とても 暑[あつ]いです。よく 海[うみ]へ 行[い]きます。秋[あき]は 涼[すず]しくて、食[た]べ物[もの]が おいしいです。冬[ふゆ]は 寒[さむ]くて、雪[ゆき]が 降[ふ]ります。わたしは 秋[あき]が いちばん 好[す]きです。",
+      "prompt": "わたしが いちばん 好[す]きな 季節[きせつ]は どれですか。",
+      "options": [
+        "秋[あき]",
+        "春[はる]",
+        "夏[なつ]",
+        "冬[ふゆ]"
+      ],
+      "correctIndex": 0,
+      "answer": "秋[あき]",
+      "explanation": "Teks: わたしは 秋が いちばん 好きです."
+    }
+  ],
+  "info_retrieval": [
+    {
+      "id": "n5inf_001",
+      "passage": "【えいがかんの おしらせ】\n・月よう日〜金よう日：1000円\n・土よう日・日よう日：1500円\n・学生は いつも 800円\n・えいがは 10じから です。",
+      "prompt": "学生が 土よう日に えいがを みると、いくらですか。",
+      "options": [
+        "800円",
+        "1000円",
+        "1500円",
+        "1800円"
+      ],
+      "correctIndex": 0,
+      "answer": "800円",
+      "explanation": "「学生は いつも 800円」— berlaku juga hari Sabtu."
+    },
+    {
+      "id": "n5inf_002",
+      "passage": "【レストランの おしらせ】\n・あさ：7じ〜10じ（モーニング）\n・ひる：11じ〜14じ（ランチ 800円）\n・よる：17じ〜22じ（ディナー）\n・やすみ：すいよう日",
+      "prompt": "ランチは いくらですか。",
+      "options": [
+        "800円",
+        "500円",
+        "1000円",
+        "1500円"
+      ],
+      "correctIndex": 0,
+      "answer": "800円",
+      "explanation": "Teks: ひる：11じ〜14じ（ランチ 800円）."
+    }
+  ],
+  "verbal_expression": [
+    {
+      "id": "n5ve_001",
+      "prompt": "（ともだちの いえを でます）なんと いいますか。",
+      "options": [
+        "おじゃましました。",
+        "おかえりなさい。",
+        "いってきます。",
+        "めしあがれ。"
+      ],
+      "correctIndex": 0,
+      "answer": "おじゃましました。",
+      "explanation": "Saat pulang dari rumah orang = おじゃましました."
+    },
+    {
+      "id": "n5ve_002",
+      "prompt": "（ごはんを たべる まえに）なんと いいますか。",
+      "options": [
+        "いただきます。",
+        "ごちそうさまでした。",
+        "おやすみなさい。",
+        "しつれいします。"
+      ],
+      "correctIndex": 0,
+      "answer": "いただきます。",
+      "explanation": "Sebelum makan = いただきます."
+    },
+    {
+      "id": "n5ve_003",
+      "prompt": "（ごはんを たべた あとに）なんと いいますか。",
+      "options": [
+        "ごちそうさまでした。",
+        "いただきます。",
+        "おかえりなさい。",
+        "はじめまして。"
+      ],
+      "correctIndex": 0,
+      "answer": "ごちそうさまでした。",
+      "explanation": "Setelah makan = ごちそうさまでした."
+    },
+    {
+      "id": "n5ve_004",
+      "prompt": "（しごとへ いく とき、かぞくに）なんと いいますか。",
+      "options": [
+        "いってきます。",
+        "ただいま。",
+        "いらっしゃい。",
+        "おやすみなさい。"
+      ],
+      "correctIndex": 0,
+      "answer": "いってきます。",
+      "explanation": "Saat pergi keluar rumah = いってきます."
+    },
+    {
+      "id": "n5ve_005",
+      "prompt": "（うちへ かえって、かぞくに）なんと いいますか。",
+      "options": [
+        "ただいま。",
+        "いってきます。",
+        "はじめまして。",
+        "めしあがれ。"
+      ],
+      "correctIndex": 0,
+      "answer": "ただいま。",
+      "explanation": "Saat pulang ke rumah = ただいま."
+    },
+    {
+      "id": "n5ve_006",
+      "prompt": "（ともだちが うちへ きた とき）なんと いいますか。",
+      "options": [
+        "いらっしゃい。",
+        "いってきます。",
+        "ただいま。",
+        "ごちそうさま。"
+      ],
+      "correctIndex": 0,
+      "answer": "いらっしゃい。",
+      "explanation": "Menyambut tamu = いらっしゃい."
+    },
+    {
+      "id": "n5ve_007",
+      "prompt": "（プレゼントを もらった とき）なんと いいますか。",
+      "options": [
+        "ありがとうございます。",
+        "すみません、おくれました。",
+        "おやすみなさい。",
+        "いってきます。"
+      ],
+      "correctIndex": 0,
+      "answer": "ありがとうございます。",
+      "explanation": "Menerima sesuatu = ありがとうございます."
+    },
+    {
+      "id": "n5ve_008",
+      "prompt": "（あやまる とき）なんと いいますか。",
+      "options": [
+        "ごめんなさい。",
+        "おめでとう。",
+        "いただきます。",
+        "ようこそ。"
+      ],
+      "correctIndex": 0,
+      "answer": "ごめんなさい。",
+      "explanation": "Minta maaf = ごめんなさい."
+    }
+  ],
+  "quick_response": [
+    {
+      "id": "n5qr_001",
+      "prompt": "（ともだちに）「いっしょに ひるごはんを たべませんか。」",
+      "options": [
+        "ええ、いいですね。",
+        "はい、たべました。",
+        "いいえ、がくせいです。",
+        "ええ、あめです。"
+      ],
+      "correctIndex": 0,
+      "answer": "ええ、いいですね。",
+      "explanation": "Ajakan 「〜ませんか」 dijawab setuju: ええ、いいですね。"
+    },
+    {
+      "id": "n5qr_002",
+      "prompt": "「にほんごが わかりますか。」",
+      "options": [
+        "はい、すこし わかります。",
+        "はい、すこし たべます。",
+        "いいえ、にほんです。",
+        "はい、がくせいです。"
+      ],
+      "correctIndex": 0,
+      "answer": "はい、すこし わかります。",
+      "explanation": "Pertanyaan kemampuan → jawab わかります."
+    },
+    {
+      "id": "n5qr_003",
+      "prompt": "「おなまえは なんですか。」",
+      "options": [
+        "たなかです。",
+        "２５さいです。",
+        "がくせいです。",
+        "にほんです。"
+      ],
+      "correctIndex": 0,
+      "answer": "たなかです。",
+      "explanation": "Nama → たなかです."
+    },
+    {
+      "id": "n5qr_004",
+      "prompt": "「これは いくらですか。」",
+      "options": [
+        "５００えんです。",
+        "５００まいです。",
+        "５００にんです。",
+        "５００さつです。"
+      ],
+      "correctIndex": 0,
+      "answer": "５００えんです。",
+      "explanation": "Harga → 〜えんです."
+    },
+    {
+      "id": "n5qr_005",
+      "prompt": "「あした ひまですか。」",
+      "options": [
+        "はい、ひまです。",
+        "はい、あめです。",
+        "いいえ、ひまです。",
+        "はい、たかいです。"
+      ],
+      "correctIndex": 0,
+      "answer": "はい、ひまです。",
+      "explanation": "Pertanyaan ya/tidak → ulangi kata kunci: はい、ひまです."
+    },
+    {
+      "id": "n5qr_006",
+      "prompt": "「おしごとは なんですか。」",
+      "options": [
+        "がくせいです。",
+        "たなかです。",
+        "２５さいです。",
+        "にほんです。"
+      ],
+      "correctIndex": 0,
+      "answer": "がくせいです。",
+      "explanation": "Pekerjaan → がくせいです."
+    },
+    {
+      "id": "n5qr_007",
+      "prompt": "「トイレは どこですか。」",
+      "options": [
+        "あそこです。",
+        "たなかです。",
+        "５００えんです。",
+        "おいしいです。"
+      ],
+      "correctIndex": 0,
+      "answer": "あそこです。",
+      "explanation": "Lokasi → あそこです."
+    },
+    {
+      "id": "n5qr_008",
+      "prompt": "「おげんきですか。」",
+      "options": [
+        "はい、おかげさまで。",
+        "はい、５００えんです。",
+        "いいえ、たなかです。",
+        "はい、あめです。"
+      ],
+      "correctIndex": 0,
+      "answer": "はい、おかげさまで。",
+      "explanation": "Sapaan kesehatan → はい、おかげさまで."
+    },
+    {
+      "id": "n5qr_009",
+      "prompt": "「でんわばんごうは なんばんですか。」",
+      "options": [
+        "０９０ー１２３４です。",
+        "たなかです。",
+        "がくせいです。",
+        "おいしいです。"
+      ],
+      "correctIndex": 0,
+      "answer": "０９０ー１２３４です。",
+      "explanation": "Nomor telepon → sebutkan angka."
+    }
+  ]
+}
