@@ -53,6 +53,9 @@ export function Home() {
 
   const progressPercentage = (progress.xp > 0 && progress.xp % 100 === 0) ? 100 : (progress.xp % 100);
 
+  // Death Quiz 死闘 — terkunci sampai rank Shogun (gate dari getRank, sumber tunggal).
+  const deathUnlocked = getRank(progress.xp || 0).startsWith('Shogun');
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
       {/* Soft Login Modal */}
@@ -358,6 +361,25 @@ export function Home() {
                 </div>
                 <div className="w-14 h-14 rounded-full border-[3px] border-ai text-ai flex items-center justify-center group-hover:bg-ai group-hover:text-kinari-light transition-all flex-shrink-0">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v1a7 7 0 0 1-14 0v-1"></path><line x1="12" y1="18" x2="12" y2="22"></line></svg>
+                </div>
+              </motion.div>
+
+              {/* Death Quiz 死闘 — terkunci sampai rank Shogun */}
+              <motion.div onClick={() => navigate('/death-quiz')} whileHover={{ backgroundColor: "rgba(211, 56, 47, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${deathUnlocked ? '' : 'opacity-60'}`}>
+                <div className="absolute right-0 top-0 w-24 h-full bg-shu/5 transform skew-x-12 group-hover:scale-[3] transition-transform duration-700 ease-out z-0"></div>
+                <div className="flex flex-col gap-2 relative z-10">
+                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${deathUnlocked ? 'text-sumi group-hover:text-shu' : 'text-sumi/60'}`}>
+                    Death Quiz
+                    {!deathUnlocked && <span className="text-xs font-sans">🔒</span>}
+                  </h4>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                    {deathUnlocked
+                      ? (language === 'id' ? 'Endless · Pertaruhan XP' : 'Endless · XP at Stake')
+                      : (language === 'id' ? '🔒 Rank Shogun' : '🔒 Shogun Rank')}
+                  </p>
+                </div>
+                <div className={`w-14 h-14 rounded-full border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${deathUnlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                  <span className="text-xl font-serif font-black select-none">死</span>
                 </div>
               </motion.div>
             </div>

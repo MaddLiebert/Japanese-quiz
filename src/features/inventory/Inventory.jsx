@@ -184,13 +184,21 @@ export function Inventory() {
                       {item.name}
                     </h3>
                     <p className="text-sm font-bold mb-6 flex-grow text-sumi/80">{item.desc}</p>
-                    <button
-                      type="button"
-                      onClick={() => consumeItem(item.id)}
-                      className="py-3 font-black text-lg w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all bg-ai text-kinari-light"
-                    >
-                      {id ? 'PAKAI' : 'USE'}
-                    </button>
+                    {item.id === 'kabel_jumper' ? (
+                      // Kabel jumper dipakai OTOMATIS di Death Quiz (bukan tombol PAKAI)
+                      // — jangan sampai terbuang sia-sia di luar mode.
+                      <div className="py-3 font-black text-sm w-full border-4 border-dashed border-sumi/30 text-sumi/50 uppercase tracking-widest">
+                        🔌 {id ? 'Dipakai otomatis di Death Quiz' : 'Auto-used in Death Quiz'}
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => consumeItem(item.id)}
+                        className="py-3 font-black text-lg w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all bg-ai text-kinari-light"
+                      >
+                        {id ? 'PAKAI' : 'USE'}
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
