@@ -12,6 +12,7 @@ import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
 import Shop from "./features/shop/Shop";
 import Inventory from "./features/inventory/Inventory";
 import { DeathQuizScreen } from "./features/deathquiz/DeathQuizScreen";
+import { N5ExamScreen } from "./features/n5exam/N5ExamScreen";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
 import { EffectProvider } from "./features/effects/EffectContext";
 import { getPack } from "./features/packs/packs";
@@ -136,6 +137,7 @@ function App() {
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/inventory" element={<Inventory />} />
                   <Route path="/death-quiz" element={<DeathQuizScreen />} />
+                  <Route path="/n5-exam" element={<N5ExamScreen />} />
                   <Route path="/profile" element={<Profile />} />
                 </Routes>
               </main>
