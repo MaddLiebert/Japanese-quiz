@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PACKS, PACK_RARITY, getPack, isPackReady, rollPackId, gachaPoolInfo } from './packs.js';
+import { PACKS, PACK_RARITY, getPack, isPackReady, rollPackId, gachaPoolInfo, rarityOdds } from './packs.js';
 
 test('PACKS berisi 14 pack dan semuanya ready', () => {
   assert.equal(PACKS.length, 14);
@@ -208,4 +208,14 @@ test('7 pack JJK: id, nama, rarity & voice key sesuai peta', () => {
     assert.equal(p.voice, voice);
     assert.ok(p.visual && p.kanji && p.icon && p.desc && p.desc_en, `${id} field kurang`);
   }
+});
+
+
+test('rarityOdds: agregat per rarity, total ~100, special paling kecil', () => {
+  const odds = rarityOdds();
+  const total = odds.reduce((s, o) => s + o.chance, 0);
+  assert.ok(Math.abs(total - 100) < 0.2, `total ${total} harus ~100`);
+  const special = odds.find((o) => o.rarity === 'special');
+  assert.ok(special && special.chance > 1.5 && special.chance < 2.5, `special ${special?.chance}% harus ~2%`);
+  for (const o of odds) assert.ok(o.label && o.chance > 0);
 });
