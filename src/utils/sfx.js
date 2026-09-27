@@ -342,6 +342,25 @@ export const playGojoTechnique = (technique) => {
 export const GOJO_CAST_FILE = '/voices/gojo/ryoiki tenkai.mp3';
 export const playGojoCast = () => playFile(GOJO_CAST_FILE);
 
+// ── Suara khusus Yuji (pack_09) ─────────────────────────────────────────────
+// Teknik diputar DETERMINISTIK lewat klip (pola sama Gojo) — bukan pickFile acak.
+export const YUJI_TECHNIQUE_FILES = {
+  keiteiken: '/voices/yuji/keiteiken.mp3',
+  manjigeri: '/voices/yuji/manjigeri.mp3',
+  kokusen: '/voices/yuji/kokusen.mp3',
+  senketsu: '/voices/yuji/senketsu.mp3',
+  kai: '/voices/yuji/kai.mp3',
+  hachi: '/voices/yuji/hachi.mp3',
+  fuga: '/voices/yuji/fuga.mp3',
+  zakome: '/voices/yuji/zakome.mp3',
+};
+
+export const playYujiTechnique = (technique) => {
+  const path = YUJI_TECHNIQUE_FILES[technique];
+  return path ? playFile(path) : 0;
+};
+
+
 // ── API publik ──────────────────────────────────────────────────────────────
 // Semua mengembalikan durasi klip (ms) supaya efek visual (GIF Hina) bisa
 // tampil selama suaranya berbunyi. 0 = tak ada klip (synth / tanpa pack).
@@ -727,4 +746,113 @@ export const ballHumPlan = (balls = {}) => {
     };
   }
   return out;
+};
+
+// ── SFX one-shot Yuji (pack_09) — TIDAK ada ambience sustained (keputusan desain) ──
+// Semua params murni & deterministik -> dites di sfx.yuji.test.js.
+// Pemutar = no-op di node (guard window), pola sama playBallSound.
+export const impactDoubleParams = () => ({
+  hit1: { freq: 190, dur: 0.06, gain: 0.22 },
+  gapMs: 100,                                   // jeda khas 逕庭拳 (tok -> TOK)
+  hit2: { freq: 150, dur: 0.14, gain: 0.34, noiseGain: 0.06 },
+});
+
+export const kickWhooshParams = () => ({ type: 'sawtooth', fromHz: 520, toHz: 120, dur: 0.3, gain: 0.14, noiseGain: 0.1 });
+
+export const blackSparkParams = () => ({
+  type: 'square', fromHz: 2600, toHz: 2100, dur: 0.12, gain: 0.14, noiseGain: 0,
+  boom: { type: 'sine', fromHz: 120, toHz: 42, dur: 0.5, gain: 0.3, noiseGain: 0.12 },
+});
+
+export const bloodCompressParams = () => ({ type: 'sine', fromHz: 220, toHz: 900, dur: 0.45, gain: 0.14, noiseGain: 0.03 });
+export const bloodPierceParams = () => ({ type: 'sawtooth', fromHz: 1400, toHz: 120, dur: 0.22, gain: 0.26, noiseGain: 0.1 });
+export const possessWhooshParams = () => ({ type: 'sawtooth', fromHz: 80, toHz: 420, dur: 1.1, gain: 0.2, noiseGain: 0.12, subGain: 0.28 });
+
+export const slashParams = (heavy = false) => (heavy
+  ? { type: 'sawtooth', fromHz: 900, toHz: 90, dur: 0.3, gain: 0.24, noiseGain: 0.12 }    // 捌
+  : { type: 'sawtooth', fromHz: 1800, toHz: 300, dur: 0.16, gain: 0.16, noiseGain: 0.07 }); // 解
+
+export const fugaRoarParams = () => ({ type: 'sawtooth', fromHz: 70, toHz: 240, dur: 1.2, gain: 0.34, noiseGain: 0.18 });
+export const fugaCrackleParams = () => ({ hz: 2400, dur: 0.9, gain: 0.08 });
+
+// Helper satu titik: sweep nada + noise burst (DRY semua SFX Yuji).
+const sweepNoise = (p, { noise = true } = {}) => {
+  if (typeof window === 'undefined' || !p) return 0;
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = p.type || 'sawtooth';
+  osc.frequency.setValueAtTime(p.fromHz, t);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(30, p.toHz), t + p.dur * 0.85);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.gain, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.05);
+  if (noise && p.noiseGain > 0) {
+    noiseBurst(ctx, t, { dur: p.dur * 0.8, gain: p.noiseGain, type: 'bandpass', fromHz: p.fromHz * 2, toHz: Math.max(60, p.toHz) });
+  }
+  return Math.round(p.dur * 1000);
+};
+
+export const playKickWhoosh = () => sweepNoise(kickWhooshParams());
+export const playBloodCompress = () => sweepNoise(bloodCompressParams());
+export const playBloodPierce = () => sweepNoise(bloodPierceParams());
+export const playSlash = (heavy = false) => sweepNoise(slashParams(heavy));
+export const playFugaRoar = () => sweepNoise(fugaRoarParams());
+
+// 黒閃: BZZT nyaring lalu boom rendah (dua lapis).
+export const playBlackSpark = () => {
+  const p = blackSparkParams();
+  const a = sweepNoise(p, { noise: false });
+  const b = sweepNoise(p.boom);
+  return Math.max(a, b);
+};
+
+// 逕庭拳: hit 1 -> jeda 100ms -> hit 2 (lebih kuat). Dijadwalkan di timeline.
+export const playImpactDouble = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = impactDoubleParams();
+  const hit = (h) => sweepNoise({ type: 'triangle', fromHz: h.freq, toHz: h.freq * 0.7, dur: h.dur, gain: h.gain, noiseGain: h.noiseGain || 0 });
+  hit(p.hit1);
+  setTimeout(() => hit(p.hit2), p.gapMs);
+  return Math.round((p.hit1.dur + p.gapMs / 1000 + p.hit2.dur) * 1000);
+};
+
+// 宿儺の器: aura gelap naik + sub bass (lapisan kedua).
+export const playPossessWhoosh = () => {
+  const ms = sweepNoise(possessWhooshParams());
+  if (typeof window === 'undefined') return 0;
+  const p = possessWhooshParams();
+  const ctx = initAudioContext();
+  if (!ctx) return ms;
+  const t = ctx.currentTime;
+  const sub = ctx.createOscillator();
+  const g = ctx.createGain();
+  sub.type = 'sine';
+  sub.frequency.setValueAtTime(46, t);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.subGain, t + 0.05);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  sub.connect(g);
+  g.connect(ctx.destination);
+  sub.start(t);
+  sub.stop(t + p.dur + 0.05);
+  return ms;
+};
+
+// 開: auman api + bara berderak (layer 2, mulai setelah auman — jangan menutupi).
+export const playFuga = () => {
+  const ms = playFugaRoar();
+  if (typeof window === 'undefined') return 0;
+  const p = fugaCrackleParams();
+  const ctx = initAudioContext();
+  if (!ctx) return ms;
+  noiseBurst(ctx, ctx.currentTime + 0.35, { dur: p.dur, gain: p.gain, type: 'highpass', fromHz: p.hz, toHz: p.hz * 0.5 });
+  return ms;
 };
