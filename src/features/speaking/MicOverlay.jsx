@@ -6,22 +6,38 @@
 // (pola GachaSlotOverlay) supaya `fixed` tidak terkurung transform milik
 // parent (motion.div di session).
 //
-// PENTING: meter level REAL (getUserMedia + AnalyserNode) SENGAJA TIDAK
-// dipakai di sini. Membuka stream getUserMedia KEDUA saat SpeechRecognition
-// sedang jalan membuat rebutan mikrofon — di Android/iOS (dan sebagian Chrome
-// desktop) engine tidak menerima audio sama sekali sehingga ucapan tidak pernah
-// terdeteksi. Indikator suara yang JUJUR adalah teks interim di bawah: begitu
-// kata dikenali, teksnya tampil live. Spectrum di sini murni animasi CSS
-// (tampilan tetap sama, tanpa risiko merebut mic).
+// SPECTRUM (penting): tinggi bar HARUS mengikuti suara, bukan sekadar kedip
+// opacity. Dua jalur aman:
+//   1) Desktop  → meter REAL (getUserMedia + AnalyserNode) lewat useMicLevel.
+//      Chrome desktop aman membuka stream kedua paralel SpeechRecognition.
+//   2) HP       → JANGAN buka stream kedua (Android/iOS: rebutan mic → ucapan
+//      tak terdeteksi, bug lama). Pakai `level` dari event onlevel VAD
+//      SpeechRecognition sendiri → bar sintetis (synthBars) yang tetap naik-turun.
+// Kalau keduanya belum ada sinyal (izin ditolak / engine bisu), bar jatuh ke
+// animasi CSS kecil supaya panel tidak terlihat mati.
 import { Mic } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import { MIC_BAR_COUNT } from './micSpectrum';
+import { MIC_BAR_COUNT, displayHeights, synthBars } from './micSpectrum';
+import { isMobileDevice } from './useSpeechRecognition';
+import { useMicLevel } from './useMicLevel';
 import { useLanguage } from '../../context/LanguageContext';
 
-export function MicOverlay({ open = false, interim = '', onCancel }) {
+export function MicOverlay({ open = false, interim = '', level = 0, onCancel }) {
   const { language } = useLanguage();
   const id = language === 'id';
+
+  // Hook harus dipanggil tanpa syarat (aturan React) — `active` yang digerbangi.
+  const meterAllowed = !isMobileDevice();
+  const realBars = useMicLevel({ active: open && meterAllowed });
+
   if (!open) return null;
+
+  // Bar aktif: meter real (desktop) atau bar sintetis dari level VAD (HP).
+  const live = Array.isArray(realBars);
+  const lvl = Math.max(0, Math.min(1, Number(level) || 0));
+  const source = live ? realBars : (lvl > 0.01 ? synthBars(lvl) : null);
+  const heights = source ? displayHeights(source, 8) : null;
+  const pulsing = !heights;                      // belum ada sinyal → animasi idle
 
   const overlay = (
     <div
@@ -31,8 +47,11 @@ export function MicOverlay({ open = false, interim = '', onCancel }) {
     >
       <div className="pointer-events-auto w-full max-w-md bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] px-4 py-3 flex flex-col gap-2">
         <div className="flex items-center gap-3">
-          <span className="w-9 h-9 shrink-0 bg-shu text-kinari-light border-[3px] border-sumi flex items-center justify-center animate-pulse">
-            <Mic size={18} />
+          <span
+            className="w-9 h-9 shrink-0 bg-shu text-kinari-light border-[3px] border-sumi flex items-center justify-center transition-transform duration-100"
+            style={heights ? { transform: `scale(${(1 + lvl * 0.35).toFixed(3)})` } : undefined}
+          >
+            <Mic size={18} className={heights ? '' : 'animate-pulse'} />
           </span>
           <span className="text-[10px] font-black uppercase tracking-[0.25em] text-sumi/60">
             {id ? 'Mendengarkan…' : 'Listening…'}
@@ -50,13 +69,17 @@ export function MicOverlay({ open = false, interim = '', onCancel }) {
 
         <div
           data-testid="mic-spectrum"
+          data-live={heights ? 'true' : 'false'}
           className="flex items-end justify-center gap-1 h-8 w-full border-b-[3px] border-sumi pb-0.5"
         >
-          {new Array(MIC_BAR_COUNT).fill(0).map((_, i) => (
+          {(heights || new Array(MIC_BAR_COUNT).fill(28)).map((h, i) => (
             <span
               key={i}
-              className="w-1.5 bg-shu animate-pulse"
-              style={{ height: '28%', animationDelay: `${i * 90}ms` }}
+              className={`w-1.5 bg-shu ${pulsing ? 'animate-pulse' : ''}`}
+              style={{
+                height: `${h}%`,
+                ...(pulsing ? { animationDelay: `${i * 90}ms` } : { transition: 'height 90ms linear' }),
+              }}
             />
           ))}
         </div>

@@ -9,6 +9,18 @@ export const getRecognitionCtor = () => {
 
 export const isSpeechRecognitionSupported = () => Boolean(getRecognitionCtor());
 
+// Deteksi perangkat mobile dari user agent (murni → mudah diuji).
+export const isMobileUA = (ua) =>
+  /Android|iPhone|iPad|iPod|Windows Phone|Opera Mini|IEMobile|Mobile/i.test(String(ua || ''));
+
+export const isMobileDevice = () => {
+  if (typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  if (isMobileUA(ua)) return true;
+  // iPadOS 13+ memakai UA desktop ('Macintosh') tapi layar sentuh >1 titik.
+  return (navigator.maxTouchPoints || 0) > 1 && /Macintosh/.test(ua);
+};
+
 // Batas maksimum satu sesi dengar (ms): backstop kalau engine tidak mengirim
 // event apa pun (jarang, tapi pernah terjadi) — popup tidak nyangkut selamanya
 // dan user tetap dapat umpan balik.
@@ -26,8 +38,22 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
   const [listening, setListening] = useState(false);
   const [interim, setInterim] = useState('');
   const [error, setError] = useState(null);
+  // Level suara 0..1 untuk bar spektrum popup. Sumbernya TANPA stream kedua:
+  //  - event onlevel VAD engine (kalau didukung), dan
+  //  - lonjakan tiap kali engine mengirim hasil (interim/final) = ada suara.
+  // Lalu MELURUH (decay) saat tidak ada event, jadi bar bergerak naik-turun.
+  const [level, setLevel] = useState(0);
   const recRef = useRef(null);
   const settleRef = useRef(null);   // finish() sesi aktif (untuk tombol Batal)
+
+  // Peluruhan level: turun ~18% tiap 120ms → bar jatuh mulus saat user berhenti.
+  useEffect(() => {
+    if (!listening) return undefined;
+    const iv = setInterval(() => {
+      setLevel((v) => (v > 0.02 ? v * 0.82 : 0));
+    }, 120);
+    return () => clearInterval(iv);
+  }, [listening]);
 
   useEffect(() => () => {
     settleRef.current?.();                 // tandai berakhir DULU → event telat diabaikan
@@ -78,6 +104,7 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
       if (settleRef.current === settle) settleRef.current = null;
       setListening(false);
       setInterim('');
+      setLevel(0);
       resolve(texts);
     };
     const settle = () => finish([]);
@@ -102,7 +129,7 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
         }
       } catch { /* noop */ }
       if (finals.length) { finish(finals); return; }
-      if (partial) { lastInterim = partial; setInterim(partial); }
+      if (partial) { lastInterim = partial; setInterim(partial); setLevel((v) => Math.max(v, 0.85)); }
     };
     rec.onerror = (e) => {
       if (settled) return;   // sesi sudah selesai/dibatalkan: abaikan event telat
@@ -123,6 +150,13 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
       if (!salvaged.length) setError('no-speech');
       finish(salvaged);
     };
+    // Level suara dari VAD engine (0..1) — TANPA stream getUserMedia kedua,
+    // jadi aman di HP (tidak merebut mikrofon). Dipakai bar aktivitas popup.
+    rec.onlevel = (e) => {
+      if (settled) return;
+      const lvl = Number(e?.value);
+      if (Number.isFinite(lvl)) setLevel((v) => Math.max(v, Math.max(0, Math.min(1, lvl))));
+    };
 
     setError(null);
     setInterim('');
@@ -136,5 +170,5 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
     try { rec.start(); } catch { setError('unknown'); finish([]); }
   }), [lang]);
 
-  return { listenOnce, listening, interim, error, clearError, cancel, supported: isSpeechRecognitionSupported() };
+  return { listenOnce, listening, interim, level, error, clearError, cancel, supported: isSpeechRecognitionSupported() };
 }
