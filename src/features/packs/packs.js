@@ -57,6 +57,47 @@ export const PACKS = [
     desc_en: 'Domain & Infinity: Ao→Aka→Murasaki→Domain',
     price: 2500, rarity: 'special', visual: 'gojo', voice: 'gojo',
   },
+
+  // ── Seri Jujutsu Kaisen (pack_08..pack_14) ──────────────────────────────────
+  // Fase 1 "dummy": visual masih placeholder 'dummy', voice menunjuk ke
+  // VOICES.<key> yang masih kosong (jatuh ke synth gong/thud). Klip mp3 diisi
+  // bertahap (task VP). Rarity: common Nobara · rare Yuji/Megumi/Nanami ·
+  // legendary Yuta/Toji · special Sukuna.
+  {
+    id: 'pack_08', name: 'Nobara Kugisaki', kanji: '釘崎野薔薇', icon: '🔨',
+    desc: 'Voice pack Nobara (visual menyusul)', desc_en: 'Nobara voice pack (visual coming)',
+    price: 2500, rarity: 'common', visual: 'dummy', voice: 'nobara',
+  },
+  {
+    id: 'pack_09', name: 'Yuji Itadori', kanji: '虎杖悠仁', icon: '👊',
+    desc: 'Voice pack Yuji (visual menyusul)', desc_en: 'Yuji voice pack (visual coming)',
+    price: 2500, rarity: 'rare', visual: 'dummy', voice: 'yuji',
+  },
+  {
+    id: 'pack_10', name: 'Megumi Fushiguro', kanji: '伏黒恵', icon: '🐺',
+    desc: 'Voice pack Megumi (visual menyusul)', desc_en: 'Megumi voice pack (visual coming)',
+    price: 2500, rarity: 'rare', visual: 'dummy', voice: 'megumi',
+  },
+  {
+    id: 'pack_11', name: 'Nanami Kento', kanji: '七海建人', icon: '👔',
+    desc: 'Voice pack Nanami (visual menyusul)', desc_en: 'Nanami voice pack (visual coming)',
+    price: 2500, rarity: 'rare', visual: 'dummy', voice: 'nanami',
+  },
+  {
+    id: 'pack_12', name: 'Yuta Okkotsu', kanji: '乙骨憂太', icon: '💍',
+    desc: 'Voice pack Yuta (visual menyusul)', desc_en: 'Yuta voice pack (visual coming)',
+    price: 2500, rarity: 'legendary', visual: 'dummy', voice: 'yuta',
+  },
+  {
+    id: 'pack_13', name: 'Toji Fushiguro', kanji: '伏黒甚爾', icon: '🗡️',
+    desc: 'Voice pack Toji (visual menyusul)', desc_en: 'Toji voice pack (visual coming)',
+    price: 2500, rarity: 'legendary', visual: 'dummy', voice: 'toji',
+  },
+  {
+    id: 'pack_14', name: 'Ryomen Sukuna', kanji: '両面宿儺', icon: '👹',
+    desc: 'Voice pack Sukuna (visual menyusul)', desc_en: 'Sukuna voice pack (visual coming)',
+    price: 2500, rarity: 'special', visual: 'dummy', voice: 'sukuna',
+  },
 ];
 
 export const getPack = (id) => PACKS.find((p) => p.id === id) || null;

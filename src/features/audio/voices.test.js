@@ -61,3 +61,12 @@ test('voice gojo: 4 klip kalah (wrong) + 4 klip teknik/cast (clips)', () => {
   assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 8, 'tidak boleh duplikat');
   assert.equal(getVoice('gojo'), VOICES.gojo);
 });
+
+
+test('voice JJK placeholder: 7 key terdaftar & reachable (bukan fallback taiko)', () => {
+  const keys = ['nobara', 'yuji', 'megumi', 'nanami', 'yuta', 'toji', 'sukuna'];
+  for (const k of keys) {
+    assert.ok(VOICES[k], `VOICES.${k} harus ada`);
+    assert.equal(getVoice(k), VOICES[k], `getVoice('${k}') harus voice-nya sendiri`);
+  }
+});

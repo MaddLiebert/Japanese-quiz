@@ -2,14 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PACKS, PACK_RARITY, getPack, isPackReady, rollPackId, gachaPoolInfo } from './packs.js';
 
-test('PACKS berisi 7 pack dan semuanya ready', () => {
-  assert.equal(PACKS.length, 7);
-  assert.equal(PACKS.filter(isPackReady).length, 7);
+test('PACKS berisi 14 pack dan semuanya ready', () => {
+  assert.equal(PACKS.length, 14);
+  assert.equal(PACKS.filter(isPackReady).length, 14);
 });
 
 test('setiap pack punya id unik & field wajib', () => {
   const ids = new Set(PACKS.map((p) => p.id));
-  assert.equal(ids.size, 7);
+  assert.equal(ids.size, 14);
   for (const p of PACKS) {
     assert.ok(p.id && p.name && p.rarity && p.visual && p.voice, `pack ${p.id} kurang field`);
     assert.ok(PACK_RARITY[p.rarity], `rarity ${p.rarity} tidak dikenal`);
@@ -54,7 +54,7 @@ test('rollPackId selalu mengembalikan id valid', () => {
 
 test('rollPackId deterministik dengan rng inject', () => {
   assert.equal(rollPackId(() => 0), 'kotodama_burst');      // ticket 0 → pack pertama
-  assert.equal(rollPackId(() => 0.999), 'pack_07');          // ticket ~max → pack terakhir
+  assert.equal(rollPackId(() => 0.999), 'pack_14');          // ticket ~max → pack terakhir
 });
 
 test('rollPackId menghormati bobot rarity (legendary lebih jarang dari common)', () => {
@@ -166,10 +166,14 @@ test('gachaPoolInfo: input kotor aman (null / bukan array / id hantu)', () => {
 
 // ── Fase 2 (Gojo): tier SPECIAL + pack_07 ────────────────────────────────────
 
-test('PACK_RARITY punya tier special (bobot 2) & bobot total pool = 100', () => {
+test('PACK_RARITY: special paling langka; agregat special ~2% dari pool', () => {
   assert.equal(PACK_RARITY.special.weight, 2);
   const total = PACKS.reduce((s, p) => s + PACK_RARITY[p.rarity].weight, 0);
-  assert.equal(total, 100, 'per-pack weight harus total 100');
+  const specialWeight = PACKS.filter((p) => p.rarity === 'special')
+    .reduce((s) => s + PACK_RARITY.special.weight, 0);
+  const pct = (specialWeight / total) * 100;
+  assert.ok(pct > 1.5 && pct < 2.5, `agregat special ${pct.toFixed(2)}% harus ~2%`);
+  assert.ok(PACK_RARITY.special.weight < PACK_RARITY.legendary.weight);
 });
 
 test('pack_07 = Gojo Satoru, rarity special, visual/voice gojo', () => {
@@ -181,4 +185,27 @@ test('pack_07 = Gojo Satoru, rarity special, visual/voice gojo', () => {
   assert.equal(p.name, 'Gojo Satoru');
   assert.equal(p.kanji, '五条悟');
   assert.equal(p.icon, '🟣');
+});
+
+
+// ── Seri Jujutsu Kaisen: 7 pack (dummy → VP) ─────────────────────────────────
+
+test('7 pack JJK: id, nama, rarity & voice key sesuai peta', () => {
+  const want = {
+    pack_08: ['Nobara Kugisaki', 'common', 'nobara'],
+    pack_09: ['Yuji Itadori', 'rare', 'yuji'],
+    pack_10: ['Megumi Fushiguro', 'rare', 'megumi'],
+    pack_11: ['Nanami Kento', 'rare', 'nanami'],
+    pack_12: ['Yuta Okkotsu', 'legendary', 'yuta'],
+    pack_13: ['Toji Fushiguro', 'legendary', 'toji'],
+    pack_14: ['Ryomen Sukuna', 'special', 'sukuna'],
+  };
+  for (const [id, [name, rarity, voice]] of Object.entries(want)) {
+    const p = getPack(id);
+    assert.ok(p, `${id} harus ada`);
+    assert.equal(p.name, name);
+    assert.equal(p.rarity, rarity);
+    assert.equal(p.voice, voice);
+    assert.ok(p.visual && p.kanji && p.icon && p.desc && p.desc_en, `${id} field kurang`);
+  }
 });
