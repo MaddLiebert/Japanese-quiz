@@ -6,7 +6,7 @@ import { startDomainBgm, stopDomainBgm, setBallHum, stopBallHum, duckAmbience, s
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
-import { gojoGifForAnswer, gojoGifHoldMs, gojoAnswerHoldMs } from './gojoGifs';
+import { gojoGifForAnswer, gojoAnswerHoldMs } from './gojoGifs';
 import { clearFxIfCurrent, isCurrentToken, nextBallToken, currentBallToken } from './fxLifecycle';
 import { hinaSparkles, hinaAnswerText, hinaTextColor, hinaSparkleCount, hinaGlow, HINA_POP_EASE } from './hinaFx';
 import { GojoBurst } from './GojoBurst';
