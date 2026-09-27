@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { Volume2 } from "lucide-react";
@@ -17,6 +17,7 @@ import { KanaTypeToggle } from "../components/KanaTypeToggle";
 import { KanaQuiz } from "../features/quiz/KanaQuiz";
 import { useEffectLayer } from "../features/effects/EffectContext";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
+import { yujiBurnedIds, YUJI_FINISHER_XP_MULT } from "../features/effects/yujiFx";
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
   const { language } = useLanguage();
@@ -108,7 +109,7 @@ export function Practice() {
   const timerRef = useRef(null);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn } = useEffectLayer();
 
   // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
   // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
@@ -155,9 +156,17 @@ export function Practice() {
     timeLeft
   } = useQuizSession({ frozen: domainOn });   // domain Gojo → waktu kuis BEKU
 
+  // 開 (finisher Yuji) → 2 opsi salah soal ini disembunyikan (50/50).
+  // options stabil per soal → recompute hanya saat soal berganti / finisher berubah.
+  const burnedIds = useMemo(
+    () => (finisherOn && currentQuestion ? yujiBurnedIds(options, currentQuestion.id) : []),
+    [finisherOn, currentQuestion?.id, options],
+  );
+
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option) => {
     if (isAnswered) return;
+    if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
 
     const correct = option.id === currentQuestion.id;
     if (correct) {
@@ -166,12 +175,13 @@ export function Practice() {
       triggerEffect('wrong');
     }
 
-    answerQuestion(option.id);
+    answerQuestion(option.id, { xpMultiplier: finisherOn ? YUJI_FINISHER_XP_MULT : 1 });
   };
 
   // Kotoba / Grammar mode: click selects, Next button advances
   const handleKotobaOptionClick = (option) => {
     if (isAnswered) return;
+    if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
     const correct = option.id === currentQuestion.id;
 
     if (correct) {
@@ -179,7 +189,7 @@ export function Practice() {
     } else {
       triggerEffect('wrong');
     }
-    selectAnswer(option.id);
+    selectAnswer(option.id, { xpMultiplier: finisherOn ? YUJI_FINISHER_XP_MULT : 1 });
   };
 
   const handleNext = () => {
@@ -405,6 +415,7 @@ export function Practice() {
                 {options.map((option) => {
                   const isThisClicked = answeredId === option.id;
                   const isThisCorrect = option.id === currentQuestion.id;
+                  const isBurned = burnedIds.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -418,12 +429,15 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
+                  if (isBurned) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
                       key={option.id}
                       onClick={() => handleKotobaOptionClick(option)}
                       data-correct={isThisCorrect || undefined}
+                      data-burned={isBurned || undefined}
+                      style={isBurned ? { visibility: 'hidden' } : undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -431,7 +445,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered}
+                      disabled={isAnswered || isBurned}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -564,6 +578,7 @@ export function Practice() {
                 {options.map((option) => {
                   const isThisClicked = answeredId === option.id;
                   const isThisCorrect = option.id === currentQuestion.id;
+                  const isBurned = burnedIds.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -578,12 +593,15 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
+                  if (isBurned) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
                       key={option.id}
                       onClick={() => handleKotobaOptionClick(option)}
                       data-correct={isThisCorrect || undefined}
+                      data-burned={isBurned || undefined}
+                      style={isBurned ? { visibility: 'hidden' } : undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -591,7 +609,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered}
+                      disabled={isAnswered || isBurned}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -650,6 +668,7 @@ export function Practice() {
           onBack={() => { endQuizSession(); setQuizStarted(false); }}
           isGrammarMode={isGrammarMode}
           frozen={domainOn}
+          burnedIds={burnedIds}
         />
       );
     }

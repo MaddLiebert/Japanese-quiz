@@ -13,6 +13,17 @@ import { GojoBurst } from './GojoBurst';
 import { GojoSpheres } from './GojoSpheres';
 import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor, gojoPreviewStreak, gojoCurseCharge, GOJO_ULT_THRESHOLD, gojoDomainLeft, gojoDomainStartDelayMs, GOJO_DOMAIN_DURATION_S } from './gojoFx';
 import { GojoDomainCine, GojoCurseBar, GojoSpacePortal } from './GojoDomainCine';
+import { YujiBurst } from './YujiBurst';
+import { YujiCurseBar, YujiTakeoverCine, YujiAura } from './YujiTakeover';
+import {
+  yujiTechniqueFor, yujiCurseCharge, yujiComboNext,
+  YUJI_ULT_THRESHOLD, YUJI_TAKEOVER_DURATION_S, yujiTakeoverLeft, yujiTakeoverStartDelayMs,
+} from './yujiFx';
+import { yujiGifForAnswer, yujiAnswerHoldMs } from './yujiGifs';
+import {
+  playYujiTechnique, playImpactDouble, playKickWhoosh, playBlackSpark,
+  playBloodCompress, playBloodPierce, playPossessWhoosh, playSlash, playFuga,
+} from '../../utils/sfx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Efek tinta washi (visual 'ink') — dipakai pack Sumi Taiko.
@@ -121,7 +132,20 @@ export function EffectProvider({ children }) {
   const [domainLeft, setDomainLeft] = useState(GOJO_DOMAIN_DURATION_S); // sisa detik domain
   const streakRef = useRef(0);
   const domainEndedRef = useRef(false);   // suara "domain padam" hanya sekali per cast
+  // ── Yuji: bar 指 → 宿儺の器 (takeover 30 dtk; timer JALAN, bukan beku) ─────
+  const [yujiTakeover, setYujiTakeover] = useState(false);
+  const [yujiTakeoverSeed, setYujiTakeoverSeed] = useState(0);
+  const [yujiCharge, setYujiCharge] = useState(0);
+  const [yujiCombo, setYujiCombo] = useState(0);
+  const [yujiFinisher, setYujiFinisher] = useState(false);   // 開 keluar → soal berikut 50/50
+  const [takeoverLeft, setTakeoverLeft] = useState(YUJI_TAKEOVER_DURATION_S);
+  const takeoverEndsAtRef = useRef(null);
+  const yujiTakeoverRef = useRef(false);   // ref sinkron (dibaca triggerYuji, bukan state)
+  const yujiComboRef = useRef(0);
+  const yujiEndedRef = useRef(false);      // suara collapse hanya sekali per cast
   const timersRef = useRef([]);
+  // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
+  const setTakeover = useCallback((on) => { yujiTakeoverRef.current = on; setYujiTakeover(on); }, []);
 
   useEffect(() => () => {
     timersRef.current.forEach(clearTimeout);
@@ -163,6 +187,79 @@ export function EffectProvider({ children }) {
     timersRef.current.push(t);
   }, []);
 
+  // Satu jawaban untuk pack Yuji. Dipisah dari jalur Hina/Gojo supaya tidak
+  // saling ganggu; semua aturan dari yujiFx/yujiGifs (murni, sudah dites).
+  const triggerYuji = useCallback((type, kind, cfg) => {
+    const streak = streakRef.current;
+    const takeoverNow = yujiTakeoverRef.current;
+    // Combo 解→捌→開 hanya saat takeover; setelah cap 3, benar berikutnya
+    // kembali pakai teknik streak (combo tidak pernah "re-arm").
+    const comboLevel = (takeoverNow && type === 'correct' && yujiComboRef.current < 3)
+      ? yujiComboNext(yujiComboRef.current) : 0;
+    const tech = comboLevel >= 1
+      ? ['kai', 'hachi', 'fuga'][comboLevel - 1]
+      : yujiTechniqueFor(kind, type === 'correct' ? streak : 0);
+
+    // Finisher tertunda dari 開 sudah terpakai di soal ini → matikan.
+    setYujiFinisher(false);
+
+    // Suara deterministik (pola Gojo). Salah = klip kalah acak; pas takeover = zakome.
+    let clipMs = 0;
+    if (type === 'wrong') {
+      clipMs = takeoverNow ? playYujiTechnique('zakome') : playWrongSound();
+      if (takeoverNow) playDomainCollapse('wrong');
+    } else if (comboLevel === 1) { clipMs = playYujiTechnique('kai'); playSlash(false); }
+    else if (comboLevel === 2) { clipMs = playYujiTechnique('hachi'); playSlash(true); }
+    else if (comboLevel === 3) { clipMs = playYujiTechnique('fuga'); playFuga(); }
+    else {
+      clipMs = playYujiTechnique(tech);
+      if (tech === 'keiteiken') playImpactDouble();
+      else if (tech === 'manjigeri') playKickWhoosh();
+      else if (tech === 'kokusen') playBlackSpark();
+      else if (tech === 'senketsu') { playBloodCompress(); playBloodPierce(); }
+    }
+
+    const gifSrc = yujiGifForAnswer(type, tech, takeoverNow, comboLevel);
+    const holdMs = yujiAnswerHoldMs(tech, gifSrc, clipMs, cfg.hold);
+
+    const fxId = ++seq;
+    setFx({
+      kind, tech, takeover: takeoverNow, combo: comboLevel,
+      gifSrc, gifHoldMs: holdMs, id: fxId,
+      seed: Math.floor(Math.random() * 900) + 1,
+      angle: -14 - Math.random() * 12,
+      y: 50 + (Math.random() * 16 - 8),
+      level: 0, milestone: 0,
+      streak: type === 'correct' ? streak : 0,
+      signature: null, onMilestone: false,
+    });
+    const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
+    timersRef.current.push(t);
+
+    // Bar 指 ikut streak; SATU salah = takeover padam & bar kosong.
+    const newCharge = yujiCurseCharge(streak);
+    setYujiCharge(newCharge);
+    if (type === 'correct' && newCharge > 0) {
+      if (newCharge >= YUJI_ULT_THRESHOLD) playCurseReady();
+      else playCurseTick(newCharge);
+    }
+
+    // Combo takeover: maju tiap benar; 開 (3) menyalakan finisher soal BERIKUT.
+    if (takeoverNow && type === 'correct' && comboLevel >= 1) {
+      yujiComboRef.current = comboLevel;
+      setYujiCombo(comboLevel);
+      if (comboLevel === 3) setYujiFinisher(true);
+    }
+    if (type === 'wrong') {
+      yujiComboRef.current = 0;
+      setYujiCombo(0);
+      if (takeoverNow) {
+        setTakeover(false);
+        takeoverEndsAtRef.current = null;
+      }
+    }
+  }, [setTakeover]);
+
   const triggerEffect = useCallback((type) => {
     // Efek tidak aktif → tetap bunyi suara dasar (perilaku lama), lalu berhenti.
     if (!active) {
@@ -185,6 +282,10 @@ export function EffectProvider({ children }) {
 
     const cfg = info ? intensityFor(info.level) : BASE_INTENSITY[type];
     const onMilestone = info ? streakRef.current === info.milestone : false;
+
+    // ── Jalur Yuji Itadori (pack 'yuji') — mirror Gojo, tanpa domain ─────────
+    // (early-return: jalur Hina/Gojo di bawah TIDAK tersentuh)
+    if (activeVisual === 'yuji') { triggerYuji(type, kind, cfg); return; }
 
     // GIF Hina: hanya saat suara Hina bunyi (salah / tepat milestone). Benar biasa → null.
     // GIF Gojo: salah → meme "kalah"; teknik 茈 → murasaki; ao/aka → null (bola plasma).
@@ -299,7 +400,7 @@ export function EffectProvider({ children }) {
     // prematur oleh timer 蒼 lama (keluhan user: "efek murasaki kecepetan").
     const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
     timersRef.current.push(t);
-  }, [active, spawnInk, activeVisual, gojoDomain]);
+  }, [active, spawnInk, activeVisual, gojoDomain, triggerYuji]);
 
   const resetEffectStreak = useCallback(() => {
     streakRef.current = 0;
@@ -309,7 +410,15 @@ export function EffectProvider({ children }) {
     setGojoDomain(false);
     setUltCharge(0);
     setQuizActive(true);     // bar energi kutukan tampil selama sesi kuis
-  }, []);
+    // Yuji
+    setYujiCharge(0);
+    setYujiCombo(0);
+    yujiComboRef.current = 0;
+    setYujiFinisher(false);
+    setTakeover(false);
+    takeoverEndsAtRef.current = null;
+    yujiEndedRef.current = false;
+  }, [setTakeover]);
 
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
   // yang sedang berjalan. Tanpa ini, keluar paksa saat efek murasaki/domain
@@ -326,8 +435,16 @@ export function EffectProvider({ children }) {
     setUltCharge(0);
     domainEndsAtRef.current = null;
     domainEndedRef.current = false;
+    // Yuji: takeover & finisher ikut padam (jangan ada elemen nyangkut).
+    setYujiCharge(0);
+    setYujiCombo(0);
+    yujiComboRef.current = 0;
+    setYujiFinisher(false);
+    setTakeover(false);
+    takeoverEndsAtRef.current = null;
+    yujiEndedRef.current = false;
     stopAllAmbience();
-  }, []);
+  }, [setTakeover]);
 
   // Cast 領域展開 dengan tap bar. Menghabiskan charge: streak & bar di-reset,
   // bar keisi dari 0 sampai 20 benar beruntun lagi. BOLA 蒼/赫 TETAP mengambang
@@ -347,6 +464,57 @@ export function EffectProvider({ children }) {
     playDomainBoom('cast');
     playGojoCast();   // klip voice Gojo "ryoiki tenkai" bareng dentuman
   }, [activeVisual]);
+
+  // Cast 宿儺の器 dengan tap bar (mirror castDomain; TANPA pembekuan waktu —
+  // timer kuis JALAN TERUS, itu beda utama domain vs kerasukan).
+  const castTakeover = useCallback(() => {
+    if (activeVisual !== 'yuji') return;
+    streakRef.current = 0;
+    yujiEndedRef.current = false;
+    yujiComboRef.current = 0;
+    setYujiCombo(0);
+    setYujiFinisher(false);
+    setYujiCharge(0);
+    setYujiTakeoverSeed((n) => n + 1);
+    setTakeover(true);
+    takeoverEndsAtRef.current = Date.now() + yujiTakeoverStartDelayMs() + YUJI_TAKEOVER_DURATION_S * 1000;
+    setTakeoverLeft(YUJI_TAKEOVER_DURATION_S);
+    playPossessWhoosh();   // 宿儺の器 = teks doang; SFX kerasukan, bukan klip voice
+  }, [activeVisual, setTakeover]);
+
+  // Hitung mundur takeover (30 dtk) — habis → padam sendiri (bukan salah).
+  useEffect(() => {
+    if (!yujiTakeover) return undefined;
+    const tick = () => {
+      const left = yujiTakeoverLeft(takeoverEndsAtRef.current);
+      setTakeoverLeft(left);
+      if (left <= 0) {
+        if (!yujiEndedRef.current) { yujiEndedRef.current = true; playDomainCollapse('timeout'); }
+        setTakeover(false);
+      }
+    };
+    tick();
+    const id = setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [yujiTakeover, setTakeover]);
+
+  useEffect(() => {
+    if (yujiTakeover) return;
+    takeoverEndsAtRef.current = null;
+    setTakeoverLeft(YUJI_TAKEOVER_DURATION_S);
+  }, [yujiTakeover]);
+
+  // DEV-ONLY (DevPanel): lompat ke combo takeover 1..3 tanpa 3 jawaban benar.
+  // Set ke level-1 lalu satu 'correct' → mendarat TEPAT di level (pola gojoPreviewStreak).
+  const previewYujiCombo = useCallback((level) => {
+    if (!import.meta.env.DEV) return;
+    if (activeVisual !== 'yuji') return;
+    const lvl = Math.min(3, Math.max(1, Math.floor(Number(level)) || 1));
+    if (!yujiTakeoverRef.current) setTakeover(true);
+    yujiComboRef.current = lvl - 1;
+    setYujiCombo(lvl - 1);
+    triggerEffect('correct');
+  }, [activeVisual, setTakeover, triggerEffect]);
 
   // Penanda global untuk CSS hint Six Eyes (index.css) — nol timer JS.
   useEffect(() => {
@@ -413,20 +581,23 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, castDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
         gojoBalls={gojoBalls} gojoExplode={gojoExplode}
         domainOn={gojoDomain} domainSeed={gojoDomainSeed} domainLeft={domainLeft}
         charge={ultCharge} quizActive={quizActive} onCast={castDomain}
+        yujiCharge={yujiCharge} yujiCombo={yujiCombo}
+        takeoverOn={yujiTakeover} takeoverSeed={yujiTakeoverSeed} takeoverLeft={takeoverLeft}
+        onCastYuji={castTakeover}
       />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -582,6 +753,24 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
         <GojoCurseBar
           charge={charge} ready={charge >= GOJO_ULT_THRESHOLD && !domainOn} onCast={onCast}
           domainOn={domainOn} domainLeft={domainLeft}
+        />
+      )}
+      {/* ── Yuji Itadori (pack 'yuji') — 逕庭拳→黒閃→穿血→宿儺の器 ─────────── */}
+      {visual === 'yuji' && (
+        <>
+          {takeoverOn && <YujiAura key={`yuji-aura-${takeoverSeed}`} />}
+          {takeoverOn && <YujiTakeoverCine key={`yuji-takeover-${takeoverSeed}`} />}
+          <AnimatePresence>
+            {fx && <YujiBurst key={`yuji-${fx.id}`} fx={fx} kind={kind} />}
+          </AnimatePresence>
+        </>
+      )}
+
+      {visual === 'yuji' && quizActive && (
+        <YujiCurseBar
+          charge={yujiCharge} combo={yujiCombo}
+          ready={yujiCharge >= YUJI_ULT_THRESHOLD && !takeoverOn}
+          onCast={onCastYuji} takeoverOn={takeoverOn} takeoverLeft={takeoverLeft}
         />
       )}
     </div>

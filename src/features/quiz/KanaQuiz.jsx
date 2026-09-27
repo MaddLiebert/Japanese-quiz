@@ -18,6 +18,7 @@ export function KanaQuiz({
   onBack,
   isGrammarMode = false,
   frozen = false,
+  burnedIds = [],
 }) {
   const { language } = useLanguage();
 
@@ -84,6 +85,7 @@ export function KanaQuiz({
           {options.map((option) => {
             const isThisSelected = answeredId === option.id;
             const isThisCorrect = option.id === currentQuestion.id;
+            const isBurned = burnedIds.includes(option.id);
             const showCorrect = isAnswered && isThisCorrect;
             const showWrong = isThisSelected && !isCurrentAnswerCorrect;
 
@@ -105,12 +107,15 @@ export function KanaQuiz({
                 btnClass += " opacity-50";
               }
             }
+            if (isBurned) btnClass += " pointer-events-none";
 
             return (
               <motion.button
                 key={option.id}
                 onClick={() => onOptionClick(option)}
                 data-correct={isThisCorrect || undefined}
+                data-burned={isBurned || undefined}
+                style={isBurned ? { visibility: 'hidden' } : undefined}
                 animate={
                   showCorrect && isThisSelected ? { scale: [1, 1.05, 1] }
                     : showWrong ? { x: [0, -10, 10, -10, 10, 0] }
@@ -118,7 +123,7 @@ export function KanaQuiz({
                 }
                 transition={{ duration: 0.4 }}
                 className={btnClass}
-                disabled={isAnswered}
+                disabled={isAnswered || isBurned}
               >
                 {isGrammarMode ? option.char : option.romaji}
               </motion.button>

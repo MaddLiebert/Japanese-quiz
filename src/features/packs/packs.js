@@ -70,8 +70,9 @@ export const PACKS = [
   },
   {
     id: 'pack_09', name: 'Yuji Itadori', kanji: '虎杖悠仁', icon: '👊',
-    desc: 'Voice pack Yuji (visual menyusul)', desc_en: 'Yuji voice pack (visual coming)',
-    price: 2500, rarity: 'rare', visual: 'dummy', voice: 'yuji',
+    desc: 'Wadah Sukuna: 逕庭拳→黒閃→穿血→宿儺の器',
+    desc_en: "Sukuna's Vessel: Keiteiken→Kokusen→Senketsu→Takeover",
+    price: 2500, rarity: 'rare', visual: 'yuji', voice: 'yuji',
   },
   {
     id: 'pack_10', name: 'Megumi Fushiguro', kanji: '伏黒恵', icon: '🐺',
