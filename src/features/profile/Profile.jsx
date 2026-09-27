@@ -13,21 +13,9 @@ import kotobaData from '../../data/kotoba.json';
 import grammarData from '../../data/grammar.json';
 import kanjiData from '../../data/kanji.json';
 import mondaiData from '../../data/mondai.json';
-
-// Bobot status SRS untuk menghitung mastery per subjek
-const STATUS_WEIGHT = { mastered: 1, familiar: 0.66, learning: 0.33 };
-
-// Hitung mastery (%) satu subjek dari itemProgress, dibagi total item subjek.
-function computeMastery(itemProgress, items) {
-  if (!items || items.length === 0) return 0;
-  let earned = 0;
-  for (const item of items) {
-    const st = itemProgress[item.id];
-    if (!st) continue;
-    earned += STATUS_WEIGHT[st.status] || 0;
-  }
-  return Math.round((earned / items.length) * 100);
-}
+import poemsData from '../../data/poems.json';
+import n5ExamData from '../../data/n5-exam.json';
+import { buildSubjectMastery, flattenExamData, SUBJECT_LABEL_ID } from './subjectMastery';
 
 // Hanko Stamp component matching Home.jsx
 const HankoStamp = ({ text, label, delay = 0.2 }) => (
@@ -52,14 +40,21 @@ export function Profile() {
   const { achievements, selectedBadges, setSelectedBadges } = useAchievements();
   const [isEditingBadges, setIsEditingBadges] = useState(false);
 
-  const subjectMastery = useMemo(() => ({
-    Hiragana: computeMastery(itemProgress, hiraganaData),
-    Katakana: computeMastery(itemProgress, katakanaData),
-    Kanji: computeMastery(itemProgress, kanjiData),
-    Kotoba: computeMastery(itemProgress, kotobaData),
-    Grammar: computeMastery(itemProgress, grammarData),
-    Mondai: computeMastery(itemProgress, mondaiData),
-  }), [itemProgress]);
+  // Radar "Subject Mastery" — 8 subjek (termasuk Puisi & Ujian N5 yang dulu
+  // tercatat tapi tak pernah tampil). Logika murni + tes di subjectMastery.js.
+  const subjectRadar = useMemo(
+    () => buildSubjectMastery(itemProgress, {
+      hiragana: hiraganaData,
+      katakana: katakanaData,
+      kanji: kanjiData,
+      kotoba: kotobaData,
+      grammar: grammarData,
+      mondai: mondaiData,
+      poems: poemsData,
+      n5exam: flattenExamData(n5ExamData),
+    }),
+    [itemProgress],
+  );
 
   const toggleBadge = (id) => {
     if (selectedBadges.includes(id)) {
@@ -109,14 +104,7 @@ export function Profile() {
       totalQuiz: progress.totalAnswered, 
       maxStreak: progress.maxStreak 
     },
-    radar: [
-      { subject: "Hiragana", score: subjectMastery.Hiragana },
-      { subject: "Katakana", score: subjectMastery.Katakana },
-      { subject: "Kanji", score: subjectMastery.Kanji },
-      { subject: "Kotoba", score: subjectMastery.Kotoba },
-      { subject: "Grammar", score: subjectMastery.Grammar },
-      { subject: "Mondai", score: subjectMastery.Mondai }
-    ]
+    radar: subjectRadar,
   };
 
   return (
@@ -387,30 +375,30 @@ export function Profile() {
               {/* Summary Stats Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="border-[4px] border-sumi bg-kinari p-6 shadow-[6px_6px_0_0_#1a1a1a] text-center">
-                  <div className="text-xs font-black uppercase text-sumi/60 mb-1">Win Rate</div>
+                  <div className="text-xs font-black uppercase text-sumi/60 mb-1">{language === 'id' ? 'Rasio Menang' : 'Win Rate'}</div>
                   <div className="text-4xl font-serif font-black text-shu">{realProfileData.stats.winRate}%</div>
                 </div>
                 <div className="border-[4px] border-sumi bg-kinari p-6 shadow-[6px_6px_0_0_#1a1a1a] text-center">
-                  <div className="text-xs font-black uppercase text-sumi/60 mb-1">Total Quiz</div>
+                  <div className="text-xs font-black uppercase text-sumi/60 mb-1">{language === 'id' ? 'Total Kuis' : 'Total Quiz'}</div>
                   <div className="text-4xl font-serif font-black text-sumi">{realProfileData.stats.totalQuiz}</div>
                 </div>
                 <div className="border-[4px] border-sumi bg-kinari p-6 shadow-[6px_6px_0_0_#1a1a1a] text-center">
-                  <div className="text-xs font-black uppercase text-sumi/60 mb-1">Max Streak</div>
-                  <div className="text-4xl font-serif font-black text-ai">{realProfileData.stats.maxStreak} hari 🔥</div>
+                  <div className="text-xs font-black uppercase text-sumi/60 mb-1">{language === 'id' ? 'Streak Maks' : 'Max Streak'}</div>
+                  <div className="text-4xl font-serif font-black text-ai">{realProfileData.stats.maxStreak} {language === 'id' ? 'hari' : 'days'} 🔥</div>
                 </div>
               </div>
 
               {/* Subject Mastery */}
               <div className="border-[4px] border-sumi bg-kinari p-6 sm:p-8 shadow-[6px_6px_0_0_#1a1a1a]">
                 <div className="flex items-center gap-4 mb-6">
-                  <h3 className="text-xl font-serif font-black text-sumi">Subject Mastery</h3>
+                  <h3 className="text-xl font-serif font-black text-sumi">{language === 'id' ? 'Penguasaan Materi' : 'Subject Mastery'}</h3>
                   <div className="h-[2px] flex-1 bg-sumi/20"></div>
                 </div>
-                <div className="h-[300px] w-full space-y-5 overflow-y-auto pr-3">
+                <div className="max-h-[460px] w-full space-y-5 overflow-y-auto pr-3">
                   {realProfileData.radar.map((r, i) => (
                     <div key={i}>
                       <div className="flex justify-between font-serif font-black text-sm mb-1.5 text-sumi">
-                        <span>{r.subject}</span>
+                        <span>{language === 'id' ? SUBJECT_LABEL_ID[r.subject] || r.subject : r.subject}</span>
                         <span>{r.score}%</span>
                       </div>
                       <div className="w-full h-5 bg-kinari-light border-[3px] border-sumi shadow-[2px_2px_0_0_#1a1a1a] overflow-hidden">
