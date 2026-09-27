@@ -142,3 +142,15 @@ test('voice toji: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
   assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
   for (const p of all) assert.match(p, /^\/voices\/toji\/[a-z0-9_]+\.mp3$/);
 });
+
+
+test('voice sukuna: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
+  const v = VOICES.sukuna;
+  assert.ok(v, 'VOICES.sukuna harus ada');
+  assert.equal(v.files.correct.length, 3);
+  assert.equal(v.files.wrong.length, 3);
+  assert.equal(v.files.streak.length, 3);
+  const all = [...v.files.correct, ...v.files.wrong, ...v.files.streak];
+  assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
+  for (const p of all) assert.match(p, /^\/voices\/sukuna\/[a-z0-9_]+\.mp3$/);
+});
