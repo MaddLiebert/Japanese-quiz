@@ -59,6 +59,10 @@ test('yujiUltReady: penuh di 20', () => {
   assert.ok(!yujiUltReady(NaN));
 });
 
+test('durasi takeover = 30 dtk (kontrak; timer kuis TIDAK beku)', () => {
+  assert.equal(YUJI_TAKEOVER_DURATION_S, 30);
+});
+
 test('yujiTakeoverLeft: clamp 0..30, input aneh -> 0', () => {
   const now = 1000000;
   assert.equal(yujiTakeoverLeft(now + 30000, now), 30);
