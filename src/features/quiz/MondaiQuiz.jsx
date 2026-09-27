@@ -7,6 +7,7 @@ import mondaiData from "../../data/mondai.json";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 import { useEffectLayer } from "../effects/EffectContext";
+import { localized } from "../../utils/localize";
 
 export function MondaiQuiz() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -139,7 +140,7 @@ export function MondaiQuiz() {
           className="mb-16 sm:mb-24 flex flex-col items-center gap-6 w-full"
         >
           <h2 className="text-lg sm:text-xl font-serif font-bold text-sumi mb-6 text-center">
-            <Furigana text={currentItem.questionText} />
+            <Furigana text={localized(currentItem, 'questionText', language)} />
           </h2>
 
           <AudioPlayer
@@ -219,7 +220,7 @@ export function MondaiQuiz() {
       {isAnswered && (
         <ExplanationBox
           dialogScript={currentItem.dialogScript}
-          explanation={currentItem.explanation}
+          explanation={localized(currentItem, 'explanation', language)}
           isCorrect={isCorrect}
           onNext={handleNext}
           onRetry={handleRetry}

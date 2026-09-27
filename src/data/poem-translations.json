@@ -5,6 +5,12 @@
       "Kolam purba —",
       "katak melompat ke dalam,",
       "desah air."
+    ],
+    "title_en": "The Old Pond",
+    "lines_en": [
+      "The old pond —",
+      "a frog leaps in,",
+      "the sound of water."
     ]
   },
   "poem_basho_natsukusa": {
@@ -13,6 +19,12 @@
       "Rumput musim panas —",
       "para kesatria,",
       "jejak mimpi belaka."
+    ],
+    "title_en": "Summer Grass",
+    "lines_en": [
+      "Summer grass —",
+      "all that is left",
+      "of warriors' dreams."
     ]
   },
   "poem_issa_meigetsu": {
@@ -21,6 +33,12 @@
       "Bulan purnama —",
       "“ambilkan untukku,”",
       "si kecil menangis."
+    ],
+    "title_en": "The Full Moon",
+    "lines_en": [
+      "The full moon —",
+      "and a child crying,",
+      "“give it to me!”"
     ]
   },
   "poem_buson_nanohana": {
@@ -29,6 +47,12 @@
       "Bunga kanola —",
       "bulan di timur,",
       "matahari di barat."
+    ],
+    "title_en": "Canola Blossoms",
+    "lines_en": [
+      "Canola blossoms —",
+      "the moon in the east,",
+      "the sun in the west."
     ]
   },
   "poem_komachi_hananoiro": {
@@ -39,6 +63,14 @@
       "tanpa guna",
       "aku menua di dunia",
       "termenung dalam hujan panjang."
+    ],
+    "title_en": "The Colour of Blossoms",
+    "lines_en": [
+      "The colour of blossoms",
+      "has faded away",
+      "in vain,",
+      "while I, in this world, grew old",
+      "watching the long rains."
     ]
   },
   "poem_kenji_amenimomakezu": {
@@ -74,6 +106,39 @@
       "tak pula dianggap beban",
       "orang seperti itulah",
       "yang ingin kujadi"
+    ],
+    "title_en": "Unbeaten by the Rain",
+    "lines_en": [
+      "Unbeaten by rain,",
+      "unbeaten by wind,",
+      "unbeaten by snow or summer heat,",
+      "with a strong, healthy body,",
+      "without greed,",
+      "never angry,",
+      "always smiling quietly,",
+      "a day, four cups of brown rice",
+      "with miso and a little vegetable, I eat",
+      "all things",
+      "counting not myself in,",
+      "seeing well, hearing well, understanding well,",
+      "and never forgetting,",
+      "in the shade of the pine grove on the field,",
+      "dwelling in a little thatched hut,",
+      "if in the east a sick child is,",
+      "I go and nurse them,",
+      "if in the west a weary mother is,",
+      "I go and carry her bundle of rice,",
+      "if in the south someone is dying,",
+      "I go and say, “don't be afraid,”",
+      "if in the north there are quarrels and lawsuits,",
+      "I say, “it's pointless — stop,”",
+      "in drought I shed tears,",
+      "in a cold summer I wander about, anxious,",
+      "called a fool by everyone,",
+      "neither praised",
+      "nor thought a burden,",
+      "such a one",
+      "is what I want to become."
     ]
   },
   "poem_basho_yamaji": {
@@ -82,6 +147,12 @@
       "Menyusuri jalan pegunungan —",
       "entah mengapa mempesona,",
       "bunga violet di rumput."
+    ],
+    "title_en": "On the Mountain Path",
+    "lines_en": [
+      "Coming along the mountain path —",
+      "something strangely lovely,",
+      "the violets."
     ]
   },
   "poem_shiki_kakikueba": {
@@ -90,6 +161,12 @@
       "Menyantap kesemek —",
       "gemerincing lonceng pun berbunyi,",
       "di Hōryū-ji."
+    ],
+    "title_en": "Eating a Persimmon",
+    "lines_en": [
+      "Eating a persimmon —",
+      "the bell begins to ring,",
+      "at Hōryū-ji."
     ]
   },
   "poem_shimazaki_hatsukoi": {
@@ -111,6 +188,25 @@
       "jalan kecil yang terbentuk sendiri,",
       "“siapa gerangan yang pertama melangkahinya,”",
       "itulah pertanyaanmu yang kucintai."
+    ],
+    "title_en": "First Love",
+    "lines_en": [
+      "The forelock only just begun to grow out,",
+      "when I saw you beneath the apple tree,",
+      "the flowered comb you wore before,",
+      "I took you for the girl with blossoms.",
+      "Gently stretching out your white hand,",
+      "that you gave the apple to me,",
+      "in the pale-pink autumn fruit,",
+      "was my first falling in love.",
+      "My absent, empty sighs,",
+      "when they touch that hair of yours,",
+      "the joyous cup of love",
+      "I poured to your kindness.",
+      "Beneath the trees of the apple orchard,",
+      "the little path that made itself,",
+      "“who first set foot on it, I wonder,”",
+      "that question of yours is what I loved."
     ]
   },
   "poem_shimazaki_kamiwoaraeba": {
@@ -132,6 +228,25 @@
       "meski aku berhati membara;",
       "aku merinduimu,",
       "namun takkan menyamai air matamu."
+    ],
+    "title_en": "When I Wash My Hair",
+    "lines_en": [
+      "When I wash my hair, a purple",
+      "colour shows before the little grass,",
+      "when I lift my foot, birds and flowers",
+      "follow after me with all their grace.",
+      "When I gaze out, coloured clouds",
+      "unroll and open like a painted scroll.",
+      "The sake in my hand is fine sake,",
+      "smoothing away the sorrows of youth.",
+      "When I strain my ear, the god of song",
+      "comes and blows a jade flute;",
+      "when I open my mouth, a single line",
+      "of a poet — I sing of love.",
+      "Ah, though I am so mysteriously",
+      "and ardently a burning heart,",
+      "your longing for me,",
+      "cannot match those tears of yours."
     ]
   },
   "poem_shimazaki_haruhakinu": {
@@ -173,6 +288,45 @@
       "air mata yang membeku, kini di mana",
       "salju yang menumpuk mencair lenyap",
       "bertunaslah sebagai sayur muda hari ini"
+    ],
+    "title_en": "Spring Has Come",
+    "lines_en": [
+      "Spring has come",
+      "spring has come",
+      "O gentle first song of the warbler,",
+      "announce farewell to the year gone by.",
+      "O white snow left in the valleys,",
+      "bury and hide last year's winter.",
+      "Spring has come",
+      "spring has come",
+      "lonely, cold, without a word,",
+      "poor, dark, without light,",
+      "ugly, heavy, without strength,",
+      "O sorrowful winter, be gone.",
+      "Spring has come",
+      "spring has come",
+      "O young grass of palest green,",
+      "paint the far fields.",
+      "O spring flowers that bloom in crimson,",
+      "dye the treetops.",
+      "Spring has come",
+      "spring has come",
+      "O mist, O clouds, stir and move,",
+      "warm the frozen sky.",
+      "O spring wind that sends the scent of flowers,",
+      "blow and wake the sleeping mountain.",
+      "Spring has come",
+      "spring has come",
+      "O morning tide that brings the spring,",
+      "wash away the withered leaves of reeds.",
+      "O young crane drunk on the mist,",
+      "fly into the young morning sky.",
+      "Spring has come",
+      "spring has come",
+      "cutting off the roots of the cress of sorrow,",
+      "the frozen tears — where are they now?",
+      "the gathered snow melting away,",
+      "sprout as today's young greens."
     ]
   },
   "poem_nakahara_yogore": {
@@ -194,6 +348,25 @@
       "dengan pedih, ia pun gentar",
       "Pada kesedihan yang kian kotor",
       "tanpa hasil apa pun, hari pun senja……"
+    ],
+    "title_en": "Upon a Sorrow Soiled and Stained…",
+    "lines_en": [
+      "Upon a sorrow soiled and stained,",
+      "today too a light snow falls;",
+      "upon a sorrow soiled and stained,",
+      "today too even the wind blows past.",
+      "A sorrow soiled and stained",
+      "is, say, a fox-fur coat;",
+      "a sorrow soiled and stained",
+      "huddled small beneath the light snow.",
+      "A sorrow soiled and stained",
+      "wishes for nothing, longs for nothing;",
+      "a sorrow soiled and stained",
+      "dreams of death amid its weariness.",
+      "Upon a sorrow soiled and stained,",
+      "aching, it loses heart;",
+      "upon a sorrow soiled and stained,",
+      "with nothing done, the day falls dark……"
     ]
   },
   "poem_nakahara_rinju": {
@@ -215,6 +388,25 @@
       "suara anak-anak pun berselilit",
       "　　meski begitu, bagaimana jadinya jiwa ini?",
       "　　memudar tipis, menjadi langitkah?"
+    ],
+    "title_en": "At the Deathbed",
+    "lines_en": [
+      "The autumn sky is a dull grey,",
+      "the gleam in a black horse's eye.",
+      "water dries, the lily falls,",
+      "ah, how hollow the heart is.",
+      "With no god, no guide,",
+      "near the window the woman passed away.",
+      "the white sky blinded and blind,",
+      "the white wind cold.",
+      "Washing her hair by the window,",
+      "those arms were so gentle.",
+      "the morning sun was spilling,",
+      "the sound of water dripping.",
+      "The towns were murmuring,",
+      "the voices of children tangled together.",
+      "yet even so — what will become of this soul?",
+      "fading thin, will it become the sky?"
     ]
   },
   "poem_nakahara_harunohinoyugure": {
@@ -236,6 +428,25 @@
       "sejak kini senja musim semi",
       "tanpa kata, terus maju",
       "ke dalam pembuluh nadinya sendiri"
+    ],
+    "title_en": "A Spring Day's Dusk",
+    "lines_en": [
+      "The tin plate eats a senbei cracker,",
+      "a spring day's dusk is calm.",
+      "The ash thrown underhanded turns pale,",
+      "a spring day's dusk is quiet.",
+      "Ah! Is there a scarecrow — there is not.",
+      "Does a horse neigh — it will not neigh.",
+      "Only the moonlight, slick and gleaming, as it will,",
+      "the one so obedient — a spring day's dusk?",
+      "Drip, drip — in the field the temple glows red,",
+      "the cartwheel has lost its oil,",
+      "when I speak in the historical present,",
+      "they mock, they mock — the sky and the mountain,",
+      "a single roof tile came loose.",
+      "From now on a spring day's dusk,",
+      "though wordless, will advance",
+      "into its own veins."
     ]
   },
   "poem_nakahara_kofuku": {
@@ -261,6 +472,29 @@
       "Bukan agar diterima karena menurut,",
       "melainkan agar menurut itu sendiri menjadi pelajaran, dan dengan belajar",
       "martabatmu terangkat, dan pekerjaanmu menjadi berlimpah!"
+    ],
+    "title_en": "Happiness",
+    "lines_en": [
+      "Happiness lives in the stable,",
+      "on the straw.",
+      "Happiness",
+      "to a gentle heart is understood at once.",
+      "The stubborn heart, unhappy and fretful,",
+      "at least by dizzying things",
+      "distracts itself with many things.",
+      "and grows all the more unhappy.",
+      "Happiness is at rest",
+      "and what must clearly be done",
+      "it holds little by little,",
+      "happiness is rich in understanding.",
+      "The stubborn heart lacks understanding,",
+      "does not know what to do, only chases gain,",
+      "its spirit sinks, it is quick to anger,",
+      "hated by others, and itself sad.",
+      "So, O people, always first seek to obey.",
+      "Not so as to be welcomed for obeying,",
+      "but so that obeying itself becomes a lesson, and learning,",
+      "your dignity is raised, and your work made abundant!"
     ]
   },
   "poem_takamura_jukanofutari": {
@@ -301,6 +535,44 @@
       "tolong sekali lagi ceritakan geografi panorama awal musim dingin yang sepi ini.",
       "itulah Gunung Adatara,",
       "yang berkilau itu Sungai Abukuma."
+    ],
+    "title_en": "Two Beneath the Trees",
+    "lines_en": [
+      "—— on the Adatara plain of Michinoku, at the roots of two pines, a figure is seen standing ——",
+      "That is Mount Adatara,",
+      "and that shining one is the Abukuma River.",
+      "Sitting like this, with few words,",
+      "in a head drowsy as if asleep,",
+      "only the pine wind of a far-off world blows across, pale green.",
+      "Here among the fields and hills of this great early winter,",
+      "the joy of you and me quietly burning, hands joined,",
+      "let us stop hiding from that white cloud looking down.",
+      "You simmer a strange elixir in the jar of your soul,",
+      "ah, to what depths of a mysterious sea of love you lure one,",
+      "the vista of ten seasons we walked together",
+      "only shows the infinite woman within you.",
+      "That which smoulders at the horizon of the infinite",
+      "purifies me, so troubled by feeling,",
+      "pours a fresh spring of youth into me, so laden with bitterness —",
+      "rather, like a demon, hard to grasp,",
+      "strangely ever-shifting.",
+      "That is Mount Adatara,",
+      "and that shining one is the Abukuma River.",
+      "Here is the hometown where you were born,",
+      "those little white-walled dots are your family's sake storehouse.",
+      "Then, stretch your legs out freely,",
+      "let us breathe this air, vast and clear, filled with the scent of northern trees.",
+      "This cool and pleasant air, so like you yourself,",
+      "let us bathe our skin in this supple, resilient atmosphere.",
+      "Tomorrow I shall go far away again,",
+      "into that dissolute city, into the chaotic whirlpool of love and hate,",
+      "into the very midst of that human comedy I fear and yet cling to.",
+      "Here is the hometown where you were born,",
+      "the heaven and earth that bore this strange, separate body.",
+      "The pine wind is still blowing;",
+      "once more, tell me the geography of this lonely early-winter panorama.",
+      "That is Mount Adatara,",
+      "and that shining one is the Abukuma River."
     ]
   },
   "poem_takamura_dandan": {
@@ -319,6 +591,22 @@
       "sungguh ia buatan tuhan.",
       "kadang hingga membuat batinku takjub",
       "kau makin lama makin indah."
+    ],
+    "title_en": "You Grow More Beautiful",
+    "lines_en": [
+      "As a woman one by one discards her accessories,",
+      "why does she become so beautiful?",
+      "Your body, washed by the years,",
+      "is a heavenly metal flying through boundlessness.",
+      "Appearance and reputation — utterly useless;",
+      "a clear, limpid creature of nothing but substance",
+      "lives, moves, and briskly wills.",
+      "That a woman reclaims her womanhood",
+      "is it through this century's discipline?",
+      "When you stand there in silence,",
+      "truly she is a thing made by God.",
+      "At times, to the wonder of my heart,",
+      "you grow more beautiful."
     ]
   },
   "poem_takamura_lemonaika": {
@@ -342,6 +630,27 @@
       "mesin tubuhmu pun berhenti begitu saja",
       "di bawah bayang bunga sakura yang tersemat di depan fotomu",
       "hari ini pun kutaruh sebiji lemon yang sejuk berkilau."
+    ],
+    "title_en": "Elegy of a Lemon",
+    "lines_en": [
+      "So very much you waited for a lemon",
+      "on the sad, white, bright deathbed.",
+      "One lemon you took from my hand",
+      "your lovely teeth bit with a crunch.",
+      "A topaz-coloured fragrance rises;",
+      "those few drops of the lemon's heavenly juice",
+      "in a flash made your consciousness normal.",
+      "Your clear blue eyes faintly smile,",
+      "O the health of the strength that grips my hand,",
+      "though a storm rages in your throat,",
+      "at this strait of life,",
+      "Chieko becomes the Chieko of old,",
+      "pouring a lifetime's love into a single moment.",
+      "Then, for a while,",
+      "one deep breath, as once on a mountain summit,",
+      "and your engine stopped just like that.",
+      "In the shade of the cherry blossoms placed before your photograph,",
+      "today too I will set a cool, shining lemon."
     ]
   },
   "poem_takamura_doutei": {
@@ -361,6 +670,23 @@
       "jagalah aku tanpa melepaskan pandangan dariku",
       "selalu penuhi aku dengan semangat ayah",
       "demi perjalanan yang jauh ini"
+    ],
+    "title_en": "The Road",
+    "lines_en": [
+      "Ah,",
+      "the road of humankind is long,",
+      "and there is no great highway;",
+      "the children of nature must open it with all the strength of their bodies.",
+      "Walk on, walk on,",
+      "whatever may come, walk over it and on,",
+      "step into this shining landscape.",
+      "There is no road before me,",
+      "the road is made behind me.",
+      "Ah, Father,",
+      "Father who made me stand on my own,",
+      "watch over me, never taking your eyes from me,",
+      "always fill me with your spirit, Father,",
+      "for the sake of this long road."
     ]
   }
 }

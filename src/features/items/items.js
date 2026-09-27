@@ -1,15 +1,22 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Barang konsumsi (bukan pack). Dibeli di Shop, disimpan di inventory (ownedItems).
 // Helper di bawah murni (tanpa React) supaya bisa dites dengan `node --test`.
+// Nama & deskripsi punya versi ID (name/desc) + EN (name_en/desc_en).
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const SHOP_ITEMS = [
-  { id: 'kopi_kaleng', icon: '☕', name: 'Kopi Kaleng Boss', desc: 'EXP x2 (30 Menit)', price: 500 },
-  { id: 'selotip_kaset', icon: '📼', name: 'Selotip Kaset', desc: 'Sambung Streak Putus', price: 1200 },
-  { id: 'kabel_jumper', icon: '🔌', name: 'Kabel Jumper', desc: '1x Hidup (Death Quiz)', price: 800 },
+  { id: 'kopi_kaleng', icon: '☕', name: 'Kopi Kaleng Boss', name_en: 'Boss Canned Coffee', desc: 'EXP x2 (30 Menit)', desc_en: '2× EXP (30 Min)', price: 500 },
+  { id: 'selotip_kaset', icon: '📼', name: 'Selotip Kaset', name_en: 'Cassette Tape', desc: 'Sambung Streak Putus', desc_en: 'Repair Broken Streak', price: 1200 },
+  { id: 'kabel_jumper', icon: '🔌', name: 'Kabel Jumper', name_en: 'Jumper Cable', desc: '1x Hidup (Death Quiz)', desc_en: '1× Revive (Death Quiz)', price: 800 },
 ];
 
 export const getItem = (id) => SHOP_ITEMS.find((i) => i.id === id) || null;
+
+// Pilih nama/desc sesuai bahasa UI ('id' → nama Indonesia, selain itu EN).
+export const itemName = (item, language) =>
+  (language === 'id' ? item.name : (item.name_en || item.name));
+export const itemDesc = (item, language) =>
+  (language === 'id' ? item.desc : (item.desc_en || item.desc));
 
 // Tambah qty. Return objek BARU (immutable — aman untuk state React).
 export const addItem = (inventory, id, qty = 1) => {

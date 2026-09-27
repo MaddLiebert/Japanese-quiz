@@ -22,7 +22,9 @@
         "speaker": "女",
         "text": "はじめまして。私は田中です。よろしくお願いします。"
       }
-    ]
+    ],
+    "questionText_en": "Question 1: Listen to the following audio and choose the most appropriate answer.",
+    "explanation_en": "In the first audio conversation, the speaker introduces himself with the greeting 'Hajimemashite, Maiku Miraa desu'."
   },
   {
     "id": "m02",
@@ -67,7 +69,9 @@
         "speaker": "女",
         "text": "五。会社員ですか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio plays a list of practice questions. What is the first question heard?",
+    "explanation_en": "The audio begins with '例。あなたは先生ですか？' as the example first question."
   },
   {
     "id": "m03",
@@ -100,7 +104,9 @@
         "speaker": "女",
         "text": "いや、1です何歳ですか？29歳です"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains an introduction conversation. Who introduces themselves as 'シミット'?",
+    "explanation_en": "Conversation: 'こちらはパワー電気のシミットさんですはじめましてシミットです'."
   },
   {
     "id": "m04",
@@ -141,7 +147,9 @@
         "speaker": "女",
         "text": "カリナさんは不自大学の先生です3いいさんは研究者ですか？はいワンさんも研究者ですか？いいえ、ワンさんは一者ですワンさんは研究者じゃありません"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains several short conversations. In the conversation about Taro-chan's age, what age does Taro-chan claim to be?",
+    "explanation_en": "Conversation: 'タローちゃんは何歳ですか？8歳ですタローちゃんは10歳です'. Taro-chan answers 8歳."
   },
   {
     "id": "m05",
@@ -182,7 +190,9 @@
         "speaker": "女",
         "text": "どうもありがとうございます。"
       }
-    ]
+    ],
+    "questionText_en": "Introduction conversation: Santos has just arrived and offers coffee. What does Santos say when handing over the coffee?",
+    "explanation_en": "Santos says: 'あのー、これコーヒーです。どうぞ。' when handing over the coffee."
   },
   {
     "id": "m06",
@@ -219,7 +229,9 @@
         "speaker": "男",
         "text": "五。このカバンはあなたのですか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 3rd question (san)?",
+    "explanation_en": "Audio: '三。これは何ですか？' is the 3rd question."
   },
   {
     "id": "m07",
@@ -252,7 +264,9 @@
         "speaker": "女",
         "text": "え?何ですか？チョコレートですどうもありがとうございます"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 2: Miller gives chocolate. What is the recipient's response upon learning it is chocolate?",
+    "explanation_en": "The recipient is surprised 'え?何ですか？' and then gives thanks upon learning it is chocolate."
   },
   {
     "id": "m08",
@@ -281,7 +295,9 @@
         "speaker": "男",
         "text": "3それはコンピューターの雑誌ですか？いえ、カメラの雑誌ですそうですかこれはコンピューターの雑誌じゃありません"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 3: Kimura is asked about a car. How does Kimura answer?",
+    "explanation_en": "Kimura answers 'はい、そうです私のです' when asked whether the car is his."
   },
   {
     "id": "m09",
@@ -334,7 +350,9 @@
         "speaker": "男",
         "text": "じゃあこれをください"
       }
-    ]
+    ],
+    "questionText_en": "Conversation at the vino shop: The customer asks the location of the Wine Library and buys vino. Which country does the purchased vino come from?",
+    "explanation_en": "The seller answers '日本のです' when asked about the vino's origin."
   },
   {
     "id": "m10",
@@ -371,7 +389,9 @@
         "speaker": "男",
         "text": "五。あなたのカメラはいくらですか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "Audio: '四。あなたのカメラは日本のですか？' is the 4th question."
   },
   {
     "id": "m11",
@@ -408,7 +428,9 @@
         "speaker": "男",
         "text": "5すみません この時計はいくらですか？23600円ですじゃあこれをくださいこの時計は23800円です"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Asked about the office location. Where is the office?",
+    "explanation_en": "The speaker answers 'あそこです' when asked about the office location."
   },
   {
     "id": "m12",
@@ -457,7 +479,9 @@
         "speaker": "女",
         "text": "そうですかどうも"
       }
-    ]
+    ],
+    "questionText_en": "Conversation asking about the shop's opening hours and Asuka's phone number. What time does the shop close?",
+    "explanation_en": "The respondent answers '10時までです' when asked about the closing time."
   },
   {
     "id": "m13",
@@ -494,7 +518,9 @@
         "speaker": "男",
         "text": "五。あなたの電話番号は何番ですか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 2nd question (ni)?",
+    "explanation_en": "Audio: '二。あなたの国の銀行は何時から何時までですか？' is the 2nd question."
   },
   {
     "id": "m14",
@@ -527,7 +553,9 @@
         "speaker": "女",
         "text": "6時半におきました"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Asking the current time and the time in London. What time is it in London when it is 4:30 in Tokyo?",
+    "explanation_en": "The speaker answers '午前7時半です' when asked the time in London."
   },
   {
     "id": "m15",
@@ -556,7 +584,9 @@
         "speaker": "男",
         "text": "3カリナさん 大学は何時からですか？9時からです何時に終わりますか？4時に終わりますカリナさんは9時から50まで勉強します"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Miller is asked about yesterday's working hours. Until what time did Miller work yesterday?",
+    "explanation_en": "Miller answers '10時まで働きました' when asked about yesterday's working hours."
   },
   {
     "id": "m16",
@@ -593,7 +623,9 @@
         "speaker": "男",
         "text": "7この本は3650円です8あのコンピューターは20万8000円です"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains schedule and price information. What is the phone number of the Art Museum (美術館)?",
+    "explanation_en": "The audio states '美術館の電話番号は075の138の6697です'."
   },
   {
     "id": "m17",
@@ -646,7 +678,9 @@
         "speaker": "男",
         "text": "そうですか どうも"
       }
-    ]
+    ],
+    "questionText_en": "Conversation at the station: Asking the ticket price to Koushien and the platform. How much is the ticket to Koushien?",
+    "explanation_en": "The station attendant answers '350円です' when asked the ticket price to Koushien."
   },
   {
     "id": "m18",
@@ -683,7 +717,9 @@
         "speaker": "男",
         "text": "が。誕生日は何月何日ですか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 3rd question (san)?",
+    "explanation_en": "Audio: '三。誰とスーパーへ行きますか？' is the 3rd question."
   },
   {
     "id": "m19",
@@ -708,7 +744,9 @@
         "speaker": "女",
         "text": "2今日は何日ですか？4月曜日です何曜日ですか？火曜日です"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Mira is asked where she went on Sunday. Where did Mira go?",
+    "explanation_en": "Mira answers 'ならへ行きました' when asked where she went on Sunday."
   },
   {
     "id": "m20",
@@ -737,7 +775,9 @@
         "speaker": "男",
         "text": "3この電車は京都へ行きますかいいえ 行きません次の電車ですよそうですか ども次の電車は京都へ行きます"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Mila is asked when she will go to Nagoya. When will Mila go to Nagoya?",
+    "explanation_en": "Mila answers '挟って行きます' when asked when she will go to Nagoya."
   },
   {
     "id": "m21",
@@ -758,7 +798,9 @@
         "speaker": "男",
         "text": "第6か、会話、一緒に行きませんか?ミラーさん、何ですか?明日、友達とお話みをします。ミラーさんも一緒に行きませんか?いいですね。どこへ行きますか?大阪城です。何時に行きますか?十字に大阪駅で会いましょう。わかりました。じゃあ、また明日。"
       }
-    ]
+    ],
+    "questionText_en": "Conversation inviting to hanami: Going to see the flowers with a friend tomorrow. Where and at what time will they meet?",
+    "explanation_en": "The speaker invites: '明日、友達とお話みをします。ミラーさんも一緒に行きませんか?... 十字に大阪駅で会いましょう' (meet at Osaka Station at 10:00, go to Osaka-jo)."
   },
   {
     "id": "m22",
@@ -795,7 +837,9 @@
         "speaker": "男",
         "text": "5。いつもどこで昼ご飯を食べますか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 3rd question (san)?",
+    "explanation_en": "Audio: '3。けさ何を飲みましたか？' is the 3rd question."
   },
   {
     "id": "m23",
@@ -832,7 +876,9 @@
         "speaker": "男",
         "text": "5ミラーさん、土曜日一緒に手にそうしませんか？はい、いいですねどこでしますか？富士大学でしましょうミラーさんは土曜日、富士大学へ行きます"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Yamada is asked whether he drinks alcohol. What is Yamada's answer?",
+    "explanation_en": "Yamada answers 'はい、飲みます' when asked whether he drinks alcohol."
   },
   {
     "id": "m24",
@@ -873,7 +919,9 @@
         "speaker": "女",
         "text": "えー、会社の人にもらいました。メキシコのお見上げです。"
       }
-    ]
+    ],
+    "questionText_en": "Conversation of a guest arriving: Santos receives a cup of coffee and praises the spoon. Where is the spoon from?",
+    "explanation_en": "Santos explains that the spoon is 'メキシコのお見上げです' (a souvenir from Mexico)."
   },
   {
     "id": "m25",
@@ -910,7 +958,9 @@
         "speaker": "男",
         "text": "五。選挙は日本語で何ですか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 3rd question (san)?",
+    "explanation_en": "Audio: '三。去年の誕生日にプレゼントをもらいましたか？' is the 3rd question."
   },
   {
     "id": "m26",
@@ -935,7 +985,9 @@
         "speaker": "女",
         "text": "2その猫体素敵ですねこれですか？誕生日に母にもらいましたそうですか"
       }
-    ]
+    ],
+    "questionText_en": "Conversation: Mira receives coffee and praises a cat toy. Who gave her the cat toy as a gift?",
+    "explanation_en": "Mira answers '誕生日に母にもらいました' (received it from her mother on her birthday)."
   },
   {
     "id": "m27",
@@ -964,7 +1016,9 @@
         "speaker": "男",
         "text": "3ミラさん、その本はミラさんのですか？いいえ、年間からかりました。もう読みましたか？いいえ、まだです。こんばん読みます。ミラさんは年間の本をもう読みました。"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Karina is asked whether she has had lunch. What is Karina's answer?",
+    "explanation_en": "Karina answers 'いいえ、まだです' when asked whether she has had lunch."
   },
   {
     "id": "m28",
@@ -1017,7 +1071,9 @@
         "speaker": "男",
         "text": "いえ、またいらっしゃってください。"
       }
-    ]
+    ],
+    "questionText_en": "Farewell conversation: Maria is asked about her living situation in Japan. How does Maria answer?",
+    "explanation_en": "Maria answers '毎日とても楽しいです' when asked about her living situation in Japan."
   },
   {
     "id": "m29",
@@ -1054,7 +1110,9 @@
         "speaker": "男",
         "text": "五。日本語はどうですか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 3rd question (san)?",
+    "explanation_en": "Audio: '三。仕事は面白いですか？' is the 3rd question."
   },
   {
     "id": "m30",
@@ -1079,7 +1137,9 @@
         "speaker": "女",
         "text": "2今日はどうもありがとうございましたいえ、またいらっしゃってくださいじゃあおやすみなさい"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Asked the price of the white shirt. How much is the white shirt?",
+    "explanation_en": "The seller answers 'これは3500円です' when asked the price of the white shirt."
   },
   {
     "id": "m31",
@@ -1108,7 +1168,9 @@
         "speaker": "男",
         "text": "3日本の生活はどうですか？毎日楽しいです日本の食べ物はどうですか？そうですねおいしいですが高いです日本の食べ物はおいしいですそして安いです"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Asked about drinking iced tea. What is the response?",
+    "explanation_en": "The speaker answers 'はい、ありがとうございますこれから冷たいお茶を飲みます' when offered iced tea."
   },
   {
     "id": "m32",
@@ -1149,7 +1211,9 @@
         "speaker": "女",
         "text": "そうですかまた 今度お願いします"
       }
-    ]
+    ],
+    "questionText_en": "Phone conversation: Miller invites Kimura to a classical concert. When is the event?",
+    "explanation_en": "Miller invites him '来週の金曜日の夜' (Friday night next week)."
   },
   {
     "id": "m33",
@@ -1186,7 +1250,9 @@
         "speaker": "男",
         "text": "5。どうして日本語を勉強しますか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 3rd question (san)?",
+    "explanation_en": "Audio: '3。こんばん約束がありますか？' is the 3rd question."
   },
   {
     "id": "m34",
@@ -1223,7 +1289,9 @@
         "speaker": "男",
         "text": "5ビールいかがですか？いえ、結構ですミラーさんはビールが嫌いですか？いえ、好きですが車できましたからそうですかミラーさんは車できましたからビールを飲みません"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Asked about Maria's husband's favorite sport. What sport does he like?",
+    "explanation_en": "Maria answers 'サッカーが好きです' when asked about her husband's favorite sport."
   },
   {
     "id": "m35",
@@ -1260,7 +1328,9 @@
         "speaker": "男",
         "text": "分かりました どうも"
       }
-    ]
+    ],
+    "questionText_en": "Conversation at the shop: Looking for Num Pla (น้ำปลา) and the Asia Store. Which floor is Num Pla on?",
+    "explanation_en": "The shop staff answers 'ナンプラーは一番したです' (Num Pla is on the lowest floor)."
   },
   {
     "id": "m36",
@@ -1297,7 +1367,9 @@
         "speaker": "男",
         "text": "5うちの近くに何がありますか？"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "Audio: '4。日本語の実証はどこにありますか？' is the 4th question."
   },
   {
     "id": "m37",
@@ -1326,7 +1398,9 @@
         "speaker": "男",
         "text": "3佐藤さんですか？ミラーですあ、ミラーさん？今、どこにいますか？駅の前ですそうですか、じゃあ、今いきますはい"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Asked about the restroom location. Where is the restroom?",
+    "explanation_en": "The staff member answers 'お手洗いはあの階段の後ろです' (the restroom is behind those stairs)."
   },
   {
     "id": "m38",
@@ -1351,7 +1425,9 @@
         "speaker": "女",
         "text": "2グプタさん、奥にはどちらですか？インドですそうですか、家族と一緒に日本行きましたか？いえ、一人できました家族は国にいますそうですかグプタさんは家族と日本行きました"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Asked whether Teresa is at home. Where is Teresa?",
+    "explanation_en": "The speaker answers 'テレーザは公園行きましたよ' (Teresa went to the park)."
   },
   {
     "id": "m39",
@@ -1372,7 +1448,9 @@
         "speaker": "男",
         "text": "第11か 買いはこれお願いしますいい天気ですね おでかけですかえ ちょっと有名曲までそうですか 行ってらっしゃい行ってきますこれオストラリアまでお願いしますはい 船輪ですか 航空輪ですか航空輪はいくらですか7600円です船輪は34550円ですどのくらいかかりますか航空輪でなのか 船輪で2ヶ月ぐらいですじゃあ 船輪でお願いします"
       }
-    ]
+    ],
+    "questionText_en": "Post office conversation: Sending a package to Australia. Which shipping method is chosen? How much does it cost?",
+    "explanation_en": "The sender chooses 航空便 (air mail) at 7600 yen. 船便 (sea mail) is 3450 yen but takes 2 months."
   },
   {
     "id": "m40",
@@ -1393,7 +1471,9 @@
         "speaker": "男",
         "text": "第11か。問題。1番。1。家族は何人ですか?2。あなたのうちに部屋がいくつありますか?3。あなたの国から日本まで飛行機で何時間かかりますか?4。今までどのくらい日本語を勉強しましたか?5。1ヶ月に何回ぐらい映画を見ますか?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "Audio: '4。今までどのくらい日本語を勉強しましたか？' is the 4th question."
   },
   {
     "id": "m41",
@@ -1418,7 +1498,9 @@
         "speaker": "女",
         "text": "2いらっしゃいませコーヒーを2つとアイスクリームを1つお願いしますかしこまりました"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Asked whether she has a younger sibling. What is the answer?",
+    "explanation_en": "The woman answers 'はい妹が1人います 学生です' (yes, she has one younger sister, who is a student)."
   },
   {
     "id": "m42",
@@ -1439,6 +1521,14 @@
         "speaker": "男",
         "text": "3番180円の切っておじゅうまいと 50円の切っておじゅうまいくださいはい、全部で1300円ですはいどうもありがとうございました女の人は切っておにじゅうまい買いました2この手紙、エアメールでお願いしますはい、インドですね 90円ですどのくらいかかりますか?よーかぐらいです手紙はインドまでエアメールでよっかかかります3どこで日本語を勉強しましたか?国で日本人の先生にならいました毎日勉強しましたか?いいえ、水曜日と土曜日に勉強しました国で一週間に1回日本語を勉強しました"
       }
+    ],
+    "questionText_en": "Conversation 3: Where did you study Japanese? For how long? How often?",
+    "explanation_en": "The speaker: '国で日本人の先生にならいました... 水曜日と土曜日に勉強しました 国で一週間に1回日本語を勉強しました' (in her home country, she learned from a Japanese teacher, on Wednesdays & Saturdays = once a week).",
+    "options_en": [
+      "In home country, once a week, learning from a Japanese teacher",
+      "In Japan, every day, self-study",
+      "In home country, every day, learning from a local teacher",
+      "In Japan, twice a week, learning from friends"
     ]
   },
   {
@@ -1460,7 +1550,9 @@
         "speaker": "男",
         "text": "第12か 買いはギオン祭りはどうでしたかただいまお帰りのさいこれ 京都のお見上げですどうもすみませんギオン祭りはどうでしたか面白かったですとても逃げやかでしたギオン祭りは 京都の祭りで一番有名ですからねそうですか写真をたくさんとりましたこれですすごい人ですねちょっと疲れました"
       }
-    ]
+    ],
+    "questionText_en": "Conversation upon returning home: Maria returns from Kyoto and brings omiyage (souvenirs). How was the Gion Matsuri?",
+    "explanation_en": "Maria answers '面白かったですとても逃げやかでした' (it was fun, very lively). The Gion Matsuri is the most famous festival in Kyoto."
   },
   {
     "id": "m44",
@@ -1481,7 +1573,9 @@
         "speaker": "男",
         "text": "第12か。問題。一番。一。機能の天気はどうでしたか?二。選手は忙しかったですか?三。あなたの国と日本とどちらが人が多いですか?四。一年でいつが一番好きですか?五。あなたの国でどこが一番有名ですか?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "Audio: '四。一年でいつが一番好きですか？' is the 4th question."
   },
   {
     "id": "m45",
@@ -1518,6 +1612,14 @@
         "speaker": "男",
         "text": "5昨日初めて日本料理を食べましたとても美味しかったです何を食べましたか?さしみやテンプラやすしを食べました何が一番美味しかったですか?そうですねテンプラが一番美味しかったです日本料理でテンプラが一番美味しかったです"
       }
+    ],
+    "questionText_en": "Conversation 1: Tanaka's new car is bigger than Yamada's car. Whose car is bigger?",
+    "explanation_en": "The speaker: '田中さん 新しい車ですねえー 戦列買いました山田さんの車より大きいですねえー 少し大きいです男の人の車は山田さんの車より大きいです' (Tanaka's car is bigger than Yamada's car).",
+    "options_en": [
+      "Tanaka (田中さん)",
+      "Yamada (山田さん)",
+      "Same size",
+      "Unknown"
     ]
   },
   {
@@ -1539,7 +1641,9 @@
         "speaker": "男",
         "text": "第13か 会話別々にお願いしますもう12時ですよ 昼ごはんを食べに行きませんかええ どこへ行きますかそうですね 今日は日本料理が食べたいですねじゃあ スリアへ行きましょうご注文は私はテンプラ定食私は牛ドンテンプラ定食と牛ドンですね 少々お待ちください1680円でございますすみません 別々にお願いしますはい テンプラ定食は980円牛ドンは700円です"
       }
-    ]
+    ],
+    "questionText_en": "Lunch conversation: Ordering tempura teishoku and gyudon. Paying separately (betsu-betsu). How much is the tempura teishoku?",
+    "explanation_en": "The cashier: 'テンプラ定食は980円牛ドンは700円です' (tempura teishoku 980 yen, gyudon 700 yen). The total is 1680 yen but they pay separately."
   },
   {
     "id": "m47",
@@ -1560,7 +1664,9 @@
         "speaker": "男",
         "text": "第13か。問題。1番。1。今何が一番欲しいですか?2。明日何をしたいですか?3。今誰に一番会いたいですか?4。週末はどこへ遊びに行きたいですか?が。飛行機のキップをあなたにあげます。どこへ何をしに行きますか?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "Audio: '四。週末はどこへ遊びに行きたいですか？が。飛行機のキップをあなたにあげます。どこへ何をしに行きますか？' - the 4th question is '週末はどこへ遊びに行きたいですか？'"
   },
   {
     "id": "m48",
@@ -1597,7 +1703,9 @@
         "speaker": "男",
         "text": "5カリナさんは日本へ何の勉強に来ましたか?美術の勉強に来ましたそうですか、勉強はどうですか?日本語がよくわかりませんから、大変ですカリナさんは日本へ日本語の勉強に来ました"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Sato wants a new PC, Yamada wants time. What does the man (Yamada) want?",
+    "explanation_en": "Yamada: '私は毎日忙しいですから時間が欲しいです' (I'm busy every day, so I want time). The man (Yamada) wants time."
   },
   {
     "id": "m49",
@@ -1618,7 +1726,9 @@
         "speaker": "男",
         "text": "第14か 買いは緑町までお願いします緑町までお願いしますはいすみませんあの信号を右へ曲がってください右ですねえまっすぐですかえまっすぐいってくださいあの花屋の前で止めてくださいはい1800円ですこれでお願いします3200円のお釣りですありがとうございました"
       }
-    ]
+    ],
+    "questionText_en": "Taxi conversation: To Midoricho. Turn right at the traffic light and stop in front of the flower shop. How much is the fare?",
+    "explanation_en": "The taxi driver: '1800円です' (1800 yen). The passenger pays 5000 yen, change 3200 yen."
   },
   {
     "id": "m50",
@@ -1639,7 +1749,9 @@
         "speaker": "男",
         "text": "第14か。問題。一番。一。今雨が降っていますか?二。今何をしていますか?三。今何か飲んでいますか?四。今家族は何をしていますか?五。あなたのうちの住所を書いてください。"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "Audio: '四。今家族は何をしていますか？' is the 4th question."
   },
   {
     "id": "m51",
@@ -1664,7 +1776,9 @@
         "speaker": "女",
         "text": "2。新王さかまでお願いします。はい。あの信号を右へ曲がってください。はい。あの白いビルの前で止めてください。"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Sato is making copies on the 1st floor (1-kai). A phone call is made to call him. Where is Sato?",
+    "explanation_en": "Audio: '佐藤さんはどこにいますか?1回でコピーしています。呼びましょうか?え、すぐ呼んでください。はい、わかりました。' (Sato is making copies on the 1st floor)."
   },
   {
     "id": "m52",
@@ -1693,7 +1807,9 @@
         "speaker": "男",
         "text": "3カリナさん その実証をちょっと貸してくださいすみません 今使っていますじゃあ後でお願いします男の人は後で実証をかります"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: It's raining, shall we take a taxi together? The man's car arrives, so they ride in the man's car. What do they ride in?",
+    "explanation_en": "The man: '今日は車できましたから一緒にいかがですか' (I came by car today, so how about going together?). The woman agrees. They ride in the man's car."
   },
   {
     "id": "m53",
@@ -1714,6 +1830,14 @@
         "speaker": "男",
         "text": "第15か 買いはご家族は?良い笑顔でしたねええ 私は家族を思い出しましたそうですか ミラーさんのご家族は?両親と アネが一人いますどちらにいらっしゃいますか?両親はニューヨークの近くに住んでいますアネはロンドンで働いていますキムラさんのご家族は?3人です父は銀行員です母は高校で英語を教えています"
       }
+    ],
+    "questionText_en": "Family conversation: Miller's family is in NY, his younger sister in London. Kimura: 3 people, father a banker, mother an English teacher at a high school. How many siblings does Miller have?",
+    "explanation_en": "Miller: '両親と アネが一人います' (parents and one younger sister). His younger sister works in London.",
+    "options_en": [
+      "1 younger sister (ane 1-nin)",
+      "2 younger brothers (otouto 2-nin)",
+      "Has no siblings",
+      "1 older brother (ani 1-nin)"
     ]
   },
   {
@@ -1735,7 +1859,9 @@
         "speaker": "男",
         "text": "第15か。問題。一番。一。美術館で写真をとってもいいですか?二。あなたの国でどんな日本の製品を売っていますか?三。日本で一番高い山を知っていますか?四。家族はどこに住んでいますか?五。お仕事は何ですか?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "Audio: '四。家族はどこに住んでいますか？' is the 4th question."
   },
   {
     "id": "m55",
@@ -1768,6 +1894,14 @@
         "speaker": "女",
         "text": "5佐藤さん、パワー電気の電話番号を教えていますか?はい、9348567です。住所はちょっと待ってください。はい、これです。どうも。女の人はパワー電気の電話番号を教っていますが住所を教りません。"
       }
+    ],
+    "questionText_en": "Conversation 1: May I smoke here? No, only in the lobby. May I park a car here? No, park over there. Where may I smoke?",
+    "explanation_en": "The staff member: 'すみません、あちらのロビーでお願いします。ロビーでたばこをすってもいいです。' (in the lobby over there, smoking is allowed in the lobby).",
+    "options_en": [
+      "ロビー (lobi)",
+      "Here (here)",
+      "Outside (outside)",
+      "Nowhere allowed"
     ]
   },
   {
@@ -1789,7 +1923,9 @@
         "speaker": "男",
         "text": "第16か 階は 使い方を教えてくださいすみませんが ちょっと使い方を教えてくださいお引き出しですかそうですじゃあ まずここをしてくださいはい次に キャッシュカードをここに入れて 安処番号をしてくださいはい 押しましたじゃあ 金額をしてください5万円ですが 5この 万円を押しますそれから この確認ボタンをしてくださいはい どうもありがとうございました"
       }
-    ]
+    ],
+    "questionText_en": "ATM conversation: How to withdraw money. Insert the card, enter the PIN, enter the amount, press confirm. When withdrawing 50,000 yen, which button do you press?",
+    "explanation_en": "The staff member: '5万円ですが 5この 万円を押します' (50,000 yen, press the 10,000 yen button 5 times)."
   },
   {
     "id": "m57",
@@ -1810,7 +1946,9 @@
         "speaker": "男",
         "text": "第16日。問題。一番。一。朝起きて何をしますか?二。昨日番ご飯を食べてから何をしましたか?三。あなたの打ちから空港までどうやっていきますか?三。日本の食べ物はどうですか?が。お母さんはどんな人ですか?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 5th question (go)?",
+    "explanation_en": "The audio mentions '五。お母さんはどんな人ですか？' as the 5th question."
   },
   {
     "id": "m58",
@@ -1831,7 +1969,9 @@
         "speaker": "男",
         "text": "2番1会社までいつもどうやっていきますか?GRで大阪まで行って、近鉄に乗り変えて、日本橋でおります。それから会社まで歩いていきます。そうですか?2すみません。カリナさんはどの人ですか?あの人ですよ?え?あの世が高くて髪が短い人です。どうも。"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: The man is asked the way to the office. How does he go to the office?",
+    "explanation_en": "The man answers: 'GRで大阪まで行って、近鉄に乗り換えて、日本橋で降りて、それから歩いていきます'."
   },
   {
     "id": "m59",
@@ -1864,7 +2004,9 @@
         "speaker": "男",
         "text": "の人は週末に料交をしました"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 2: Asked about the distance from the station to the apartment. How long does it take from the station to the apartment?",
+    "explanation_en": "The speaker answers 'バスで20分ぐらいです' when asked about the distance from the station."
   },
   {
     "id": "m60",
@@ -1885,7 +2027,9 @@
         "speaker": "男",
         "text": "第17か 会話 どうしましたかどうしましたか 昨日からのどがいたくて熱も少しありますそうですか ちょっと口を開けてください 風ですね二三日ゆっくり休んだください あのー明日から東京へ出張しなければなりませんじゃあ 今日は薬を飲んで早く寝てください はい それからこんばんはお風呂に入らないでくださいねはいわかりました じゃあ大事に どうもありがとうございました"
       }
-    ]
+    ],
+    "questionText_en": "患者[かんじゃ]は明日[あした]から東京[とうきょう]へ行[い]きます。今日[きょう]は何[なに]をしますか？",
+    "explanation_en": "Because the patient must leave for Tokyo tomorrow, the doctor says '今日は薬を飲んで早く寝てください'."
   },
   {
     "id": "m61",
@@ -1906,7 +2050,9 @@
         "speaker": "男",
         "text": "第17か。問題。一番。一。外国旅行に何を持っていかなければなりませんか?二。あなたの国で子どもは何歳から学校へ行かなければなりませんか?三。毎朝何時に起きなければなりませんか?四。明日出かけなければなりませんか?が。毎日日本語を話さなければなりませんか?"
       }
-    ]
+    ],
+    "questionText_en": "毎朝[まいあさ]何時[なんじ]に起[お]きなければなりませんか？",
+    "explanation_en": "Audio: '三。毎朝何時に起きなければなりませんか？' is the 3rd question."
   },
   {
     "id": "m62",
@@ -1947,7 +2093,9 @@
         "speaker": "男",
         "text": "の人は明日の朝何も食べてはいけませんが水は飲んでもいいです"
       }
-    ]
+    ],
+    "questionText_en": "花[はな]の写真[しゃしん]を撮[と]ってはいけません",
+    "explanation_en": "The staff member says: 'あ、すみません。花の写真を撮ってはいけません' when two people are about to photograph the flowers."
   },
   {
     "id": "m63",
@@ -1968,7 +2116,9 @@
         "speaker": "男",
         "text": "第18か 会話趣味は何ですかさんとさんの趣味は何ですか写真ですどんな写真をとりますか動物の写真です特にうまが好きですえぇ それは面白いですね日本へ来てからうまの写真をとりましたかいえ日本ではなかなかうまを見ることができません北海道にうまがたくさんいますよ本当ですかじゃあナシアスミにぜひ行きたいです"
       }
-    ]
+    ],
+    "questionText_en": "Santo-san is asked about his hobby. What kind of photos does he like most?",
+    "explanation_en": "Santo-san answers: '写真です。動物の写真です。特に馬が好きです'."
   },
   {
     "id": "m64",
@@ -1989,7 +2139,9 @@
         "speaker": "男",
         "text": "第18か。問題。一番。一。ダンスができますか?二。何メートルぐらいをよくことができますか?三。あなたの国で何歳から車を運転することができますか?四。趣味は何ですか?五。毎晩寝る前に何をしますか?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "Audio: '四。趣味は何ですか？' is the 4th question."
   },
   {
     "id": "m65",
@@ -2022,7 +2174,9 @@
         "speaker": "女",
         "text": "の人は車で都所管へ行きます"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 4: About next week's party. About what time should he arrive at the party?",
+    "explanation_en": "The party starts at 6 and he is asked to come '30分ぐらい前に行ってください', so around 5:30."
   },
   {
     "id": "m66",
@@ -2043,7 +2197,9 @@
         "speaker": "男",
         "text": "第19か 買いはダイエットは明日からしますおばーいマリアさんあまり食べませんねえー 昨日からダイエットをしていますそうですか 私もダイエットしたことがありますどんなダイエットですか?毎日リンゴだけ食べたり 水をたくさん飲んだりしましたでも無理なダイエットは 体によくないですねそうですねマリアさん このアイスクリーム美味しいですよそうですか ダイエットはまた明日からします"
       }
-    ]
+    ],
+    "questionText_en": "Listening to the man's story about dieting, what kind of diet did he try?",
+    "explanation_en": "The man says: '毎日リンゴだけを食べたり、水をたくさん飲んだりしました'."
   },
   {
     "id": "m67",
@@ -2064,7 +2220,9 @@
         "speaker": "男",
         "text": "第19か 問題一番1スモーを見たことがありますか2日曜日何をしますか3日本で何をしたいですか4次の誕生日に何歳になりますか"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 2nd question (ni)?",
+    "explanation_en": "Audio: '二。日曜日何をしますか？' is the 2nd question."
   },
   {
     "id": "m68",
@@ -2093,7 +2251,9 @@
         "speaker": "女",
         "text": "の人はおとこの人にあったことがあります4このリンゴ、いくらですか?1つ180円ですもう少しやすくなりますか?じゃあ、2つ300円じゃあ、4つ下さいリンゴは全部で600円です5山田さん、富士さんに登ったことがありますか?え、1回だけあります雪がありましたか?え、夏でしたがありましたおとこの人は夏に富士さんで雪を見たことがあります"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 4: The man buys apples. What is the total price for 4 apples?",
+    "explanation_en": "The apples cost 180 yen each, but the seller gives a price for 4 'じゃあ、4つください' with a total of 'リンゴは全部で600円です'."
   },
   {
     "id": "m69",
@@ -2114,7 +2274,9 @@
         "speaker": "男",
         "text": "第20か会話一緒に行かない?夏休みは国へ帰る?うん帰りたいけどそうターポンくん富士さんに登ったことある?うんないじゃあよかったら一緒に行かない?うんいつ頃?8月の初めごろはどう?いいよじゃあいろいろ調べてまた電話するよありがとう待ってるよ"
       }
-    ]
+    ],
+    "questionText_en": "Two friends plan to climb Mount Fuji. When will they climb?",
+    "explanation_en": "One friend asks '8月の初めごろはどう？' and the other agrees 'いいよ'."
   },
   {
     "id": "m70",
@@ -2135,7 +2297,9 @@
         "speaker": "男",
         "text": "第20か。問題。一番。一。日曜日何をする?二。くだもので何が一番好き?三。漢字がいくつわかる?四。あなたの国と日本とどっちが人が多い?五。日本の笑顔を見たことがある?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 2nd question (ni)?",
+    "explanation_en": "Audio: '二。くだもので何が一番好き？' is the 2nd question."
   },
   {
     "id": "m71",
@@ -2192,7 +2356,9 @@
         "speaker": "男",
         "text": "の人は毎日スポーツをします"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 3: They got 2 movie tickets. Where and at what time will they meet?",
+    "explanation_en": "The man says: '6時に駅で会おう' to watch a Korean movie together."
   },
   {
     "id": "m72",
@@ -2213,7 +2379,9 @@
         "speaker": "男",
         "text": "第21か 買いは私もそう思いますあ サントスさん 久しぶりですねあ 松々さん お元気ですか?ええ ちょっとビールでも飲みませんかいいですね 今晩10時から日本とブラジルのサッカーの支援がありますねああ そうですね サントスさんはどちらが勝つと思いますかもちろんブラジルですよそうですね でも最近日本も強くなりましたよええ 私もそう思いますがあ もう帰らないとええ 帰りましょう"
       }
-    ]
+    ],
+    "questionText_en": "Santos and Matsuo are going to watch a soccer match. When is the match?",
+    "explanation_en": "Matsuo says: '今晩10時から日本とブラジルのサッカーの試合がありますね'."
   },
   {
     "id": "m73",
@@ -2234,7 +2402,9 @@
         "speaker": "男",
         "text": "第21か。問題。1番。1。明日は天気がいいと思いますか。2。日本についてどう思いますか。3。日本人はあなたの国についてよく知っていると思いますか。4。日本人はご飯を食べる前に何と言いますか。5。東京は有名でしょう。"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "Audio: '四。日本人はご飯を食べる前に何と言いますか。' is the 4th question."
   },
   {
     "id": "m74",
@@ -2283,7 +2453,9 @@
         "speaker": "女",
         "text": "の人のカバンを持ちます"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 1: Asked about the meeting room's location. Where is the meeting room?",
+    "explanation_en": "The staff member answers: '会議室は2階の会議室です'."
   },
   {
     "id": "m75",
@@ -2304,7 +2476,9 @@
         "speaker": "男",
         "text": "第22か 買いはどんな部屋をお探しですかどんな部屋をお探しですかそうですねやちんは8万円ぐらいで駅から遠くないところがいいですでは こちらはいかがですか駅から10分でやちんは8万3000円ですダイニングキッチンとはしつですねすみません ここは何ですかおしいれです 普通を入れるところですよそうですか この部屋きょう見ることができますかえー 今から行きましょうかえー お願いします"
       }
-    ]
+    ],
+    "questionText_en": "A customer is looking for an apartment. How long does it take from the station to the recommended apartment?",
+    "explanation_en": "The guide says: '駅から10分で、家賃は8万3000円です'."
   },
   {
     "id": "m76",
@@ -2325,7 +2499,9 @@
         "speaker": "男",
         "text": "第22か。問題。一番。一。あなたが生まれたところはどこですか?二。今一番欲しいものは何ですか?三。家族でメガネをかけている人がいますか?四。今車を買うお金がありますか?五。レストランで食べる料理とうちで食べる料理とどちらが好きですか?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 3rd question (san)?",
+    "explanation_en": "Audio: '三。家族でメガネをかけている人がいますか？' is the 3rd question."
   },
   {
     "id": "m77",
@@ -2354,7 +2530,9 @@
         "speaker": "男",
         "text": "の人は明日、子どもと遊びますから、テニスに行きません。5旅行の写真ですね。この人は誰ですか?どの人ですか?佐藤さんの後ろにいる神が短い人です。あ、カリナさんです。カリナさんは神が短いです。"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 2: Where should the raincoat (kasu) be placed?",
+    "explanation_en": "The staff member says: 'カサは階段の後ろにおいてください'."
   },
   {
     "id": "m78",
@@ -2375,7 +2553,9 @@
         "speaker": "男",
         "text": "第23か 買いはどうやっていきますか?はい 緑と書館ですあのー そちらまでどうやっていきますか?本題期から 12番のバスになって都書館前でおりてください3つ目です3つ目ですねえー 降りると前に公園があります都書館は公園の中の白い建物ですわかりましたそれから 本も書かれるとき何か入りますか?お名前と50所がわかるものを持ってきてくださいはい どうもありがとうございました"
       }
-    ]
+    ],
+    "questionText_en": "The staff member is asked the way to the library. How do you get to the library?",
+    "explanation_en": "The staff member answers: '12番のバスに乗って、都書館前で降りてください。3つ目です'."
   },
   {
     "id": "m79",
@@ -2396,7 +2576,9 @@
         "speaker": "男",
         "text": "第23か 問題1番1子供の時 どこに住んでいましたか2外国へ行って 道側分からない時 どうしますか3暇な時 何をしますか4どんな時 タクシーに乗りますか5たくさんお酒を飲むと どうなりますか"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 5th question (go)?",
+    "explanation_en": "Audio: '五。たくさんお酒を飲むとどうなりますか？' is the 5th question."
   },
   {
     "id": "m80",
@@ -2417,7 +2599,9 @@
         "speaker": "男",
         "text": "2番1すみません、アメリカの友達に電話をかけるとき、どうしますか?まず 001を押して、次にアメリカの国の番号を1を押します。それから友達の番号を押します。わかりました。どうもありがとうございました。2すみません、緑図書館はどこですか?駅の前の道をまっすぐ行くと走があります。橋ですね?橋を当たって100mぐらいいくと左にあります。"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 2: Kiri-chan is asked the library's location. Where is the library?",
+    "explanation_en": "The staff member answers: '橋を渡って100メートルぐらい行くと、左にあります'."
   },
   {
     "id": "m81",
@@ -2446,7 +2630,9 @@
         "speaker": "男",
         "text": "の人はお酒を飲んだとき中国のお茶を飲みます"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 3: Yamada-san drinks Chinese tea. When does he drink it?",
+    "explanation_en": "Yamada-san says: '中国のお茶です。体の調子が悪いとき飲みます'."
   },
   {
     "id": "m82",
@@ -2467,7 +2653,9 @@
         "speaker": "男",
         "text": "第24か、会話、手伝いに行きましょうか?わんさん、日曜日引っ越しですね。手伝いに行きましょうか?ありがとうございます。じゃあ、すみませんが、9時ごろお願いします。他に誰が手伝いに行きますか?山田さんとみらさんが来てくれます。車は?山田さんに貸してもらいます。昼ごはんはどうしますか?私がお弁当を持っていきましょうか?すみません。お願いします。じゃあ、日曜日に。"
       }
-    ]
+    ],
+    "questionText_en": "Plan to help with moving. What time will they come on Sunday?",
+    "explanation_en": "The homeowner says: 'じゃあ、すみませんが、9時ごろお願いします'."
   },
   {
     "id": "m83",
@@ -2488,7 +2676,9 @@
         "speaker": "男",
         "text": "第24か。問題。一番。一。子供の時、お母さんは甘いおかしをくれましたか?二。あなたは今、お母さんに何をしてあげたいですか?三。日本人の友達にあなたの国の料理を作ってあげたことがありますか?四。お金がない時、誰にかしてもらいますか?が。子供の時、お父さんはよく遊んでくれましたか?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 4th question (yon)?",
+    "explanation_en": "The 4th question in the audio is about whom you can ask for help when you have no money."
   },
   {
     "id": "m84",
@@ -2537,7 +2727,9 @@
         "speaker": "女",
         "text": "の人は機能友達と公平行きました"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 2: It's raining. How will Sato-san get home?",
+    "explanation_en": "Sato-san answers: '姉が車で迎えに来てくれますから大丈夫です'."
   },
   {
     "id": "m85",
@@ -2558,7 +2750,9 @@
         "speaker": "男",
         "text": "第25日、会話、いろいろお世話になりました。天気読めるとございます。ありがとうございます。みなさんが東京へ行ったら寂しくなりますね。そうですね。東京へ行っても大阪のことを忘れないでくださいね。もちろん、みなさん暇があったらぜひ東京へ遊びに来てください。みなさんも大阪へ来たら電話をください。一緒に飲みましょう。えー、ぜひ。みなさん、本当にいろいろお世話になりました。頑張ってください。お体に気をつけて。はい。みなさんもどうぞ、お元気で。"
       }
-    ]
+    ],
+    "questionText_en": "Farewell conversation. Where will the speaker move to?",
+    "explanation_en": "The speaker says: 'みなさんが東京へ行ったら寂しくなりますね' — he will leave for Tokyo."
   },
   {
     "id": "m86",
@@ -2579,7 +2773,9 @@
         "speaker": "男",
         "text": "第25か。問題。一番。一。もし、一千万円あったら何をしたいですか?二。日曜日以転期だったらどこへ遊びに行きたいですか?三。体の調子が悪かったらどうしますか?四。第25かの問題が終わったら何をしますか?が。年をとっても働きたいですか?"
       }
-    ]
+    ],
+    "questionText_en": "The audio contains a list of practice questions. What is the 1st question (ichi)?",
+    "explanation_en": "Audio: '一。もし、一千万円あったら何をしたいですか？' is the first question."
   },
   {
     "id": "m87",
@@ -2608,6 +2804,8 @@
         "speaker": "男",
         "text": "の人は車がありますが、自転車に乗ります。5お釣りが出ません。このボタンを押しましたか?え、押しても出ません。じゃあ故障ですね。店の人にいましょう。ボタンを押しましたが、お釣りが出ませんでした。"
       }
-    ]
+    ],
+    "questionText_en": "Conversation 3: The man will go to India. When will he return?",
+    "explanation_en": "The man answers 'お金を全部使ったら帰ります' when asked when he will return from India."
   }
 ]

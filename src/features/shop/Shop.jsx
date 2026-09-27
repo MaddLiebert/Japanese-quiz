@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { SHOP_ITEMS } from "../items/items";
+import { SHOP_ITEMS, itemName, itemDesc } from "../items/items";
 import { gachaPoolInfo, PACK_RARITY } from "../packs/packs";
 import { GachaSlotOverlay } from "../gacha/GachaSlotOverlay";
 
@@ -231,14 +231,14 @@ export function Shop() {
                     <div className="text-3xl sm:text-4xl shrink-0 w-12 text-center">{item.icon}</div>
                     <div className="flex-grow min-w-0">
                       <h3 className="text-sm sm:text-base font-serif font-black text-sumi truncate">
-                        {item.name}
+                        {itemName(item, language)}
                         {have > 0 && (
                           <span className="ml-2 align-middle bg-matcha text-kinari-light text-[9px] font-black px-1.5 py-0.5 border-[2px] border-sumi">
                             ×{have}
                           </span>
                         )}
                       </h3>
-                      <p className="text-[11px] sm:text-xs font-bold text-sumi/70 truncate">{item.desc}</p>
+                      <p className="text-[11px] sm:text-xs font-bold text-sumi/70 truncate">{itemDesc(item, language)}</p>
                     </div>
                     <button
                       type="button"

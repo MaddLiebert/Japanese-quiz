@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {
   SHOP_ITEMS,
   getItem,
+  itemName,
+  itemDesc,
   addItem,
   removeItem,
   countItems,
@@ -55,4 +57,30 @@ test('inventoryList hanya item qty>0, lengkap dengan metadata', () => {
   assert.equal(list[0].qty, 2);
   assert.equal(list[0].name, 'Kopi Kaleng Boss');
   assert.deepEqual(inventoryList({}), []);
+});
+
+test('tiap barang punya nama & deskripsi versi EN', () => {
+  for (const item of SHOP_ITEMS) {
+    assert.ok(item.name_en && item.name_en.length > 0, `name_en kurang di ${item.id}`);
+    assert.ok(item.desc_en && item.desc_en.length > 0, `desc_en kurang di ${item.id}`);
+    // EN tidak boleh sama persis dengan ID (kalau sama = belum diterjemah)
+    assert.notEqual(item.name_en, item.name, `name_en masih sama dgn ID di ${item.id}`);
+    assert.notEqual(item.desc_en, item.desc, `desc_en masih sama dgn ID di ${item.id}`);
+  }
+});
+
+test('itemName/itemDesc: mode id → Indonesia, selain itu → EN', () => {
+  const item = getItem('kopi_kaleng');
+  assert.equal(itemName(item, 'id'), 'Kopi Kaleng Boss');
+  assert.equal(itemName(item, 'en'), 'Boss Canned Coffee');
+  assert.equal(itemDesc(item, 'id'), 'EXP x2 (30 Menit)');
+  assert.equal(itemDesc(item, 'en'), '2× EXP (30 Min)');
+  // bahasa tak dikenal → fallback EN
+  assert.equal(itemName(item, undefined), 'Boss Canned Coffee');
+});
+
+test('itemName/itemDesc: fallback ke ID kalau field EN hilang', () => {
+  const fake = { name: 'Barang ID', desc: 'Deskripsi ID' };
+  assert.equal(itemName(fake, 'en'), 'Barang ID');
+  assert.equal(itemDesc(fake, 'en'), 'Deskripsi ID');
 });

@@ -2,7 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useUserStats, useItemProgress, getRank, useAchievements, ACHIEVEMENT_META } from '../progress/ProgressContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { N5Certificate } from '../n5exam/N5Certificate';
+import { localized } from '../../utils/localize';
 import { isLegendary, badgeCircleClass } from '../progress/badgeSeal';
 import { LegendaryDecor } from '../progress/BadgeDecor';
 import hiraganaData from '../../data/hiragana.json';
@@ -44,6 +46,7 @@ const HankoStamp = ({ text, label, delay = 0.2 }) => (
 export function Profile() {
   const [activeTab, setActiveTab] = useState('card');
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const { progress, username, setUsername } = useUserStats();
   const { itemProgress } = useItemProgress();
   const { achievements, selectedBadges, setSelectedBadges } = useAchievements();
@@ -351,7 +354,7 @@ export function Profile() {
                               </div>
                               <div>
                                 <div className="font-serif font-black">{meta.title}</div>
-                                <div className="text-xs font-bold opacity-80">{meta.desc}</div>
+                                <div className="text-xs font-bold opacity-80">{localized(meta, 'desc', language)}</div>
                               </div>
                               {isSelected && <span className="ml-auto text-2xl">✓</span>}
                             </button>
@@ -368,7 +371,7 @@ export function Profile() {
                               </div>
                               <div>
                                 <div className="font-serif font-black text-sumi">{meta.title}</div>
-                                <div className="text-xs text-sumi/70 font-bold">{meta.desc}</div>
+                                <div className="text-xs text-sumi/70 font-bold">{localized(meta, 'desc', language)}</div>
                               </div>
                             </div>
                           );
