@@ -28,6 +28,8 @@ const ACHIEVEMENTS_KEY = "achievements_unlocked_v2";
 
 // Pack Gojo (lihat src/features/packs/packs.js) — target preview streak.
 const GOJO_PACK_ID = "pack_07";
+// Pack Yuji (lihat src/features/packs/packs.js) — target preview streak & takeover.
+const YUJI_PACK_ID = "pack_09";
 
 const ALL_BADGES = [
   "hiragana_origin", "katakana_edge", "kanji_slayer", "kanji_hell", "eagle_eye",
@@ -55,7 +57,7 @@ function writeProgress(patch) {
 export function DevPanel() {
   const { language } = useLanguage();
   const { progress, togglePack } = useUserStats();
-  const { previewStreak, castDomain, triggerEffect } = useEffectLayer();
+  const { previewStreak, castDomain, castTakeover, previewYujiCombo, triggerEffect } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
   // Review suara & skill (dev): karakter terpilih, kursor rotasi klip, status.
@@ -69,6 +71,14 @@ export function DevPanel() {
     setPending(null);
     previewStreak(pending);
   }, [pending, progress.activePack, previewStreak]);
+
+  // Sama seperti Gojo: begitu pack Yuji aktif, tembak preview streak-nya.
+  const [pendingYuji, setPendingYuji] = useState(null);
+  useEffect(() => {
+    if (pendingYuji == null || progress.activePack !== YUJI_PACK_ID) return;
+    setPendingYuji(null);
+    previewStreak(pendingYuji);
+  }, [pendingYuji, progress.activePack, previewStreak]);
 
   // Guard: panel ini TIDAK dirender di build produksi.
   if (!import.meta.env.DEV) return null;
@@ -150,6 +160,29 @@ export function DevPanel() {
   const castNow = () => {
     if (progress.activePack === GOJO_PACK_ID) { castDomain(); return; }
     previewGojo(20);
+  };
+
+  // Preview efek Yuji tanpa quiz (pola previewGojo).
+  const previewYuji = (target) => {
+    if (progress.activePack === YUJI_PACK_ID) { previewStreak(target); return; }
+    const owned = (progress.ownedPacks || []).includes(YUJI_PACK_ID);
+    if (owned) { togglePack(YUJI_PACK_ID); setPendingYuji(target); return; }
+    writeProgress({
+      medaru: 999999,
+      ownedPacks: [...(progress.ownedPacks || []), YUJI_PACK_ID],
+      activePack: YUJI_PACK_ID,
+    });
+    reload();
+  };
+
+  const castYuji = () => {
+    if (progress.activePack === YUJI_PACK_ID) { castTakeover(); return; }
+    previewYuji(20);   // aktifkan pack dulu → klik sekali lagi
+  };
+
+  const comboYuji = (lvl) => {
+    if (progress.activePack !== YUJI_PACK_ID) { previewYuji(20); return; }
+    previewYujiCombo(lvl);
   };
 
   // ── Review suara & skill (dev) ────────────────────────────────────────────
@@ -294,6 +327,47 @@ export function DevPanel() {
               className={`${btn} bg-[#0ea5e9] text-kinari-light`}
             >
               🔊 {id ? "Tes Hum Bola" : "Test Ball Hum"}
+            </button>
+          </div>
+        </div>
+
+        {/* DEV-ONLY — Preview efek Yuji tanpa quiz */}
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10">
+          <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 mb-2">
+            {id ? "Preview Efek Yuji (tanpa quiz)" : "Yuji Effect Preview (no quiz)"}
+          </p>
+          <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
+            {id
+              ? "Satu klik = satu jawaban benar di streak target. Pack Yuji otomatis diaktifkan bila perlu. Combo 解/捌/開 menembak takeover (cast otomatis bila belum)."
+              : "One click = one correct answer at the target streak. Yuji pack is equipped automatically if needed. Combo 解/捌/開 fires the takeover (auto-cast if needed)."}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            <button type="button" onClick={() => previewYuji(1)} className={`${btn} bg-[#00b0ff] text-sumi`}>
+              🔵 {id ? "逕庭拳 #1" : "Keiteiken #1"}
+            </button>
+            <button type="button" onClick={() => previewYuji(2)} className={`${btn} bg-[#00b0ff] text-sumi`}>
+              🔵 {id ? "卍蹴り #2" : "Manji-geri #2"}
+            </button>
+            <button type="button" onClick={() => previewYuji(3)} className={`${btn} bg-sumi text-kinari-light`}>
+              ⚫ {id ? "黒閃 #3" : "Kokusen #3"}
+            </button>
+            <button type="button" onClick={() => previewYuji(60)} className={`${btn} bg-[#8b0000] text-kinari-light`}>
+              🔴 {id ? "穿血 #60" : "Senketsu #60"}
+            </button>
+            <button type="button" onClick={() => previewYuji(20)} className={`${btn} bg-[#ffd700] text-sumi`}>
+              ⚡ {id ? "Isi Bar #20" : "Fill Bar #20"}
+            </button>
+            <button type="button" onClick={castYuji} className={`${btn} bg-[#6d28d9] text-kinari-light`}>
+              🟣 {id ? "Cast 宿儺の器" : "Cast Takeover"}
+            </button>
+            <button type="button" onClick={() => comboYuji(1)} className={`${btn} bg-kinari-light text-sumi`}>
+              ⚔️ {id ? "Combo 解" : "Combo 解"}
+            </button>
+            <button type="button" onClick={() => comboYuji(2)} className={`${btn} bg-kinari-light text-sumi`}>
+              ⚔️ {id ? "Combo 捌" : "Combo 捌"}
+            </button>
+            <button type="button" onClick={() => comboYuji(3)} className={`${btn} bg-[#e0241a] text-kinari-light`}>
+              🔥 {id ? "Combo 開" : "Combo 開"}
             </button>
           </div>
         </div>
