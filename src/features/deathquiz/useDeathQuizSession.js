@@ -14,6 +14,7 @@ import {
   DEATH_XP_PENALTY,
   allQuizItems,
   drawNextDeathItem,
+  deathMedaruReward,
 } from './deathQuiz';
 
 const DATASETS = {
@@ -43,7 +44,7 @@ export function useDeathQuizSession() {
   const [runResult, setRunResult] = useState(null);   // { score, penaltyApplied, usedJumpers }
 
   const { recordAnswer } = useItemProgress();
-  const { consumeItem, loseXp, progress } = useUserStats();
+  const { consumeItem, loseXp, gainMedaru, progress } = useUserStats();
   const { triggerEffect, resetEffectStreak } = useEffectLayer();
 
   // Refs untuk hindari stale closure (pola useQuizSession).
@@ -106,13 +107,18 @@ export function useDeathQuizSession() {
     nextQuestion();
   }, [clearTimers, nextQuestion, resetEffectStreak, setPhaseBoth]);
 
-  // Akhiri run: hitung penalti, panggil loseXp SEKALI, tampilkan hasil.
+  // Akhiri run: hitung penalti + hadiah medaru, panggil loseXp/gainMedaru SEKALI.
+  // Kompensasi sepadan: mode ini paling berisiko, jadi run yang berakhir membayar
+  // medaru (escalating). `finishRun` hanya dipanggil saat MATI atau MENYERAH —
+  // keluar sukarela lewat `quit` tidak dibayar (anti-farm).
   const finishRun = useCallback(() => {
     clearTimers();
     const applied = loseXp(DEATH_XP_PENALTY);
-    setRunResult({ score: scoreRef.current, penaltyApplied: applied, usedJumpers: usedJumpersRef.current });
+    const medaru = deathMedaruReward(scoreRef.current);
+    if (medaru > 0) gainMedaru(medaru);
+    setRunResult({ score: scoreRef.current, penaltyApplied: applied, usedJumpers: usedJumpersRef.current, medaruGained: medaru });
     setPhaseBoth('gameover');
-  }, [clearTimers, loseXp, setPhaseBoth]);
+  }, [clearTimers, loseXp, gainMedaru, setPhaseBoth]);
 
   // Soal terjawab (benar/salah/timeout) → kurangi nyawa bila perlu, lanjut.
   const resolveAnswer = useCallback((correct) => {

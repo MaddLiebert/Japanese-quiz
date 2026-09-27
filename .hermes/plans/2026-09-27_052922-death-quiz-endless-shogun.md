@@ -211,3 +211,23 @@ Dev server: **reuse** yang sudah jalan (5173/5174) — jangan kill proses user.
   - Skenario B (seed xp 15000 = Sensei): **4/4 PASS** — layar terkunci (Rank Shogun + rank sekarang + progress 15.000/20.000), tidak ada tombol Mulai, kartu Home terkunci (🔒). **0 console error, 0 page error.**
 - **Tidak di-push** (perintah user). Working tree bersih, `main` ahead 4.
 - Catatan tooling: `cdp-verify.mjs` dipatch agar tahan race `-32000 "Inspected target navigated or closed"` (retry, bukan fatal) — ini bikin re-`navigate()` saat seeding tidak lagi crash.
+
+---
+
+## Follow-up (2026-09-27) — Kompensasi Medaru (keputusan user)
+
+**Alasan:** user menilai mode ini tidak adil — cuma mengurangi XP tanpa reward sepadan ("kan gak adil ya kalo ngurang exp doang, gw pengen kompensasi sepadan, kaya reach gold nya juga banyak").
+
+**Keputusan (user pilih dari opsi):** skema **Escalating** — `5 medaru/benar` + bonus `25 × floor(skor/10)` (10→+75, 20→+150, 40→+300). Reward tambahan lain (achievement/drop item/WR) **tidak** dipilih → cukup medaru dulu.
+
+**Desain:**
+- `deathMedaruReward(score)` murni di `deathQuiz.js` (base + bonus, **min skor 5 → 0** sebagai anti-farm).
+- Action baru `gainMedaru(amount)` di `ProgressContext` (+ expose di provider).
+- `finishRun` membayar medaru SEKALI saat run benar-benar berakhir (mati / menyerah). **Keluar sukarela (`quit`) tidak dibayar** — konsisten dengan "tanpa penalti" & mencegah farming.
+- UI: HUD preview `🪙 +N` (live), layar game over nampilkan chip `MEDARU +N` + kalimat kompensasi (atau pesan min. skor 5), intro dapat 1 bullet penjelasan.
+
+**Verifikasi:**
+- `npm test` **227 pass / 0 fail** (+4 test baru), lint **0 error**, build ✓.
+- E2E CDP **Skenario C** (seed medaru 100, Shogun): **8/8 PASS** — jawab 10 benar (HUD `+75`), medaru **belum** nambah saat main, game over → saldo 100→**175** (+75 tepat), lalu Main Lagi mati skor 0 → **tetap 175** (anti-farm) + pesan "skor belum cukup". **0 console/page error.**
+- E2E **regresi Skenario A**: 7/7 PASS (HUD, revive, jumper 2→1→0, XP −300 tepat, skor 0 → medaru tidak nambah, Main Lagi). **0 error.**
+- Commit: `feat(deathquiz): kompensasi Medaru (escalating) — hadiah sepadan buat mode berisiko`. **Tidak push.**

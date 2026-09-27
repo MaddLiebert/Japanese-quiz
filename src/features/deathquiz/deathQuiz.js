@@ -13,6 +13,15 @@ export const DEATH_XP_PER_CORRECT = 40;  // XP tiap jawaban benar (sebelum bonus
 export const DEATH_XP_PENALTY = 300;     // XP hilang saat MATI (bukan saat keluar sukarela)
 export const DEATH_UNLOCK_XP = 20000;    // ambang rank Shogun (untuk progress bar layar terkunci)
 
+// ── Kompensasi medaru (gold) ────────────────────────────────────────────────
+// Mode ini paling berisiko (−300 XP saat mati), jadi bukan cuma mengurangi:
+// tiap run yang berakhir membayar medaru. Skema escalating — makin jauh makin
+// besar, biar endless-nya berasa diganjar.
+export const DEATH_MEDARU_PER_CORRECT = 5;      // medaru dasar tiap jawaban benar
+export const DEATH_MEDARU_MILESTONE = 10;       // tiap 10 benar → bonus kelipatan
+export const DEATH_MEDARU_MILESTONE_BONUS = 25; // 10→+25, 20→+50, 30→+75, …
+export const DEATH_MEDARU_MIN_SCORE = 5;        // skor minimum agar dapat medaru (anti-farm)
+
 // Gate unlock dari RANK STRING (single source of truth = getRank di ProgressContext).
 // Bukan ambang XP kedua, supaya tidak bisa drift dari sistem rank.
 export const isDeathQuizUnlocked = (rank) =>
@@ -62,4 +71,17 @@ export const applyDeathPenalty = (xp) => {
   const base = Number(xp);
   if (!Number.isFinite(base) || base <= 0) return 0;
   return Math.max(0, base - DEATH_XP_PENALTY);
+};
+
+// Hadiah medaru akhir run (skema escalating).
+//   base   = skor × 5
+//   bonus  = 25 × floor(skor / 10)  → 10→25, 20→50, 30→75, …
+// Skor < DEATH_MEDARU_MIN_SCORE → 0 (anti-farm: jawab 1 soal lalu keluar = 0).
+// Input aneh (NaN/negatif/undefined) → 0.
+export const deathMedaruReward = (score) => {
+  const s = Math.floor(Number(score));
+  if (!Number.isFinite(s) || s < DEATH_MEDARU_MIN_SCORE) return 0;
+  const base = s * DEATH_MEDARU_PER_CORRECT;
+  const bonus = DEATH_MEDARU_MILESTONE_BONUS * Math.floor(s / DEATH_MEDARU_MILESTONE);
+  return base + bonus;
 };
