@@ -8,6 +8,7 @@ import {
   YUJI_FINISHER_XP_MULT, yujiBurnedIds,
   YUJI_STYLE, YUJI_SUKUNA_EYES, YUJI_SUKUNA_MARKINGS,
   yujiSparks, yujiCracks, yujiEmbers, yujiBeam, yujiWindLines, yujiScissorLines,
+  yujiBolts, YUJI_FUGA_LEAD_S, yujiClipLeadS,
 } from './yujiFx.js';
 import { GOJO_MILESTONES } from './gojoFx.js';
 
@@ -106,15 +107,50 @@ test('yujiComboClip & kanji: 解 -> 捌 -> 開', () => {
   assert.equal(yujiComboKanji(3), '開');
 });
 
-test('yujiBurnedIds: 2 opsi salah, bukan jawaban benar, deterministik dgn rng', () => {
+test('yujiBurnedIds: SEMUA opsi salah dibakar, jawaban benar utuh', () => {
   const opts = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
-  const rng = () => 0.999;
-  const a = yujiBurnedIds(opts, 'a', rng);
-  const b = yujiBurnedIds(opts, 'a', rng);
-  assert.equal(a.length, 2);
-  assert.ok(!a.includes('a'), 'jawaban benar tidak boleh ikut dibakar');
-  assert.deepEqual(a, b, 'rng sama -> hasil sama');
-  assert.notEqual(a[0], a[1], 'dua id berbeda');
+  const a = yujiBurnedIds(opts, 'a');
+  assert.equal(a.length, 3, '4 opsi - 1 benar = 3 dibakar');
+  assert.ok(!a.includes('a'), 'jawaban benar TIDAK boleh dibakar — harus utuh');
+  assert.deepEqual([...a].sort(), ['b', 'c', 'd'], 'semua yang salah masuk');
+});
+
+test('yujiBurnedIds: 6 opsi (Medium) → 5 dibakar, benar utuh', () => {
+  const opts = ['a', 'b', 'c', 'd', 'e', 'f'].map((id) => ({ id }));
+  const burned = yujiBurnedIds(opts, 'c');
+  assert.equal(burned.length, 5);
+  assert.ok(!burned.includes('c'));
+});
+
+test('yujiBolts: petir merah kokusen — deterministik, arah dari pusat, ada cabang', () => {
+  const a = yujiBolts(7, 9, () => 0.5);
+  const b = yujiBolts(7, 9, () => 0.5);
+  assert.equal(a.length, 9);
+  assert.deepEqual(a, b, 'rng sama -> sama');
+  const bolt = a[0];
+  assert.ok(Array.isArray(bolt.pts) && bolt.pts.length >= 4, 'polyline butuh >=4 titik');
+  assert.ok(typeof bolt.dur === 'number' && bolt.dur > 0);
+  // tiap titik bergerak menjauh dari pusat (50,50)
+  const d0 = Math.hypot(bolt.pts[0][0] - 50, bolt.pts[0][1] - 50);
+  const dN = Math.hypot(bolt.pts[bolt.pts.length - 1][0] - 50, bolt.pts[bolt.pts.length - 1][1] - 50);
+  assert.ok(dN > d0, 'petir menjalar KELUAR dari pusat');
+});
+
+test('YUJI_FUGA_LEAD_S: offset leading-silence fuga terukur (0.46s), klip lain 0', () => {
+  assert.equal(YUJI_FUGA_LEAD_S, 0.46);
+  assert.equal(yujiClipLeadS('fuga'), 0.46);
+  assert.equal(yujiClipLeadS('kai'), 0);
+  assert.equal(yujiClipLeadS('kokusen'), 0);
+});
+
+test('YUJI_STYLE: tiap teknik punya kanji + warna; kalah punya kanji 失敗', () => {
+  for (const k of ['keiteiken', 'manjigeri', 'kokusen', 'senketsu', 'kai', 'hachi', 'fuga', 'takeover', 'wrong']) {
+    assert.ok(YUJI_STYLE[k], `style ${k} ada`);
+    assert.ok(YUJI_STYLE[k].kanji.length > 0, `kanji ${k} terisi`);
+    assert.match(YUJI_STYLE[k].color, /^#[0-9a-f]{6}$/i, `warna ${k} hex`);
+  }
+  assert.equal(YUJI_STYLE.wrong.kanji, '失敗');
+  assert.equal(YUJI_STYLE.kokusen.color, '#e0241a', 'kokusen sekarang MERAH (black flash + petir merah)');
 });
 
 test('yujiBurnedIds: opsi salah < 2 / input aneh -> aman', () => {
@@ -129,15 +165,15 @@ test('YUJI_FINISHER_XP_MULT = 2 (XP soal 開 dobel)', () => {
   assert.equal(YUJI_FINISHER_XP_MULT, 2);
 });
 
-test('YUJI_STYLE lengkap 8 teknik + kanji & warna', () => {
-  const keys = ['keiteiken', 'manjigeri', 'kokusen', 'senketsu', 'kai', 'hachi', 'fuga', 'takeover'];
+test('YUJI_STYLE lengkap 9 teknik + kanji & warna', () => {
+  const keys = ['keiteiken', 'manjigeri', 'kokusen', 'senketsu', 'kai', 'hachi', 'fuga', 'takeover', 'wrong'];
   assert.deepEqual(Object.keys(YUJI_STYLE).sort(), keys.slice().sort());
   for (const k of keys) {
     assert.ok(YUJI_STYLE[k].kanji && YUJI_STYLE[k].color && YUJI_STYLE[k].label, k);
   }
   assert.equal(YUJI_STYLE.fuga.kanji, '開');
   assert.equal(YUJI_STYLE.takeover.kanji, '宿儺の器');
-  assert.equal(YUJI_STYLE.kokusen.color, '#111111');
+  assert.equal(YUJI_STYLE.kokusen.color, '#e0241a');
   assert.equal(YUJI_STYLE.senketsu.color, '#8b0000');
 });
 

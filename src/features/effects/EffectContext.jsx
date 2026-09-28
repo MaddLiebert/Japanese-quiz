@@ -144,6 +144,7 @@ export function EffectProvider({ children }) {
   const yujiComboRef = useRef(0);
   const yujiEndedRef = useRef(false);      // suara collapse hanya sekali per cast
   const timersRef = useRef([]);
+  const hitTimerRef = useRef(null);
   // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
   const setTakeover = useCallback((on) => { yujiTakeoverRef.current = on; setYujiTakeover(on); }, []);
 
@@ -221,6 +222,15 @@ export function EffectProvider({ children }) {
 
     const gifSrc = yujiGifForAnswer(type, tech, takeoverNow, comboLevel);
     const holdMs = yujiAnswerHoldMs(tech, gifSrc, clipMs, cfg.hold);
+
+    // Atribut <html> untuk efek "kena nonjok" pada TOMBOL yang dipencet
+    // (CSS di index.css: [data-yuji-hit] [data-picked]). Auto-clear 700ms.
+    if (typeof document !== 'undefined') {
+      const root = document.documentElement;
+      root.dataset.yujiHit = type === 'wrong' ? 'wrong' : tech;
+      if (hitTimerRef.current) clearTimeout(hitTimerRef.current);
+      hitTimerRef.current = setTimeout(() => { delete root.dataset.yujiHit; }, 700);
+    }
 
     const fxId = ++seq;
     setFx({

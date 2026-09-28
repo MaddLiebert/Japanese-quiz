@@ -18,6 +18,7 @@ import { KanaQuiz } from "../features/quiz/KanaQuiz";
 import { useEffectLayer } from "../features/effects/EffectContext";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 import { yujiBurnedIds, YUJI_FINISHER_XP_MULT } from "../features/effects/yujiFx";
+import { markYujiPicked } from "../features/effects/yujiHit";
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
   const { language } = useLanguage();
@@ -164,9 +165,10 @@ export function Practice() {
   );
 
   // Kana mode: auto-advance after 800ms (legacy)
-  const handleKanaOptionClick = (option) => {
+  const handleKanaOptionClick = (option, e) => {
     if (isAnswered) return;
     if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
+    markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
 
     const correct = option.id === currentQuestion.id;
     if (correct) {
@@ -179,9 +181,10 @@ export function Practice() {
   };
 
   // Kotoba / Grammar mode: click selects, Next button advances
-  const handleKotobaOptionClick = (option) => {
+  const handleKotobaOptionClick = (option, e) => {
     if (isAnswered) return;
     if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
+    markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
     const correct = option.id === currentQuestion.id;
 
     if (correct) {
@@ -434,10 +437,9 @@ export function Practice() {
                   return (
                     <motion.button
                       key={option.id}
-                      onClick={() => handleKotobaOptionClick(option)}
+                      onClick={(e) => handleKotobaOptionClick(option, e)}
                       data-correct={isThisCorrect || undefined}
                       data-burned={isBurned || undefined}
-                      style={isBurned ? { visibility: 'hidden' } : undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -598,10 +600,9 @@ export function Practice() {
                   return (
                     <motion.button
                       key={option.id}
-                      onClick={() => handleKotobaOptionClick(option)}
+                      onClick={(e) => handleKotobaOptionClick(option, e)}
                       data-correct={isThisCorrect || undefined}
                       data-burned={isBurned || undefined}
-                      style={isBurned ? { visibility: 'hidden' } : undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }

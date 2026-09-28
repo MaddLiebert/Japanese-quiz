@@ -37,12 +37,13 @@ export const YUJI_SUKUNA_MARKINGS = [
 export const YUJI_STYLE = {
   keiteiken: { kanji: '逕庭拳', color: '#00b0ff', label: '逕庭拳 · Keiteiken' },
   manjigeri: { kanji: '卍蹴り', color: '#00b0ff', label: '卍蹴り · Manji-geri' },
-  kokusen:   { kanji: '黒閃',   color: '#111111', label: '黒閃 · Kokusen' },
+  kokusen:   { kanji: '黒閃',   color: '#e0241a', label: '黒閃 · Kokusen' },
   senketsu:  { kanji: '穿血',   color: '#8b0000', label: '穿血 · Senketsu' },
   kai:       { kanji: '解',     color: '#e8e0ff', label: '解 · Kai' },
   hachi:     { kanji: '捌',     color: '#e8e0ff', label: '捌 · Hachi' },
   fuga:      { kanji: '開',     color: '#e0241a', label: '開 · Fūga' },
   takeover:  { kanji: '宿儺の器', color: '#6d28d9', label: '宿儺の器 · Sukuna no Utsuwa' },
+  wrong:     { kanji: '失敗',   color: '#6b7280', label: '失敗 · Shippai (gagal)' },
 };
 
 // ── Teknik per streak ───────────────────────────────────────────────────────
@@ -110,16 +111,43 @@ export const YUJI_FINISHER_XP_MULT = 2;
 
 // Pilih <=2 id opsi salah. rng injectable -> deterministik di tes. Tidak
 // memutasi input (map() bikin salinan dulu).
-export const yujiBurnedIds = (options = [], correctId = null, rng = Math.random) => {
-  const ids = (Array.isArray(options) ? options : [])
+// 開 (finisher): SEMUA opsi salah dibakar; jawaban benar dibiarkan UTUH.
+// (Versi lama membakar 2 — user minta "sisa yang bener utuh", jadi semua salah kena.)
+export const yujiBurnedIds = (options = [], correctId = null) => {
+  return (Array.isArray(options) ? options : [])
     .map((o) => (o && typeof o === 'object' ? o.id : o))
     .filter((id) => id != null && id !== correctId);
-  for (let i = ids.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [ids[i], ids[j]] = [ids[j], ids[i]];
-  }
-  return ids.slice(0, 2);
 };
+
+// ── Petir merah kokusen (黒閃) — user minta aura petir merah ────────────────
+// Tiap bolt = polyline yang MENJALAR KELUAR dari pusat (50,50) dengan cabang.
+export const yujiBolts = (seed = 1, count = 9, rng = Math.random) =>
+  Array.from({ length: count }, (_, i) => {
+    const baseAngle = (i / count) * Math.PI * 2 + (rng() - 0.5) * 0.4;
+    const segments = 4 + Math.floor(rng() * 3);
+    const len = 26 + rng() * 26;
+    const pts = [[50, 50]];
+    for (let s = 1; s <= segments; s++) {
+      const t = s / segments;
+      const jitter = (rng() - 0.5) * 7 * (1 - t * 0.4);
+      const a = baseAngle + jitter * 0.05;
+      pts.push([+(50 + Math.cos(a) * len * t).toFixed(2), +(50 + Math.sin(a) * len * t).toFixed(2)]);
+    }
+    return {
+      id: `${seed}-b${i}`,
+      pts,
+      width: +(1.1 + rng() * 1.3).toFixed(2),
+      dur: +(0.3 + rng() * 0.35).toFixed(2),
+      delay: +(rng() * 0.14).toFixed(2),
+    };
+  });
+
+// ── Leading silence per klip (detik) — diukur via Web Audio (RMS). ──────────
+// fuga.mp3 punya 0.46 s diam di depan (klip lain 0.15-0.25 s) -> suara 開
+// kerasa telat setengah detik. playFile() melewati offset ini saat memutar.
+export const YUJI_FUGA_LEAD_S = 0.46;
+export const YUJI_CLIP_LEAD_S = { fuga: YUJI_FUGA_LEAD_S };
+export const yujiClipLeadS = (technique) => YUJI_CLIP_LEAD_S[technique] || 0;
 
 // ── Generator partikel murni (rng injectable; dipakai YujiBurst) ────────────
 export const yujiSparks = (seed = 1, count = 16, rng = Math.random) =>
