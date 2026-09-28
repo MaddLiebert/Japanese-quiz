@@ -6,8 +6,9 @@ import {
   YUJI_TAKEOVER_DURATION_S, yujiTakeoverLeft, yujiTakeoverStartDelayMs, YUJI_TAKEOVER_TIMELINE,
   yujiComboNext, yujiComboClip, yujiComboKanji, YUJI_COMBO_KANJI,
   YUJI_FINISHER_XP_MULT, yujiBurnedIds,
-  YUJI_STYLE, YUJI_SUKUNA_EYES, YUJI_SUKUNA_MARKINGS,
+  YUJI_STYLE, YUJI_SUKUNA_EYES, YUJI_SUKUNA_MARKINGS, YUJI_EYE_STYLE,
   yujiSparks, yujiCracks, yujiEmbers, yujiBeam, yujiWindLines, yujiScissorLines,
+  yujiFlames, YUJI_FIRE_COLORS,
   yujiBolts, YUJI_FUGA_LEAD_S, yujiClipLeadS,
 } from './yujiFx.js';
 import { GOJO_MILESTONES } from './gojoFx.js';
@@ -230,4 +231,42 @@ test('marka Sukuna: mahkota dahi + batang hidung + tato pipi (kanon)', () => {
     assert.ok(nums.length >= 4, `${m.id} path terlalu pendek`);
     assert.ok(nums.every((n) => n >= 0 && n <= 100), `${m.id} keluar bidang 0..100: ${m.d}`);
   }
+});
+
+test('mata Yuji tetap NORMAL (putih+hitam); mata Sukuna (merah) muncul DI BAWAH', () => {
+  const yujiEyes = YUJI_SUKUNA_EYES.filter((e) => e.kind === 'yuji');
+  const sukunaEyes = YUJI_SUKUNA_EYES.filter((e) => e.kind === 'sukuna');
+  assert.equal(yujiEyes.length, 2, 'dua mata Yuji');
+  assert.equal(sukunaEyes.length, 2, 'dua mata Sukuna');
+  for (const y of yujiEyes) for (const s of sukunaEyes) {
+    assert.ok(s.cy > y.cy, `${s.id} (Sukuna) harus DI BAWAH ${y.id} (Yuji)`);
+  }
+  const lum = (hex) => { const n = parseInt(hex.slice(1), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const y = YUJI_EYE_STYLE.yuji;
+  assert.ok(lum(y.sclera) >= 200, 'sklera mata Yuji putih normal');
+  assert.ok(lum(y.pupil) <= 40, 'pupil mata Yuji hitam normal');
+  const s = YUJI_EYE_STYLE.sukuna;
+  const n = parseInt(s.iris.slice(1), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  assert.ok(r > 150 && r > g * 2 && r > b * 2, `iris mata Sukuna harus merah: ${s.iris}`);
+});
+
+test('efek api takeover: lidah api merata + warna api sah', () => {
+  const f = yujiFlames(3, 9, () => 0.5);
+  assert.equal(f.length, 9);
+  for (const it of f) {
+    assert.ok(it.x >= 0 && it.x <= 100, `x ${it.x}`);
+    assert.ok(it.w > 0 && it.h > 0 && it.dur > 0 && it.delay >= 0);
+    assert.ok(YUJI_FIRE_COLORS.includes(it.hue), `hue ${it.hue}`);
+  }
+  assert.ok(YUJI_FIRE_COLORS.length >= 3);
+  for (const c of YUJI_FIRE_COLORS) assert.match(c, /^#[0-9a-f]{6}$/i);
+});
+
+test('timeline: api naik SEBELUM mata Sukuna terbuka, kilatan sebelum tersingkap', () => {
+  const t = YUJI_TAKEOVER_TIMELINE;
+  assert.ok(Number.isFinite(t.fireAt) && Number.isFinite(t.flashAt));
+  assert.ok(t.tattooStart <= t.fireAt, 'api mulai setelah tato');
+  assert.ok(t.fireAt <= t.eyesAt, 'api naik sebelum mata Sukuna terbuka');
+  assert.ok(t.kanjiAt < t.flashAt, 'kilatan setelah kanji');
+  assert.ok(t.flashAt <= t.settleStart, 'kilatan sebelum veil tersingkap');
 });
