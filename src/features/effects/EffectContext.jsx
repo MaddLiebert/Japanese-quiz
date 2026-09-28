@@ -23,6 +23,9 @@ import { yujiGifForAnswer, yujiAnswerHoldMs } from './yujiGifs';
 import {
   playYujiTechnique, playImpactDouble, playKickWhoosh, playBlackSpark,
   playBloodCompress, playBloodPierce, playPossessWhoosh, playSlash, playFuga,
+  playKeiteikenThump, playManjigeriSpin, playManjigeriCrack,
+  playKokusenCrackle, playKokusenThunder, playSenketsuJet, playKaiSnip,
+  playFugaBoom, playSukunaDread, playSukunaBell, playSukunaHeart,
 } from '../../utils/sfx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -209,15 +212,17 @@ export function EffectProvider({ children }) {
     if (type === 'wrong') {
       clipMs = takeoverNow ? playYujiTechnique('zakome') : playWrongSound();
       if (takeoverNow) playDomainCollapse('wrong');
-    } else if (comboLevel === 1) { clipMs = playYujiTechnique('kai'); playSlash(false); }
-    else if (comboLevel === 2) { clipMs = playYujiTechnique('hachi'); playSlash(true); }
-    else if (comboLevel === 3) { clipMs = playYujiTechnique('fuga'); playFuga(); }
+    } else if (comboLevel === 1) { clipMs = playYujiTechnique('kai'); playSlash(false); playKaiSnip(false); }
+    else if (comboLevel === 2) { clipMs = playYujiTechnique('hachi'); playSlash(true); playKaiSnip(true); }
+    else if (comboLevel === 3) { clipMs = playYujiTechnique('fuga'); playFuga(); playFugaBoom(); }
     else {
       clipMs = playYujiTechnique(tech);
-      if (tech === 'keiteiken') playImpactDouble();
-      else if (tech === 'manjigeri') playKickWhoosh();
-      else if (tech === 'kokusen') playBlackSpark();
-      else if (tech === 'senketsu') { playBloodCompress(); playBloodPierce(); }
+      // Lapisan SFX ber-teknik (biar makin hidup). Tiap teknik >= 2 lapis;
+      // referensi anime: 黒閃 = crackle listrik + guntur, 逕庭拳 = bantingan dobel, dst.
+      if (tech === 'keiteiken') { playImpactDouble(); playKeiteikenThump(); }
+      else if (tech === 'manjigeri') { playKickWhoosh(); playManjigeriSpin(); playManjigeriCrack(); }
+      else if (tech === 'kokusen') { playBlackSpark(); playKokusenCrackle(); playKokusenThunder(); }
+      else if (tech === 'senketsu') { playBloodCompress(); playBloodPierce(); playSenketsuJet(); }
     }
 
     const gifSrc = yujiGifForAnswer(type, tech, takeoverNow, comboLevel);
@@ -489,7 +494,12 @@ export function EffectProvider({ children }) {
     setTakeover(true);
     takeoverEndsAtRef.current = Date.now() + yujiTakeoverStartDelayMs() + YUJI_TAKEOVER_DURATION_S * 1000;
     setTakeoverLeft(YUJI_TAKEOVER_DURATION_S);
-    playPossessWhoosh();   // 宿儺の器 = teks doang; SFX kerasukan, bukan klip voice
+    // 宿儺の器 — MENCEKAM (referensi: tema Sukuna = taiko berat + drone + bel kuil):
+    // whoosh kerasukan + drone kegelapan + bel kuil inharmonik + detak jantung.
+    playPossessWhoosh();
+    playSukunaDread();
+    playSukunaBell();
+    playSukunaHeart();
   }, [activeVisual, setTakeover]);
 
   // Hitung mundur takeover (30 dtk) — habis → padam sendiri (bukan salah).

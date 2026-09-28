@@ -788,6 +788,58 @@ export const slashParams = (heavy = false) => (heavy
 export const fugaRoarParams = () => ({ type: 'sawtooth', fromHz: 70, toHz: 240, dur: 1.2, gain: 0.34, noiseGain: 0.18 });
 export const fugaCrackleParams = () => ({ hz: 2400, dur: 0.9, gain: 0.08 });
 
+// ── Lapisan SFX tambahan per teknik (biar "hidup", referensi anime) ────────
+// Tiap teknik dapat >= 2 lapis: base (sudah ada) + lapisan di bawah ini.
+// Referensi desain: 黒閃 di anime = distorsi spasial + crackle listrik + guntur;
+// 逕庭拳 = dua bantingan; 卍蹴り = angin berputar + hantaman; 穿血 = jet darah;
+// 解/捌 = guntingan tipis vs berat; 開 = ledakan api; Sukuna = bel kuil + detak.
+
+export const keiteikenThumpParams = () => ({ type: 'triangle', fromHz: 210, toHz: 58, dur: 0.22, gain: 0.26, noiseGain: 0.08 });
+export const manjigeriSpinParams = () => ({ type: 'sine', fromHz: 180, toHz: 720, dur: 0.26, gain: 0.13, noiseGain: 0.09 });
+export const manjigeriCrackParams = () => ({ type: 'square', fromHz: 900, toHz: 110, dur: 0.16, gain: 0.22, noiseGain: 0.12 });
+
+// 黒閃: crackle listrik (beberapa derik cepat) + guntur rendah panjang.
+export const kokusenCrackleParams = () => ({ baseHz: 3200, bursts: 4, gapMs: 55, dur: 0.07, gain: 0.13 });
+export const kokusenThunderParams = () => ({ type: 'sine', fromHz: 150, toHz: 34, dur: 1.05, gain: 0.3, noiseGain: 0.14 });
+
+export const senketsuJetParams = () => ({ type: 'sawtooth', fromHz: 1800, toHz: 260, dur: 0.34, gain: 0.2, noiseGain: 0.16 });
+
+export const kaiSnipParams = (heavy = false) => (heavy
+  ? { type: 'triangle', fromHz: 2600, toHz: 1400, dur: 0.14, gain: 0.2, noiseGain: 0.05 }
+  : { type: 'triangle', fromHz: 3400, toHz: 2200, dur: 0.09, gain: 0.15, noiseGain: 0.03 });
+
+export const fugaBoomParams = () => ({ type: 'sine', fromHz: 90, toHz: 32, dur: 1.3, gain: 0.42, noiseGain: 0.2 });
+
+// ── Sukuna masuk (宿儺の器) — lebih MENCEKAM ────────────────────────────────
+// Referensi: tema Sukuna di OST = taiko berat + drone rendah + bel kuil.
+// Bel kuil = partial INHARMONIK (bukan harmonik) -> kerasa "keramat"/seram.
+export const sukunaBellParams = () => ({
+  baseHz: 82,
+  partials: [1, 2.76, 5.4, 8.93, 13.34],   // rasio inharmonik bel (mirip lonceng kuil)
+  dur: 3.2,
+  gain: 0.22,
+});
+export const sukunaHeartParams = () => ({
+  beats: [{ atMs: 0, gain: 0.34, hz: 44 }, { atMs: 320, gain: 0.22, hz: 38 }],  // lub-dub
+  dur: 0.2,
+});
+export const sukunaDreadParams = () => ({ fromHz: 58, toHz: 41, dur: 2.6, subGain: 0.3, padGain: 0.14 });
+
+// Registry lapis per teknik -> satu tempat, gampang di-tune & dites.
+export const TECHNIQUE_SFX_LAYERS = {
+  keiteiken: ['playImpactDouble', 'playKeiteikenThump'],
+  manjigeri: ['playKickWhoosh', 'playManjigeriSpin', 'playManjigeriCrack'],
+  kokusen: ['playBlackSpark', 'playKokusenCrackle', 'playKokusenThunder'],
+  senketsu: ['playBloodCompress', 'playBloodPierce', 'playSenketsuJet'],
+  kai: ['playSlash', 'playKaiSnip'],
+  hachi: ['playSlash', 'playKaiSnip'],
+  fuga: ['playFugaRoar', 'playFugaBoom', 'playFuga'],
+  takeover: ['playPossessWhoosh', 'playSukunaDread', 'playSukunaBell', 'playSukunaHeart'],
+};
+
+export const techniqueSfxLayers = (technique) =>
+  Array.isArray(TECHNIQUE_SFX_LAYERS[technique]) ? TECHNIQUE_SFX_LAYERS[technique] : [];
+
 // Helper satu titik: sweep nada + noise burst (DRY semua SFX Yuji).
 const sweepNoise = (p, { noise = true } = {}) => {
   if (typeof window === 'undefined' || !p) return 0;
@@ -814,6 +866,12 @@ const sweepNoise = (p, { noise = true } = {}) => {
 };
 
 export const playKickWhoosh = () => sweepNoise(kickWhooshParams());
+export const playKeiteikenThump = () => sweepNoise(keiteikenThumpParams());
+export const playManjigeriSpin = () => sweepNoise(manjigeriSpinParams());
+export const playManjigeriCrack = () => sweepNoise(manjigeriCrackParams());
+export const playSenketsuJet = () => sweepNoise(senketsuJetParams());
+export const playKaiSnip = (heavy = false) => sweepNoise(kaiSnipParams(heavy));
+export const playFugaBoom = () => sweepNoise(fugaBoomParams());
 export const playBloodCompress = () => sweepNoise(bloodCompressParams());
 export const playBloodPierce = () => sweepNoise(bloodPierceParams());
 export const playSlash = (heavy = false) => sweepNoise(slashParams(heavy));
@@ -860,6 +918,111 @@ export const playPossessWhoosh = () => {
 };
 
 // 開: auman api + bara berderak (layer 2, mulai setelah auman — jangan menutupi).
+// 黒閃: crackle listrik (derik cepat berulang) + guntur rendah panjang.
+export const playKokusenCrackle = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = kokusenCrackleParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = ctx.currentTime;
+  for (let i = 0; i < p.bursts; i++) {
+    noiseBurst(ctx, t0 + (i * p.gapMs) / 1000, {
+      dur: p.dur, gain: p.gain * (1 - i * 0.15),
+      type: 'highpass', fromHz: p.baseHz - i * 300, toHz: p.baseHz * 0.6,
+    });
+  }
+  return p.bursts * p.gapMs + Math.round(p.dur * 1000);
+};
+
+export const playKokusenThunder = () => sweepNoise(kokusenThunderParams());
+
+// Sukuna masuk: bel kuil (partial inharmonik) — inti rasa "mencekam".
+export const playSukunaBell = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = sukunaBellParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  for (const ratio of p.partials) {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(p.baseHz * ratio, t);
+    const partialGain = p.gain / (1 + ratio * 0.55);   // partial tinggi makin pelan
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(partialGain, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur * (1 - ratio / 22));
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + p.dur + 0.1);
+  }
+  return Math.round(p.dur * 1000);
+};
+
+// Detak jantung (lub-dub) — bikin suasana tegang sebelum/di awal kerasukan.
+export const playSukunaHeart = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = sukunaHeartParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = ctx.currentTime;
+  for (const b of p.beats) {
+    const t = t0 + b.atMs / 1000;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(b.hz, t);
+    osc.frequency.exponentialRampToValueAtTime(b.hz * 0.62, t + p.dur);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(b.gain, t + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + p.dur + 0.05);
+  }
+  return p.beats[p.beats.length - 1].atMs + Math.round(p.dur * 1000);
+};
+
+// Drone rendah "kegelapan" — layer terakhir yang bikin ruangan terasa berat.
+export const playSukunaDread = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = sukunaDreadParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(p.fromHz, t);
+  osc.frequency.exponentialRampToValueAtTime(p.toHz, t + p.dur);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.subGain, t + 0.12);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.1);
+  // Pad oktaf atas biar kedengaran di speaker HP (pelajaran ambience Gojo).
+  const pad = ctx.createOscillator();
+  const pg = ctx.createGain();
+  pad.type = 'triangle';
+  pad.frequency.setValueAtTime(p.fromHz * 3, t);
+  pg.gain.setValueAtTime(0, t);
+  pg.gain.linearRampToValueAtTime(p.padGain, t + 0.2);
+  pg.gain.exponentialRampToValueAtTime(0.0008, t + p.dur * 0.9);
+  pad.connect(pg);
+  pg.connect(ctx.destination);
+  pad.start(t);
+  pad.stop(t + p.dur);
+  return Math.round(p.dur * 1000);
+};
+
 export const playFuga = () => {
   const ms = playFugaRoar();
   if (typeof window === 'undefined') return 0;
