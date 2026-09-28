@@ -552,7 +552,7 @@ export const getAudioContext = () => initAudioContext();
 
 // Burst noise pendek (desis/angin). Sengaja TIDAK me-refactor playDomainBoom
 // (kode lama sudah stabil & punya test sendiri) — helper ini untuk pemutar baru.
-const noiseBurst = (ctx, t, { dur, gain, type = 'lowpass', fromHz = 900, toHz = 120 }) => {
+const noiseBurst = (ctx, t, { dur, gain, type = 'lowpass', fromHz = 900, toHz = 120, out = null }) => {
   const len = Math.max(1, Math.floor(ctx.sampleRate * dur));
   const buf = ctx.createBuffer(1, len, ctx.sampleRate);
   const data = buf.getChannelData(0);
@@ -568,7 +568,8 @@ const noiseBurst = (ctx, t, { dur, gain, type = 'lowpass', fromHz = 900, toHz = 
   g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
   src.connect(f);
   f.connect(g);
-  g.connect(ctx.destination);
+  // `out` opsional (BGM master) — default langsung ke speaker.
+  g.connect((out && typeof out.connect === 'function') ? out : ctx.destination);
   src.start(t);
 };
 
@@ -778,14 +779,63 @@ export const ballHumPlan = (balls = {}) => {
   return out;
 };
 
+// ── BGM 伏魔御廚子 (domain Sukuna) — "mencekam khas Sukuna" ─────────────────
+// Kritik user 28/09: "tambahin bgm mencekam khas sukuna buat domain dia".
+// Resep (referensi tema Sukuna di anime — taiko berat + drone + kuil):
+//   • organ gelap  : saw 55/82.41/110Hz lewat lowpass 320 + swell LFO pelan
+//                    (82.41 = E2 → tritone gelap dari 55/110 = A1/A2)
+//   • drone        : 2 sine nyaris sama (beat pelan, "hidup") + sub 41.2Hz
+//   • taiko        : pola 16 step × 0.5 dtk = loop 8 dtk, aksen tiap 2 dtk
+//   • motif koto   : hirajoshi (A B C E F) turun — nada "tanda bahaya"
+//   • bel kuil     : inharmonik, tiap 4 dtk
+//   • bisikan 呪詞 : noise bandpass termodulasi pelan
+export const SUKUNA_BGM_LOOP_STEPS = 16;
+export const SUKUNA_BGM_STEP_S = 0.5;
+
 export const sukunaBgmPlan = () => ({
   level: 0.20,            // spec: level 0.20 (sedikit lebih tebal dari Gojo 0.18)
   fadeInMs: 1600,         // spec
   fadeOutMs: 900,         // spec
-  drone: { freqs: [55, 110], detune: [0, -6], gain: 0.5 },
+  drone: { freqs: [55, 110, 41.2], detune: [0, -6, 3], gain: 0.5 },
   pad: { type: 'triangle', freqs: [165, 220, 330], filterHz: 780, lfoHz: 0.05, lfoDepth: 300, gain: 0.4 },
+  // Organ gelap: saw tebal di register rendah, dibuka-tutup swell pelan.
+  organ: { type: 'sawtooth', freqs: [55, 82.41, 110], filterHz: 320, q: 1.2, swellHz: 0.045, swellDepth: 120, gain: 0.32 },
+  // Taiko: pola loop 16 step (0.5 dtk/step = 8 dtk). Aksen = pukulan ganda berat.
+  taiko: {
+    steps: [0, 3, 4, 7, 8, 11, 12, 14],
+    accents: [0, 4, 8, 12],
+    loopSteps: SUKUNA_BGM_LOOP_STEPS,
+    stepS: SUKUNA_BGM_STEP_S,
+  },
+  // Motif koto hirajoshi (A B C E F) — 8 nada turun, satu per 2 step (1 dtk).
+  motif: {
+    notes: [220, 261.63, 329.63, 349.23, 329.63, 261.63, 246.94, 220],
+    stepEvery: 2,
+  },
   bellEveryMs: 4000,      // bel kuil tiap 4 dtk (spec)
   whisper: { filterType: 'bandpass', filterHz: 620, q: 0.8, modHz: 0.11, gain: 0.05 },
+});
+
+// Taiko: pukulan berat (membrane) — sine turun cepat + noise kulit tipis.
+// accent = pukulan ganda (2 hantaman beruntun) untuk step berat.
+export const sukunaTaikoParams = (accent = false) => (accent
+  ? {
+    hit: { type: 'sine', fromHz: 92, toHz: 38, dur: 0.42, gain: 0.34, noiseGain: 0.1 },
+    hit2: { delayMs: 170, type: 'sine', fromHz: 78, toHz: 34, dur: 0.5, gain: 0.28, noiseGain: 0.08 },
+  }
+  : { hit: { type: 'sine', fromHz: 104, toHz: 46, dur: 0.3, gain: 0.22, noiseGain: 0.06 } });
+
+// Koto (motif hirajoshi): pluck triangle + oktaf saw tipis, bend turun halus,
+// lowpass menutup cepat → karakter "petik dawai" yang gelap.
+export const sukunaMotifParams = () => ({
+  type: 'triangle',
+  overtone: 'sawtooth',
+  overtoneGain: 0.18,
+  dur: 1.1,
+  gain: 0.2,
+  bend: -12,              // cents, turun halus (koto)
+  filterHz: 2200,
+  filterCloseS: 0.9,
 });
 
 // ── SFX one-shot Yuji (pack_09) — TIDAK ada ambience sustained (keputusan desain) ──
@@ -1223,6 +1273,95 @@ export const playSilenceAfter = () => {
   if (typeof window === 'undefined') return 0;
   const p = silenceAfterParams();
   return p.ms;
+};
+
+// ── BGM domain Sukuna: pemain taiko + koto motif ────────────────────────────
+// Dipakai scheduler lookahead di sukunaAmbience.js — `at` = waktu ABSOLUT
+// (ctx.currentTime + lead) supaya irama tidak goyang karena jitter setTimeout.
+// Node/test = no-op (0), pola sama dengan player lain.
+
+// Taiko: pukulan membrane (sine turun cepat + noise kulit tipis). accent =
+// pukulan ganda (hentakan berat khas taiko upacara).
+// `out` = node tujuan opsional (dipakai BGM: connect ke master gain ambience
+// supaya fade-out & ducking ikut berlaku). Default: ctx.destination.
+export const playSukunaTaiko = (accent = false, at = null, out = null) => {
+  if (typeof window === 'undefined') return 0;
+  const p = sukunaTaikoParams(accent);
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = (Number.isFinite(at) ? at : ctx.currentTime);
+  const dest = (out && typeof out.connect === 'function') ? out : ctx.destination;
+
+  const hit = (h, at2) => {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = h.type;
+    osc.frequency.setValueAtTime(h.fromHz, at2);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(24, h.toHz), at2 + h.dur * 0.85);
+    g.gain.setValueAtTime(0, at2);
+    g.gain.linearRampToValueAtTime(h.gain, at2 + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0008, at2 + h.dur);
+    osc.connect(g);
+    g.connect(dest);
+    osc.start(at2);
+    osc.stop(at2 + h.dur + 0.05);
+    if (h.noiseGain > 0) {
+      noiseBurst(ctx, at2, { dur: h.dur * 0.5, gain: h.noiseGain, type: 'bandpass', fromHz: h.fromHz * 6, toHz: h.toHz * 3, out: dest });
+    }
+  };
+
+  hit(p.hit, t0);
+  if (p.hit2) hit(p.hit2, t0 + p.hit2.delayMs / 1000);
+  const tail = p.hit2 ? p.hit2.delayMs / 1000 + p.hit2.dur : p.hit.dur;
+  return Math.round(tail * 1000);
+};
+
+// Koto: petikan dawai (triangle + oktaf saw tipis) dengan bend turun halus +
+// lowpass menutup cepat → karakter motif 箏 yang gelap (hirajoshi).
+// `out` = node tujuan opsional (sama seperti playSukunaTaiko).
+export const playSukunaMotif = (freq, at = null, out = null) => {
+  if (typeof window === 'undefined') return 0;
+  const p = sukunaMotifParams();
+  const hz = Number.isFinite(freq) && freq > 0 ? freq : 220;
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = (Number.isFinite(at) ? at : ctx.currentTime);
+  const dest = (out && typeof out.connect === 'function') ? out : ctx.destination;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(p.filterHz, t0);
+  filter.frequency.exponentialRampToValueAtTime(Math.max(120, p.filterHz * 0.22), t0 + p.filterCloseS);
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(p.gain, t0 + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0008, t0 + p.dur);
+  filter.connect(g);
+  g.connect(dest);
+
+  const osc = ctx.createOscillator();
+  osc.type = p.type;
+  osc.frequency.setValueAtTime(hz, t0);
+  if (osc.detune) osc.detune.setValueAtTime(p.bend, t0);
+  osc.connect(filter);
+  osc.start(t0);
+  osc.stop(t0 + p.dur + 0.05);
+
+  // Oktaf atas (saw tipis) → kilau dawai, tetap di bawah filter yang menutup.
+  const ov = ctx.createOscillator();
+  const ovg = ctx.createGain();
+  ov.type = p.overtone;
+  ov.frequency.setValueAtTime(hz * 2, t0);
+  ovg.gain.setValueAtTime(p.overtoneGain * p.gain, t0);
+  ovg.gain.exponentialRampToValueAtTime(0.0006, t0 + p.dur * 0.6);
+  ov.connect(ovg);
+  ovg.connect(filter);
+  ov.start(t0);
+  ov.stop(t0 + p.dur * 0.7);
+
+  return Math.round(p.dur * 1000);
 };
 
 // Registry lapis per jurus Sukuna — tiap jurus ≥2 lapis (spec, dites).

@@ -2,11 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   SUKUNA_MILESTONES, isSukunaMilestone, sukunaTechniqueFor,
+  SUKUNA_LADDER, SUKUNA_NON_STREAK_CYCLE, sukunaNonStreakIndex,
   SUKUNA_ULT_THRESHOLD, sukunaCurseCharge, sukunaUltReady,
   SUKUNA_DOMAIN_DURATION_S, sukunaDomainLeft, sukunaDomainStartDelayMs,
   SUKUNA_CAST_VOICE, SUKUNA_DOMAIN_TIMELINE,
-  SUKUNA_HITSUME_INTERVAL_MS, sukunaHitsumeCount, sukunaHitsumeOrder, sukunaHitsumeCut,
+  SUKUNA_HITSUME_DELAY_MS, sukunaHitsumeCut,
   SUKUNA_STYLE,
+  sukunaQuizSkillAt, sukunaSkillCut,
   sukunaWebLines, sukunaThunderBolts, sukunaWheelSpokes, sukunaChantLines,
   sukunaSlashRain, sukunaEmbers, sukunaMantraRing,
 } from './sukunaFx.js';
@@ -18,26 +20,51 @@ test('milestone Sukuna = sama persis Gojo (konsisten JJK)', () => {
   assert.ok(!isSukunaMilestone(4));
 });
 
-test('sukunaTechniqueFor: 1–2 = kumo_no_ito', () => {
+test('sukunaTechniqueFor: non-streak ROTASI kumo → nue → kumo … (kritik user 28/09 v3)', () => {
+  // streak 1,2,3 = non-momen → kumo, nue, kumo (bukan null → suara default!)
   assert.equal(sukunaTechniqueFor('correct', 1), 'kumo_no_ito');
-  assert.equal(sukunaTechniqueFor('correct', 2), 'kumo_no_ito');
+  assert.equal(sukunaTechniqueFor('correct', 2), 'nue');
+  assert.equal(sukunaTechniqueFor('correct', 3), 'kumo_no_ito');
+  // 4..19 = non-momen (ladder pertama di 20) → lanjut rotasi
+  assert.equal(sukunaTechniqueFor('correct', 4), 'nue');
+  assert.equal(sukunaTechniqueFor('correct', 5), 'kumo_no_ito');
+  assert.equal(sukunaTechniqueFor('correct', 19), 'kumo_no_ito');
 });
 
-test('sukunaTechniqueFor: 3–19 = nue', () => {
-  for (const s of [3, 4, 10, 15, 19]) assert.equal(sukunaTechniqueFor('streak', s), 'nue', `streak ${s}`);
+test('sukunaTechniqueFor: TIDAK PERNAH null utk streak benar > 0 (anti suara default)', () => {
+  for (let s = 1; s <= 200; s++) {
+    const t = sukunaTechniqueFor('correct', s);
+    assert.ok(typeof t === 'string' && t.length > 0, `streak ${s} -> ${t}`);
+    assert.ok(t === 'kumo_no_ito' || t === 'nue' || Object.values(SUKUNA_LADDER).includes(t), `streak ${s} -> ${t}`);
+  }
 });
 
-test('sukunaTechniqueFor: 20 = furube (summon Mahoraga)', () => {
+test('sukunaTechniqueFor: momen gede TEPAT di 20 / 30 / 50', () => {
   assert.equal(sukunaTechniqueFor('streak', 20), 'furube');
-  assert.equal(sukunaTechniqueFor('correct', 20), 'furube');
+  assert.equal(sukunaTechniqueFor('streak', 30), 'ryuurin');
+  assert.equal(sukunaTechniqueFor('streak', 50), 'sekai_zangeki');
+  // 21, 29, 31, 49, 51 = non-momen → rotasi (bukan null)
+  for (const s of [21, 29, 31, 49, 51, 60, 75, 100]) {
+    const t = sukunaTechniqueFor('streak', s);
+    assert.ok(t === 'kumo_no_ito' || t === 'nue', `streak ${s} harus rotasi, dapat ${t}`);
+  }
 });
 
-test('sukunaTechniqueFor: 21–49 = ryuurin (chant)', () => {
-  for (const s of [21, 25, 30, 40, 49]) assert.equal(sukunaTechniqueFor('streak', s), 'ryuurin', `streak ${s}`);
+test('sukunaNonStreakIndex: hitung jawaban benar non-momen (momen tidak menggeser)', () => {
+  assert.equal(sukunaNonStreakIndex(0), 0);
+  assert.equal(sukunaNonStreakIndex(1), 1);
+  assert.equal(sukunaNonStreakIndex(19), 19);
+  assert.equal(sukunaNonStreakIndex(20), 19, 'streak 20 = momen, index tidak naik');
+  assert.equal(sukunaNonStreakIndex(21), 20, 'streak 21 = non-momen ke-20');
+  assert.equal(sukunaNonStreakIndex(30), 28);
+  assert.equal(sukunaNonStreakIndex(50), 47);
+  assert.equal(sukunaNonStreakIndex(NaN), 0);
+  assert.equal(sukunaNonStreakIndex(-5), 0);
 });
 
-test('sukunaTechniqueFor: 50+ = sekai_zangeki (World Cut)', () => {
-  for (const s of [50, 60, 75, 100, 200]) assert.equal(sukunaTechniqueFor('correct', s), 'sekai_zangeki', `streak ${s}`);
+test('SUKUNA_NON_STREAK_CYCLE = [kumo, nue] — deterministik, bukan acak', () => {
+  assert.deepEqual(SUKUNA_NON_STREAK_CYCLE, ['kumo_no_ito', 'nue']);
+  assert.deepEqual(SUKUNA_LADDER, { 20: 'furube', 30: 'ryuurin', 50: 'sekai_zangeki' });
 });
 
 test('sukunaTechniqueFor: salah = null & TIDAK PERNAH domain/kai (jangan nabrak Yuji)', () => {
@@ -48,10 +75,11 @@ test('sukunaTechniqueFor: salah = null & TIDAK PERNAH domain/kai (jangan nabrak 
   }
 });
 
-test('sukunaTechniqueFor: input kotor aman', () => {
-  assert.equal(sukunaTechniqueFor('correct', NaN), 'kumo_no_ito');
-  assert.equal(sukunaTechniqueFor('correct', -3), 'kumo_no_ito');
-  assert.equal(sukunaTechniqueFor('correct', undefined), 'kumo_no_ito');
+test('sukunaTechniqueFor: input kotor aman (null, bukan efek nyasar)', () => {
+  assert.equal(sukunaTechniqueFor('correct', NaN), null);
+  assert.equal(sukunaTechniqueFor('correct', -3), null);
+  assert.equal(sukunaTechniqueFor('correct', undefined), null);
+  assert.equal(sukunaTechniqueFor('correct', 0), null);
 });
 
 test('sukunaCurseCharge: 0..20 clamp, input aneh -> 0', () => {
@@ -129,47 +157,24 @@ test('kanji per-karakter: 領域展開 4 karakter, 伏魔御廚子 5 karakter', 
   assert.ok(Math.abs(t.kanji2Per - 0.19) < 0.03);
 });
 
-test('SUKUNA_HITSUME_INTERVAL_MS = 4000 (必中: slash 1 opsi salah / 4 dtk)', () => {
-  assert.equal(SUKUNA_HITSUME_INTERVAL_MS, 4000);
+test('SUKUNA_HITSUME_DELAY_MS: tebasan cepat (≤1.5 dtk) — user minta "langsung aja cepet"', () => {
+  assert.ok(SUKUNA_HITSUME_DELAY_MS > 0 && SUKUNA_HITSUME_DELAY_MS <= 1500, String(SUKUNA_HITSUME_DELAY_MS));
 });
 
-test('sukunaHitsumeCount: 3 opsi salah habis dalam ~12 dtk', () => {
-  assert.equal(sukunaHitsumeCount(0), 0);
-  assert.equal(sukunaHitsumeCount(1), 1);
-  assert.equal(sukunaHitsumeCount(3), 3);
-  assert.equal(sukunaHitsumeCount(5), 5);
-  assert.equal(sukunaHitsumeCount(NaN), 0);
-  assert.equal(sukunaHitsumeCount(-2), 0);
-});
-
-test('sukunaHitsumeOrder: pilih opsi salah satu-satu, bukan jawaban benar, rng injectable', () => {
+test('sukunaHitsumeCut: SATU tebasan = SEMUA opsi salah, jawaban benar aman', () => {
   const opts = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
-  const order = sukunaHitsumeOrder(opts, 'a', () => 0);
-  assert.equal(order.length, 3, 'hanya opsi salah');
-  assert.ok(!order.includes('a'), 'jawaban benar tidak boleh kena');
-  assert.deepEqual(sukunaHitsumeOrder(opts, 'a', () => 0), order, 'rng sama -> hasil sama');
-  assert.equal(new Set(order).size, order.length, 'tidak duplikat');
-  // input aneh aman
-  assert.deepEqual(sukunaHitsumeOrder(null, 'a'), []);
-  assert.deepEqual(sukunaHitsumeOrder([{ id: 'a' }], 'a'), []);
-});
-
-test('sukunaHitsumeCut: tiap 4 dtk satu opsi salah, stabil antar render, stop di jawaban benar', () => {
-  const opts = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 0), []);
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 3.9), []);
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 4), ['b']);
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 8), ['b', 'c']);
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 12), ['b', 'c', 'd']);
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 30), ['b', 'c', 'd'], 'cap: tinggal jawaban benar');
+  // semua opsi salah sekaligus — bukan satu-satu lagi (kritik user 28/09 v3)
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a'), ['b', 'c', 'd']);
   // stabil: panggilan berulang hasil sama (bukan acak)
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 8), sukunaHitsumeCut(opts, 'a', 8));
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a'), sukunaHitsumeCut(opts, 'a'));
+  // jawaban benar tidak pernah masuk walau posisinya di tengah
+  assert.deepEqual(sukunaHitsumeCut(opts, 'c'), ['a', 'b', 'd']);
   // input aneh aman
-  assert.deepEqual(sukunaHitsumeCut(null, 'a', 8), []);
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', NaN), []);
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', -2), []);
-  // interval custom
-  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 2, 2000), ['b']);
+  assert.deepEqual(sukunaHitsumeCut(null, 'a'), []);
+  assert.deepEqual(sukunaHitsumeCut([], 'a'), []);
+  assert.deepEqual(sukunaHitsumeCut([{ id: 'a' }], 'a'), []);
+  // id string juga diterima
+  assert.deepEqual(sukunaHitsumeCut(['a', 'b', 'c'], 'a'), ['b', 'c']);
 });
 
 test('SUKUNA_STYLE lengkap: 6 jurus + domain + wrong, kanji & warna', () => {
@@ -185,6 +190,39 @@ test('SUKUNA_STYLE lengkap: 6 jurus + domain + wrong, kanji & warna', () => {
   assert.equal(SUKUNA_STYLE.sekai_zangeki.kanji, '世界を断つ斬撃');
   assert.equal(SUKUNA_STYLE.domain.kanji, '伏魔御廚子');
   assert.equal(SUKUNA_STYLE.domain.color, '#e0241a');
+  // Kritik user 28/09: kumo = jaring DI KARTU (inWeb); furube = GIF Mahoraga kanon;
+  // salah = 馬鹿な merah (bukan abu-abu) + GIF kalah.
+  assert.equal(SUKUNA_STYLE.kumo_no_ito.inWeb, true);
+  assert.equal(SUKUNA_STYLE.furube.gif, '/effects/mahoraga.gif');
+  assert.equal(SUKUNA_STYLE.wrong.kanji, '馬鹿な');
+  assert.equal(SUKUNA_STYLE.wrong.color, '#e0241a');
+});
+
+test('sukunaQuizSkillAt: skill quiz HANYA di streak 30 & 50 (sesuai lore)', () => {
+  assert.equal(sukunaQuizSkillAt(30).id, 'ryuurin');
+  assert.equal(sukunaQuizSkillAt(30).cut, 1);
+  assert.equal(sukunaQuizSkillAt(50).id, 'sekai_zangeki');
+  assert.equal(sukunaQuizSkillAt(50).cut, 'all');
+  for (const s of [1, 3, 20, 29, 31, 40, 49, 51, 100, 0, -3, NaN, undefined, '30']) {
+    assert.equal(sukunaQuizSkillAt(s), null, `streak ${s} tidak boleh unlock`);
+  }
+});
+
+test('sukunaSkillCut: ryuurin pecah 1 opsi, sekai pecah SEMUA opsi salah, benar aman', () => {
+  const opts = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
+  assert.deepEqual(sukunaSkillCut(opts, 'a', 'ryuurin'), ['b']);
+  assert.deepEqual(sukunaSkillCut(opts, 'a', 'sekai_zangeki'), ['b', 'c', 'd']);
+  // deterministik antar render
+  assert.deepEqual(sukunaSkillCut(opts, 'a', 'sekai_zangeki'), sukunaSkillCut(opts, 'a', 'sekai_zangeki'));
+  // jawaban benar tidak pernah masuk walau posisinya di tengah
+  assert.deepEqual(sukunaSkillCut(opts, 'c', 'sekai_zangeki'), ['a', 'b', 'd']);
+  // input aneh aman
+  assert.deepEqual(sukunaSkillCut(null, 'a', 'ryuurin'), []);
+  assert.deepEqual(sukunaSkillCut(opts, 'a', null), []);
+  assert.deepEqual(sukunaSkillCut(opts, 'a', 'zzz'), []);
+  assert.deepEqual(sukunaSkillCut([{ id: 'a' }], 'a', 'sekai_zangeki'), []);
+  // id string juga diterima
+  assert.deepEqual(sukunaSkillCut(['a', 'b', 'c'], 'a', 'ryuurin'), ['b']);
 });
 
 test('generator partikel: jumlah, id unik, deterministik dgn rng inject', () => {

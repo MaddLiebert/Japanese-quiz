@@ -407,15 +407,15 @@ export function DevPanel() {
           </p>
           <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
             {id
-              ? "Satu klik = satu jawaban benar di streak target. Pack Sukuna otomatis diaktifkan bila perlu. 蜘蛛の糸 #1 / 鵺 #3 / 伏魔御廚子 #20 / 龍鱗 #30 / 世界断つ #50. Cast 領域展開・伏魔御廚子 menyalakan domain (bar 4 lengan + 必中)."
-              : "One click = one correct answer at the target streak. Sukuna pack is equipped automatically if needed. 蜘蛛の糸 #1 / 鵺 #3 / 伏魔御廚子 #20 / 龍鱗 #30 / 世界断つ #50. Cast 領域展開・伏魔御廚子 fires the domain (4-arm bar + 必中)."}
+              ? "Satu klik = satu jawaban benar di streak target. Pack Sukuna otomatis diaktifkan bila perlu. Non-momen = ROTASI 蜘蛛の糸 #1 / 鵺 #2 / 蜘蛛の糸 #3 … Momen: 伏魔御廚子 #20 / 龍鱗 #30 / 世界断つ #50. Cast 領域展開・伏魔御廚子 menyalakan domain (bar 4 lengan + 必中)."
+              : "One click = one correct answer at the target streak. Sukuna pack is equipped automatically if needed. Non-moments ROTATE 蜘蛛の糸 #1 / 鵺 #2 / 蜘蛛の糸 #3 … Moments: 伏魔御廚子 #20 / 龍鱗 #30 / 世界断つ #50. Cast 領域展開・伏魔御廚子 fires the domain (4-arm bar + 必中)."}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             <button type="button" onClick={() => previewSukuna(1)} className={`${btn} bg-[#e5e7eb] text-sumi`}>
               🕸️ {id ? "蜘蛛の糸 #1" : "Kumo no Ito #1"}
             </button>
-            <button type="button" onClick={() => previewSukuna(3)} className={`${btn} bg-[#4c1d95] text-kinari-light`}>
-              🦉 {id ? "鵺 #3" : "Nue #3"}
+            <button type="button" onClick={() => previewSukuna(2)} className={`${btn} bg-[#4c1d95] text-kinari-light`}>
+              🦉 {id ? "鵺 #2" : "Nue #2"}
             </button>
             <button type="button" onClick={() => previewSukuna(20)} className={`${btn} bg-[#ea580c] text-kinari-light`}>
               🔥 {id ? "伏魔御廚子 #20" : "Fukuma #20"}
