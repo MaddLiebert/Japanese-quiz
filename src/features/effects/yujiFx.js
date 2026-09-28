@@ -21,10 +21,12 @@ export const YUJI_FLASH = '#ffffff';
 // Pasangan BAWAH = mata Sukuna, MERAH, muncul belakangan (kanon: sepasang mata
 // kedua terbuka di bawah mata normal saat Sukuna menguasai badan).
 export const YUJI_SUKUNA_EYES = [
-  { id: 'upper-l', kind: 'yuji',   cx: 33, cy: 46, rx: 12,  ry: 4.2, pupil: 3.1 },
-  { id: 'upper-r', kind: 'yuji',   cx: 67, cy: 46, rx: 12,  ry: 4.2, pupil: 3.1 },
-  { id: 'lower-l', kind: 'sukuna', cx: 35, cy: 57, rx: 7.5, ry: 2.6, pupil: 1.9 },
-  { id: 'lower-r', kind: 'sukuna', cx: 65, cy: 57, rx: 7.5, ry: 2.6, pupil: 1.9 },
+  // Ukuran dikecilkan (user: "mata kegedean, kecilin dikit") — tetap celah
+  // menyempit (ry < rx) & pasangan Sukuna tetap di bawah + lebih kecil.
+  { id: 'upper-l', kind: 'yuji',   cx: 33, cy: 45, rx: 9.8,  ry: 3.5,  pupil: 2.55 },
+  { id: 'upper-r', kind: 'yuji',   cx: 67, cy: 45, rx: 9.8,  ry: 3.5,  pupil: 2.55 },
+  { id: 'lower-l', kind: 'sukuna', cx: 35, cy: 58, rx: 5.8,  ry: 2.0,  pupil: 1.45 },
+  { id: 'lower-r', kind: 'sukuna', cx: 65, cy: 58, rx: 5.8,  ry: 2.0,  pupil: 1.45 },
 ];
 
 // Gaya mata: Yuji = putih + hitam (NORMAL, tidak berubah); Sukuna = merah menyala.
@@ -38,9 +40,10 @@ export const YUJI_SUKUNA_MARKINGS = [
   { id: 'crown', d: 'M50 16 L42 30 M50 16 L50 32 M50 16 L58 30 M50 16 L34 26 M50 16 L66 26' },
   // Garis horizontal di batang hidung (kanon).
   { id: 'nose', d: 'M38 40 L62 40' },
-  // Tato pipi kiri/kanan (kanon: spread from cheekbones).
-  { id: 'cheek-l', d: 'M22 50 L34 62 M20 58 L30 68 M26 44 L38 55' },
-  { id: 'cheek-r', d: 'M78 50 L66 62 M80 58 L70 68 M74 44 L62 55' },
+  // Tato pipi kiri/kanan (kanon: spread from cheekbones). Digeser ke LUAR
+  // supaya tidak menembus mata (user: "mata nya nyangkut").
+  { id: 'cheek-l', d: 'M18 50 L26 62 M16 58 L24 68 M24 44 L32 52' },
+  { id: 'cheek-r', d: 'M82 50 L74 62 M84 58 L76 68 M76 44 L68 52' },
 ];
 
 export const YUJI_STYLE = {
