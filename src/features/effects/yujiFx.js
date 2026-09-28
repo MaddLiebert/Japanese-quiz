@@ -195,6 +195,82 @@ export const yujiEmbers = (seed = 1, count = 7, rng = Math.random) =>
     drift: -30 - rng() * 60,       // px, negatif = naik
   }));
 
+// ── 開 (Fuga): PANAH API — terbang dari kanji 開 ke tombol jawaban SALAH ────
+// (permintaan user: "adain efek api/panah api, jawaban salah kena panah api
+//  terus ada efek kebakar"). Semua murni + rng-free → deterministik di tes.
+export const FUGA_FLIGHT_MIN_MS = 220;
+export const FUGA_FLIGHT_MAX_MS = 520;
+export const FUGA_ARROW_LEAD_S = 0.12;   // jeda sebelum panah pertama lepas
+export const FUGA_ARROW_STAGGER_S = 0.09; // jeda waktu MENDARAT antar panah
+
+// Kapan panah tiba di tombol (detik dari awal fx) — dipakai impact + ignite
+// supaya ledakan & nyala tombol PERSIS pas panahnya nempel.
+export const fugaArrowImpactS = (shot = {}) =>
+  +((FUGA_ARROW_LEAD_S + (Number(shot.delay) || 0) + (Number(shot.dur) || 0)).toFixed(3));
+
+// Vektor terbang dari titik spawn ke titik target (derajat, 0 = kanan).
+export const fugaArrowSpec = (from = {}, to = {}) => {
+  const dx = +((to.x || 0) - (from.x || 0)).toFixed(2);
+  const dy = +((to.y || 0) - (from.y || 0)).toFixed(2);
+  const dist = +Math.hypot(dx, dy).toFixed(2);
+  const angle = +(Math.atan2(dy, dx) * 180 / Math.PI).toFixed(2);
+  return { dx, dy, dist, angle };
+};
+
+// Makin jauh makin lama terbangnya (dibatas supaya tetap responsif).
+export const fugaArrowFlightMs = (dist) => {
+  const d = Number.isFinite(dist) && dist > 0 ? dist : 0;
+  return Math.round(Math.min(FUGA_FLIGHT_MAX_MS, Math.max(FUGA_FLIGHT_MIN_MS, 220 + d * 0.35)));
+};
+
+// Target cadangan (preview DevPanel tanpa DOM quiz) — kiri & kanan bawah-tengah,
+// kira-kira tempat grid opsi jawaban.
+export const FUGA_FALLBACK_TARGETS = [
+  { xf: 0.74, yf: 0.62 },
+  { xf: 0.26, yf: 0.66 },
+];
+
+// rects = getBoundingClientRect() tombol [data-burned] dalam KOORDINAT layer fx.
+// Kosong → pakai fallback. Maks 6 panah (soal Medium 6 opsi → 5 salah + jaga-jaga).
+// DESAIN IMPACT: waktu mendarat panah ke-i dijamin berurutan (i * STAGGER)
+// sehingga ledakan di tombol tidak saling menimpa, terlepas dari jarak terbangnya.
+export const fugaArrowTargets = (rects = [], vw = 1280, vh = 720) => {
+  const w = Number.isFinite(vw) && vw > 0 ? vw : 1280;
+  const h = Number.isFinite(vh) && vh > 0 ? vh : 720;
+  const pts = (Array.isArray(rects) ? rects : [])
+    .filter((r) => r && Number.isFinite(r.left) && Number.isFinite(r.top))
+    .slice(0, 6)
+    .map((r) => ({
+      x: r.left + (Number.isFinite(r.width) ? r.width : 0) / 2,
+      y: r.top + (Number.isFinite(r.height) ? r.height : 0) / 2,
+    }));
+  const targets = pts.length ? pts : FUGA_FALLBACK_TARGETS.map((t) => ({ x: w * t.xf, y: h * t.yf }));
+
+  const raw = targets.map((to, i) => {
+    const from = { x: w * 0.5, y: h * 0.42 + (i % 2 ? 16 : -12) };
+    const spec = fugaArrowSpec(from, to);
+    const ms = fugaArrowFlightMs(spec.dist);
+    return { from, to, ...spec, ms, dur: +(ms / 1000).toFixed(3) };
+  });
+
+  // Tentukan waktu mendarat target: panah ke-i mendarat di (baseImpact + i * STAGGER).
+  // baseImpact harus cukup besar agar delay panah terpanjang >= 0.
+  const maxDur = raw.reduce((m, s) => Math.max(m, s.dur), 0);
+  const baseImpact = maxDur;
+
+  return raw.map((s, i) => {
+    const targetImpact = baseImpact + i * FUGA_ARROW_STAGGER_S;
+    const delay = +(Math.max(0, targetImpact - s.dur)).toFixed(3);
+    return {
+      id: i, from: s.from, to: s.to,
+      dx: s.dx, dy: s.dy, dist: s.dist, angle: s.angle,
+      delay,
+      dur: s.dur,
+      ms: s.ms,
+    };
+  });
+};
+
 // ── Api takeover (permintaan user: "lebih cinematic, adain efek api") ───────
 // Palet api JJK: kuning-terang inti -> jingga -> merah -> merah gelap di tepi.
 export const YUJI_FIRE_COLORS = ['#ffd166', '#ff8c1a', '#e0241a', '#7a0b06'];

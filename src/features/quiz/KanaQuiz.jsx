@@ -117,7 +117,6 @@ export function KanaQuiz({
                 onClick={(e) => { markYujiPicked(e.currentTarget); onOptionClick(option, e); }}
                 data-correct={isThisCorrect || undefined}
                 data-burned={isBurned || undefined}
-                style={isBurned ? { visibility: 'hidden' } : undefined}
                 animate={
                   showCorrect && isThisSelected ? { scale: [1, 1.05, 1] }
                     : showWrong ? { x: [0, -10, 10, -10, 10, 0] }

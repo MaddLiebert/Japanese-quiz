@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import {
   yujiTechniqueFor, YUJI_STYLE, YUJI_INK, YUJI_FLASH,
   yujiSparks, yujiCracks, yujiEmbers, yujiBeam, yujiWindLines, yujiScissorLines, yujiBolts,
+  fugaArrowTargets, fugaArrowImpactS, FUGA_ARROW_LEAD_S,
 } from './yujiFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -441,31 +442,148 @@ function YujiScissor({ fx, reduced }) {
   );
 }
 
-// ── 開: panah api horizontal + kanji api (4 lapis, target 60fps) ────────────
-// 1) isi kanji = gradasi api via background-clip:text (reveal naik = "nyala")
-// 2) glow = text-shadow (BUKAN drop-shadow — re-raster tiap frame = lag)
-// 3) bara naik (transform + opacity)  4) distorsi panas halus (scaleY shimmer)
+// ── 開: PANAH API nembak tiap opsi SALAH → opsi itu TERBAKAR ────────────────
+// Alur (permintaan user): kanji 開 menyala → panah api melesat dari kanji ke
+// tombol jawaban salah → kena = ledakan kecil + tombol nyala (data-ignite) →
+// tombol tinggal dalam keadaan hangus (CSS button[data-burned]).
+// 60fps: cuma transform/opacity + gradient/blur (tanpa re-raster drop-shadow).
+function FugaArrow({ shot, reduced }) {
+  // Semua potongan panah digambar relatif ke satu titik ORIGIN (= ujung panah),
+  // lalu SELURUH kelompok diputar sekali di origin itu. Kalau tiap potongan
+  // dirotasi sendiri-sendiri, potongannya tercerai saat sudut miring.
+  return (
+    <div aria-hidden="true" style={{
+      position: 'absolute', left: 0, top: 0,
+      transform: `rotate(${shot.angle}deg)`, transformOrigin: '0 0',
+      willChange: 'transform',
+    }}>
+      {/* Ekor api (memanjang ke belakang, sumbu -X) */}
+      <div style={{
+        position: 'absolute', left: -128, top: -3.5, width: 128, height: 7,
+        background: 'linear-gradient(90deg, rgba(224,36,26,0) 0%, rgba(224,36,26,0.35) 42%, rgba(255,140,26,0.85) 78%, #ffd166 100%)',
+        filter: 'blur(1.6px)', borderRadius: 4,
+      }} />
+      {/* Batang panah menyala */}
+      <div style={{
+        position: 'absolute', left: -54, top: -2.5, width: 54, height: 5,
+        background: 'linear-gradient(90deg, rgba(255,140,26,0.25) 0%, #ff8c1a 55%, #ffe066 100%)',
+        boxShadow: '0 0 14px rgba(255,120,20,0.95)', borderRadius: 2,
+      }} />
+      {/* Kepala panah (segitiga api) — ujung tepat di origin */}
+      <div style={{
+        position: 'absolute', left: -18, top: -8, width: 0, height: 0,
+        borderTop: '8px solid transparent', borderBottom: '8px solid transparent',
+        borderLeft: '18px solid #ffe066',
+        filter: 'drop-shadow(0 0 9px rgba(255,140,26,0.95))',
+      }} />
+      {/* Inti panas di ujung */}
+      <div style={{
+        position: 'absolute', left: -22, top: -10, width: 22, height: 20,
+        background: 'radial-gradient(circle at 100% 50%, rgba(255,236,150,0.95), rgba(255,140,26,0.5) 46%, transparent 76%)',
+        filter: 'blur(1px)', borderRadius: 999,
+      }} />
+      {/* Bara kecil lepas dari ekor (animasi opacity, posisi statis) */}
+      {!reduced && [0, 1, 2].map((k) => (
+        <motion.span key={k} style={{
+          position: 'absolute', left: -40 - k * 24, top: -2, width: 5 - k, height: 5 - k,
+          background: k === 0 ? '#ffe066' : '#ff8c1a', borderRadius: 999,
+          boxShadow: '0 0 7px rgba(255,140,26,0.9)',
+        }}
+          animate={{ opacity: [0.15, 0.9, 0.15] }}
+          transition={{ repeat: Infinity, duration: 0.36 + k * 0.14, ease: 'easeInOut' }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Hantaman panah di tombol salah: cincin kejut + kilat panas + bara memantul.
+function FugaImpact({ shot, seed, reduced }) {
+  const [embers] = useState(() => yujiSparks(seed + shot.id * 7, 7));
+  const at = fugaArrowImpactS(shot);   // waktu panah tiba (detik, dari awal fx)
+  const box = { position: 'absolute', left: shot.to.x, top: shot.to.y };
+  return (
+    <>
+      <motion.div aria-hidden="true" style={{
+        ...box, width: 76, height: 76, marginLeft: -38, marginTop: -38,
+        border: '3px solid #ff8c1a', borderRadius: 999,
+        boxShadow: '0 0 22px rgba(255,120,20,0.8), inset 0 0 18px rgba(255,224,102,0.55)',
+        willChange: 'transform, opacity',
+      }}
+        initial={{ opacity: 0, scale: 0.35 }}
+        animate={{ opacity: [0, 0.95, 0], scale: [0.35, 1.05, 1.55] }}
+        transition={{ duration: 0.5, delay: at, ease: 'easeOut' }}
+      />
+      <motion.div aria-hidden="true" style={{
+        ...box, width: 120, height: 120, marginLeft: -60, marginTop: -60,
+        background: 'radial-gradient(circle at 50% 50%, rgba(255,236,150,0.85), rgba(255,140,26,0.45) 38%, rgba(224,36,26,0.18) 62%, transparent 78%)',
+        willChange: 'transform, opacity',
+      }}
+        initial={{ opacity: 0, scale: 0.4 }}
+        animate={{ opacity: [0, 0.9, 0], scale: [0.4, 1, 1.3] }}
+        transition={{ duration: 0.42, delay: at, ease: 'easeOut' }}
+      />
+      {!reduced && embers.map((p) => {
+        const dx = Math.cos(p.angle) * p.dist * 0.55;
+        const dy = Math.sin(p.angle) * p.dist * 0.55;
+        return (
+          <motion.span key={p.id} aria-hidden="true" style={{
+            ...box, width: p.size, height: p.size, marginLeft: -p.size / 2, marginTop: -p.size / 2,
+            background: '#ff8c1a', boxShadow: '0 0 8px rgba(255,140,26,0.9)', borderRadius: 999,
+            willChange: 'transform, opacity',
+          }}
+            initial={{ x: 0, y: 0, opacity: 0 }}
+            animate={{ x: dx, y: dy, opacity: [0, 0.95, 0] }}
+            transition={{ duration: 0.6, delay: at, ease: 'easeOut' }}
+          />
+        );
+      })}
+    </>
+  );
+}
+
 function YujiFuga({ fx, reduced }) {
   const seed = fx?.id || 1;
   const [embers] = useState(() => yujiEmbers(seed, 7));
+  const [shots, setShots] = useState([]);
   const fireGrad = 'linear-gradient(180deg, #ffe066 0%, #ff8c1a 55%, #e0241a 100%)';
+
+  // Ukur tombol opsi SALAH yang sedang tampil (data-burned) → titik target panah.
+  // Layer fx itu `fixed inset-0` → koordinat viewport = koordinat layer, jadi
+  // getBoundingClientRect() bisa dipakai langsung. Tidak ada tombol (preview
+  // DevPanel tanpa quiz) → fugaArrowTargets() jatuh ke target cadangan.
+  useLayoutEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    // Pasangkan tombol ↔ rect lewat SATU daftar (indeks selalu sinkron).
+    const pairs = Array.from(document.querySelectorAll('button[data-burned]'))
+      .map((el) => {
+        const r = el.getBoundingClientRect();
+        return { el, left: r.left, top: r.top, width: r.width, height: r.height };
+      })
+      .filter((p) => Number.isFinite(p.left) && Number.isFinite(p.top));
+    setShots(fugaArrowTargets(pairs, window.innerWidth, window.innerHeight).map((s, i) => ({ ...s, el: pairs[i]?.el || null })));
+  }, []);
+
+  // Panah tiba → tombol menyala sekejap (data-ignite), lalu tinggal hangus.
+  // Elemen bisa hilang kapan saja (soal ganti) → semua akses DOM dibungkus guard.
+  useEffect(() => {
+    if (reduced || typeof window === 'undefined') return undefined;
+    const timers = [];
+    for (const s of shots) {
+      if (!s.el) continue;
+      const el = s.el;
+      const hit = Math.round(fugaArrowImpactS(s) * 1000);
+      timers.push(setTimeout(() => {
+        if (!el.isConnected) return;
+        el.dataset.ignite = '1';
+        timers.push(setTimeout(() => { if (el.isConnected) delete el.dataset.ignite; }, 1000));
+      }, hit));
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [shots, reduced]);
+
   return (
     <motion.div className="absolute inset-0 overflow-hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      {/* Panah api melintas HORIZONTAL ke arah opsi salah */}
-      {!reduced && (
-        <motion.div
-          className="absolute left-0 right-0"
-          style={{
-            top: '50%', height: 10,
-            background: 'linear-gradient(90deg, transparent, #ff8c1a, #ffe066, #e0241a, transparent)',
-            transformOrigin: 'left center',
-            willChange: 'transform, opacity',
-          }}
-          initial={{ scaleX: 0, opacity: 0 }}
-          animate={{ scaleX: [0, 1, 1], opacity: [0, 1, 0] }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-        />
-      )}
       {/* Kanji 開 — dasar gelap (bara mati) + lapisan api yang "nyala" naik */}
       <div className="absolute left-0 right-0 flex justify-center" style={{ top: '26%' }}>
         <motion.span
@@ -500,6 +618,30 @@ function YujiFuga({ fx, reduced }) {
           </motion.span>
         </motion.span>
       </div>
+
+      {/* PANAH API: satu per opsi salah, melesat dari kanji ke tombolnya */}
+      {!reduced && shots.map((s) => (
+        <motion.div
+          key={`shot-${s.id}`}
+          className="absolute"
+          style={{ left: s.from.x, top: s.from.y, willChange: 'transform, opacity' }}
+          initial={{ x: 0, y: 0, opacity: 0 }}
+          animate={{ x: [0, s.dx], y: [0, s.dy], opacity: [0, 1, 1, 0] }}
+          transition={{
+            duration: s.dur, delay: FUGA_ARROW_LEAD_S + s.delay, ease: [0.4, 0, 0.9, 1],
+            // Panah memudar tepat saat "menempel" — impact yang ambil alih.
+            opacity: { duration: s.dur, delay: FUGA_ARROW_LEAD_S + s.delay, times: [0, 0.12, 0.86, 1], ease: 'linear' },
+          }}
+        >
+          <FugaArrow shot={s} reduced={reduced} />
+        </motion.div>
+      ))}
+
+      {/* Hantaman di tombol salah (cincin + kilat + bara) */}
+      {!reduced && shots.map((s) => (
+        <FugaImpact key={`hit-${s.id}`} shot={s} seed={seed} reduced={reduced} />
+      ))}
+
       {/* Bara naik (5-8 titik) — transform + opacity doang */}
       {!reduced && embers.map((e) => (
         <motion.span

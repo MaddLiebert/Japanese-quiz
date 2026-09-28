@@ -10,6 +10,8 @@ import {
   yujiSparks, yujiCracks, yujiEmbers, yujiBeam, yujiWindLines, yujiScissorLines,
   yujiFlames, YUJI_FIRE_COLORS,
   yujiBolts, YUJI_FUGA_LEAD_S, yujiClipLeadS,
+  fugaArrowSpec, fugaArrowFlightMs, fugaArrowTargets, fugaArrowImpactS,
+  FUGA_FLIGHT_MIN_MS, FUGA_FLIGHT_MAX_MS, FUGA_FALLBACK_TARGETS, FUGA_ARROW_LEAD_S,
 } from './yujiFx.js';
 import { GOJO_MILESTONES } from './gojoFx.js';
 
@@ -269,4 +271,74 @@ test('timeline: api naik SEBELUM mata Sukuna terbuka, kilatan sebelum tersingkap
   assert.ok(t.fireAt <= t.eyesAt, 'api naik sebelum mata Sukuna terbuka');
   assert.ok(t.kanjiAt < t.flashAt, 'kilatan setelah kanji');
   assert.ok(t.flashAt <= t.settleStart, 'kilatan sebelum veil tersingkap');
+});
+
+// ── 開 (Fuga): PANAH API ke opsi salah ──────────────────────────────────────
+test('fugaArrowSpec: vektor & sudut benar (0° = kanan, 90° = bawah)', () => {
+  const right = fugaArrowSpec({ x: 0, y: 0 }, { x: 100, y: 0 });
+  assert.equal(right.dx, 100); assert.equal(right.dy, 0);
+  assert.equal(right.dist, 100); assert.equal(right.angle, 0);
+  const down = fugaArrowSpec({ x: 0, y: 0 }, { x: 0, y: 50 });
+  assert.equal(down.angle, 90);
+  const left = fugaArrowSpec({ x: 100, y: 0 }, { x: 0, y: 0 });
+  assert.equal(left.angle, 180);
+  // 3-4-5
+  assert.equal(fugaArrowSpec({ x: 0, y: 0 }, { x: 30, y: 40 }).dist, 50);
+});
+
+test('fugaArrowFlightMs: makin jauh makin lama, tapi dibatasi', () => {
+  const near = fugaArrowFlightMs(0);
+  const mid = fugaArrowFlightMs(300);
+  const far = fugaArrowFlightMs(99999);
+  assert.ok(near >= FUGA_FLIGHT_MIN_MS && near <= FUGA_FLIGHT_MAX_MS);
+  assert.ok(mid > near, 'jarak lebih jauh = terbang lebih lama');
+  assert.equal(far, FUGA_FLIGHT_MAX_MS, 'jarak ekstrem di-clamp');
+  assert.ok(fugaArrowFlightMs(-5) >= FUGA_FLIGHT_MIN_MS, 'input negatif aman');
+});
+
+test('fugaArrowTargets: pakai rect tombol salah (pusat) kalau ada', () => {
+  const rects = [
+    { left: 100, top: 200, width: 80, height: 40 },   // pusat 140,220
+    { left: 300, top: 500, width: 100, height: 50 },  // pusat 350,525
+  ];
+  const shots = fugaArrowTargets(rects, 1000, 800);
+  assert.equal(shots.length, 2);
+  assert.deepEqual(shots.map((s) => [s.to.x, s.to.y]), [[140, 220], [350, 525]]);
+  for (const s of shots) {
+    assert.ok(s.dist > 0, 'panah harus punya jarak terbang');
+    assert.ok(s.dur > 0 && s.dur <= FUGA_FLIGHT_MAX_MS / 1000);
+    assert.ok(s.ms >= FUGA_FLIGHT_MIN_MS && s.ms <= FUGA_FLIGHT_MAX_MS);
+    assert.ok(s.delay >= 0, 'delay tidak boleh negatif');
+    // Spawn dari kanji 開 (tengah layar) → x mendekati 50% viewport.
+    assert.ok(Math.abs(s.from.x - 500) < 1, `spawn dari tengah, dapat ${s.from.x}`);
+  }
+  assert.ok(shots[1].delay > shots[0].delay, 'panah menyusul berurutan');
+});
+
+test('fugaArrowTargets: tanpa tombol → fallback 2 titik, tetap valid', () => {
+  const shots = fugaArrowTargets([], 1200, 900);
+  assert.equal(shots.length, FUGA_FALLBACK_TARGETS.length);
+  for (const s of shots) {
+    assert.ok(Number.isFinite(s.to.x) && Number.isFinite(s.to.y));
+    assert.ok(s.to.x > 0 && s.to.x < 1200 && s.to.y > 0 && s.to.y < 900, 'target di dalam layar');
+  }
+  // Input sampah tidak boleh meledak.
+  assert.equal(fugaArrowTargets(null).length, FUGA_FALLBACK_TARGETS.length);
+  assert.equal(fugaArrowTargets([{ left: NaN, top: 5 }]).length, FUGA_FALLBACK_TARGETS.length);
+  assert.ok(fugaArrowTargets([{ left: 1, top: 2, width: 3, height: 4 }], 0, 0).length === 1, 'vw/vh aneh tetap jalan');
+});
+
+test('fugaArrowTargets: maksimal 6 panah walau tombol salah lebih banyak', () => {
+  const rects = Array.from({ length: 9 }, (_, i) => ({ left: i * 50, top: 100, width: 40, height: 40 }));
+  assert.equal(fugaArrowTargets(rects).length, 6);
+});
+
+test('fugaArrowImpactS: waktu hantam = lead + delay + durasi terbang', () => {
+  const shot = { delay: 0.2, dur: 0.45 };
+  assert.equal(fugaArrowImpactS(shot), +(FUGA_ARROW_LEAD_S + 0.2 + 0.45).toFixed(3));
+  assert.equal(fugaArrowImpactS({}), FUGA_ARROW_LEAD_S, 'shot kosong → tetap angka valid');
+  // Urutan panah: impact kedua SETELAH impact pertama (ledakan tidak tabrakan).
+  // Setelah sorting, panah terjauh ada di indeks 0 → delay terkecil → impact paling awal.
+  const shots = fugaArrowTargets([{ left: 10, top: 20, width: 40, height: 40 }, { left: 800, top: 600, width: 40, height: 40 }], 1280, 720);
+  assert.ok(fugaArrowImpactS(shots[0]) < fugaArrowImpactS(shots[1]), 'panah jauh mendarat dulu (sorting)');
 });
