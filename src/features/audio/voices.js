@@ -140,13 +140,22 @@ export const VOICES = {
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  // VP Ryomen Sukuna (pack_14) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  // VP Ryomen Sukuna (pack_14) — aset user di public/voices/sukuna/.
+  //   wrong : 2 klip kalah (gambare/bakana) — dipilih acak 50/50 tiap salah.
+  //   clips : klip jalur khusus — 5 jurus ladder + ryouiki_tenkai (cast domain),
+  //           diputar DETERMINISTIK oleh playSukunaTechnique.
+  //   correct/streak: KOSONG (benar = jurus deterministik; domain = klip cast sendiri).
   sukuna: {
     files: {
-      correct: ['/voices/sukuna/correct_1.mp3', '/voices/sukuna/correct_2.mp3', '/voices/sukuna/correct_3.mp3'],
-      wrong:   ['/voices/sukuna/wrong_1.mp3',   '/voices/sukuna/wrong_2.mp3',   '/voices/sukuna/wrong_3.mp3'],
-      streak:  ['/voices/sukuna/streak_1.mp3',  '/voices/sukuna/streak_2.mp3',  '/voices/sukuna/streak_3.mp3'],
+      correct: [],
+      wrong: ['/voices/sukuna/gambare.mp3', '/voices/sukuna/bakana.mp3'],
+      streak: [],
     },
+    clips: [
+      '/voices/sukuna/kumo_no_ito.mp3', '/voices/sukuna/nue.mp3',
+      '/voices/sukuna/furube.mp3', '/voices/sukuna/ryuurin.mp3',
+      '/voices/sukuna/sekai_zangeki.mp3', '/voices/sukuna/ryouiki_tenkai.mp3',
+    ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
 };
