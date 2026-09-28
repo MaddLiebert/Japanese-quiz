@@ -373,6 +373,23 @@ export const playYujiTechnique = (technique) => {
   return playFile(path, lead);
 };
 
+// ── Suara khusus Sukuna (pack_14) ───────────────────────────────────────────
+// Jurus diputar DETERMINISTIK lewat klip (pola Gojo/Yuji). Leading silence
+// semua klip ≤0.24s → TIDAK perlu skip offset (beda dari fuga Yuji 0.46s).
+export const SUKUNA_TECHNIQUE_FILES = {
+  kumo_no_ito: '/voices/sukuna/kumo_no_ito.mp3',
+  nue: '/voices/sukuna/nue.mp3',
+  furube: '/voices/sukuna/furube.mp3',
+  ryuurin: '/voices/sukuna/ryuurin.mp3',
+  sekai_zangeki: '/voices/sukuna/sekai_zangeki.mp3',
+  ryouiki_tenkai: '/voices/sukuna/ryouiki_tenkai.mp3',
+};
+
+export const playSukunaTechnique = (technique) => {
+  const path = SUKUNA_TECHNIQUE_FILES[technique];
+  return path ? playFile(path) : 0;
+};
+
 
 // ── API publik ──────────────────────────────────────────────────────────────
 // Semua mengembalikan durasi klip (ms) supaya efek visual (GIF Hina) bisa
@@ -1054,3 +1071,159 @@ export const playFuga = () => {
   noiseBurst(ctx, ctx.currentTime + 0.35, { dur: p.dur, gain: p.gain, type: 'highpass', fromHz: p.hz, toHz: p.hz * 0.5 });
   return ms;
 };
+
+// ── SFX jurus Sukuna (pack_14) — 14 fungsi baru, ≥2 lapis per jurus ─────────
+// Referensi desain: spec Sukuna.md §SFX. Semua params murni & deterministik
+// (dites di sfx.sukuna.test.js); pemutar no-op di node (guard window).
+export const webCrackParams = () => ({
+  bursts: 4, fromHz: 1800, toHz: 900, gapMs: 42, dur: 0.09, gain: 0.14,
+  droneHz: 40, droneGain: 0.16, droneDur: 0.9,
+});
+export const nueScreamParams = () => ({ type: 'sawtooth', fromHz: 900, toHz: 300, dur: 0.5, gain: 0.2, noiseGain: 0.08 });
+export const nueThunderParams = () => ({ type: 'sine', fromHz: 130, toHz: 28, dur: 1.3, gain: 0.36, noiseGain: 0.16 });
+export const shadowRustleParams = () => ({ type: 'bandpass', fromHz: 2600, toHz: 500, dur: 0.7, gain: 0.09 });
+export const furubeChantParams = () => ({
+  droneHz: 55, droneGain: 0.22, dur: 1.8,
+  bellPartials: [1, 2.76, 5.4], bellGain: 0.12,
+});
+export const wheelCreakParams = () => ({ type: 'sawtooth', fromHz: 200, toHz: 90, dur: 0.8, gain: 0.14, noiseGain: 0.06 });
+export const giantStepParams = () => ({ type: 'sine', fromHz: 45, toHz: 24, dur: 0.9, gain: 0.34, noiseGain: 0.12 });
+export const chantDroneParams = (streak = 21) => {
+  const s = Number.isFinite(streak) ? Math.max(21, Math.floor(streak)) : 21;
+  const step = Math.min(20, s - 21);   // clamp 20 langkah (+80Hz) — tetap wajar
+  return { baseHz: 58, hz: 58 + step * 4, dur: 1.4, gain: 0.2 };
+};
+export const inkBurnParams = () => ({ crackleHz: 2600, crackleDur: 0.5, crackleGain: 0.1, boomFromHz: 70, boomToHz: 30, boomDur: 0.7, boomGain: 0.26 });
+export const riserTensionParams = () => ({ type: 'sawtooth', fromHz: 220, toHz: 880, dur: 0.9, gain: 0.12, noiseGain: 0.06 });
+export const worldCutSwingParams = () => ({ type: 'bandpass', fromHz: 1200, toHz: 200, dur: 0.45, gain: 0.2 });
+export const spaceTearParams = () => ({ frames: 2, hz: 1800, dur: 0.08, gain: 0.18 });
+export const worldCutBoomParams = () => ({ type: 'sine', fromHz: 60, toHz: 22, dur: 1.6, gain: 0.5, noiseGain: 0.22 });
+export const silenceAfterParams = () => ({ ms: 400 });
+
+export const playWebCrack = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = webCrackParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = ctx.currentTime;
+  for (let i = 0; i < p.bursts; i++) {
+    noiseBurst(ctx, t0 + (i * p.gapMs) / 1000, {
+      dur: p.dur, gain: p.gain * (1 - i * 0.12),
+      type: 'bandpass', fromHz: p.fromHz - i * 240, toHz: p.toHz,
+    });
+  }
+  // Ekor drone 40Hz — "jaring mengencang".
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(p.droneHz, t0);
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(p.droneGain, t0 + 0.04);
+  g.gain.exponentialRampToValueAtTime(0.0008, t0 + p.droneDur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0 + p.droneDur + 0.05);
+  return p.bursts * p.gapMs + Math.round(p.droneDur * 1000);
+};
+export const playNueScream = () => sweepNoise(nueScreamParams());
+export const playNueThunder = () => sweepNoise(nueThunderParams());
+export const playShadowRustle = () => sweepNoise(shadowRustleParams(), { noise: true });
+
+export const playFurubeChant = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = furubeChantParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  // Drone ritual.
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(p.droneHz, t);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.droneGain, t + 0.1);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.05);
+  // Bel inharmonik (ritual).
+  for (const ratio of p.bellPartials) {
+    const b = ctx.createOscillator();
+    const bg = ctx.createGain();
+    b.type = 'sine';
+    b.frequency.setValueAtTime(p.droneHz * 4 * ratio, t);
+    const bgain = p.bellGain / (1 + ratio * 0.5);
+    bg.gain.setValueAtTime(0, t);
+    bg.gain.linearRampToValueAtTime(bgain, t + 0.01);
+    bg.gain.exponentialRampToValueAtTime(0.0008, t + p.dur * 0.8);
+    b.connect(bg);
+    bg.connect(ctx.destination);
+    b.start(t);
+    b.stop(t + p.dur);
+  }
+  return Math.round(p.dur * 1000);
+};
+export const playWheelCreak = () => sweepNoise(wheelCreakParams());
+export const playGiantStep = () => sweepNoise(giantStepParams());
+
+export const playChantDrone = (streak = 21) => {
+  const p = chantDroneParams(streak);
+  return sweepNoise({ type: 'sine', fromHz: p.hz, toHz: p.hz * 0.92, dur: p.dur, gain: p.gain, noiseGain: 0 }, { noise: false });
+};
+
+export const playInkBurn = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = inkBurnParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  noiseBurst(ctx, t, { dur: p.crackleDur, gain: p.crackleGain, type: 'highpass', fromHz: p.crackleHz, toHz: p.crackleHz * 0.5 });
+  sweepNoise({ type: 'sine', fromHz: p.boomFromHz, toHz: p.boomToHz, dur: p.boomDur, gain: p.boomGain, noiseGain: 0.1 }, { noise: true });
+  return Math.round((p.crackleDur + p.boomDur) * 1000);
+};
+export const playRiserTension = () => sweepNoise(riserTensionParams());
+
+export const playWorldCutSwing = () => sweepNoise(worldCutSwingParams(), { noise: true });
+
+export const playSpaceTear = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = spaceTearParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = ctx.currentTime;
+  for (let i = 0; i < p.frames; i++) {
+    noiseBurst(ctx, t0 + i * p.dur * 0.6, {
+      dur: p.dur, gain: p.gain, type: 'highpass', fromHz: p.hz - i * 500, toHz: p.hz * 0.4,
+    });
+  }
+  return p.frames * Math.round(p.dur * 600);
+};
+
+export const playWorldCutBoom = () => sweepNoise(worldCutBoomParams());
+
+// Hening dramatis setelah World Cut — bukan bunyi, tapi bagian dari ritme.
+// Node/test = no-op (0) supaya konsisten dengan player lain.
+export const playSilenceAfter = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = silenceAfterParams();
+  return p.ms;
+};
+
+// Registry lapis per jurus Sukuna — tiap jurus ≥2 lapis (spec, dites).
+export const SUKUNA_TECHNIQUE_SFX_LAYERS = {
+  kumo_no_ito: ['playSlash', 'playWebCrack'],
+  nue: ['playNueScream', 'playNueThunder', 'playShadowRustle'],
+  furube: ['playFurubeChant', 'playWheelCreak', 'playGiantStep'],
+  ryuurin: ['playChantDrone', 'playInkBurn', 'playRiserTension'],
+  sekai_zangeki: ['playWorldCutSwing', 'playSpaceTear', 'playWorldCutBoom', 'playSilenceAfter'],
+  domain: ['playSukunaDread', 'playSukunaBell', 'playDomainBoom'],
+};
+
+export const sukunaTechniqueSfxLayers = (technique) =>
+  Array.isArray(SUKUNA_TECHNIQUE_SFX_LAYERS[technique]) ? SUKUNA_TECHNIQUE_SFX_LAYERS[technique] : [];
