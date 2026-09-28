@@ -20,7 +20,7 @@ import { SukunaBurst } from './SukunaBurst';
 import { SukunaCurseBar, SukunaDomainCine, SukunaAura } from './SukunaDomain';
 import {
   sukunaTechniqueFor, sukunaCurseCharge, SUKUNA_ULT_THRESHOLD,
-  SUKUNA_DOMAIN_DURATION_S, sukunaDomainLeft, sukunaDomainStartDelayMs,
+  SUKUNA_DOMAIN_DURATION_S, sukunaDomainLeft as sukunaDomainLeftMs, sukunaDomainStartDelayMs,
   SUKUNA_HITSUME_INTERVAL_MS, sukunaHitsumeOrder,
 } from './sukunaFx';
 import {
@@ -646,7 +646,7 @@ export function EffectProvider({ children }) {
   useEffect(() => {
     if (!sukunaDomain) return undefined;
     const tick = () => {
-      const left = sukunaDomainLeft(sukunaDomainEndsAtRef.current);
+      const left = sukunaDomainLeftMs(sukunaDomainEndsAtRef.current);
       setSukunaDomainLeft(left);
       if (left <= 0) {
         if (!sukunaEndedRef.current) { sukunaEndedRef.current = true; playDomainCollapse('timeout'); }
