@@ -30,6 +30,8 @@ const ACHIEVEMENTS_KEY = "achievements_unlocked_v2";
 const GOJO_PACK_ID = "pack_07";
 // Pack Yuji (lihat src/features/packs/packs.js) — target preview streak & takeover.
 const YUJI_PACK_ID = "pack_09";
+// Pack Sukuna — target preview streak & domain 伏魔御廚子.
+const SUKUNA_PACK_ID = "pack_14";
 
 const ALL_BADGES = [
   "hiragana_origin", "katakana_edge", "kanji_slayer", "kanji_hell", "eagle_eye",
@@ -57,7 +59,7 @@ function writeProgress(patch) {
 export function DevPanel() {
   const { language } = useLanguage();
   const { progress, togglePack } = useUserStats();
-  const { previewStreak, castDomain, castTakeover, previewYujiCombo, triggerEffect } = useEffectLayer();
+  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, triggerEffect } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
   // Review suara & skill (dev): karakter terpilih, kursor rotasi klip, status.
@@ -79,6 +81,14 @@ export function DevPanel() {
     setPendingYuji(null);
     previewStreak(pendingYuji);
   }, [pendingYuji, progress.activePack, previewStreak]);
+
+  // Sama seperti Yuji: begitu pack Sukuna aktif, tembak preview streak-nya.
+  const [pendingSukuna, setPendingSukuna] = useState(null);
+  useEffect(() => {
+    if (pendingSukuna == null || progress.activePack !== SUKUNA_PACK_ID) return;
+    setPendingSukuna(null);
+    previewStreak(pendingSukuna);
+  }, [pendingSukuna, progress.activePack, previewStreak]);
 
   // Guard: panel ini TIDAK dirender di build produksi.
   if (!import.meta.env.DEV) return null;
@@ -183,6 +193,24 @@ export function DevPanel() {
   const comboYuji = (lvl) => {
     if (progress.activePack !== YUJI_PACK_ID) { previewYuji(20); return; }
     previewYujiCombo(lvl);
+  };
+
+  // Preview efek Sukuna tanpa quiz (pola previewYuji).
+  const previewSukuna = (target) => {
+    if (progress.activePack === SUKUNA_PACK_ID) { previewStreak(target); return; }
+    const owned = (progress.ownedPacks || []).includes(SUKUNA_PACK_ID);
+    if (owned) { togglePack(SUKUNA_PACK_ID); setPendingSukuna(target); return; }
+    writeProgress({
+      medaru: 999999,
+      ownedPacks: [...(progress.ownedPacks || []), SUKUNA_PACK_ID],
+      activePack: SUKUNA_PACK_ID,
+    });
+    reload();
+  };
+
+  const castSukuna = () => {
+    if (progress.activePack === SUKUNA_PACK_ID) { castSukunaDomain(); return; }
+    previewSukuna(20);   // aktifkan pack dulu → klik sekali lagi
   };
 
   // ── Review suara & skill (dev) ────────────────────────────────────────────
@@ -368,6 +396,38 @@ export function DevPanel() {
             </button>
             <button type="button" onClick={() => comboYuji(3)} className={`${btn} bg-[#e0241a] text-kinari-light`}>
               🔥 {id ? "Combo 開" : "Combo 開"}
+            </button>
+          </div>
+        </div>
+
+        {/* DEV-ONLY — Preview efek Sukuna tanpa quiz */}
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10">
+          <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 mb-2">
+            {id ? "Preview Efek Sukuna (tanpa quiz)" : "Sukuna Effect Preview (no quiz)"}
+          </p>
+          <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
+            {id
+              ? "Satu klik = satu jawaban benar di streak target. Pack Sukuna otomatis diaktifkan bila perlu. 蜘蛛の糸 #1 / 鵺 #3 / 伏魔御廚子 #20 / 龍鱗 #30 / 世界断つ #50. Cast 領域展開・伏魔御廚子 menyalakan domain (bar 4 lengan + 必中)."
+              : "One click = one correct answer at the target streak. Sukuna pack is equipped automatically if needed. 蜘蛛の糸 #1 / 鵺 #3 / 伏魔御廚子 #20 / 龍鱗 #30 / 世界断つ #50. Cast 領域展開・伏魔御廚子 fires the domain (4-arm bar + 必中)."}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <button type="button" onClick={() => previewSukuna(1)} className={`${btn} bg-[#e5e7eb] text-sumi`}>
+              🕸️ {id ? "蜘蛛の糸 #1" : "Kumo no Ito #1"}
+            </button>
+            <button type="button" onClick={() => previewSukuna(3)} className={`${btn} bg-[#4c1d95] text-kinari-light`}>
+              🦉 {id ? "鵺 #3" : "Nue #3"}
+            </button>
+            <button type="button" onClick={() => previewSukuna(20)} className={`${btn} bg-[#ea580c] text-kinari-light`}>
+              🔥 {id ? "伏魔御廚子 #20" : "Fukuma #20"}
+            </button>
+            <button type="button" onClick={() => previewSukuna(30)} className={`${btn} bg-[#0f766e] text-kinari-light`}>
+              🐉 {id ? "龍鱗 #30" : "Ryurin #30"}
+            </button>
+            <button type="button" onClick={() => previewSukuna(50)} className={`${btn} bg-[#7f1d1d] text-kinari-light`}>
+              ⚔️ {id ? "世界断つ #50" : "Sekai Tatsu #50"}
+            </button>
+            <button type="button" onClick={castSukuna} className={`${btn} bg-[#c1121f] text-kinari-light`}>
+              👁️ {id ? "Cast 伏魔御廚子" : "Cast Domain"}
             </button>
           </div>
         </div>

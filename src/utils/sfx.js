@@ -778,6 +778,16 @@ export const ballHumPlan = (balls = {}) => {
   return out;
 };
 
+export const sukunaBgmPlan = () => ({
+  level: 0.20,            // spec: level 0.20 (sedikit lebih tebal dari Gojo 0.18)
+  fadeInMs: 1600,         // spec
+  fadeOutMs: 900,         // spec
+  drone: { freqs: [55, 110], detune: [0, -6], gain: 0.5 },
+  pad: { type: 'triangle', freqs: [165, 220, 330], filterHz: 780, lfoHz: 0.05, lfoDepth: 300, gain: 0.4 },
+  bellEveryMs: 4000,      // bel kuil tiap 4 dtk (spec)
+  whisper: { filterType: 'bandpass', filterHz: 620, q: 0.8, modHz: 0.11, gain: 0.05 },
+});
+
 // ── SFX one-shot Yuji (pack_09) — TIDAK ada ambience sustained (keputusan desain) ──
 // Semua params murni & deterministik -> dites di sfx.yuji.test.js.
 // Pemutar = no-op di node (guard window), pola sama playBallSound.

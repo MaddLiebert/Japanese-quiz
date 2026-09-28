@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
 import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs, playDomainBoom, playGojoTechnique, playGojoCast, playBallSound, playMurasakiRiser, playCurseTick, playCurseReady, playDomainCollapse } from '../../utils/sfx';
 import { startDomainBgm, stopDomainBgm, setBallHum, stopBallHum, duckAmbience, stopAllAmbience } from '../../utils/gojoAmbience';
+import { startSukunaDomainBgm, stopSukunaDomainBgm, duckSukunaAmbience } from '../../utils/sukunaAmbience';
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
 import { hinaGifForAnswer } from './hinaGifs';
@@ -313,10 +314,13 @@ export function EffectProvider({ children }) {
         sukunaDomainRef.current = false;
         setSukunaDomain(false);
         setSukunaCutCount(0);
+        stopSukunaDomainBgm();
       }
     } else if (tech) {
       clipMs = playSukunaTechnique(tech);
       playSukunaTechniqueLayers(tech, streak);
+      // Ambience dipelankan saat klip voice Sukuna bunyi (jangan bertumpuk).
+      if (sukunaDomainRef.current) duckSukunaAmbience(1500);
     }
 
     // Atribut <html> untuk efek hit tombol (CSS index.css: [data-sukuna-hit]).
@@ -517,6 +521,7 @@ export function EffectProvider({ children }) {
     sukunaDomainEndsAtRef.current = null;
     sukunaEndedRef.current = false;
     setSukunaCutCount(0);
+    stopSukunaDomainBgm();
   }, [setTakeover]);
 
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
@@ -548,6 +553,7 @@ export function EffectProvider({ children }) {
     sukunaDomainEndsAtRef.current = null;
     sukunaEndedRef.current = false;
     setSukunaCutCount(0);
+    stopSukunaDomainBgm();
     stopAllAmbience();
   }, [setTakeover]);
 
@@ -647,6 +653,7 @@ export function EffectProvider({ children }) {
         sukunaDomainRef.current = false;
         setSukunaDomain(false);
         setSukunaCutCount(0);
+        stopSukunaDomainBgm();
       }
     };
     tick();
@@ -659,6 +666,16 @@ export function EffectProvider({ children }) {
     sukunaDomainEndsAtRef.current = null;
     setSukunaDomainLeft(SUKUNA_DOMAIN_DURATION_S);
   }, [sukunaDomain]);
+
+  // ── Ambience Sukuna: BGM 伏魔御廚子 hidup setelah cinematic settle ──────────
+  // (voice cast & dentuman selesai) dan mati saat domain padam. Pending timer
+  // dibatalkan kalau domain mati lebih dulu.
+  useEffect(() => {
+    if (!sukunaDomain || activeVisual !== 'sukuna') { stopSukunaDomainBgm(); return undefined; }
+    const t = setTimeout(() => startSukunaDomainBgm(), sukunaDomainStartDelayMs());
+    timersRef.current.push(t);
+    return () => clearTimeout(t);
+  }, [sukunaDomain, activeVisual]);
 
   // ── 必中: selama domain, tiap ~4 dtk satu opsi salah kena slash ───────────
   // Provider TIDAK tahu opsi (itu di Practice/KanaQuiz) → provider hanya
