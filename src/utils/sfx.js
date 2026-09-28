@@ -1227,3 +1227,27 @@ export const SUKUNA_TECHNIQUE_SFX_LAYERS = {
 
 export const sukunaTechniqueSfxLayers = (technique) =>
   Array.isArray(SUKUNA_TECHNIQUE_SFX_LAYERS[technique]) ? SUKUNA_TECHNIQUE_SFX_LAYERS[technique] : [];
+
+// Nama → fungsi (registry di atas berupa string supaya murni & dites di node).
+const SUKUNA_SFX_FNS = {
+  playSlash, playWebCrack, playNueScream, playNueThunder, playShadowRustle,
+  playFurubeChant, playWheelCreak, playGiantStep, playChantDrone,
+  playInkBurn, playRiserTension, playWorldCutSwing, playSpaceTear,
+  playWorldCutBoom, playSilenceAfter,
+  playSukunaDread, playSukunaBell, playDomainBoom,
+};
+
+// Putar SEMUA lapisan SFX satu jurus (urutan registry), kembalikan jumlah lapis
+// yang benar-benar terpanggil. Node/test = no-op (semua player return 0).
+export const playSukunaTechniqueLayers = (technique, streak = 21) => {
+  const layers = sukunaTechniqueSfxLayers(technique);
+  let n = 0;
+  for (const name of layers) {
+    const fn = SUKUNA_SFX_FNS[name];
+    if (typeof fn !== 'function') continue;
+    if (name === 'playChantDrone') fn(streak);
+    else fn();
+    n += 1;
+  }
+  return n;
+};

@@ -365,3 +365,78 @@ button[data-burned]::after {
   button[data-burned] { animation: none; }
   button[data-burned]::after { animation: none; opacity: 0.5; }
 }
+/* ── Ryomen Sukuna: efek "kena tebasan" pada tombol + opsi TERBELAH 必中 ──────
+   [data-sukuna-hit] di-set provider saat jawaban; [data-sukuna-cut] = opsi salah
+   yang kena 必中 (slash) saat domain — terbelah, nonaktif, tetap terlihat. */
+@keyframes sukunaSlashHit {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+  14%  { transform: translate(var(--hit-x, 0px), var(--hit-y, 0px)) rotate(-1.6deg) scale(1.05); }
+  30%  { transform: translate(calc(var(--hit-x, 0px) * -0.3), calc(var(--hit-y, 0px) * -0.3)) rotate(0.8deg) scale(1.01); }
+  48%  { transform: translate(calc(var(--hit-x, 0px) * 0.16), calc(var(--hit-y, 0px) * 0.16)) rotate(-0.4deg) scale(1.01); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+@keyframes sukunaSlashWrong {
+  0%, 100% { transform: translateX(0); }
+  18% { transform: translateX(-7px); }
+  38% { transform: translateX(6px); }
+  58% { transform: translateX(-3px); }
+  78% { transform: translateX(2px); }
+}
+html[data-sukuna-hit] button[data-picked] {
+  --hit-x: 0px; --hit-y: 0px;
+  animation: sukunaSlashHit 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+html[data-sukuna-hit='kumo_no_ito'] button[data-picked] {
+  border-color: #e8f4ff !important;
+  outline: 3px solid rgba(232, 244, 255, 0.8);
+  outline-offset: 2px;
+}
+html[data-sukuna-hit='nue'] button[data-picked] {
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.5), 6px 6px 0 0 rgba(26, 26, 26, 0.32);
+}
+html[data-sukuna-hit='furube'] button[data-picked] {
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.55), 0 0 24px 4px rgba(168, 85, 247, 0.4);
+}
+html[data-sukuna-hit='ryuurin'] button[data-picked],
+html[data-sukuna-hit='sekai_zangeki'] button[data-picked] {
+  border-color: #e0241a !important;
+  box-shadow: 0 0 0 3px rgba(224, 36, 26, 0.6), 0 0 26px 6px rgba(224, 36, 26, 0.45);
+}
+html[data-sukuna-hit='wrong'] button[data-picked] {
+  animation: sukunaSlashWrong 0.4s ease-in-out both;
+  border-color: #6b7280 !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-sukuna-hit] button[data-picked] { animation: none; }
+  html[data-sukuna-hit='ryuurin'] button[data-picked],
+  html[data-sukuna-hit='sekai_zangeki'] button[data-picked] { outline: 3px solid rgba(224, 36, 26, 0.7); outline-offset: 2px; }
+}
+/* 必中: opsi salah kena slash → terbelah dua, memudar tapi tetap terbaca. */
+button[data-sukuna-cut] {
+  position: relative;
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.42;
+  border-color: #7f1d1d !important;
+  filter: grayscale(0.5);
+}
+button[data-sukuna-cut]::before {
+  content: '';
+  position: absolute; inset: -2px;
+  pointer-events: none;
+  background:
+    linear-gradient(74deg, transparent calc(50% - 1.6px), rgba(224, 36, 26, 0.95) calc(50% - 0.6px), rgba(255, 214, 214, 0.9) calc(50% + 0.6px), transparent calc(50% + 1.6px)),
+    linear-gradient(-58deg, transparent calc(50% - 1.2px), rgba(224, 36, 26, 0.8) calc(50% - 0.4px), transparent calc(50% + 1.2px));
+}
+button[data-sukuna-cut]::after {
+  content: '斬';
+  position: absolute; right: 6px; top: 2px;
+  font-family: ui-serif, serif; font-weight: 900; font-size: 13px;
+  color: rgba(224, 36, 26, 0.85);
+  text-shadow: 0 0 8px rgba(224, 36, 26, 0.6);
+}
+@media (prefers-reduced-motion: reduce) {
+  button[data-sukuna-cut] { filter: none; opacity: 0.5; }
+}

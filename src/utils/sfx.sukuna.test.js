@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import {
   SUKUNA_TECHNIQUE_FILES, playSukunaTechnique,
-  SUKUNA_TECHNIQUE_SFX_LAYERS, sukunaTechniqueSfxLayers,
+  SUKUNA_TECHNIQUE_SFX_LAYERS, sukunaTechniqueSfxLayers, playSukunaTechniqueLayers,
   webCrackParams, nueScreamParams, nueThunderParams, shadowRustleParams,
   furubeChantParams, wheelCreakParams, giantStepParams, chantDroneParams,
   inkBurnParams, riserTensionParams, worldCutSwingParams, spaceTearParams,
@@ -55,6 +55,16 @@ test('SUKUNA_TECHNIQUE_SFX_LAYERS: tiap jurus ≥2 lapis (spec)', () => {
 test('sukunaTechniqueSfxLayers: aman untuk jurus tak dikenal', () => {
   assert.deepEqual(sukunaTechniqueSfxLayers('zzz'), []);
   assert.equal(sukunaTechniqueSfxLayers('nue').length, 3);
+});
+
+test('playSukunaTechniqueLayers: memutar SEMUA lapis registry (node no-op tapi terhitung)', () => {
+  assert.equal(playSukunaTechniqueLayers('kumo_no_ito'), 2);
+  assert.equal(playSukunaTechniqueLayers('nue'), 3);
+  assert.equal(playSukunaTechniqueLayers('furube'), 3);
+  assert.equal(playSukunaTechniqueLayers('ryuurin'), 3);
+  assert.equal(playSukunaTechniqueLayers('sekai_zangeki'), 4);
+  assert.equal(playSukunaTechniqueLayers('domain'), 3);
+  assert.equal(playSukunaTechniqueLayers('zzz'), 0);
 });
 
 test('webCrackParams: 4 derik 1800→900Hz + ekor drone 40Hz', () => {

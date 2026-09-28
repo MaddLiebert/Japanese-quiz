@@ -15,6 +15,8 @@ import { nextGojoBalls, GOJO_BALLS_EMPTY, gojoTechniqueFor, gojoPreviewStreak, g
 import { GojoDomainCine, GojoCurseBar, GojoSpacePortal } from './GojoDomainCine';
 import { YujiBurst } from './YujiBurst';
 import { YujiCurseBar, YujiTakeoverCine, YujiAura } from './YujiTakeover';
+import { SukunaBurst } from './SukunaBurst';
+import { sukunaTechniqueFor, sukunaCurseCharge, SUKUNA_ULT_THRESHOLD } from './sukunaFx';
 import {
   yujiTechniqueFor, yujiCurseCharge, yujiComboNext,
   YUJI_ULT_THRESHOLD, YUJI_TAKEOVER_DURATION_S, yujiTakeoverLeft, yujiTakeoverStartDelayMs,
@@ -26,6 +28,7 @@ import {
   playKeiteikenThump, playManjigeriSpin, playManjigeriCrack,
   playKokusenCrackle, playKokusenThunder, playSenketsuJet, playKaiSnip,
   playFugaBoom, playSukunaDread, playSukunaBell, playSukunaHeart, playFireIgnite,
+  playSukunaTechnique, playSukunaTechniqueLayers,
 } from '../../utils/sfx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -146,6 +149,8 @@ export function EffectProvider({ children }) {
   const yujiTakeoverRef = useRef(false);   // ref sinkron (dibaca triggerYuji, bukan state)
   const yujiComboRef = useRef(0);
   const yujiEndedRef = useRef(false);      // suara collapse hanya sekali per cast
+  // ── Sukuna: bar 呪力 4 lengan × 5 takik (streak path; domain di T5) ────────
+  const [sukunaCharge, setSukunaCharge] = useState(0);
   const timersRef = useRef([]);
   const hitTimerRef = useRef(null);
   // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
@@ -275,6 +280,53 @@ export function EffectProvider({ children }) {
     }
   }, [setTakeover]);
 
+  // ── Satu jawaban untuk pack Sukuna (visual 'sukuna') ──────────────────────
+  // Mirror triggerYuji: suara deterministik (klip jurus), bar 4 lengan, atribut
+  // CSS hit tombol. Domain (T5) ditangani di luar fungsi ini.
+  const triggerSukuna = useCallback((type, kind, cfg) => {
+    const streak = streakRef.current;
+    const tech = sukunaTechniqueFor(kind, type === 'correct' ? streak : 0);
+
+    // Suara: salah = klip kalah acak (gambare/bakana via playWrongSound),
+    // benar = klip jurus deterministik + SEMUA lapis SFX registry (spec).
+    let clipMs = 0;
+    if (type === 'wrong') {
+      clipMs = playWrongSound();
+    } else if (tech) {
+      clipMs = playSukunaTechnique(tech);
+      playSukunaTechniqueLayers(tech, streak);
+    }
+
+    // Atribut <html> untuk efek hit tombol (CSS index.css: [data-sukuna-hit]).
+    if (typeof document !== 'undefined') {
+      const root = document.documentElement;
+      root.dataset.sukunaHit = type === 'wrong' ? 'wrong' : (tech || 'none');
+      if (hitTimerRef.current) clearTimeout(hitTimerRef.current);
+      hitTimerRef.current = setTimeout(() => { delete root.dataset.sukunaHit; }, 700);
+    }
+
+    const fxId = ++seq;
+    const holdMs = Math.max(cfg?.hold || 0, clipMs || 0, tech === 'ryuurin' ? 4300 : 0,
+      tech === 'sekai_zangeki' ? 2600 : 0, tech === 'furube' ? 2000 : 0);
+    setFx({
+      kind, tech, id: fxId,
+      seed: Math.floor(Math.random() * 900) + 1,
+      level: 0, milestone: 0,
+      streak: type === 'correct' ? streak : 0,
+      signature: null, onMilestone: false,
+    });
+    const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
+    timersRef.current.push(t);
+
+    // Bar 4 lengan: ikut streak; salah → kosong (domain nanti di T5).
+    const newCharge = sukunaCurseCharge(streak);
+    setSukunaCharge(newCharge);
+    if (type === 'correct' && newCharge > 0) {
+      if (newCharge >= SUKUNA_ULT_THRESHOLD) playCurseReady();
+      else playCurseTick(newCharge);
+    }
+  }, []);
+
   const triggerEffect = useCallback((type) => {
     // Efek tidak aktif → tetap bunyi suara dasar (perilaku lama), lalu berhenti.
     if (!active) {
@@ -301,6 +353,9 @@ export function EffectProvider({ children }) {
     // ── Jalur Yuji Itadori (pack 'yuji') — mirror Gojo, tanpa domain ─────────
     // (early-return: jalur Hina/Gojo di bawah TIDAK tersentuh)
     if (activeVisual === 'yuji') { triggerYuji(type, kind, cfg); return; }
+
+    // ── Jalur Sukuna (pack 'sukuna') — mirror Yuji ──────────────────────────
+    if (activeVisual === 'sukuna') { triggerSukuna(type, kind, cfg); return; }
 
     // GIF Hina: hanya saat suara Hina bunyi (salah / tepat milestone). Benar biasa → null.
     // GIF Gojo: salah → meme "kalah"; teknik 茈 → murasaki; ao/aka → null (bola plasma).
@@ -415,7 +470,7 @@ export function EffectProvider({ children }) {
     // prematur oleh timer 蒼 lama (keluhan user: "efek murasaki kecepetan").
     const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
     timersRef.current.push(t);
-  }, [active, spawnInk, activeVisual, gojoDomain, triggerYuji]);
+  }, [active, spawnInk, activeVisual, gojoDomain, triggerYuji, triggerSukuna]);
 
   const resetEffectStreak = useCallback(() => {
     streakRef.current = 0;
@@ -433,6 +488,8 @@ export function EffectProvider({ children }) {
     setTakeover(false);
     takeoverEndsAtRef.current = null;
     yujiEndedRef.current = false;
+    // Sukuna
+    setSukunaCharge(0);
   }, [setTakeover]);
 
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
@@ -458,6 +515,7 @@ export function EffectProvider({ children }) {
     setTakeover(false);
     takeoverEndsAtRef.current = null;
     yujiEndedRef.current = false;
+    setSukunaCharge(0);
     stopAllAmbience();
   }, [setTakeover]);
 
@@ -603,7 +661,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
@@ -613,13 +671,14 @@ export function EffectProvider({ children }) {
         yujiCharge={yujiCharge} yujiCombo={yujiCombo}
         takeoverOn={yujiTakeover} takeoverSeed={yujiTakeoverSeed} takeoverLeft={takeoverLeft}
         onCastYuji={castTakeover}
+        sukunaCharge={sukunaCharge}
       />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -794,6 +853,13 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
           ready={yujiCharge >= YUJI_ULT_THRESHOLD && !takeoverOn}
           onCast={onCastYuji} takeoverOn={takeoverOn} takeoverLeft={takeoverLeft}
         />
+      )}
+
+      {/* ── Ryomen Sukuna (pack 'sukuna') — 蜘蛛の糸→鵺→魔虚羅→龍鱗→世界断つ ── */}
+      {visual === 'sukuna' && (
+        <AnimatePresence>
+          {fx && <SukunaBurst key={`sukuna-${fx.id}`} fx={fx} kind={kind} />}
+        </AnimatePresence>
       )}
     </div>
   );
