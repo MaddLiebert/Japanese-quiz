@@ -825,6 +825,10 @@ export const sukunaHeartParams = () => ({
 });
 export const sukunaDreadParams = () => ({ fromHz: 58, toHz: 41, dur: 2.6, subGain: 0.3, padGain: 0.14 });
 
+// ── Api takeover (permintaan user: efek api saat Sukuna muncul) ─────────────
+// Auman api naik (bandpass 260 -> 1100 Hz = desis "FWOOSH") + bara meletup.
+export const fireIgniteParams = () => ({ fromHz: 260, toHz: 1100, dur: 1.5, gain: 0.22, pops: 6, popGain: 0.09, popHz: 1200 });
+
 // Registry lapis per teknik -> satu tempat, gampang di-tune & dites.
 export const TECHNIQUE_SFX_LAYERS = {
   keiteiken: ['playImpactDouble', 'playKeiteikenThump'],
@@ -834,7 +838,7 @@ export const TECHNIQUE_SFX_LAYERS = {
   kai: ['playSlash', 'playKaiSnip'],
   hachi: ['playSlash', 'playKaiSnip'],
   fuga: ['playFugaRoar', 'playFugaBoom', 'playFuga'],
-  takeover: ['playPossessWhoosh', 'playSukunaDread', 'playSukunaBell', 'playSukunaHeart'],
+  takeover: ['playPossessWhoosh', 'playSukunaDread', 'playSukunaBell', 'playSukunaHeart', 'playFireIgnite'],
 };
 
 export const techniqueSfxLayers = (technique) =>
@@ -963,6 +967,24 @@ export const playSukunaBell = () => {
 };
 
 // Detak jantung (lub-dub) — bikin suasana tegang sebelum/di awal kerasukan.
+// Api naik + bara meletup (dipakai saat cinematic takeover mulai).
+export const playFireIgnite = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = fireIgniteParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  // Auman: desis bandpass yang MENGUAT (api membesar).
+  noiseBurst(ctx, t, { dur: p.dur, gain: p.gain, type: 'bandpass', fromHz: p.fromHz, toHz: p.toHz });
+  // Bara meletup: burst pendek nyaring, tersebar acak.
+  for (let i = 0; i < p.pops; i++) {
+    const at = t + 0.08 + Math.random() * (p.dur * 0.75);
+    noiseBurst(ctx, at, { dur: 0.05 + Math.random() * 0.06, gain: p.popGain, type: 'highpass', fromHz: p.popHz, toHz: p.popHz * 0.5 });
+  }
+  return Math.round(p.dur * 1000) + 300;
+};
+
 export const playSukunaHeart = () => {
   if (typeof window === 'undefined') return 0;
   const p = sukunaHeartParams();

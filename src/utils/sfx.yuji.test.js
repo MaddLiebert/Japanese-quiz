@@ -11,10 +11,10 @@ import {
   playBloodPierce, playPossessWhoosh, playSlash, playFugaRoar, playFuga,
   keiteikenThumpParams, manjigeriSpinParams, manjigeriCrackParams,
   kokusenCrackleParams, kokusenThunderParams, senketsuJetParams, kaiSnipParams,
-  fugaBoomParams, sukunaBellParams, sukunaHeartParams, sukunaDreadParams,
+  fugaBoomParams, sukunaBellParams, sukunaHeartParams, sukunaDreadParams, fireIgniteParams,
   TECHNIQUE_SFX_LAYERS, techniqueSfxLayers,
   playKeiteikenThump, playManjigeriSpin, playManjigeriCrack, playKokusenCrackle,
-  playKokusenThunder, playSenketsuJet, playKaiSnip, playFugaBoom, playSukunaDread,
+  playKokusenThunder, playSenketsuJet, playKaiSnip, playFugaBoom, playSukunaDread, playFireIgnite,
 } from './sfx.js';
 import { VOICES } from '../features/audio/voices.js';
 import { yujiGifPaths } from '../features/effects/yujiGifs.js';
@@ -165,6 +165,14 @@ test('Sukuna masuk lebih MENCEKAM: bel + detak jantung + drone', () => {
   assert.ok(dread.subGain >= 0.25, 'sub-bass dalam');
 });
 
+test('api takeover: auman api naik + bara meletup (fireIgnite)', () => {
+  const p = fireIgniteParams();
+  assert.ok(p.toHz > p.fromHz, 'auman api naik');
+  assert.ok(p.gain > 0 && p.gain <= 0.3, 'auman jangan pecah');
+  assert.ok(p.pops >= 4, 'bara meletup beberapa kali');
+  assert.ok(p.popGain > 0 && p.popGain < p.gain, 'letupan jangan menutupi auman');
+});
+
 test('player lapisan baru no-op di node (0, tanpa throw)', () => {
   assert.equal(playKeiteikenThump(), 0);
   assert.equal(playManjigeriSpin(), 0);
@@ -175,4 +183,5 @@ test('player lapisan baru no-op di node (0, tanpa throw)', () => {
   assert.equal(playKaiSnip(false), 0);
   assert.equal(playFugaBoom(), 0);
   assert.equal(playSukunaDread(), 0);
+  assert.equal(playFireIgnite(), 0);
 });

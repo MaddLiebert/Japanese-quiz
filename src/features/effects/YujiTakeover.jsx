@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import {
   YUJI_ULT_THRESHOLD, YUJI_TAKEOVER_DURATION_S, YUJI_TAKEOVER_TIMELINE,
   YUJI_INK, YUJI_STYLE, YUJI_SUKUNA_EYES, YUJI_SUKUNA_MARKINGS,
+  YUJI_EYE_STYLE, YUJI_FIRE_COLORS, yujiFlames,
 } from './yujiFx';
 import { yujiTakeoverGif } from './yujiGifs';
 
@@ -143,17 +144,64 @@ export function YujiCurseBar({ charge = 0, combo = 0, ready = false, onCast, tak
 // ── Wajah kerasukan (kanon) — 4 mata (2 pasang, pasangan kedua di BAWAH) +
 // marka Sukuna (mahkota dahi, batang hidung, tato pipi). Muncul di eyesAt,
 // tepat saat aura berubah biru → hitam-ungu. SVG murni (tajam, ringan).
-function SukunaFace({ reduced, start }) {
+function SukunaFace({ reduced, start, fireStart = 0 }) {
   const gid = 'sukunaIris' + useId().replace(/[^a-zA-Z0-9]/g, '');
+  const flames = yujiFlames(7, 11);
   return (
     <motion.div
       data-yuji-face
       aria-hidden="true"
       className="absolute inset-x-0 top-[6vh] bottom-[34%] flex items-center justify-center"
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: reduced ? 0 : start, duration: reduced ? 0.3 : 0.45, ease: 'easeOut' }}
+      animate={reduced
+        ? { opacity: 1 }
+        : { opacity: 1, x: [0, 0, -4, 4, -3, 2, 0], y: [0, 0, 2, -2, 2, -1, 0] }}
+      transition={reduced
+        ? { delay: 0, duration: 0.3, ease: 'easeOut' }
+        : { delay: start, duration: 0.75, times: [0, 0.12, 0.26, 0.42, 0.58, 0.76, 1], ease: 'easeOut' }}
     >
+      {/* ── Efek API: lidah api naik dari bawah + glow panas (cinematic) ── */}
+      {!reduced && (
+        <motion.div
+          data-yuji-fire
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.95, 0.8, 0.95, 0.85] }}
+          transition={{ delay: fireStart, duration: 2.6, times: [0, 0.18, 0.45, 0.72, 1], ease: 'easeOut' }}
+        >
+          {/* glow panas dari bawah */}
+          <div
+            className="absolute inset-x-0 bottom-0"
+            style={{
+              height: '52%',
+              background: `linear-gradient(to top, ${YUJI_FIRE_COLORS[2]}80, ${YUJI_FIRE_COLORS[1]}38 42%, transparent 100%)`,
+              mixBlendMode: 'screen',
+            }}
+          />
+          {/* lidah api */}
+          {flames.map((f) => (
+            <motion.div
+              key={f.id}
+              className="absolute bottom-0"
+              style={{
+                left: `${f.x}%`,
+                width: `${f.w}%`,
+                height: `${f.h}%`,
+                marginLeft: `-${f.w / 2}%`,
+                borderRadius: '50% 50% 42% 42% / 68% 68% 32% 32%',
+                background: `radial-gradient(ellipse at 50% 100%, ${f.hue} 0%, ${f.hue}aa 45%, transparent 78%)`,
+                filter: 'blur(3px)',
+                mixBlendMode: 'screen',
+              }}
+              initial={{ opacity: 0, scaleY: 0.25, y: '30%' }}
+              animate={{ opacity: [0, 0.9, 0.55, 0.85, 0], scaleY: [0.25, 1, 0.78, 1.05, 0.5], y: ['30%', '0%', '-8%', '-4%', '-16%'], x: [0, 4, -4, 3, 0] }}
+              transition={{ delay: fireStart + f.delay, duration: f.dur, repeat: Infinity, repeatDelay: 0.25, ease: 'easeInOut' }}
+            />
+          ))}
+        </motion.div>
+      )}
+
       <svg viewBox="0 0 100 100" style={{ width: 'min(34vh, 62vw)', height: 'auto', overflow: 'visible' }}>
         <defs>
           <radialGradient id={`${gid}`} cx="50%" cy="50%" r="62%">
@@ -180,23 +228,36 @@ function SukunaFace({ reduced, start }) {
           />
         ))}
 
-        {/* 4 mata: 2 pasang. Pasangan kedua (bawah) menyempit — kanon. */}
-        {YUJI_SUKUNA_EYES.map((e, i) => (
-          <g key={e.id}>
-            <motion.ellipse
-              cx={e.cx} cy={e.cy} rx={e.rx} ry={e.ry}
-              fill="#0a0508" stroke="#e8e0ff" strokeWidth="1.6" vectorEffect="non-scaling-stroke"
-              initial={{ opacity: 0, scaleY: reduced ? 1 : 0.05 }}
-              animate={{ opacity: 1, scaleY: 1 }}
-              style={{ transformOrigin: `${e.cx}px ${e.cy}px` }}
-              transition={{ delay: reduced ? 0 : start + 0.1 + i * 0.05, duration: reduced ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
-            />
-            <circle cx={e.cx} cy={e.cy} r={e.pupil} fill={`url(#${gid})`} />
-            {/* pupil ganda (kanon: double pupils) */}
-            <circle cx={e.cx - e.pupil * 0.42} cy={e.cy} r={e.pupil * 0.34} fill="#12060a" opacity="0.85" />
-            <circle cx={e.cx + e.pupil * 0.42} cy={e.cy} r={e.pupil * 0.34} fill="#12060a" opacity="0.85" />
-          </g>
-        ))}
+        {/* 4 mata: pasangan ATAS = mata Yuji NORMAL (putih+hitam, tidak berubah);
+            pasangan BAWAH = mata Sukuna MERAH (kanon: terbuka di bawah, menyempit). */}
+        {YUJI_SUKUNA_EYES.map((e, i) => {
+          const st = YUJI_EYE_STYLE[e.kind] || YUJI_EYE_STYLE.yuji;
+          const isSukuna = e.kind === 'sukuna';
+          return (
+            <g key={e.id} data-eye={e.kind}>
+              <motion.ellipse
+                cx={e.cx} cy={e.cy} rx={e.rx} ry={e.ry}
+                fill={st.sclera} stroke={isSukuna ? '#e0241a' : '#e8e0ff'} strokeWidth="1.6" vectorEffect="non-scaling-stroke"
+                initial={{ opacity: 0, scaleY: reduced ? 1 : 0.05 }}
+                animate={{ opacity: 1, scaleY: 1 }}
+                style={{ transformOrigin: `${e.cx}px ${e.cy}px` }}
+                transition={{ delay: reduced ? 0 : start + (isSukuna ? 0.24 : 0.1) + i * 0.05, duration: reduced ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+              />
+              {/* pupil: Yuji = hitam bulat; Sukuna = iris MERAH menyala + pupil ganda */}
+              <circle
+                cx={e.cx} cy={e.cy} r={e.pupil}
+                fill={isSukuna ? `url(#${gid})` : st.pupil}
+                style={isSukuna ? { filter: 'drop-shadow(0 0 3px #e0241a)' } : undefined}
+              />
+              {isSukuna && (
+                <>
+                  <circle cx={e.cx - e.pupil * 0.42} cy={e.cy} r={e.pupil * 0.34} fill="#12060a" opacity="0.85" />
+                  <circle cx={e.cx + e.pupil * 0.42} cy={e.cy} r={e.pupil * 0.34} fill="#12060a" opacity="0.85" />
+                </>
+              )}
+            </g>
+          );
+        })}
       </svg>
     </motion.div>
   );
@@ -266,8 +327,22 @@ export function YujiTakeoverCine() {
         </motion.div>
       )}
 
-      {/* Wajah kerasukan: 4 mata + marka Sukuna (kanon), muncul di eyesAt */}
-      <SukunaFace reduced={reduced} start={t.eyesAt} />
+      {/* Wajah kerasukan: mata Yuji normal + mata Sukuna MERAH di bawahnya +
+          marka Sukuna + API naik (kanon + cinematic) */}
+      <SukunaFace reduced={reduced} start={t.eyesAt} fireStart={t.fireAt} />
+
+      {/* Kilatan merah tepat sebelum veil tersingkap (punch cinematic) */}
+      {!reduced && (
+        <motion.div
+          data-yuji-flash
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{ background: 'radial-gradient(circle at 50% 46%, rgba(255,255,255,0.92), rgba(224,36,26,0.5) 34%, transparent 72%)' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ delay: t.flashAt, duration: 0.42, times: [0, 0.16, 1], ease: 'easeOut' }}
+        />
+      )}
 
       {/* Kanji 宿儺の器 (1x, ~1,5 dtk) — TEKS DOANG, tanpa voice */}
       <motion.div

@@ -17,12 +17,21 @@ export const YUJI_FLASH = '#ffffff';
 // terbuka DI BAWAH mata normal, (2) mata menyempit jadi celah dengan pupil
 // ganda, (3) tato hitam: mahkota di dahi + garis batang hidung + tato pipi.
 // Koordinat di bidang 0..100 (viewBox) supaya bisa dipakai <svg> apa pun.
+// Pasangan ATAS  = mata Yuji SENDIRI, tetap normal (sklera putih, pupil hitam).
+// Pasangan BAWAH = mata Sukuna, MERAH, muncul belakangan (kanon: sepasang mata
+// kedua terbuka di bawah mata normal saat Sukuna menguasai badan).
 export const YUJI_SUKUNA_EYES = [
-  { id: 'upper-l', cx: 33, cy: 46, rx: 12, ry: 4.2, pupil: 3.1 },
-  { id: 'upper-r', cx: 67, cy: 46, rx: 12, ry: 4.2, pupil: 3.1 },
-  { id: 'lower-l', cx: 35, cy: 57, rx: 7.5, ry: 2.6, pupil: 1.9 },
-  { id: 'lower-r', cx: 65, cy: 57, rx: 7.5, ry: 2.6, pupil: 1.9 },
+  { id: 'upper-l', kind: 'yuji',   cx: 33, cy: 46, rx: 12,  ry: 4.2, pupil: 3.1 },
+  { id: 'upper-r', kind: 'yuji',   cx: 67, cy: 46, rx: 12,  ry: 4.2, pupil: 3.1 },
+  { id: 'lower-l', kind: 'sukuna', cx: 35, cy: 57, rx: 7.5, ry: 2.6, pupil: 1.9 },
+  { id: 'lower-r', kind: 'sukuna', cx: 65, cy: 57, rx: 7.5, ry: 2.6, pupil: 1.9 },
 ];
+
+// Gaya mata: Yuji = putih + hitam (NORMAL, tidak berubah); Sukuna = merah menyala.
+export const YUJI_EYE_STYLE = {
+  yuji:   { sclera: '#f4f4f6', pupil: '#0a0a0c', iris: null },
+  sukuna: { sclera: '#1a0505', pupil: '#12060a', iris: '#e0241a' },
+};
 
 export const YUJI_SUKUNA_MARKINGS = [
   // Mahkota di tengah dahi (kanon: crown-like symbol).
@@ -77,10 +86,12 @@ export const yujiTakeoverLeft = (endsAt, now = Date.now()) => {
 // voice); suara Sukuna masuk lewat combo 解/捌/開.
 export const YUJI_TAKEOVER_TIMELINE = {
   tattooStart: 0.0,   // aura biru naik, tato merayap
-  eyesAt: 0.4,        // mata berubah, aura hitam-ungu
+  fireAt: 0.15,       // API naik dari bawah (cinematic, sebelum mata Sukuna)
+  eyesAt: 0.4,        // mata Yuji tetap normal; mata Sukuna (merah) terbuka DI BAWAH
   kanjiAt: 0.8,       // kanji 宿儺の器 muncul
   kanjiHold: 1.5,     // lama kanji tampil
   voiceAt: 1.2,       // possessWhoosh (SFX, bukan klip voice)
+  flashAt: 2.05,      // kilatan merah tepat sebelum veil tersingkap
   settleStart: 2.3,   // veil tersingkap
   settleDur: 0.6,
 };
@@ -179,6 +190,22 @@ export const yujiEmbers = (seed = 1, count = 7, rng = Math.random) =>
     dur: 0.9 + rng() * 0.9,
     delay: rng() * 0.7,
     drift: -30 - rng() * 60,       // px, negatif = naik
+  }));
+
+// ── Api takeover (permintaan user: "lebih cinematic, adain efek api") ───────
+// Palet api JJK: kuning-terang inti -> jingga -> merah -> merah gelap di tepi.
+export const YUJI_FIRE_COLORS = ['#ffd166', '#ff8c1a', '#e0241a', '#7a0b06'];
+
+// Lidah api naik dari bawah layar. x persen, w/h persen, dur & delay detik.
+export const yujiFlames = (seed = 1, count = 11, rng = Math.random) =>
+  Array.from({ length: count }, (_, i) => ({
+    id: `${seed}-f${i}`,
+    x: (i / Math.max(1, count - 1)) * 100 + (rng() - 0.5) * 6,
+    w: 5 + rng() * 9,
+    h: 16 + rng() * 30,
+    dur: 0.9 + rng() * 1.1,
+    delay: rng() * 1.6,
+    hue: YUJI_FIRE_COLORS[Math.floor(rng() * YUJI_FIRE_COLORS.length) % YUJI_FIRE_COLORS.length],
   }));
 
 export const yujiBeam = (seed = 1, rng = Math.random) => ({

@@ -25,7 +25,7 @@ import {
   playBloodCompress, playBloodPierce, playPossessWhoosh, playSlash, playFuga,
   playKeiteikenThump, playManjigeriSpin, playManjigeriCrack,
   playKokusenCrackle, playKokusenThunder, playSenketsuJet, playKaiSnip,
-  playFugaBoom, playSukunaDread, playSukunaBell, playSukunaHeart,
+  playFugaBoom, playSukunaDread, playSukunaBell, playSukunaHeart, playFireIgnite,
 } from '../../utils/sfx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -495,11 +495,13 @@ export function EffectProvider({ children }) {
     takeoverEndsAtRef.current = Date.now() + yujiTakeoverStartDelayMs() + YUJI_TAKEOVER_DURATION_S * 1000;
     setTakeoverLeft(YUJI_TAKEOVER_DURATION_S);
     // 宿儺の器 — MENCEKAM (referensi: tema Sukuna = taiko berat + drone + bel kuil):
-    // whoosh kerasukan + drone kegelapan + bel kuil inharmonik + detak jantung.
+    // whoosh kerasukan + drone kegelapan + bel kuil inharmonik + detak jantung
+    // + API naik (permintaan user: cinematic + efek api).
     playPossessWhoosh();
     playSukunaDread();
     playSukunaBell();
     playSukunaHeart();
+    playFireIgnite();
   }, [activeVisual, setTakeover]);
 
   // Hitung mundur takeover (30 dtk) — habis → padam sendiri (bukan salah).
