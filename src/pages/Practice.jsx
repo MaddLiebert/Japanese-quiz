@@ -18,6 +18,7 @@ import { KanaQuiz } from "../features/quiz/KanaQuiz";
 import { useEffectLayer } from "../features/effects/EffectContext";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 import { yujiBurnedIds, YUJI_FINISHER_XP_MULT } from "../features/effects/yujiFx";
+import { sukunaHitsumeCut, SUKUNA_HITSUME_INTERVAL_MS } from "../features/effects/sukunaFx";
 import { markYujiPicked } from "../features/effects/yujiHit";
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
@@ -110,7 +111,7 @@ export function Practice() {
   const timerRef = useRef(null);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaCutCount } = useEffectLayer();
 
   // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
   // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
@@ -164,10 +165,20 @@ export function Practice() {
     [finisherOn, currentQuestion?.id, options],
   );
 
+  // 必中 Sukuna: opsi salah kena slash satu-satu tiap ~4 dtk selama domain hidup.
+  // Deterministik dari sukunaCutCount (provider) → stabil antar render.
+  const sukunaCutIds = useMemo(
+    () => (sukunaCutCount > 0 && currentQuestion
+      ? sukunaHitsumeCut(options, currentQuestion.id, sukunaCutCount * (SUKUNA_HITSUME_INTERVAL_MS / 1000))
+      : []),
+    [sukunaCutCount, currentQuestion?.id, options],
+  );
+
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option, e) => {
     if (isAnswered) return;
     if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
+    if (sukunaCutIds.includes(option.id)) return; // opsi terbelah 必中 → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
 
     const correct = option.id === currentQuestion.id;
@@ -184,6 +195,7 @@ export function Practice() {
   const handleKotobaOptionClick = (option, e) => {
     if (isAnswered) return;
     if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
+    if (sukunaCutIds.includes(option.id)) return; // opsi terbelah 必中 → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
     const correct = option.id === currentQuestion.id;
 
@@ -419,6 +431,7 @@ export function Practice() {
                   const isThisClicked = answeredId === option.id;
                   const isThisCorrect = option.id === currentQuestion.id;
                   const isBurned = burnedIds.includes(option.id);
+                  const isCut = sukunaCutIds.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -432,7 +445,7 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
-                  if (isBurned) btnClass += " pointer-events-none";
+                  if (isBurned || isCut) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
@@ -440,6 +453,7 @@ export function Practice() {
                       onClick={(e) => handleKotobaOptionClick(option, e)}
                       data-correct={isThisCorrect || undefined}
                       data-burned={isBurned || undefined}
+                      data-sukuna-cut={isCut || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -447,7 +461,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered || isBurned}
+                      disabled={isAnswered || isBurned || isCut}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -581,6 +595,7 @@ export function Practice() {
                   const isThisClicked = answeredId === option.id;
                   const isThisCorrect = option.id === currentQuestion.id;
                   const isBurned = burnedIds.includes(option.id);
+                  const isCut = sukunaCutIds.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -595,7 +610,7 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
-                  if (isBurned) btnClass += " pointer-events-none";
+                  if (isBurned || isCut) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
@@ -603,6 +618,7 @@ export function Practice() {
                       onClick={(e) => handleKotobaOptionClick(option, e)}
                       data-correct={isThisCorrect || undefined}
                       data-burned={isBurned || undefined}
+                      data-sukuna-cut={isCut || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -610,7 +626,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered || isBurned}
+                      disabled={isAnswered || isBurned || isCut}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -670,6 +686,7 @@ export function Practice() {
           isGrammarMode={isGrammarMode}
           frozen={domainOn}
           burnedIds={burnedIds}
+          sukunaCutIds={sukunaCutIds}
         />
       );
     }

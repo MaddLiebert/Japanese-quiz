@@ -5,7 +5,7 @@ import {
   SUKUNA_ULT_THRESHOLD, sukunaCurseCharge, sukunaUltReady,
   SUKUNA_DOMAIN_DURATION_S, sukunaDomainLeft, sukunaDomainStartDelayMs,
   SUKUNA_CAST_VOICE, SUKUNA_DOMAIN_TIMELINE,
-  SUKUNA_HITSUME_INTERVAL_MS, sukunaHitsumeCount, sukunaHitsumeOrder,
+  SUKUNA_HITSUME_INTERVAL_MS, sukunaHitsumeCount, sukunaHitsumeOrder, sukunaHitsumeCut,
   SUKUNA_STYLE,
   sukunaWebLines, sukunaThunderBolts, sukunaWheelSpokes, sukunaChantLines,
   sukunaSlashRain, sukunaEmbers, sukunaMantraRing,
@@ -152,6 +152,24 @@ test('sukunaHitsumeOrder: pilih opsi salah satu-satu, bukan jawaban benar, rng i
   // input aneh aman
   assert.deepEqual(sukunaHitsumeOrder(null, 'a'), []);
   assert.deepEqual(sukunaHitsumeOrder([{ id: 'a' }], 'a'), []);
+});
+
+test('sukunaHitsumeCut: tiap 4 dtk satu opsi salah, stabil antar render, stop di jawaban benar', () => {
+  const opts = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 0), []);
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 3.9), []);
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 4), ['b']);
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 8), ['b', 'c']);
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 12), ['b', 'c', 'd']);
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 30), ['b', 'c', 'd'], 'cap: tinggal jawaban benar');
+  // stabil: panggilan berulang hasil sama (bukan acak)
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 8), sukunaHitsumeCut(opts, 'a', 8));
+  // input aneh aman
+  assert.deepEqual(sukunaHitsumeCut(null, 'a', 8), []);
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', NaN), []);
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', -2), []);
+  // interval custom
+  assert.deepEqual(sukunaHitsumeCut(opts, 'a', 2, 2000), ['b']);
 });
 
 test('SUKUNA_STYLE lengkap: 6 jurus + domain + wrong, kanji & warna', () => {

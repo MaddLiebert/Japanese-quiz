@@ -21,6 +21,7 @@ export function KanaQuiz({
   isGrammarMode = false,
   frozen = false,
   burnedIds = [],
+  sukunaCutIds = [],
 }) {
   const { language } = useLanguage();
 
@@ -88,6 +89,7 @@ export function KanaQuiz({
             const isThisSelected = answeredId === option.id;
             const isThisCorrect = option.id === currentQuestion.id;
             const isBurned = burnedIds.includes(option.id);
+            const isCut = sukunaCutIds.includes(option.id);
             const showCorrect = isAnswered && isThisCorrect;
             const showWrong = isThisSelected && !isCurrentAnswerCorrect;
 
@@ -109,7 +111,7 @@ export function KanaQuiz({
                 btnClass += " opacity-50";
               }
             }
-            if (isBurned) btnClass += " pointer-events-none";
+            if (isBurned || isCut) btnClass += " pointer-events-none";
 
             return (
               <motion.button
@@ -117,6 +119,7 @@ export function KanaQuiz({
                 onClick={(e) => { markYujiPicked(e.currentTarget); onOptionClick(option, e); }}
                 data-correct={isThisCorrect || undefined}
                 data-burned={isBurned || undefined}
+                data-sukuna-cut={isCut || undefined}
                 animate={
                   showCorrect && isThisSelected ? { scale: [1, 1.05, 1] }
                     : showWrong ? { x: [0, -10, 10, -10, 10, 0] }
@@ -124,7 +127,7 @@ export function KanaQuiz({
                 }
                 transition={{ duration: 0.4 }}
                 className={btnClass}
-                disabled={isAnswered || isBurned}
+                disabled={isAnswered || isBurned || isCut}
               >
                 {isGrammarMode ? option.char : option.romaji}
               </motion.button>

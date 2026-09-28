@@ -97,6 +97,20 @@ export const SUKUNA_HITSUME_INTERVAL_MS = 4000;
 export const sukunaHitsumeCount = (wrongCount) =>
   (Number.isFinite(wrongCount) && wrongCount > 0) ? Math.floor(wrongCount) : 0;
 
+// 必中 versi UI: opsi salah mana yang SUDAH kena slash setelah `elapsedS` detik.
+// Deterministik & stabil antar render (urutan array, bukan acak) — kalau diacak
+// per render, set opsi yang terbelah berubah-ubah tiap tick (bug).
+// count = floor(elapsedS / 4); berhenti otomatis saat tinggal jawaban benar.
+export const sukunaHitsumeCut = (options = [], correctId = null, elapsedS = 0, intervalMs = SUKUNA_HITSUME_INTERVAL_MS) => {
+  const ids = (Array.isArray(options) ? options : [])
+    .map((o) => (o && typeof o === 'object' ? o.id : o))
+    .filter((id) => id != null && id !== correctId);
+  if (!Number.isFinite(elapsedS) || elapsedS <= 0) return [];
+  const step = Number.isFinite(intervalMs) && intervalMs > 0 ? intervalMs : SUKUNA_HITSUME_INTERVAL_MS;
+  const count = Math.min(ids.length, Math.floor((elapsedS * 1000) / step));
+  return count > 0 ? ids.slice(0, count) : [];
+};
+
 // Urutan opsi salah yang kena slash (deterministik dgn rng injectable).
 // Tidak memutasi input; jawaban benar TIDAK pernah masuk.
 export const sukunaHitsumeOrder = (options = [], correctId = null, rng = Math.random) => {
