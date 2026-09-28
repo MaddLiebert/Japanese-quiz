@@ -3,6 +3,8 @@ import { Volume2 } from "lucide-react";
 import { playDramaticAudio } from "../../utils/audio";
 import { useLanguage } from "../../context/LanguageContext";
 
+import { markYujiPicked } from "../effects/yujiHit";
+
 export function KanaQuiz({
   currentQuestion,
   currentIndex,
@@ -112,7 +114,7 @@ export function KanaQuiz({
             return (
               <motion.button
                 key={option.id}
-                onClick={() => onOptionClick(option)}
+                onClick={(e) => { markYujiPicked(e.currentTarget); onOptionClick(option, e); }}
                 data-correct={isThisCorrect || undefined}
                 data-burned={isBurned || undefined}
                 style={isBurned ? { visibility: 'hidden' } : undefined}

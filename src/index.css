@@ -228,3 +228,121 @@ html[data-gojo-domain='on'] button[data-correct]:not(:disabled) {
     filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.8));
   }
 }
+/* ── Yuji Itadori: efek "kena nonjok" pada TOMBOL jawaban yang dipencet ───────
+   [data-yuji-hit] di-set provider efek ke <html> tiap jawaban (auto-clear 700ms),
+   [data-picked] nempel di tombol yang barusan dipencet. Arah dorong menjauhi
+   pusat layar biar kerasa seperti pukulan, bukan getaran polos. */
+@keyframes yujiHitKokusen {
+  0%   { transform: translate(0, 0) scale(1); }
+  12%  { transform: translate(var(--hit-x, 0px), var(--hit-y, 0px)) scale(1.06); }
+  26%  { transform: translate(calc(var(--hit-x, 0px) * -0.35), calc(var(--hit-y, 0px) * -0.35)) scale(1.01); }
+  42%  { transform: translate(calc(var(--hit-x, 0px) * 0.18), calc(var(--hit-y, 0px) * 0.18)) scale(1.02); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes yujiHitKeiteiken {
+  0%   { transform: translate(0, 0) scale(1); }
+  10%  { transform: translate(var(--hit-x, 0px), var(--hit-y, 0px)) scale(1.05); }
+  22%  { transform: translate(calc(var(--hit-x, 0px) * 0.22), calc(var(--hit-y, 0px) * 0.22)) scale(1); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes yujiHitManjigeri {
+  0%   { transform: translate(0, 0) rotate(0deg) skewX(0deg); }
+  14%  { transform: translate(calc(var(--hit-x, 0px) * 0.9), calc(var(--hit-y, 0px) * 0.9)) rotate(-2.4deg) skewX(-6deg); }
+  32%  { transform: translate(calc(var(--hit-x, 0px) * -0.2), calc(var(--hit-y, 0px) * -0.2)) rotate(1deg) skewX(2deg); }
+  100% { transform: translate(0, 0) rotate(0deg) skewX(0deg); }
+}
+@keyframes yujiHitShock {
+  0%   { box-shadow: 0 0 0 0 rgba(224, 36, 26, 0.85), 0 0 22px 4px rgba(224, 36, 26, 0.55); }
+  100% { box-shadow: 0 0 0 26px rgba(224, 36, 26, 0), 0 0 0 0 rgba(224, 36, 26, 0); }
+}
+
+html[data-yuji-hit] button[data-picked] {
+  --hit-x: 0px; --hit-y: 0px;
+  animation: yujiHitKeiteiken 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+html[data-yuji-hit='kokusen'] button[data-picked] {
+  animation: yujiHitKokusen 0.46s cubic-bezier(0.22, 1, 0.36, 1) both;
+  border-color: #e0241a !important;
+  outline: 3px solid rgba(224, 36, 26, 0.75);
+  outline-offset: 2px;
+}
+html[data-yuji-hit='kokusen'] button[data-picked]::after {
+  content: '';
+  position: absolute; inset: -4px; border-radius: inherit; pointer-events: none;
+  animation: yujiHitShock 0.5s ease-out both;
+}
+html[data-yuji-hit='manjigeri'] button[data-picked] {
+  animation: yujiHitManjigeri 0.46s cubic-bezier(0.22, 1, 0.36, 1) both;
+  border-color: #00b0ff !important;
+}
+html[data-yuji-hit='keiteiken'] button[data-picked] {
+  border-color: #00b0ff !important;
+  box-shadow: 0 0 0 3px rgba(0, 176, 255, 0.45), 6px 6px 0 0 rgba(26, 26, 26, 0.32);
+}
+html[data-yuji-hit='senketsu'] button[data-picked] {
+  border-color: #8b0000 !important;
+  animation: yujiHitKokusen 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+html[data-yuji-hit='fuga'] button[data-picked],
+html[data-yuji-hit='kai'] button[data-picked],
+html[data-yuji-hit='hachi'] button[data-picked] {
+  border-color: #ff8c1a !important;
+  box-shadow: 0 0 0 3px rgba(255, 140, 26, 0.5), 6px 6px 0 0 rgba(26, 26, 26, 0.32);
+}
+/* Salah: tombol yang dipencet BERGETAR kecil lalu diam (bukan pukulan). */
+@keyframes yujiHitWrong {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+html[data-yuji-hit='wrong'] button[data-picked] {
+  animation: yujiHitWrong 0.4s ease-in-out both;
+  border-color: #6b7280 !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-yuji-hit] button[data-picked] { animation: none; }
+  html[data-yuji-hit='kokusen'] button[data-picked] { outline: 3px solid rgba(224, 36, 26, 0.75); }
+}
+/* ── 開 (finisher Yuji): opsi salah TERBAKAR, jawaban benar tetap UTUH ────────
+   Sebelumnya opsi dibakar disembunyikan (visibility:hidden) — user minta
+   kelihatan TERBAKAR dengan sisa jawaban benar utuh. */
+@keyframes yujiBurnFlicker {
+  0%, 100% { opacity: 0.85; transform: translateY(0) scale(1); }
+  50% { opacity: 1; transform: translateY(-1px) scale(1.01); }
+}
+@keyframes yujiBurnEmber {
+  0% { opacity: 0; transform: translateY(6px) scale(0.6); }
+  35% { opacity: 0.95; }
+  100% { opacity: 0; transform: translateY(-16px) scale(1.15); }
+}
+button[data-burned] {
+  position: relative;
+  pointer-events: none;
+  cursor: not-allowed;
+  color: rgba(120, 80, 60, 0.55) !important;
+  border-color: #3b2416 !important;
+  background:
+    radial-gradient(circle at 22% 78%, rgba(255, 110, 20, 0.30), transparent 46%),
+    radial-gradient(circle at 78% 26%, rgba(224, 36, 26, 0.24), transparent 42%),
+    linear-gradient(160deg, #2a1a12 0%, #1a1108 55%, #0f0a05 100%) !important;
+  box-shadow: inset 0 0 22px rgba(255, 110, 20, 0.22), inset 0 0 3px rgba(0, 0, 0, 0.9) !important;
+  text-shadow: 0 0 6px rgba(255, 140, 26, 0.35);
+  animation: yujiBurnFlicker 1.6s ease-in-out infinite;
+}
+button[data-burned]::after {
+  content: '';
+  position: absolute; left: 12%; right: 12%; bottom: -2px; height: 10px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 60%, #ff8c1a 0 2px, transparent 3px),
+    radial-gradient(circle at 46% 40%, #ffe066 0 1.6px, transparent 3px),
+    radial-gradient(circle at 74% 66%, #e0241a 0 2.2px, transparent 3.4px);
+  filter: blur(0.4px) drop-shadow(0 0 6px rgba(255, 120, 20, 0.75));
+  animation: yujiBurnEmber 1.9s ease-in infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  button[data-burned] { animation: none; }
+  button[data-burned]::after { animation: none; opacity: 0.5; }
+}

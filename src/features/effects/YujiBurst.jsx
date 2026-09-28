@@ -2,20 +2,45 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   yujiTechniqueFor, YUJI_STYLE, YUJI_INK, YUJI_FLASH,
-  yujiSparks, yujiCracks, yujiEmbers, yujiBeam, yujiWindLines, yujiScissorLines,
+  yujiSparks, yujiCracks, yujiEmbers, yujiBeam, yujiWindLines, yujiScissorLines, yujiBolts,
 } from './yujiFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Yuji Itadori (visual 'yuji') — efek jawaban. Aturan main:
 //   • keiteiken  → aura biru di kepalan, pulse 2x (kanon: double impact)
 //   • manjigeri  → blur geser + garis angin vertikal
-//   • kokusen    → percikan hitam + flash 1 frame + retakan kaca radial (BUKAN petir!)
+//   • kokusen    → percikan hitam + flash + retakan + PETIR MERAH (aura 黒閃, minta user)
 //   • senketsu   → 4 tahap: 百斂 (compress) → beam → tembus → sisa (CSS murni)
 //   • kai/hachi  → garis putus-putus nyebar lalu SNIP (御廚子 versi Yuji, putih)
 //   • fuga (開)  → panah api horizontal + kanji api (gradasi, bara, shimmer)
 //   • wrong      → 黒閃 GAGAL: percikan hitam PADAM + retakan tak jadi + layar gelap
 // Semua animasi hanya transform + opacity. prefers-reduced-motion → versi statis.
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Kanji tiap teknik di band bawah — warna mengikuti efek (user: "tambahin
+// kanji di setiap skill warnanya sesuai efek"). Ringan: text-shadow saja.
+function TechKanji({ style, reduced, delay = 0, size = 'clamp(30px, 6vw, 76px)' }) {
+  if (!style) return null;
+  return (
+    <motion.span
+      data-yuji-kanji
+      className="absolute font-serif font-black select-none pointer-events-none"
+      style={{
+        left: '50%', bottom: '12%', x: '-50%',
+        fontSize: size,
+        color: style.color,
+        WebkitTextStroke: `1.5px ${YUJI_INK}`,
+        textShadow: `0 0 14px ${style.color}aa, 0 0 34px ${style.color}55`,
+        willChange: 'transform, opacity',
+      }}
+      initial={{ opacity: 0, scale: 0.7 }}
+      animate={reduced ? { opacity: 1, scale: 1 } : { opacity: [0, 1, 1, 0.92], scale: [0.7, 1.1, 1, 1.01] }}
+      transition={{ duration: reduced ? 0 : 0.9, delay: reduced ? 0 : delay, ease: 'easeOut' }}
+    >
+      {style.kanji}
+    </motion.span>
+  );
+}
 
 const prefersReduced = () =>
   typeof window !== 'undefined' &&
@@ -178,6 +203,7 @@ function YujiWrong({ fx, reduced }) {
           })}
         </svg>
       )}
+      <TechKanji style={YUJI_STYLE.wrong} reduced={reduced} size="clamp(34px, 7vw, 84px)" />
       <YujiGifLayer src={fx?.gifSrc} reduced={reduced} wrong />
     </motion.div>
   );
@@ -204,6 +230,7 @@ function YujiKeiteiken({ fx, reduced }) {
         />
       ))}
       {!reduced && <SparkBurst seed={fx?.id || 1} color={st.color} count={10} delay={0.1} />}
+      <TechKanji style={st} reduced={reduced} delay={0.05} />
       <YujiGifLayer src={fx?.gifSrc} reduced={reduced} delay={0.1} />
     </motion.div>
   );
@@ -229,6 +256,7 @@ function YujiManjigeri({ fx, reduced }) {
           transition={{ duration: reduced ? 0 : l.dur, delay: reduced ? 0 : l.delay, ease: 'easeIn' }}
         />
       ))}
+      <TechKanji style={YUJI_STYLE.manjigeri} reduced={reduced} />
       <YujiGifLayer src={fx?.gifSrc} reduced={reduced} />
     </motion.div>
   );
@@ -238,6 +266,7 @@ function YujiManjigeri({ fx, reduced }) {
 function YujiKokusen({ fx, reduced }) {
   const seed = fx?.id || 1;
   const [cracks] = useState(() => yujiCracks(seed, 9));
+  const [bolts] = useState(() => yujiBolts(seed, 9));
   const isStreak = fx?.kind === 'streak';
   return (
     <motion.div
@@ -262,6 +291,25 @@ function YujiKokusen({ fx, reduced }) {
         style={{ background: 'radial-gradient(circle at 50% 50%, rgba(0,0,0,0.6), transparent 74%)' }}
       />
       {!reduced && <SparkBurst seed={seed} color="#111111" count={18} />}
+      {/* PETIR MERAH 黒閃 — aura petir merah (minta user). Bolt menjalar keluar. */}
+      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        {bolts.map((b) => (
+          <motion.polyline
+            key={b.id}
+            points={b.pts.map((p) => p.join(',')).join(' ')}
+            fill="none"
+            stroke="#e0241a"
+            strokeWidth={b.width}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: reduced ? 0.55 : [0, 1, 0.75, 1, 0.4] }}
+            transition={{ duration: reduced ? 0 : b.dur, delay: reduced ? 0 : b.delay, ease: 'easeOut' }}
+            style={{ filter: 'drop-shadow(0 0 4px #e0241a)' }}
+          />
+        ))}
+      </svg>
       {!reduced && (
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {cracks.map((c, i) => {
@@ -285,8 +333,8 @@ function YujiKokusen({ fx, reduced }) {
         <motion.span
           className="absolute font-serif font-black select-none"
           style={{
-            left: '50%', bottom: '16%', x: '-50%',
-            fontSize: 'clamp(28px, 5vw, 64px)',
+            left: '50%', bottom: '22%', x: '-50%',
+            fontSize: 'clamp(22px, 4vw, 48px)',
             color: '#111111',
             WebkitTextStroke: `2px ${YUJI_FLASH}`,
             willChange: 'transform, opacity',
@@ -298,6 +346,7 @@ function YujiKokusen({ fx, reduced }) {
           2.5×
         </motion.span>
       )}
+      <TechKanji style={YUJI_STYLE.kokusen} reduced={reduced} delay={0.1} />
       <YujiGifLayer src={fx?.gifSrc} reduced={reduced} delay={0.08} />
     </motion.div>
   );
@@ -344,6 +393,7 @@ function YujiSenketsu({ fx, reduced }) {
         animate={{ opacity: [0, 0.8, 0] }}
         transition={{ duration: 0.9, delay: 0.4 }}
       />
+      <TechKanji style={YUJI_STYLE.senketsu} reduced={reduced} delay={0.25} />
     </motion.div>
   );
 }

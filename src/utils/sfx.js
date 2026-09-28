@@ -112,15 +112,22 @@ export const hinaGifHoldMs = (kind, clipMs = 0) => {
   return Math.min(GIF_HOLD_MAX, Math.max(GIF_HOLD_MIN, Math.round(ms)));
 };
 
-const playFile = (path) => {
+const playFile = (path, startAt = 0) => {
   if (typeof window === 'undefined' || !path) return 0;
   try {
     const el = getAudio(path);
-    el.currentTime = 0;                              // putar dari awal (reuse)
-    el.play().catch((err) => console.warn('Voice play error:', err));
+    // startAt > 0 = lewati leading-silence klip (mis. fuga 0.46 s) supaya suara
+    // TIDAK kerasa telat; durasi balik dikurangi offset biar hold tetap pas.
+    const off = Number.isFinite(startAt) && startAt > 0 ? startAt : 0;
+    const start = () => {
+      try { el.currentTime = off; } catch { /* metadata belum siap */ }
+      el.play().catch((err) => console.warn('Voice play error:', err));
+    };
+    if (el.readyState >= 1) start();
+    else el.addEventListener('loadedmetadata', start, { once: true });
     // Durasi klip (ms) → dipakai untuk menyelaraskan tampilnya GIF Hina.
     const d = el.duration;
-    return (Number.isFinite(d) && d > 0) ? d * 1000 : 0;
+    return (Number.isFinite(d) && d > 0) ? Math.max(0, (d - off) * 1000) : 0;
   } catch (err) {
     console.warn('Voice play error:', err);
   }
@@ -355,9 +362,15 @@ export const YUJI_TECHNIQUE_FILES = {
   zakome: '/voices/yuji/zakome.mp3',
 };
 
+// Lead-silence per teknik (detik) — diukur RMS Web Audio; fuga = 0.46 s
+// (single source: `YUJI_FUGA_LEAD_S` di yujiFx.js, di-assert tesnya).
+export const YUJI_LEAD_S = { fuga: 0.46 };
+
 export const playYujiTechnique = (technique) => {
   const path = YUJI_TECHNIQUE_FILES[technique];
-  return path ? playFile(path) : 0;
+  if (!path) return 0;
+  const lead = YUJI_LEAD_S[technique] || 0;
+  return playFile(path, lead);
 };
 
 
