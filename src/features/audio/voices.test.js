@@ -145,13 +145,14 @@ test('voice toji: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
 });
 
 
-test('voice sukuna: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
+test('voice sukuna: 2 klip kalah (wrong) + 6 klip jurus (clips) — pola Yuji/Gojo', () => {
   const v = VOICES.sukuna;
   assert.ok(v, 'VOICES.sukuna harus ada');
-  assert.equal(v.files.correct.length, 3);
-  assert.equal(v.files.wrong.length, 3);
-  assert.equal(v.files.streak.length, 3);
-  const all = [...v.files.correct, ...v.files.wrong, ...v.files.streak];
-  assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
-  for (const p of all) assert.match(p, /^\/voices\/sukuna\/[a-z0-9_]+\.mp3$/);
+  assert.deepEqual(v.files.correct, [], 'jurus diputar deterministik, bukan random');
+  assert.equal(v.files.wrong.length, 2, '2 klip kalah: gambare/bakana');
+  assert.deepEqual(v.files.streak, [], 'domain = klip cast sendiri (clips), bukan streak acak');
+  assert.equal(v.clips.length, 6, 'kumo_no_ito, nue, furube, ryuurin, sekai_zangeki, ryouiki_tenkai');
+  for (const p of [...v.files.wrong, ...v.clips]) assert.match(p, /^\/voices\/sukuna\/[a-z0-9_]+\.mp3$/);
+  assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 8, 'tidak boleh duplikat');
+  assert.equal(getVoice('sukuna'), VOICES.sukuna);
 });
