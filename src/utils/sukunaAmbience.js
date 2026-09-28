@@ -1,13 +1,26 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Ambience Sukuna: BGM 伏魔御廚子 (drone + pad + BEL KUIL tiap 4 dtk + bisikan 呪詞).
-// Mirror gojoAmbience.js. Semua fungsi no-op (return false) di node/test — aman
-// di-import di mana pun. Angka desain di sfx.js (sukunaBgmPlan) — satu titik tune.
+// Ambience Sukuna: BGM 伏魔御廚子 yang MENCEKAM (kritik user 28/09 v3:
+// "tambahin bgm mencekam khas sukuna buat domain dia").
+//
+// Lapisan (semua Web Audio, tanpa file mp3 — pola gojoAmbience):
+//   1. drone   : 2 sine nyaris sama (beat pelan) + sub 41.2Hz — ruangan berat
+//   2. organ   : saw 55/82.41/110Hz (A1-E2-A2, tritone gelap) lowpass + swell
+//   3. pad     : triangle lembut di mid (kedengaran di speaker HP)
+//   4. taiko   : loop 16 step × 0.5 dtk = 8 dtk, aksen pukulan ganda tiap 2 dtk
+//   5. motif   : koto hirajoshi turun (A-B-C-E-F) — "tanda bahaya" khas Sukuna
+//   6. bel kuil: partial inharmonik tiap 4 dtk
+//   7. bisikan : noise bandpass termodulasi pelan (呪詞)
+//
+// Scheduler taiko/motif pakai LOOKAHEAD (150ms tick, 0.7s ahead) + waktu ctx
+// ABSOLUT → irama tidak goyang karena jitter setTimeout (pelajaran metronome).
+// Semua fungsi no-op (return false) di node/test — aman di-import di mana pun.
+// Angka desain di sfx.js (sukunaBgmPlan) — satu titik tune.
 // ─────────────────────────────────────────────────────────────────────────────
-import { getAudioContext, sukunaBgmPlan, sukunaBellParams } from './sfx.js';   // WAJIB pakai .js: file ini di-load node --test (ESM butuh specifier lengkap)
+import { getAudioContext, sukunaBgmPlan, sukunaBellParams, playSukunaTaiko, playSukunaMotif } from './sfx.js';   // WAJIB pakai .js: file ini di-load node --test (ESM butuh specifier lengkap)
 
 const hasWindow = () => typeof window !== 'undefined';
 
-let bgm = null;              // { master, nodes, level, fadeOutMs, bellTimer, bellNodes }
+let bgm = null;              // { master, nodes, level, fadeOutMs, bellTimer, schedTimer, bellNodes }
 let duckTimer = null;
 
 // Debug hook (dev-only): window.__sukunaAmbience → verifikasi browser & DevPanel.
@@ -15,7 +28,7 @@ const setDebug = (patch) => {
   if (!hasWindow()) return;
   if (!(import.meta.env && import.meta.env.DEV)) return;   // Vite: hilang di build produksi
   window.__sukunaAmbience = {
-    ...(window.__sukunaAmbience || { bgm: false, bells: 0, duckUntil: 0 }),
+    ...(window.__sukunaAmbience || { bgm: false, bells: 0, taiko: 0, steps: 0, duckUntil: 0 }),
     ...patch,
   };
 };
@@ -78,6 +91,36 @@ export const startSukunaDomainBgm = () => {
     g.gain.setValueAtTime(p.drone.gain / p.drone.freqs.length, t);
     osc.connect(g);
     g.connect(master);
+    osc.start(t);
+    nodes.push(osc);
+  });
+
+  // Organ gelap: saw register rendah lewat lowpass yang dibuka-tutup swell pelan.
+  // (Sumber "mencekam": tritone A1/E2 + filter yang bergerak seperti napas.)
+  const organFilter = ctx.createBiquadFilter();
+  organFilter.type = 'lowpass';
+  organFilter.frequency.setValueAtTime(p.organ.filterHz, t);
+  organFilter.Q.setValueAtTime(p.organ.q, t);
+  const organLfo = ctx.createOscillator();
+  const organLfoGain = ctx.createGain();
+  organLfo.frequency.setValueAtTime(p.organ.swellHz, t);
+  organLfoGain.gain.setValueAtTime(p.organ.swellDepth, t);
+  organLfo.connect(organLfoGain);
+  organLfoGain.connect(organFilter.frequency);
+  organLfo.start(t);
+  nodes.push(organLfo);
+  const organGain = ctx.createGain();
+  organGain.gain.setValueAtTime(p.organ.gain, t);
+  organFilter.connect(organGain);
+  organGain.connect(master);
+  p.organ.freqs.forEach((freq) => {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = p.organ.type;
+    osc.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(1 / p.organ.freqs.length, t);
+    osc.connect(g);
+    g.connect(organFilter);
     osc.start(t);
     nodes.push(osc);
   });
@@ -146,14 +189,60 @@ export const startSukunaDomainBgm = () => {
     setDebug({ bells });
   }, p.bellEveryMs);
 
-  bgm = { master, nodes, level: p.level, fadeOutMs: p.fadeOutMs, bellTimer };
-  setDebug({ bgm: true, bells: 0 });
+  // ── Scheduler taiko + motif koto (lookahead, irama stabil) ────────────────
+  // Loop 16 step × 0.5 dtk = 8 dtk. `nextStepAt` = waktu ctx absolut step
+  // berikutnya; tiap 150ms kita jadwalkan semua step yang jatuh ≤0.7s ke depan.
+  // Taiko & motif diputar lewat master (bukan langsung ke destination) supaya
+  // ducking ikut memelankan BGM saat klip voice bunyi.
+  const stepS = p.taiko.stepS;
+  const loopSteps = p.taiko.loopSteps;
+  const lookaheadS = 0.7;
+  const taikoSteps = new Set(p.taiko.steps);
+  const accentSteps = new Set(p.taiko.accents);
+  let step = 0;
+  let nextStepAt = ctx.currentTime + 0.25;   // masuk halus setelah fade-in mulai
+  let taikoHits = 0;
+  let motifNotes = 0;
+
+  const scheduleStep = (stepIndex, at) => {
+    if (taikoSteps.has(stepIndex)) {
+      const accent = accentSteps.has(stepIndex);
+      playSukunaTaiko(accent, at, master);
+      taikoHits += accent ? 2 : 1;
+      setDebug({ taiko: taikoHits, steps: stepIndex });
+    }
+    const every = p.motif.stepEvery;
+    if (stepIndex % every === 0) {
+      const idx = (stepIndex / every) % p.motif.notes.length;
+      playSukunaMotif(p.motif.notes[idx], at, master);
+      motifNotes += 1;
+      setDebug({ motif: motifNotes });
+    }
+  };
+
+  const schedTimer = setInterval(() => {
+    const now = getAudioContext();
+    if (!now) return;
+    // Autoplay policy: context bisa ter-suspend (belum ada gesture) → currentTime
+    // BEKU → loop tak pernah jalan (taiko/motif mati diam-diam). Bangunkan tiap
+    // tick; begitu currentTime maju, scheduler lanjut sendiri (self-healing).
+    if (now.state === 'suspended') now.resume();
+    while (nextStepAt < now.currentTime + lookaheadS) {
+      scheduleStep(step, nextStepAt);
+      step = (step + 1) % loopSteps;
+      nextStepAt += stepS;
+    }
+  }, 150);
+
+  bgm = { master, nodes, level: p.level, fadeOutMs: p.fadeOutMs, bellTimer, schedTimer };
+  setDebug({ bgm: true, bells: 0, taiko: 0, steps: 0, motif: 0 });
   return true;
 };
 
 export const stopSukunaDomainBgm = () => {
   if (!bgm) return false;
   if (bgm.bellTimer) clearInterval(bgm.bellTimer);
+  if (bgm.schedTimer) clearInterval(bgm.schedTimer);
   rampDown(bgm, bgm.fadeOutMs, 0.0001);
   bgm = null;
   setDebug({ bgm: false });

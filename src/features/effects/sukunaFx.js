@@ -15,26 +15,88 @@ export const SUKUNA_FLASH = '#ffffff';
 export const SUKUNA_BLOOD = '#e0241a';   // merah darah (bar domain + iris mata)
 
 export const SUKUNA_STYLE = {
-  kumo_no_ito:   { kanji: '蜘蛛の糸', color: '#e8f4ff', label: '蜘蛛の糸 · Kumo no Ito' },
+  // kumo_no_ito: inWeb → jaring muncul DI KARTU jawaban yang dipencet (bukan overlay
+  // layar penuh). Kritik user 28/09: "pas muncul jaring bagusnya pas kita pencet card
+  // langsung muncul disana aja, kek buat ngejerat jawaban yang di pilih".
+  kumo_no_ito:   { kanji: '蜘蛛の糸', color: '#e8f4ff', label: '蜘蛛の糸 · Kumo no Ito', inWeb: true },
   nue:           { kanji: '鵺',       color: '#7c3aed', label: '鵺 · Nue' },
-  furube:        { kanji: '魔虚羅',    color: '#a855f7', label: '布瑠部由良由良 → 魔虚羅' },
+  // furube: gif kanon Mahoraga (roda adaptasi 8 handle, TANPA mata) — kritik user:
+  // "mahoraga nya apaan item, harus lore accurate ... wheelnya juga jangan ada mata".
+  furube:        { kanji: '魔虚羅',    color: '#a855f7', label: '布瑠部由良由良 → 魔虚羅', gif: '/effects/mahoraga.gif' },
   ryuurin:       { kanji: '龍鱗・反発・番いの流星', color: '#e0241a', label: '龍鱗・反発・番いの流星' },
   sekai_zangeki: { kanji: '世界を断つ斬撃', color: '#ffffff', label: '世界を断つ斬撃 · World Cut' },
   domain:        { kanji: '伏魔御廚子', color: '#e0241a', label: '領域展開・伏魔御廚子' },
-  wrong:         { kanji: '馬鹿な',    color: '#6b7280', label: '馬鹿な (gagal)' },
+  // wrong: jawaban salah = kanji 馬鹿な + GIF kalah. SEMUA efek lain dibuang
+  // (kritik user: "pas salah si efekna ilangin aja cuma pake kata2 kanji sama gif").
+  wrong:         { kanji: '馬鹿な',    color: '#e0241a', label: '馬鹿な (gagal)' },
 };
 
-// ── Ladder jurus per streak (spec §Mapping) ─────────────────────────────────
-// 1–2 蜘蛛の糸 · 3–19 鵺 · 20 布瑠部由良由良 (summon 魔虚羅) · 21–49 龍鱗反発
-// (chant) · 50+ 世界を断つ斬撃. TIDAK PERNAH domain (domain dari BAR, bukan streak).
+// ── Fitur skill yang GUNA buat quiz (unlock di streak 30 & 50) ───────────────
+// Kritik user 28/09: "streak 30 sama 50 adain fitur skill yang guna buat quiz,
+// sesuai sama lore nya". Lore:
+//   30 → 龍鱗・反発 (ryuurin): "反発" = memantulkan serangan → pecah SATU opsi salah
+//        (pantulan menyisihkan satu kemungkinan) untuk soal BERIKUTNYA.
+//   50 → 世界を断つ斬撃 (sekai_zangeki): memotong dunia/ruang → SEMUA opsi salah
+//        terbelah untuk soal BERIKUTNYA (tinggal jawaban benar).
+// Efek praktis berlaku ke soal berikutnya (soal sekarang sudah dijawab) — di-arm
+// saat streak tepat menyentuh angka itu, dikonsumsi saat opsi soal baru terpasang.
+export const SUKUNA_QUIZ_SKILLS = {
+  30: { id: 'ryuurin', at: 30, label: '龍鱗・反発', desc: '反発 — pantulan memecah 1 opsi salah', cut: 1 },
+  50: { id: 'sekai_zangeki', at: 50, label: '世界を断つ斬撃', desc: 'memotong semua opsi salah', cut: 'all' },
+};
+
+// Cooldown skill quiz: setelah dipakai, skill baru bisa dipakai lagi setelah
+// pemain menambah N jawaban benar. Anti-overpower — tanpa ini, streak ≥30 bisa
+// memotong 1 opsi di SETIAP soal → kuis jadi 2 pilihan terus.
+export const SUKUNA_SKILL_COOLDOWN = 3;
+
+// Skill yang di-unlock TEPAT di streak ini (angka lain → null).
+export const sukunaQuizSkillAt = (streak) =>
+  (Number.isFinite(streak) && SUKUNA_QUIZ_SKILLS[streak]) ? SUKUNA_QUIZ_SKILLS[streak] : null;
+
+// Opsi salah yang dipotong skill quiz. Deterministik (urutan array, bukan acak)
+// supaya stabil antar render. Jawaban benar TIDAK pernah masuk. skillId:
+//   'ryuurin' (cut 1)   → opsi salah pertama
+//   'sekai_zangeki' (all) → semua opsi salah
+export const sukunaSkillCut = (options = [], correctId = null, skillId = null) => {
+  const ids = (Array.isArray(options) ? options : [])
+    .map((o) => (o && typeof o === 'object' ? o.id : o))
+    .filter((id) => id != null && id !== correctId);
+  if (ids.length === 0 || !skillId) return [];
+  const skill = Object.values(SUKUNA_QUIZ_SKILLS).find((s) => s.id === skillId);
+  if (!skill) return [];
+  return skill.cut === 'all' ? ids : ids.slice(0, Math.max(0, Math.floor(skill.cut) || 0));
+};
+
+// ── Ladder jurus per streak (spec §Mapping; revisi kritik user 28/09 v3) ─────
+// Momen GEDE tetap di streak pasti: 20 布瑠部由良由良 (summon 魔虚羅) ·
+// 30 龍鱗反発 (chant) · 50 世界を断つ斬撃 (World Cut).
+// Semua jawaban benar NON-momen = ROTASI non-streak: ke-1 蜘蛛の糸, ke-2 鵺,
+// ke-3 蜘蛛の糸, … Kritik user 28/09: "non streak 1 kumo no ito, kdua nue, gitu
+// terus buat non streak" + "kadang pake suara default" (dulu null → chime default).
+// TIDAK PERNAH domain (domain dari BAR, bukan streak).
+export const SUKUNA_LADDER = { 20: 'furube', 30: 'ryuurin', 50: 'sekai_zangeki' };
+
+// Siklus jurus non-streak — deterministik (bukan acak): kumo → nue → kumo → …
+export const SUKUNA_NON_STREAK_CYCLE = ['kumo_no_ito', 'nue'];
+
+// Jawaban benar NON-momen ke berapa streak ini (1-based). Murni dari angka
+// streak (tanpa state) → stabil antar render, gampang dites, tidak "nyangkut".
+export const sukunaNonStreakIndex = (streak) => {
+  if (!Number.isFinite(streak) || streak <= 0) return 0;
+  const s = Math.floor(streak);
+  const ladders = Object.keys(SUKUNA_LADDER).filter((m) => s >= Number(m)).length;
+  return s - ladders;
+};
+
 export const sukunaTechniqueFor = (kind, streak = 0) => {
   if (kind === 'wrong') return null;
-  if (!Number.isFinite(streak) || streak <= 0) return 'kumo_no_ito';
-  if (streak >= 50) return 'sekai_zangeki';
-  if (streak >= 21) return 'ryuurin';
-  if (streak >= 20) return 'furube';
-  if (streak >= 3) return 'nue';
-  return 'kumo_no_ito';
+  if (!Number.isFinite(streak) || streak <= 0) return null;
+  const s = Math.floor(streak);
+  if (SUKUNA_LADDER[s]) return SUKUNA_LADDER[s];
+  const idx = sukunaNonStreakIndex(s);
+  if (idx <= 0) return null;
+  return SUKUNA_NON_STREAK_CYCLE[(idx - 1) % SUKUNA_NON_STREAK_CYCLE.length];
 };
 
 // ── Bar 呪力: 4 lengan Sukuna × 5 takik tebasan = 20 ────────────────────────
@@ -77,7 +139,8 @@ export const SUKUNA_DOMAIN_TIMELINE = {
   shakeAt: 1.55,     // shake halus bareng senyum
   kanji2At: 2.25,    // 伏魔御廚子 per-karakter (sync frasa 2)
   kanji2Per: 0.19,   // ≈0.19s/kanji
-  shrineAt: 2.60,    // KUIL muncul: torii + mulut raksasa + tengkorak kerbau
+  shrineAt: 2.60,    // penanda urutan; kuil TIDAK di depan — muncul di BELAKANG
+                     // layar quiz via SukunaAura setelah settle (kritik user 28/09)
   flashAt: 3.28,     // FLASH
   boomAt: 3.28,      // BOOM (playDomainBoom('bang') + playSukunaBell)
   settleAt: 3.40,    // settle: blok mata+senyum+kanji naik & mengecil → kuil jadi LATAR
@@ -90,38 +153,23 @@ export const sukunaDomainStartDelayMs = () => {
   return Math.round((t.settleAt + t.settleDur) * 1000);
 };
 
-// ── 必中 (hitsume): tiap ~4 dtk satu opsi salah kena slash sendiri ──────────
-export const SUKUNA_HITSUME_INTERVAL_MS = 4000;
+// ── 必中 (hitsume): SATU tebasan membabat SEMUA opsi salah sekaligus ────────
+// Kritik user 28/09: "pas kena tebasan langsung aja cepet sisain 1 jawaban bener,
+// berulang di quiz berikutnya sampe waktu abis" — jadi BUKAN 1 opsi / 4 dtk
+// (versi lama: 3 opsi salah = 12 dtk, kelamaan). Begitu tebasan jatuh → semua
+// opsi salah terbelah, tinggal jawaban benar; berulang tiap soal baru selama
+// domain hidup. Penjadwalan kapan tebasan jatuh ada di EffectContext (provider).
 
-// Berapa opsi salah yang bakal kena (3 opsi salah ≈ 12 dtk) — clamp aman.
-export const sukunaHitsumeCount = (wrongCount) =>
-  (Number.isFinite(wrongCount) && wrongCount > 0) ? Math.floor(wrongCount) : 0;
+// Jeda sebelum tebasan jatuh di tiap soal baru (ms). Cepat — user minta
+// "langsung aja cepet", tapi tetap kelihatan tebasannya (bukan instan).
+export const SUKUNA_HITSUME_DELAY_MS = 1200;
 
-// 必中 versi UI: opsi salah mana yang SUDAH kena slash setelah `elapsedS` detik.
-// Deterministik & stabil antar render (urutan array, bukan acak) — kalau diacak
-// per render, set opsi yang terbelah berubah-ubah tiap tick (bug).
-// count = floor(elapsedS / 4); berhenti otomatis saat tinggal jawaban benar.
-export const sukunaHitsumeCut = (options = [], correctId = null, elapsedS = 0, intervalMs = SUKUNA_HITSUME_INTERVAL_MS) => {
-  const ids = (Array.isArray(options) ? options : [])
+// Opsi yang terbabat satu tebasan 必中: SEMUA opsi salah, jawaban benar AMAN.
+// Deterministik (urutan array) → stabil antar render.
+export const sukunaHitsumeCut = (options = [], correctId = null) => {
+  return (Array.isArray(options) ? options : [])
     .map((o) => (o && typeof o === 'object' ? o.id : o))
     .filter((id) => id != null && id !== correctId);
-  if (!Number.isFinite(elapsedS) || elapsedS <= 0) return [];
-  const step = Number.isFinite(intervalMs) && intervalMs > 0 ? intervalMs : SUKUNA_HITSUME_INTERVAL_MS;
-  const count = Math.min(ids.length, Math.floor((elapsedS * 1000) / step));
-  return count > 0 ? ids.slice(0, count) : [];
-};
-
-// Urutan opsi salah yang kena slash (deterministik dgn rng injectable).
-// Tidak memutasi input; jawaban benar TIDAK pernah masuk.
-export const sukunaHitsumeOrder = (options = [], correctId = null, rng = Math.random) => {
-  const ids = (Array.isArray(options) ? options : [])
-    .map((o) => (o && typeof o === 'object' ? o.id : o))
-    .filter((id) => id != null && id !== correctId);
-  for (let i = ids.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [ids[i], ids[j]] = [ids[j], ids[i]];
-  }
-  return ids;
 };
 
 // ── Generator partikel murni (rng injectable; dipakai SukunaBurst/SukunaDomain) ──
@@ -158,7 +206,8 @@ export const sukunaThunderBolts = (seed = 1, count = 3, rng = Math.random) =>
     };
   });
 
-// 布瑠部由良由良: roda Dharma — 8 jari-jari berputar.
+// 布瑠部由良由良: roda Dharma — 8 jari-jari berputar (dipakai mantra ring, BUKAN
+// roda bermata — roda kanon Mahoraga = 8 handle tanpa mata, di GIF).
 export const sukunaWheelSpokes = (seed = 1, count = 8, rng = Math.random) =>
   Array.from({ length: count }, (_, i) => ({
     id: `${seed}-sp${i}`,

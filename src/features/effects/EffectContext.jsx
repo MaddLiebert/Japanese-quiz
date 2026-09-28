@@ -21,8 +21,10 @@ import { SukunaCurseBar, SukunaDomainCine, SukunaAura } from './SukunaDomain';
 import {
   sukunaTechniqueFor, sukunaCurseCharge, SUKUNA_ULT_THRESHOLD,
   SUKUNA_DOMAIN_DURATION_S, sukunaDomainLeft as sukunaDomainLeftMs, sukunaDomainStartDelayMs,
-  SUKUNA_HITSUME_INTERVAL_MS, sukunaHitsumeOrder,
+  SUKUNA_HITSUME_DELAY_MS, sukunaHitsumeCut,
+  sukunaQuizSkillAt, sukunaSkillCut, SUKUNA_QUIZ_SKILLS,
 } from './sukunaFx';
+import { sukunaGifForAnswer, sukunaAnswerHoldMs, preloadSukunaGifs } from './sukunaGifs';
 import {
   yujiTechniqueFor, yujiCurseCharge, yujiComboNext,
   YUJI_ULT_THRESHOLD, YUJI_TAKEOVER_DURATION_S, yujiTakeoverLeft, yujiTakeoverStartDelayMs,
@@ -160,10 +162,31 @@ export function EffectProvider({ children }) {
   const [sukunaDomain, setSukunaDomain] = useState(false);
   const [sukunaDomainSeed, setSukunaDomainSeed] = useState(0);
   const [sukunaDomainLeft, setSukunaDomainLeft] = useState(SUKUNA_DOMAIN_DURATION_S);
-  const [sukunaCutCount, setSukunaCutCount] = useState(0);   // 必中: jumlah tebasan sejauh ini
+  // 必中: id opsi salah yang terbabat SATU tebasan di soal aktif ([] = belum).
+  // `forId` = correctId soal pemilik potongan → konsumen membandingkan dengan
+  // soal aktif supaya potongan soal LAMA tidak bocor ke soal berikutnya
+  // (kasus tepi: id opsi sama, jawaban benar beda → tombol benar bisa ke-disable).
+  const [sukunaHitsumeCutIds, setSukunaHitsumeCutIds] = useState([]);
+  const [sukunaHitsumeForId, setSukunaHitsumeForId] = useState(null);
+  const sukunaHitsumeCutForRef = useRef(null);   // correctId yang sudah kena tebasan
+  const sukunaHitsumePendingRef = useRef(null);  // correctId yang tebasannya dijadwalkan
   const sukunaDomainEndsAtRef = useRef(null);
   const sukunaEndedRef = useRef(false);
   const sukunaDomainRef = useRef(false);
+  // ── Skill quiz (streak 30 & 50, sesuai lore) ──────────────────────────────
+  // armed  = skill baru di-unlock (nempel ke SOAL BERIKUTNYA).
+  // cutIds = opsi yang benar-benar terpotong di soal aktif (buat CSS 斬).
+  const [sukunaQuizSkill, setSukunaQuizSkill] = useState(null);   // 'ryuurin' | 'sekai_zangeki' | null
+  const [sukunaSkillCutIds, setSukunaSkillCutIds] = useState([]);
+  const [sukunaSkillForId, setSukunaSkillForId] = useState(null);  // correctId pemilik potongan skill
+  const [sukunaQuizOptionsState, setSukunaQuizOptionsState] = useState(null); // { options, correctId }
+  const sukunaSkillCutIdsRef = useRef([]);
+  const sukunaSkillCutIdRef = useRef(null);   // skill id yang potongannya sedang tampil
+  const sukunaSkillUsesRef = useRef(0);       // stok skill terpakai (max 2 per sesi streak)
+  const sukunaSkillCutForRef = useRef(null);  // correctId soal yang sedang dipotong 斬
+  const sukunaSkillArmedOnRef = useRef(null); // correctId soal saat skill di-arm
+  const sukunaQuizOptionsRef = useRef(null);  // { options, correctId } soal aktif
+  const sukunaSkillReadyAtRef = useRef(0);    // streak minimal skill bisa dipakai lagi (cooldown)
   const timersRef = useRef([]);
   const hitTimerRef = useRef(null);
   // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
@@ -299,6 +322,11 @@ export function EffectProvider({ children }) {
   const triggerSukuna = useCallback((type, kind, cfg) => {
     const streak = streakRef.current;
     const tech = sukunaTechniqueFor(kind, type === 'correct' ? streak : 0);
+    // GIF per jawaban (kritik user): salah → GIF kalah (馬鹿な), furube → Mahoraga.
+    const gifSrc = sukunaGifForAnswer(type, tech);
+    // Skill quiz di-arm ke SOAL BERIKUTNYA → catat soal yang barusan dijawab
+    // supaya efek tidak ikut memotong opsi soal yang sudah lewat.
+    sukunaSkillArmedOnRef.current = sukunaQuizOptionsRef.current?.correctId ?? null;
 
     // Suara: salah = klip kalah acak (gambare/bakana via playWrongSound),
     // benar = klip jurus deterministik + SEMUA lapis SFX registry (spec).
@@ -313,14 +341,39 @@ export function EffectProvider({ children }) {
       if (sukunaDomainRef.current) {
         sukunaDomainRef.current = false;
         setSukunaDomain(false);
-        setSukunaCutCount(0);
+        setSukunaHitsumeCutIds([]);
+        setSukunaHitsumeForId(null);
+        sukunaHitsumeCutForRef.current = null;
+        sukunaHitsumePendingRef.current = null;
         stopSukunaDomainBgm();
       }
+      // Salah → skill quiz yang belum kepakai hangus (streak reset).
+      setSukunaQuizSkill(null);
+      sukunaSkillCutIdsRef.current = [];
+      setSukunaSkillCutIds([]);
+      setSukunaSkillForId(null);
+      sukunaSkillUsesRef.current = 0;
     } else if (tech) {
       clipMs = playSukunaTechnique(tech);
       playSukunaTechniqueLayers(tech, streak);
       // Ambience dipelankan saat klip voice Sukuna bunyi (jangan bertumpuk).
       if (sukunaDomainRef.current) duckSukunaAmbience(1500);
+      // Skill quiz (lore): streak 30 → 龍鱗・反発 pecah 1 opsi salah soal BERIKUTNYA;
+      // streak 50 → 世界を断つ斬撃 potong SEMUA opsi salah soal berikutnya.
+      const skill = sukunaQuizSkillAt(streak);
+      if (skill) {
+        sukunaSkillCutIdRef.current = skill.id;
+        setSukunaQuizSkill(skill.id);
+        sukunaSkillCutIdsRef.current = [];
+        setSukunaSkillCutIds([]);
+        setSukunaSkillForId(null);
+      }
+    } else {
+      // Benar biasa → SUARA JURUS (bukan chime default!). Kritik user 28/09:
+      // "kadang pake suara default" — dengan rotasi kumo/nue di sukunaTechniqueFor,
+      // cabang ini praktis hanya untuk kasus tepi (streak 0). Fallback tetap
+      // playCorrectSound() supaya tidak pernah hening.
+      clipMs = playCorrectSound();
     }
 
     // Atribut <html> untuk efek hit tombol (CSS index.css: [data-sukuna-hit]).
@@ -332,10 +385,15 @@ export function EffectProvider({ children }) {
     }
 
     const fxId = ++seq;
-    const holdMs = Math.max(cfg?.hold || 0, clipMs || 0, tech === 'ryuurin' ? 4300 : 0,
-      tech === 'sekai_zangeki' ? 2600 : 0, tech === 'furube' ? 2000 : 0);
+    const holdMs = sukunaAnswerHoldMs(
+      type === 'wrong' ? 'bakana' : tech,
+      gifSrc,
+      clipMs,
+      Math.max(cfg?.hold || 0, tech === 'ryuurin' ? 4300 : 0,
+        tech === 'sekai_zangeki' ? 2600 : 0, tech === 'furube' ? 2000 : 0),
+    );
     setFx({
-      kind, tech, id: fxId,
+      kind, tech, id: fxId, gifSrc,
       seed: Math.floor(Math.random() * 900) + 1,
       level: 0, milestone: 0,
       streak: type === 'correct' ? streak : 0,
@@ -520,7 +578,16 @@ export function EffectProvider({ children }) {
     sukunaDomainRef.current = false;
     sukunaDomainEndsAtRef.current = null;
     sukunaEndedRef.current = false;
-    setSukunaCutCount(0);
+    setSukunaHitsumeCutIds([]);
+    setSukunaHitsumeForId(null);
+    sukunaHitsumeCutForRef.current = null;
+    sukunaHitsumePendingRef.current = null;
+    setSukunaQuizSkill(null);
+    sukunaSkillCutIdsRef.current = [];
+    setSukunaSkillCutIds([]);
+    setSukunaSkillForId(null);
+    setSukunaQuizOptionsState(null);
+    sukunaSkillUsesRef.current = 0;
     stopSukunaDomainBgm();
   }, [setTakeover]);
 
@@ -552,7 +619,16 @@ export function EffectProvider({ children }) {
     sukunaDomainRef.current = false;
     sukunaDomainEndsAtRef.current = null;
     sukunaEndedRef.current = false;
-    setSukunaCutCount(0);
+    setSukunaHitsumeCutIds([]);
+    setSukunaHitsumeForId(null);
+    sukunaHitsumeCutForRef.current = null;
+    sukunaHitsumePendingRef.current = null;
+    setSukunaQuizSkill(null);
+    sukunaSkillCutIdsRef.current = [];
+    setSukunaSkillCutIds([]);
+    setSukunaSkillForId(null);
+    setSukunaQuizOptionsState(null);
+    sukunaSkillUsesRef.current = 0;
     stopSukunaDomainBgm();
     stopAllAmbience();
   }, [setTakeover]);
@@ -624,15 +700,25 @@ export function EffectProvider({ children }) {
 
   // ── Cast 領域展開・伏魔御廚子 (tap bar Sukuna) ─────────────────────────────
   // Mirror castDomain Gojo, TAPI: timer JALAN (kuis TIDAK dibekukan) + 必中.
+  // GIF kanon (掌印 + kuil) di-preload lebih dulu supaya frame pertama siap.
+  useEffect(() => {
+    if (activeVisual !== 'sukuna') return;
+    preloadSukunaGifs();
+  }, [activeVisual]);
+
   const castSukunaDomain = useCallback(() => {
     if (activeVisual !== 'sukuna') return;
     streakRef.current = 0;
     sukunaEndedRef.current = false;
-    setSukunaCutCount(0);
     setSukunaCharge(0);
     setSukunaDomainSeed((n) => n + 1);
     sukunaDomainRef.current = true;
     setSukunaDomain(true);
+    // 必中 mulai dari nol di cast baru (soal pertama domain langsung kena tebasan).
+    setSukunaHitsumeCutIds([]);
+    setSukunaHitsumeForId(null);
+    sukunaHitsumeCutForRef.current = null;
+    sukunaHitsumePendingRef.current = null;
     // 30 dtk mulai SETELAH cinematic settle (bukan dari cast) — waktu main penuh.
     sukunaDomainEndsAtRef.current = Date.now() + sukunaDomainStartDelayMs() + SUKUNA_DOMAIN_DURATION_S * 1000;
     setSukunaDomainLeft(SUKUNA_DOMAIN_DURATION_S);
@@ -641,6 +727,98 @@ export function EffectProvider({ children }) {
     playSukunaDread();
     playDomainBoom('cast');
   }, [activeVisual]);
+
+  // ── Skill quiz Sukuna (streak 30 & 50) ────────────────────────────────────
+  // Konsumen (Practice/KanaQuiz) mendaftarkan opsi + jawaban benar soal aktif;
+  // provider memotong opsi salah sesuai skill yang di-arm (lore-accurate).
+  const setSukunaQuizOptions = useCallback((options, correctId) => {
+    if (!Array.isArray(options) || options.length === 0) {
+      sukunaQuizOptionsRef.current = null;
+      setSukunaQuizOptionsState(null);
+      return;
+    }
+    const reg = { options, correctId };
+    sukunaQuizOptionsRef.current = reg;
+    setSukunaQuizOptionsState(reg);
+  }, []);
+
+  // Satu efek: (a) lepas potongan saat soal berganti, (b) terapkan skill yang
+  // di-arm ke soal BERIKUTNYA (bukan soal yang barusan dijawab), lalu consume.
+  useEffect(() => {
+    if (activeVisual !== 'sukuna') return;
+    const reg = sukunaQuizOptionsState;
+    if (!reg) return;
+    // (a) Registrasi soal baru (bukan soal yang sedang dipotong) → bersihkan 斬.
+    if (sukunaSkillCutForRef.current !== reg.correctId) {
+      sukunaSkillCutIdsRef.current = [];
+      setSukunaSkillCutIds([]);
+      setSukunaSkillForId(null);
+    }
+    // (b) Skill di-arm & soal ini BEDA dari soal saat di-arm → potong sekarang.
+    if (!sukunaQuizSkill) return;
+    if (reg.correctId === sukunaSkillArmedOnRef.current) return;
+    const ids = sukunaSkillCut(reg.options, reg.correctId, sukunaQuizSkill);
+    if (ids.length === 0) return;
+    sukunaSkillCutForRef.current = reg.correctId;
+    sukunaSkillCutIdsRef.current = ids;
+    setSukunaSkillCutIds(ids);
+    setSukunaSkillForId(reg.correctId);
+    setSukunaQuizSkill(null);
+    sukunaSkillUsesRef.current += 1;   // stok berkurang (max 2 per sesi streak)
+  }, [activeVisual, sukunaQuizSkill, sukunaQuizOptionsState]);
+
+  // Tap tombol skill di bar → kalau opsi soal aktif sudah terdaftar & soal ini
+  // BEDA dari soal yang barusan dijawab → langsung potong (pemain bisa pakai kapan
+  // saja selama soal aktif belum dijawab). Kalau belum ada soal baru → arm.
+  const castSukunaQuizSkill = useCallback((skillId) => {
+    if (activeVisual !== 'sukuna') return;
+    const skill = Object.values(SUKUNA_QUIZ_SKILLS).find((s) => s.id === skillId);
+    if (!skill) return;
+    if (streakRef.current < skill.at) return;                      // belum di-unlock
+    if (streakRef.current < sukunaSkillReadyAtRef.current) return;  // masih cooldown
+    const reg = sukunaQuizOptionsRef.current;
+    if (reg && reg.correctId !== sukunaSkillArmedOnRef.current) {
+      const ids = sukunaSkillCut(reg.options, reg.correctId, skill.id);
+      if (ids.length > 0) {
+        sukunaSkillCutIdRef.current = skill.id;
+        sukunaSkillCutForRef.current = reg.correctId;
+        sukunaSkillCutIdsRef.current = ids;
+        setSukunaSkillCutIds(ids);
+        setSukunaSkillForId(reg.correctId);
+        // Cooldown 3 jawaban benar (anti-overpower: bukan 50/50 permanen).
+        sukunaSkillReadyAtRef.current = streakRef.current + SUKUNA_SKILL_COOLDOWN;
+        return;
+      }
+    }
+    // Belum ada soal baru → arm; efek jalan begitu soal berikutnya terpasang.
+    sukunaSkillCutIdRef.current = skill.id;
+    setSukunaQuizSkill(skill.id);
+  }, [activeVisual]);
+
+  // Tombol skill di bar: skill TERPAKAI di soal aktif (dengan sisa potongan), atau
+  // skill yang tersedia di streak sekarang (dengan sisa cooldown).
+  const sukunaCutSkill = (() => {
+    const s = streakRef.current;
+    const cooling = Math.max(0, sukunaSkillReadyAtRef.current - s);
+    if (sukunaSkillCutIds.length > 0) {
+      const used = Object.values(SUKUNA_QUIZ_SKILLS)
+        .find((x) => x.id === (sukunaSkillCutIdRef.current || '')) || null;
+      if (used) return { id: used.id, label: used.label, desc: used.desc, left: sukunaSkillCutIds.length, cooldown: cooling };
+    }
+    if (cooling > 0) {
+      // Masih cooldown → tombol tetap tampil (redup) dengan sisa jawaban.
+      const pending = s >= SUKUNA_QUIZ_SKILLS[50].at ? SUKUNA_QUIZ_SKILLS[50] : (s >= SUKUNA_QUIZ_SKILLS[30].at ? SUKUNA_QUIZ_SKILLS[30] : null);
+      if (!pending) return null;
+      return { id: pending.id, label: pending.label, desc: pending.desc, left: 0, cooldown: cooling };
+    }
+    if (s >= SUKUNA_QUIZ_SKILLS[50].at) {
+      return { id: SUKUNA_QUIZ_SKILLS[50].id, label: SUKUNA_QUIZ_SKILLS[50].label, desc: SUKUNA_QUIZ_SKILLS[50].desc, left: 0, cooldown: 0 };
+    }
+    if (s >= SUKUNA_QUIZ_SKILLS[30].at) {
+      return { id: SUKUNA_QUIZ_SKILLS[30].id, label: SUKUNA_QUIZ_SKILLS[30].label, desc: SUKUNA_QUIZ_SKILLS[30].desc, left: 0, cooldown: 0 };
+    }
+    return null;
+  })();
 
   // Hitung mundur domain Sukuna — habis → padam sendiri (bukan salah).
   useEffect(() => {
@@ -652,7 +830,10 @@ export function EffectProvider({ children }) {
         if (!sukunaEndedRef.current) { sukunaEndedRef.current = true; playDomainCollapse('timeout'); }
         sukunaDomainRef.current = false;
         setSukunaDomain(false);
-        setSukunaCutCount(0);
+        setSukunaHitsumeCutIds([]);
+        setSukunaHitsumeForId(null);
+        sukunaHitsumeCutForRef.current = null;
+        sukunaHitsumePendingRef.current = null;
         stopSukunaDomainBgm();
       }
     };
@@ -677,19 +858,44 @@ export function EffectProvider({ children }) {
     return () => clearTimeout(t);
   }, [sukunaDomain, activeVisual]);
 
-  // ── 必中: selama domain, tiap ~4 dtk satu opsi salah kena slash ───────────
-  // Provider TIDAK tahu opsi (itu di Practice/KanaQuiz) → provider hanya
-  // menghitung JUMLAH tebasan (sukunaCutCount). Pemakai menghitung id yang
-  // terbelah via sukunaHitsumeCut(options, correctId, count*4) — murni & dites.
-  // Mekanisme TERPISAH dari burnedIds Yuji supaya tidak saling ganggu.
+  // ── 必中: SATU tebasan membabat SEMUA opsi salah soal aktif ───────────────
+  // Kritik user 28/09 v3: "pas kena tebasan langsung aja cepet sisain 1 jawaban
+  // bener, berulang di quiz berikutnya sampe waktu abis".
+  // Alur: soal baru terdaftar (setSukunaQuizOptions) → tunggu SUKUNA_HITSUME_DELAY_MS
+  // ("langsung aja cepet") → playSlash + hitung cut set (SEMUA opsi salah) →
+  // opsi terbelah (sukunaHitsumeCutIds). Soal berikutnya → ulang lagi, sampai
+  // domain padam (timer habis / salah). Deterministik & murni (sukunaHitsumeCut).
+  // CATATAN: timer SENGAJA tidak di-clear di cleanup — hidup lintas re-run;
+  // callback memvalidasi domain & soal dulu sebelum menerapkan (anti dobel).
   useEffect(() => {
     if (!sukunaDomain || activeVisual !== 'sukuna') return undefined;
-    const id = setInterval(() => {
+    const reg = sukunaQuizOptionsState;
+    if (!reg) return undefined;
+    // Sudah kena tebasan di soal ini → jangan dobel.
+    if (sukunaHitsumeCutForRef.current === reg.correctId) return undefined;
+    // Soal baru (belum kena) → bersihkan sisa 斬 soal sebelumnya SEKARANG,
+    // supaya opsi soal baru tidak ikut tampil terbelah selama jeda.
+    setSukunaHitsumeCutIds([]);
+    setSukunaHitsumeForId(null);
+    // Sudah dijadwalkan untuk soal ini → biarkan timer yang jalan.
+    if (sukunaHitsumePendingRef.current === reg.correctId) return undefined;
+    sukunaHitsumePendingRef.current = reg.correctId;
+    const t = setTimeout(() => {
+      sukunaHitsumePendingRef.current = null;
+      // Domain bisa padam / soal berganti selama jeda → cek ulang.
+      if (!sukunaDomainRef.current) return;
+      const cur = sukunaQuizOptionsRef.current;
+      if (!cur || cur.correctId !== reg.correctId) return;
+      const ids = sukunaHitsumeCut(cur.options, cur.correctId);
+      if (ids.length === 0) return;
+      sukunaHitsumeCutForRef.current = cur.correctId;
+      setSukunaHitsumeCutIds(ids);
+      setSukunaHitsumeForId(cur.correctId);
       playSlash(false);   // bunyi tebasan 必中 (reuse)
-      setSukunaCutCount((n) => n + 1);
-    }, SUKUNA_HITSUME_INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [sukunaDomain, activeVisual]);
+    }, SUKUNA_HITSUME_DELAY_MS);
+    timersRef.current.push(t);
+    return undefined;
+  }, [sukunaDomain, activeVisual, sukunaQuizOptionsState]);
 
   // DEV-ONLY (DevPanel): lompat ke combo takeover 1..3 tanpa 3 jawaban benar.
   // Set ke level-1 lalu satu 'correct' → mendarat TEPAT di level (pola gojoPreviewStreak).
@@ -768,7 +974,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaCutCount }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
@@ -781,13 +987,14 @@ export function EffectProvider({ children }) {
         sukunaCharge={sukunaCharge}
         sukunaDomainOn={sukunaDomain} sukunaDomainSeed={sukunaDomainSeed}
         sukunaDomainLeft={sukunaDomainLeft} onCastSukuna={castSukunaDomain}
+        sukunaCutSkill={sukunaCutSkill} onCastSukunaSkill={castSukunaQuizSkill}
       />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -802,6 +1009,16 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
   const ink = kind === 'wrong' ? 'var(--sumi-val)'
     : kind === 'correct' ? 'var(--shu-val)'
       : '#b8901f'; // semua tier streak = emas
+
+  // Skill quiz Sukuna yang MASIH terpakai di soal aktif (tanda 斬 di opsi terpotong).
+  const sukunaSkills = sukunaCutSkill
+    ? [{
+      id: sukunaCutSkill.id,
+      label: sukunaCutSkill.label,
+      desc: sukunaCutSkill.desc,
+      left: sukunaCutSkill.left,
+    }]
+    : [];
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
@@ -967,7 +1184,8 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
       {/* ── Ryomen Sukuna (pack 'sukuna') — 蜘蛛の糸→鵺→魔虚羅→龍鱗→世界断つ ── */}
       {visual === 'sukuna' && (
         <>
-          {/* Domain: kuil persist (portal z-6 di belakang kuis) + cinematic.
+          {/* Domain: kuil SVG (baru, referensi user) di BELAKANG kuis (portal z-6)
+              + cinematic cast (掌印 GIF + kanji + mata/senyum).
               Tanpa AnimatePresence — padamnya harus instan & pasti (pola Gojo). */}
           {sukunaDomainOn && <SukunaAura key={`sukuna-aura-${sukunaDomainSeed}`} seed={sukunaDomainSeed} />}
           {sukunaDomainOn && <SukunaDomainCine key={`sukuna-dom-${sukunaDomainSeed}`} />}
@@ -982,6 +1200,8 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
           charge={sukunaCharge}
           ready={sukunaCharge >= SUKUNA_ULT_THRESHOLD && !sukunaDomainOn}
           onCast={onCastSukuna} domainOn={sukunaDomainOn} domainLeft={sukunaDomainLeft}
+          skills={sukunaSkills}
+          onSkill={onCastSukunaSkill}
         />
       )}
     </div>

@@ -422,6 +422,19 @@ button[data-sukuna-cut] {
   border-color: #7f1d1d !important;
   filter: grayscale(0.5);
 }
+/* Momen tebasan MENDARAT (kritik user: "pas kena tebasan langsung aja cepet"):
+   kartu dihantam → kilat putih + hentakan 1x → langsung settle ke keadaan
+   terbelah. Cepat (0.42s) supaya sisanya kebaca sebagai "1 jawaban tersisa". */
+@keyframes sukunaCutLand {
+  0%   { transform: translate(0, 0) rotate(0deg); filter: grayscale(0) brightness(1); }
+  8%   { transform: translate(-3px, 2px) rotate(-0.8deg); filter: grayscale(0) brightness(2.4); }
+  22%  { transform: translate(2px, -1px) rotate(0.5deg); filter: grayscale(0.15) brightness(1.5); }
+  45%  { transform: translate(-1px, 1px) rotate(-0.2deg); filter: grayscale(0.35) brightness(1.1); }
+  100% { transform: translate(0, 0) rotate(0deg); filter: grayscale(0.5) brightness(1); }
+}
+button[data-sukuna-cut] {
+  animation: sukunaCutLand 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 button[data-sukuna-cut]::before {
   content: '';
   position: absolute; inset: -2px;
@@ -429,6 +442,12 @@ button[data-sukuna-cut]::before {
   background:
     linear-gradient(74deg, transparent calc(50% - 1.6px), rgba(224, 36, 26, 0.95) calc(50% - 0.6px), rgba(255, 214, 214, 0.9) calc(50% + 0.6px), transparent calc(50% + 1.6px)),
     linear-gradient(-58deg, transparent calc(50% - 1.2px), rgba(224, 36, 26, 0.8) calc(50% - 0.4px), transparent calc(50% + 1.2px));
+  animation: sukunaCutMarkIn 0.3s ease-out both;
+}
+@keyframes sukunaCutMarkIn {
+  0%   { opacity: 0; transform: scale(1.06); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: scale(1); }
 }
 button[data-sukuna-cut]::after {
   content: '斬';
@@ -436,7 +455,12 @@ button[data-sukuna-cut]::after {
   font-family: ui-serif, serif; font-weight: 900; font-size: 13px;
   color: rgba(224, 36, 26, 0.85);
   text-shadow: 0 0 8px rgba(224, 36, 26, 0.6);
+  animation: sukunaCutMarkIn 0.34s 0.06s ease-out both;
 }
 @media (prefers-reduced-motion: reduce) {
-  button[data-sukuna-cut] { filter: none; opacity: 0.5; }
+  /* Gerak dihilangkan, tapi keadaan akhir tetap jelas (UX: jangan hapus feedback
+     penting — opsi terbelah harus tetap terbaca sebagai nonaktif). */
+  button[data-sukuna-cut] { animation: none; filter: none; opacity: 0.5; }
+  button[data-sukuna-cut]::before,
+  button[data-sukuna-cut]::after { animation: none; }
 }

@@ -18,7 +18,6 @@ import { KanaQuiz } from "../features/quiz/KanaQuiz";
 import { useEffectLayer } from "../features/effects/EffectContext";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 import { yujiBurnedIds, YUJI_FINISHER_XP_MULT } from "../features/effects/yujiFx";
-import { sukunaHitsumeCut, SUKUNA_HITSUME_INTERVAL_MS } from "../features/effects/sukunaFx";
 import { markYujiPicked } from "../features/effects/yujiHit";
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
@@ -111,7 +110,7 @@ export function Practice() {
   const timerRef = useRef(null);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaCutCount } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions } = useEffectLayer();
 
   // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
   // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
@@ -165,20 +164,40 @@ export function Practice() {
     [finisherOn, currentQuestion?.id, options],
   );
 
-  // 必中 Sukuna: opsi salah kena slash satu-satu tiap ~4 dtk selama domain hidup.
-  // Deterministik dari sukunaCutCount (provider) → stabil antar render.
+  // 必中 Sukuna: SATU tebasan membabat SEMUA opsi salah soal aktif (sisakan
+  // jawaban benar), berulang tiap soal baru selama domain hidup. Cut set
+  // dihitung provider (EffectContext) dari registrasi opsi soal ini.
+  // GUARD `forId`: potongan hanya berlaku kalau milik soal AKTIF — kalau id
+  // opsi kebetulan sama antar soal, potongan soal lama tidak bocor ke sini.
   const sukunaCutIds = useMemo(
-    () => (sukunaCutCount > 0 && currentQuestion
-      ? sukunaHitsumeCut(options, currentQuestion.id, sukunaCutCount * (SUKUNA_HITSUME_INTERVAL_MS / 1000))
-      : []),
-    [sukunaCutCount, currentQuestion?.id, options],
+    () => ((sukunaHitsumeForId === currentQuestion?.id) ? sukunaHitsumeCutIds : []),
+    [sukunaHitsumeForId, currentQuestion?.id, sukunaHitsumeCutIds],
+  );
+
+  // Skill quiz Sukuna (streak 30 & 50): daftarkan opsi + jawaban benar soal aktif
+  // ke provider. Provider memotong opsi salah (龍鱗・反発 1 opsi / 世界を断つ斬撃
+  // semua opsi) untuk soal berikutnya → hasilnya lewat sukunaSkillCutIds.
+  useEffect(() => {
+    if (!currentQuestion) return;
+    setSukunaQuizOptions(options, currentQuestion.id);
+  }, [currentQuestion?.id, options, setSukunaQuizOptions]);
+
+  // Gabung: 必中 (domain) + potongan skill quiz — dua-duanya menonaktifkan opsi.
+  // Keduanya di-guard `forId` → hanya berlaku untuk soal yang sedang aktif.
+  const sukunaSkillCutIdsNow = useMemo(
+    () => ((sukunaSkillForId === currentQuestion?.id) ? sukunaSkillCutIds : []),
+    [sukunaSkillForId, currentQuestion?.id, sukunaSkillCutIds],
+  );
+  const sukunaCutAll = useMemo(
+    () => [...new Set([...sukunaCutIds, ...sukunaSkillCutIdsNow])],
+    [sukunaCutIds, sukunaSkillCutIdsNow],
   );
 
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option, e) => {
     if (isAnswered) return;
     if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
-    if (sukunaCutIds.includes(option.id)) return; // opsi terbelah 必中 → tidak bisa dipilih
+    if (sukunaCutAll.includes(option.id)) return; // terbelah 必中 / dipotong skill quiz → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
 
     const correct = option.id === currentQuestion.id;
@@ -195,7 +214,7 @@ export function Practice() {
   const handleKotobaOptionClick = (option, e) => {
     if (isAnswered) return;
     if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
-    if (sukunaCutIds.includes(option.id)) return; // opsi terbelah 必中 → tidak bisa dipilih
+    if (sukunaCutAll.includes(option.id)) return; // terbelah 必中 / dipotong skill quiz → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
     const correct = option.id === currentQuestion.id;
 
@@ -431,7 +450,7 @@ export function Practice() {
                   const isThisClicked = answeredId === option.id;
                   const isThisCorrect = option.id === currentQuestion.id;
                   const isBurned = burnedIds.includes(option.id);
-                  const isCut = sukunaCutIds.includes(option.id);
+                  const isCut = sukunaCutAll.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -595,7 +614,7 @@ export function Practice() {
                   const isThisClicked = answeredId === option.id;
                   const isThisCorrect = option.id === currentQuestion.id;
                   const isBurned = burnedIds.includes(option.id);
-                  const isCut = sukunaCutIds.includes(option.id);
+                  const isCut = sukunaCutAll.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -686,7 +705,7 @@ export function Practice() {
           isGrammarMode={isGrammarMode}
           frozen={domainOn}
           burnedIds={burnedIds}
-          sukunaCutIds={sukunaCutIds}
+          sukunaCutIds={sukunaCutAll}
         />
       );
     }
