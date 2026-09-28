@@ -16,7 +16,12 @@ import { GojoDomainCine, GojoCurseBar, GojoSpacePortal } from './GojoDomainCine'
 import { YujiBurst } from './YujiBurst';
 import { YujiCurseBar, YujiTakeoverCine, YujiAura } from './YujiTakeover';
 import { SukunaBurst } from './SukunaBurst';
-import { sukunaTechniqueFor, sukunaCurseCharge, SUKUNA_ULT_THRESHOLD } from './sukunaFx';
+import { SukunaCurseBar, SukunaDomainCine, SukunaAura } from './SukunaDomain';
+import {
+  sukunaTechniqueFor, sukunaCurseCharge, SUKUNA_ULT_THRESHOLD,
+  SUKUNA_DOMAIN_DURATION_S, sukunaDomainLeft, sukunaDomainStartDelayMs,
+  SUKUNA_HITSUME_INTERVAL_MS, sukunaHitsumeOrder,
+} from './sukunaFx';
 import {
   yujiTechniqueFor, yujiCurseCharge, yujiComboNext,
   YUJI_ULT_THRESHOLD, YUJI_TAKEOVER_DURATION_S, yujiTakeoverLeft, yujiTakeoverStartDelayMs,
@@ -149,8 +154,15 @@ export function EffectProvider({ children }) {
   const yujiTakeoverRef = useRef(false);   // ref sinkron (dibaca triggerYuji, bukan state)
   const yujiComboRef = useRef(0);
   const yujiEndedRef = useRef(false);      // suara collapse hanya sekali per cast
-  // ── Sukuna: bar 呪力 4 lengan × 5 takik (streak path; domain di T5) ────────
+  // ── Sukuna: bar 呪力 4 lengan × 5 takik + domain 伏魔御廚子 (timer JALAN) ────
   const [sukunaCharge, setSukunaCharge] = useState(0);
+  const [sukunaDomain, setSukunaDomain] = useState(false);
+  const [sukunaDomainSeed, setSukunaDomainSeed] = useState(0);
+  const [sukunaDomainLeft, setSukunaDomainLeft] = useState(SUKUNA_DOMAIN_DURATION_S);
+  const [sukunaCutCount, setSukunaCutCount] = useState(0);   // 必中: jumlah tebasan sejauh ini
+  const sukunaDomainEndsAtRef = useRef(null);
+  const sukunaEndedRef = useRef(false);
+  const sukunaDomainRef = useRef(false);
   const timersRef = useRef([]);
   const hitTimerRef = useRef(null);
   // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
@@ -292,6 +304,16 @@ export function EffectProvider({ children }) {
     let clipMs = 0;
     if (type === 'wrong') {
       clipMs = playWrongSound();
+      // Domain padam karena SALAH → seketika + dentuman "ruang runtuh" (sekali per cast).
+      if (sukunaDomainRef.current && !sukunaEndedRef.current) {
+        sukunaEndedRef.current = true;
+        playDomainCollapse('wrong');
+      }
+      if (sukunaDomainRef.current) {
+        sukunaDomainRef.current = false;
+        setSukunaDomain(false);
+        setSukunaCutCount(0);
+      }
     } else if (tech) {
       clipMs = playSukunaTechnique(tech);
       playSukunaTechniqueLayers(tech, streak);
@@ -490,6 +512,11 @@ export function EffectProvider({ children }) {
     yujiEndedRef.current = false;
     // Sukuna
     setSukunaCharge(0);
+    setSukunaDomain(false);
+    sukunaDomainRef.current = false;
+    sukunaDomainEndsAtRef.current = null;
+    sukunaEndedRef.current = false;
+    setSukunaCutCount(0);
   }, [setTakeover]);
 
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
@@ -516,6 +543,11 @@ export function EffectProvider({ children }) {
     takeoverEndsAtRef.current = null;
     yujiEndedRef.current = false;
     setSukunaCharge(0);
+    setSukunaDomain(false);
+    sukunaDomainRef.current = false;
+    sukunaDomainEndsAtRef.current = null;
+    sukunaEndedRef.current = false;
+    setSukunaCutCount(0);
     stopAllAmbience();
   }, [setTakeover]);
 
@@ -583,6 +615,64 @@ export function EffectProvider({ children }) {
     takeoverEndsAtRef.current = null;
     setTakeoverLeft(YUJI_TAKEOVER_DURATION_S);
   }, [yujiTakeover]);
+
+  // ── Cast 領域展開・伏魔御廚子 (tap bar Sukuna) ─────────────────────────────
+  // Mirror castDomain Gojo, TAPI: timer JALAN (kuis TIDAK dibekukan) + 必中.
+  const castSukunaDomain = useCallback(() => {
+    if (activeVisual !== 'sukuna') return;
+    streakRef.current = 0;
+    sukunaEndedRef.current = false;
+    setSukunaCutCount(0);
+    setSukunaCharge(0);
+    setSukunaDomainSeed((n) => n + 1);
+    sukunaDomainRef.current = true;
+    setSukunaDomain(true);
+    // 30 dtk mulai SETELAH cinematic settle (bukan dari cast) — waktu main penuh.
+    sukunaDomainEndsAtRef.current = Date.now() + sukunaDomainStartDelayMs() + SUKUNA_DOMAIN_DURATION_S * 1000;
+    setSukunaDomainLeft(SUKUNA_DOMAIN_DURATION_S);
+    // Klip cast 領域展開……伏魔御廚子 (3.48s) + dread + boom.
+    playSukunaTechnique('ryouiki_tenkai');
+    playSukunaDread();
+    playDomainBoom('cast');
+  }, [activeVisual]);
+
+  // Hitung mundur domain Sukuna — habis → padam sendiri (bukan salah).
+  useEffect(() => {
+    if (!sukunaDomain) return undefined;
+    const tick = () => {
+      const left = sukunaDomainLeft(sukunaDomainEndsAtRef.current);
+      setSukunaDomainLeft(left);
+      if (left <= 0) {
+        if (!sukunaEndedRef.current) { sukunaEndedRef.current = true; playDomainCollapse('timeout'); }
+        sukunaDomainRef.current = false;
+        setSukunaDomain(false);
+        setSukunaCutCount(0);
+      }
+    };
+    tick();
+    const id = setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [sukunaDomain]);
+
+  useEffect(() => {
+    if (sukunaDomain) return;
+    sukunaDomainEndsAtRef.current = null;
+    setSukunaDomainLeft(SUKUNA_DOMAIN_DURATION_S);
+  }, [sukunaDomain]);
+
+  // ── 必中: selama domain, tiap ~4 dtk satu opsi salah kena slash ───────────
+  // Provider TIDAK tahu opsi (itu di Practice/KanaQuiz) → provider hanya
+  // menghitung JUMLAH tebasan (sukunaCutCount). Pemakai menghitung id yang
+  // terbelah via sukunaHitsumeCut(options, correctId, count*4) — murni & dites.
+  // Mekanisme TERPISAH dari burnedIds Yuji supaya tidak saling ganggu.
+  useEffect(() => {
+    if (!sukunaDomain || activeVisual !== 'sukuna') return undefined;
+    const id = setInterval(() => {
+      playSlash(false);   // bunyi tebasan 必中 (reuse)
+      setSukunaCutCount((n) => n + 1);
+    }, SUKUNA_HITSUME_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [sukunaDomain, activeVisual]);
 
   // DEV-ONLY (DevPanel): lompat ke combo takeover 1..3 tanpa 3 jawaban benar.
   // Set ke level-1 lalu satu 'correct' → mendarat TEPAT di level (pola gojoPreviewStreak).
@@ -661,7 +751,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaCutCount }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
@@ -672,13 +762,15 @@ export function EffectProvider({ children }) {
         takeoverOn={yujiTakeover} takeoverSeed={yujiTakeoverSeed} takeoverLeft={takeoverLeft}
         onCastYuji={castTakeover}
         sukunaCharge={sukunaCharge}
+        sukunaDomainOn={sukunaDomain} sukunaDomainSeed={sukunaDomainSeed}
+        sukunaDomainLeft={sukunaDomainLeft} onCastSukuna={castSukunaDomain}
       />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -857,9 +949,23 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
 
       {/* ── Ryomen Sukuna (pack 'sukuna') — 蜘蛛の糸→鵺→魔虚羅→龍鱗→世界断つ ── */}
       {visual === 'sukuna' && (
-        <AnimatePresence>
-          {fx && <SukunaBurst key={`sukuna-${fx.id}`} fx={fx} kind={kind} />}
-        </AnimatePresence>
+        <>
+          {/* Domain: kuil persist (portal z-6 di belakang kuis) + cinematic.
+              Tanpa AnimatePresence — padamnya harus instan & pasti (pola Gojo). */}
+          {sukunaDomainOn && <SukunaAura key={`sukuna-aura-${sukunaDomainSeed}`} seed={sukunaDomainSeed} />}
+          {sukunaDomainOn && <SukunaDomainCine key={`sukuna-dom-${sukunaDomainSeed}`} />}
+          <AnimatePresence>
+            {fx && <SukunaBurst key={`sukuna-${fx.id}`} fx={fx} kind={kind} />}
+          </AnimatePresence>
+        </>
+      )}
+
+      {visual === 'sukuna' && quizActive && (
+        <SukunaCurseBar
+          charge={sukunaCharge}
+          ready={sukunaCharge >= SUKUNA_ULT_THRESHOLD && !sukunaDomainOn}
+          onCast={onCastSukuna} domainOn={sukunaDomainOn} domainLeft={sukunaDomainLeft}
+        />
       )}
     </div>
   );
