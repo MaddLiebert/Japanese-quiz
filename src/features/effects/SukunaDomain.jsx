@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import {
   SUKUNA_STYLE, SUKUNA_INK, SUKUNA_BLOOD,
   SUKUNA_ULT_THRESHOLD, SUKUNA_ARMS, SUKUNA_NOTCHES_PER_ARM,
-  SUKUNA_DOMAIN_DURATION_S, SUKUNA_DOMAIN_TIMELINE, SUKUNA_CAST_VOICE,
+  SUKUNA_DOMAIN_DURATION_S, SUKUNA_DOMAIN_TIMELINE,
   sukunaSlashRain, sukunaEmbers,
 } from './sukunaFx';
 import { playDomainBoom, playSukunaBell, playDomainCue } from '../../utils/sfx';
