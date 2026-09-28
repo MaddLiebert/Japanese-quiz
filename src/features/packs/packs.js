@@ -96,8 +96,8 @@ export const PACKS = [
   },
   {
     id: 'pack_14', name: 'Ryomen Sukuna', kanji: '両面宿儺', icon: '👹',
-    desc: 'Voice pack Sukuna (visual menyusul)', desc_en: 'Sukuna voice pack (visual coming)',
-    price: 2500, rarity: 'special', visual: 'dummy', voice: 'sukuna',
+    desc: 'Voice pack Sukuna + efek 領域展開・伏魔御廚子', desc_en: 'Sukuna voice pack + Malevolent Shrine effect',
+    price: 2500, rarity: 'special', visual: 'sukuna', voice: 'sukuna',
   },
 ];
 

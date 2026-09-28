@@ -5,6 +5,7 @@ export const VISUALS = {
   dummy: { id: 'dummy', label: 'Dummy Placeholder', component: 'dummy' },
   gojo:  { id: 'gojo',  label: 'Gojo Domain',       component: 'gojo'  },
   yuji:  { id: 'yuji',  label: 'Yuji Cursed Fist',  component: 'yuji'  },
+  sukuna:{ id: 'sukuna', label: 'Sukuna Malevolent Shrine', component: 'sukuna' },
 };
 
 export const getVisual = (key) => VISUALS[key] || null;
