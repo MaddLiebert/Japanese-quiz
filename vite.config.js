@@ -34,4 +34,14 @@ export default defineConfig({
       }
     })
   ],
+  // Dev server buat akses dari HP (mis. via cloudflared tunnel).
+  // - host:true → bind 0.0.0.0 (bukan cuma localhost)
+  // - allowedHosts → izinkan hostname tunnel (kalau tidak: "Blocked request")
+  // - port 5174 → konvensi repo (5173 dipakai proses lain)
+  server: {
+    host: true,
+    port: 5174,
+    strictPort: false,
+    allowedHosts: ['.trycloudflare.com'],
+  },
 })
