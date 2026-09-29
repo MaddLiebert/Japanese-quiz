@@ -23,6 +23,7 @@ export function KanaQuiz({
   burnedIds = [],
   sukunaCutIds = [],
   megumiCutIds = [],
+  nobaraCutIds = [],
 }) {
   const { language } = useLanguage();
 
@@ -92,6 +93,7 @@ export function KanaQuiz({
             const isBurned = burnedIds.includes(option.id);
             const isCut = sukunaCutIds.includes(option.id);
             const isMegumiCut = megumiCutIds.includes(option.id);
+            const isNobaraCut = nobaraCutIds.includes(option.id);
             const showCorrect = isAnswered && isThisCorrect;
             const showWrong = isThisSelected && !isCurrentAnswerCorrect;
 
@@ -113,7 +115,7 @@ export function KanaQuiz({
                 btnClass += " opacity-50";
               }
             }
-            if (isBurned || isCut || isMegumiCut) btnClass += " pointer-events-none";
+            if (isBurned || isCut || isMegumiCut || isNobaraCut) btnClass += " pointer-events-none";
 
             return (
               <motion.button
@@ -123,6 +125,7 @@ export function KanaQuiz({
                 data-burned={isBurned || undefined}
                 data-sukuna-cut={isCut || undefined}
                 data-megumi-cut={isMegumiCut || undefined}
+                data-nobara-cut={isNobaraCut || undefined}
                 animate={
                   showCorrect && isThisSelected ? { scale: [1, 1.05, 1] }
                     : showWrong ? { x: [0, -10, 10, -10, 10, 0] }
@@ -130,7 +133,7 @@ export function KanaQuiz({
                 }
                 transition={{ duration: 0.4 }}
                 className={btnClass}
-                disabled={isAnswered || isBurned || isCut || isMegumiCut}
+                disabled={isAnswered || isBurned || isCut || isMegumiCut || isNobaraCut}
               >
                 {isGrammarMode ? option.char : option.romaji}
               </motion.button>

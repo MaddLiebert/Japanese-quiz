@@ -7,6 +7,7 @@ export const VISUALS = {
   yuji:  { id: 'yuji',  label: 'Yuji Cursed Fist',  component: 'yuji'  },
   sukuna:{ id: 'sukuna', label: 'Sukuna Malevolent Shrine', component: 'sukuna' },
   megumi:{ id: 'megumi', label: 'Megumi Ten Shadows', component: 'megumi' },
+  nobara:{ id: 'nobara', label: 'Nobara Straw Doll', component: 'nobara' },
 };
 
 export const getVisual = (key) => VISUALS[key] || null;

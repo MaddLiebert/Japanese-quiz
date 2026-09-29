@@ -65,8 +65,9 @@ export const PACKS = [
   // legendary Yuta/Toji · special Sukuna.
   {
     id: 'pack_08', name: 'Nobara Kugisaki', kanji: '釘崎野薔薇', icon: '🔨',
-    desc: 'Voice pack Nobara (visual menyusul)', desc_en: 'Nobara voice pack (visual coming)',
-    price: 2500, rarity: 'common', visual: 'dummy', voice: 'nobara',
+    desc: '芻霊呪法: 簪→簪・連→簪・時限→共鳴り→黒閃 + ultimate 全弾爆発',
+    desc_en: 'Straw Doll Technique: Hairpin→Barrage→Delayed→Resonance→Black Flash + All-Out Detonation',
+    price: 2500, rarity: 'common', visual: 'nobara', voice: 'nobara',
   },
   {
     id: 'pack_09', name: 'Yuji Itadori', kanji: '虎杖悠仁', icon: '👊',
