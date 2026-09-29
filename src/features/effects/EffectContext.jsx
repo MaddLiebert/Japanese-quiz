@@ -37,7 +37,7 @@ import {
 import {
   playMegumiTechnique, playMegumiTechniqueLayers, playShadowSwallow,
   playAdaptFlash, playSwordUnsheathe, playWheelShatter, playMakoraChant, playMakoraRoar,
-  playNobaraTechnique, playNobaraTechniqueLayers,
+  playNobaraTechnique, playNobaraTechniqueLayers, playStrawRustle,
 } from '../../utils/sfx';
 import { startMegumiShadowBgm, stopMegumiShadowBgm, duckMegumiAmbience } from '../../utils/megumiAmbience';
 import {
