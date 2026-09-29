@@ -509,6 +509,7 @@ export function Practice() {
                     <motion.button
                       key={option.id}
                       onClick={(e) => handleKotobaOptionClick(option, e)}
+                      data-option-id={option.id}
                       data-correct={isThisCorrect || undefined}
                       data-burned={isBurned || undefined}
                       data-sukuna-cut={isCut || undefined}
@@ -678,6 +679,7 @@ export function Practice() {
                     <motion.button
                       key={option.id}
                       onClick={(e) => handleKotobaOptionClick(option, e)}
+                      data-option-id={option.id}
                       data-correct={isThisCorrect || undefined}
                       data-burned={isBurned || undefined}
                       data-sukuna-cut={isCut || undefined}

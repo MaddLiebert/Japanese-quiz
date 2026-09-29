@@ -121,6 +121,7 @@ export function KanaQuiz({
               <motion.button
                 key={option.id}
                 onClick={(e) => { markYujiPicked(e.currentTarget); onOptionClick(option, e); }}
+                data-option-id={option.id}
                 data-correct={isThisCorrect || undefined}
                 data-burned={isBurned || undefined}
                 data-sukuna-cut={isCut || undefined}

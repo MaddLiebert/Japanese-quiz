@@ -223,7 +223,7 @@ export function NobaraUltCine({ seed = 1, cutIds = [] }) {
 // hanya ring oranye yang berdenyut lalu memudar bersama tombol yang disabled).
 function NobaraCutMarker({ id, reduced, delay }) {
   const [pos, setPos] = useState(null);
-  // Cari tombol dengan data-nobara-cut-target={id} (di-set Practice) → posisikan.
+  // Cari tombol dengan data-option-id={id} (di-set Practice/KanaQuiz) → posisikan.
   useEffect(() => {
     if (typeof document === 'undefined') return undefined;
     const el = document.querySelector(`button[data-option-id="${CSS.escape(id)}"]`);
