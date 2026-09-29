@@ -575,6 +575,14 @@ export const playFanfare = (rarity = 'common') => {
 export const getAudioContext = () => initAudioContext();
 
 // Burst noise pendek (desis/angin). Sengaja TIDAK me-refactor playDomainBoom
+// OscillatorNode HANYA menerima 4 bentuk gelombang dasar. Nama tipe FILTER
+// (bandpass dll) yang bocor ke osc.type diabaikan Chrome + memicu warning
+// console tiap pemutaran — bug ketangkap di verifikasi browser T6 (lolos unit
+// test, pelajaran Nobara T6). Fallback 'sine' = perilaku lama saat assignment
+// diabaikan, jadi bunyi tidak berubah — hanya warning yang hilang.
+export const sanitizeOscType = (t) =>
+  (t === 'sine' || t === 'square' || t === 'sawtooth' || t === 'triangle') ? t : 'sine';
+
 // (kode lama sudah stabil & punya test sendiri) — helper ini untuk pemutar baru.
 const noiseBurst = (ctx, t, { dur, gain, type = 'lowpass', fromHz = 900, toHz = 120, out = null }) => {
   const len = Math.max(1, Math.floor(ctx.sampleRate * dur));
@@ -978,7 +986,7 @@ const sweepNoise = (p, { noise = true } = {}) => {
   const t = ctx.currentTime;
   const osc = ctx.createOscillator();
   const g = ctx.createGain();
-  osc.type = p.type || 'sawtooth';
+  osc.type = sanitizeOscType(p.type || 'sawtooth');
   osc.frequency.setValueAtTime(p.fromHz, t);
   osc.frequency.exponentialRampToValueAtTime(Math.max(30, p.toHz), t + p.dur * 0.85);
   g.gain.setValueAtTime(0, t);
@@ -1937,7 +1945,10 @@ export const playJufuFlutter = () => {
     const at = t + (i * p.gapMs) / 1000;
     const osc = ctx.createOscillator();
     const g = ctx.createGain();
-    osc.type = 'bandpass';
+    // OscillatorNode tak punya bentuk 'bandpass' (itu tipe filter) — dulu
+    // diabaikan Chrome + warning console. Sine = perilaku lama yang efektif;
+    // lapisan noiseBurst di bawah yang mengurus karakter bandpass-nya.
+    osc.type = 'sine';
     osc.frequency.setValueAtTime(p.fromHz - i * 400, at);
     osc.frequency.exponentialRampToValueAtTime(Math.max(200, p.toHz - i * 200), at + p.dur);
     g.gain.setValueAtTime(0, at);
