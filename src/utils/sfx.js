@@ -1678,3 +1678,191 @@ export const playMegumiTechniqueLayers = (technique) => {
   }
   return n;
 };
+
+
+// ── SFX jurus Nobara (pack_08) — 芻霊呪法 (すうれいじゅほう) ──────────────────
+// Referensi desain: spec Nobara.md §SFX (paku = swish tajam + TUK logam; ledakan
+// = burs oranye + dentuman; resonansi = gelombang sine turun; 黒閃 = bass drop).
+// Semua params murni & deterministik (dites di sfx.nobara.test.js); pemutar
+// no-op di node (guard window). Reuse yang sudah ada (playSlash, playDomainBoom,
+// playNueThunder, playShadowRustle).
+export const nailShotParams = () => ({ type: 'sawtooth', fromHz: 3200, toHz: 900, dur: 0.14, gain: 0.18, noiseGain: 0.12 });
+export const nailThudParams = () => ({ type: 'triangle', fromHz: 340, toHz: 110, dur: 0.16, gain: 0.3, noiseGain: 0.06 });
+export const nailBurstParams = () => ({
+  type: 'sine', fromHz: 220, toHz: 60, dur: 0.42, gain: 0.32, noiseGain: 0.16,
+  crackle: { fromHz: 2600, toHz: 500, dur: 0.2, gain: 0.12 },
+});
+export const chainBurstParams = () => ({
+  bursts: 3, gapMs: 90, fromHz: 200, toHz: 54, dur: 0.36, gain: 0.3, noiseGain: 0.15,
+});
+export const hammerStrikeParams = () => ({ type: 'triangle', fromHz: 480, toHz: 90, dur: 0.28, gain: 0.38, noiseGain: 0.14 });
+export const resonanceWaveParams = () => ({ type: 'sine', fromHz: 640, toHz: 120, dur: 1.0, gain: 0.24, noiseGain: 0.08, waves: 3 });
+export const blackFlashParams = () => ({
+  type: 'sine', fromHz: 90, toHz: 26, dur: 0.7, gain: 0.46, noiseGain: 0.2,
+  riser: { fromHz: 300, toHz: 1800, dur: 0.22, gain: 0.12 },
+});
+export const strawRustleParams = () => ({ layers: 3, fromHz: 4200, toHz: 900, dur: 0.4, gain: 0.1, gapMs: 70 });
+
+export const playNailShot = () => sweepNoise(nailShotParams());
+export const playNailThud = () => sweepNoise(nailThudParams());
+
+export const playNailBurst = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = nailBurstParams();
+  const ms = sweepNoise(p);
+  const ctx = initAudioContext();
+  if (!ctx) return ms;
+  // Crackle paku pecah (percikan logam) — dijadwalkan absolut, tanpa timer.
+  if (p.crackle) {
+    noiseBurst(ctx, ctx.currentTime, { dur: p.crackle.dur, gain: p.crackle.gain, type: 'highpass', fromHz: p.crackle.fromHz, toHz: p.crackle.toHz });
+  }
+  return ms;
+};
+
+export const playChainBurst = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = chainBurstParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = ctx.currentTime;
+  // 3 ledakan berantai (簪・時限: tancap → jeda → meledak serentak).
+  for (let i = 0; i < p.bursts; i++) {
+    const at = t0 + (i * p.gapMs) / 1000;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(p.fromHz - i * 20, at);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(30, p.toHz), at + p.dur * 0.85);
+    g.gain.setValueAtTime(0, at);
+    g.gain.linearRampToValueAtTime(p.gain * (1 - i * 0.08), at + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0008, at + p.dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(at);
+    osc.stop(at + p.dur + 0.04);
+    noiseBurst(ctx, at, { dur: p.dur * 0.7, gain: p.noiseGain, type: 'bandpass', fromHz: 900, toHz: 180 });
+  }
+  return (p.bursts - 1) * p.gapMs + Math.round(p.dur * 1000);
+};
+
+export const playHammerStrike = () => sweepNoise(hammerStrikeParams());
+
+export const playResonanceWave = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = resonanceWaveParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = ctx.currentTime;
+  // Gelombang resonansi: sine turun berlapis (riak menjalar dari boneka).
+  for (let i = 0; i < p.waves; i++) {
+    const at = t0 + i * (p.dur / (p.waves + 1));
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(p.fromHz - i * 90, at);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(40, p.toHz), at + p.dur * 0.7);
+    g.gain.setValueAtTime(0, at);
+    g.gain.linearRampToValueAtTime(p.gain * (1 - i * 0.2), at + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.0008, at + p.dur * 0.75);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(at);
+    osc.stop(at + p.dur * 0.8);
+  }
+  return Math.round(p.dur * 1000);
+};
+
+export const playBlackFlash = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = blackFlashParams();
+  const ms = sweepNoise(p);
+  const ctx = initAudioContext();
+  if (!ctx) return ms;
+  // Riser singkat sebelum hentaman (layar dim 120ms → flash → BOOM).
+  if (p.riser) {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(p.riser.fromHz, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(p.riser.toHz, ctx.currentTime + p.riser.dur);
+    g.gain.setValueAtTime(0, ctx.currentTime);
+    g.gain.linearRampToValueAtTime(p.riser.gain, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0008, ctx.currentTime + p.riser.dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + p.riser.dur + 0.03);
+  }
+  return ms;
+};
+
+export const playStrawRustle = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = strawRustleParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  for (let i = 0; i < p.layers; i++) {
+    noiseBurst(ctx, ctx.currentTime + (i * p.gapMs) / 1000, {
+      dur: p.dur, gain: p.gain * (1 - i * 0.18), type: 'highpass',
+      fromHz: p.fromHz - i * 600, toHz: p.toHz,
+    });
+  }
+  return p.layers * p.gapMs + Math.round(p.dur * 1000);
+};
+
+// Registry lapis per jurus Nobara — tiap jurus ≥2 lapis (spec, dites).
+// Reuse lintas-pack: playSlash (tebasan), playDomainBoom (dentuman besar),
+// playNueThunder (guntur), playShadowRustle (desir).
+export const NOBARA_TECHNIQUE_SFX_LAYERS = {
+  kanzashi: ['playNailShot', 'playNailBurst'],
+  ren: ['playNailShot', 'playChainBurst'],
+  jigen: ['playNailThud', 'playChainBurst'],
+  tomonari: ['playStrawRustle', 'playHammerStrike', 'playResonanceWave'],
+  kokusen: ['playBlackFlash', 'playDomainBoom'],
+  ult: ['playNailShot', 'playHammerStrike', 'playChainBurst', 'playResonanceWave'],
+  wrong: ['playStrawRustle'],
+};
+
+export const nobaraTechniqueSfxLayers = (technique) =>
+  Array.isArray(NOBARA_TECHNIQUE_SFX_LAYERS[technique]) ? NOBARA_TECHNIQUE_SFX_LAYERS[technique] : [];
+
+const NOBARA_SFX_FNS = {
+  playNailShot, playNailThud, playNailBurst, playChainBurst,
+  playHammerStrike, playResonanceWave, playBlackFlash, playStrawRustle,
+  playSlash, playDomainBoom, playNueThunder, playShadowRustle,
+};
+
+// Putar SEMUA lapis SFX satu jurus Nobara (urutan registry), kembalikan jumlah
+// lapis yang benar-benar terpanggil. Node/test = no-op (semua player return 0).
+export const playNobaraTechniqueLayers = (technique) => {
+  const layers = nobaraTechniqueSfxLayers(technique);
+  let n = 0;
+  for (const name of layers) {
+    const fn = NOBARA_SFX_FNS[name];
+    if (typeof fn !== 'function') continue;
+    fn();
+    n += 1;
+  }
+  return n;
+};
+
+// ── Klip voice Nobara (pola Megumi) — playNobaraTechnique ──────────────────
+export const NOBARA_TECHNIQUE_FILES = {
+  kanzashi: '/voices/nobara/kanzashi.mp3',
+  tomonari: '/voices/nobara/tomonari.mp3',
+  kokusen: '/voices/nobara/kokusen.mp3',
+  ult: '/voices/nobara/ult.mp3',
+};
+
+// Lead-silence terukur (RMS onset) — hanya > 0.24s yang di-skip (pola Sukuna).
+export const NOBARA_LEAD_S = { kanzashi: 0.12, tomonari: 0.16, kokusen: 0.16, ult: 0.30 };
+
+export const playNobaraTechnique = (technique) => {
+  const path = NOBARA_TECHNIQUE_FILES[technique];
+  if (!path) return 0;
+  const lead = NOBARA_LEAD_S[technique] || 0;
+  return playFile(path, lead);
+};
