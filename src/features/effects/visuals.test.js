@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { VISUALS, getVisual } from './visuals.js';
 
-test('VISUALS punya ink, hina, dummy, gojo, yuji, sukuna & megumi', () => {
-  assert.deepEqual(Object.keys(VISUALS).sort(), ['dummy', 'gojo', 'hina', 'ink', 'megumi', 'sukuna', 'yuji']);
+test('VISUALS punya ink, hina, dummy, gojo, yuji, sukuna, megumi & nobara', () => {
+  assert.deepEqual(Object.keys(VISUALS).sort(), ['dummy', 'gojo', 'hina', 'ink', 'megumi', 'nobara', 'sukuna', 'yuji']);
 });
 
 test('getVisual fallback null', () => {
@@ -18,4 +18,6 @@ test('getVisual fallback null', () => {
   assert.match(getVisual('sukuna')?.label, /Sukuna/);
   assert.equal(getVisual('megumi')?.component, 'megumi');
   assert.match(getVisual('megumi')?.label, /Megumi/);
+  assert.equal(getVisual('nobara')?.component, 'nobara');
+  assert.match(getVisual('nobara')?.label, /Nobara/);
 });
