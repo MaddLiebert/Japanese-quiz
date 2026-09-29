@@ -4,8 +4,8 @@
 **Spec kanon:** `obsidian-mind/brain/Efek JJK/Nanami Kento.md` (riset terverifikasi)
 **Keputusan Nacht:** 1) mekanik ultimate **B · 瓦落瓦落・連鎖** 2) ladder **OK** 3) klip suara **TTS web — Nacht generate dulu**, eksekusi T5 nunggu klip
 
-> ⏸️ **STATUS: PLAN FINAL — nunggu aset suara (T5).** T1–T4 bisa jalan kapan pun; T5 nunggu klip dari Nacht.
-> Aturan: **commit per tahap, JANGAN push** sampai Nacht bilang.
+> ✅ **STATUS: SELESAI (30/09) — T1–T6 tuntas.** Commit: `ba0b824` (T1) · `5ef169b` (T2) · `5051736` (T3) · `4b470dd` (T4) · `61ce2ee` (T5) · `2026d73` (T6 fix). Belum push.
+> **Temuan T6 (fix `2026d73`):** bug `osc.type='bandpass'` (nama tipe filter bocor ke OscillatorNode — Chrome warning tiap pemutaran). Ketangkap HANYA di verifikasi browser, lolos dari 687 unit test (pelajaran Nobara T6 terbukti lagi). Fix: `sanitizeOscType()` + 3 test baru → 690/690 pass.
 
 ---
 
@@ -133,18 +133,23 @@ Beda total dari yang lain: Gojo (plasma/ruang) · Yuji (api) · Sukuna (tebasan/
 - Reuse: `playKokusenThunder`, `playKokusenCrackle`, `playDomainBoom`, `playChainBurst`
 - Test routing: tiap fungsi ada & fallback aman
 
-### T5 — Klip suara (NUNGGU ASET NIGHT) + registry
-- Nacht generate → taruh `public/voices/nanami/` (nama: `shichisan.mp3`, `oonata.mp3`, `garagara.mp3`, `kokusen.mp3`, `jikangai.mp3` + `wrong_1..3.mp3`)
-- Verifikasi isi klip via **faster-whisper STT** (pola Nobara — bukan tebak)
-- `voices.js` pola `clips` + backup placeholder lama → `.voice-backup/nanami-placeholder/`
-- Update `reviewClips.test.js`
+### T5 — Klip suara + registry ✅ SELESAI (`61ce2ee`)
+- ✅ Klip dari Nacht terpasang di `public/voices/nanami/`: `shichisan.mp3`, `oonata.mp3`, `garagara.mp3`, `kokusen.mp3`, `jikangai.mp3` + `wrong_1..3.mp3`
+- ✅ Verifikasi isi klip via **faster-whisper STT** (8/8 cocok — bukan tebak) + lead-silence terukur via PyAV (0.10–0.38s)
+- ✅ `voices.js` pola `clips` + backup placeholder lama → `.voice-backup/nanami-placeholder/`
+- ✅ `reviewClips.test.js` + `sfx.nanami.test.js` + `voices.test.js` diupdate
 
-### T6 — Polish + verifikasi browser
-- Cek tiap skill di browser: posisi, gak nutupin UI, timing, 0 console error
-- Verifikasi mekanik live: puing nambah saat benar → cut opsi soal berikut → kontrak batal saat salah
-- `npm test` · `npm run lint` · `npm run build`
-- Update spec Obsidian → status SELESAI
-- **Commit per tahap — JANGAN push**
+### T6 — Polish + verifikasi browser ✅ SELESAI (`2026d73`)
+- ✅ Verifikasi live via Chrome CDP (headless + websockets, helper `.hermes/_cdp.py`):
+  - Bar 呪力 0→20/20 (label 時間外労働), cast tap → cinematic penuh (veil/jam/dasi/quote/garis 7:3/kanji)
+  - State lembur: aura ON ≈3.0s → OFF ≈33.3s (2.4s cinematic + 0.3s settle + 30s) — sesuai spec
+  - Mekanik 連鎖: benar → 瓦 ×1 (cut `hira_ki` disabled) → ×2 → ×3 cap; salah → kontrak batal (0/20, aura & puing reset)
+  - Bounding box: bar di tepi kanan (x=1119), 0 overlap dgn opsi, `pointer-events:none`; topmost di opsi = opsi itu sendiri
+  - Reduced-motion: veil/partikel di-skip, kanji/jam/counter tetap, countdown jalan (30s→27s)
+- ✅ **Bug ketangkap & difix**: `osc.type='bandpass'` (playJufuFlutter + sweepNoise path) → `sanitizeOscType()`; verified 0 warning setelah reload
+- ✅ `npm test` 690/690 · lint 0 error (26 pre-existing) · build OK
+- ✅ Spec Obsidian diupdate → status SELESAI
+- **Commit per tahap — JANGAN push** ✅ (6 commit lokal)
 
 ---
 
