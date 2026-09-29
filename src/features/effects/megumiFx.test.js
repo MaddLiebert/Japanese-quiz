@@ -9,9 +9,9 @@ import {
   MEGUMI_WHEEL_NOTCHES, MEGUMI_ADAPT_CUT,
   megumiSwordReady, megumiWrongOutcome, megumiAdaptCut, megumiSwordCut, megumiWheelNotchPlan,
   MEGUMI_STYLE,
-  megumiPoolBlobs, megumiWolfRise, megumiClawMarks, megumiShadowBolts, megumiWingSpread,
+  megumiPoolBlobs, megumiWolfRise, megumiFlankSlot, megumiClawSlashes, megumiClawPath, megumiShadowBolts, megumiWingSpread,
   megumiSerpentCoils, megumiScales, megumiCracks, megumiWaterJet, megumiRipples,
-  megumiTigerLeap, megumiAmberClaws, megumiFangCracks, megumiShadowMotes,
+  megumiTigerLeap, megumiFangCracks, megumiShadowMotes,
 } from './megumiFx.js';
 import { GOJO_MILESTONES } from './gojoFx.js';
 
@@ -244,46 +244,121 @@ test('MEGUMI_STYLE lengkap: 5 jurus + mahoraga + adapt/sword/shatter, kanji & wa
   assert.equal(MEGUMI_STYLE.nue.color, '#4338ca');
 });
 
-test('generator partikel: rng injectable → deterministik & bentuk valid', () => {
-  const zero = () => 0;
-  const blobs = megumiPoolBlobs(7, 3, zero);
+test('generator partikel: pola TETAP (redesign v2.1 — bukan random) & bentuk valid', () => {
+  const blobs = megumiPoolBlobs(7, 3);
   assert.equal(blobs.length, 3);
   assert.equal(blobs[0].id, '7-pb0');
   assert.ok(blobs.every((b) => b.x >= 0 && b.x <= 100 && b.w > 0 && b.dur > 0));
+  // deterministik: panggilan berulang hasil SAMA (dulu rng → beda tiap kali)
+  assert.deepEqual(megumiPoolBlobs(7, 3), megumiPoolBlobs(7, 3));
 
-  const wolves = megumiWolfRise(1, zero);
+  const wolves = megumiWolfRise(1);
   assert.equal(wolves.length, 2);
   assert.deepEqual(wolves.map((w) => w.side), ['left', 'right']);
+  // posisi TETAP di tepi — tidak ada properti x acak lagi
+  assert.ok(!('x' in wolves[0]) || wolves[0].x === undefined);
 
-  const claws = megumiClawMarks(1, zero);
-  assert.equal(claws.length, 3);
-  const bolts = megumiShadowBolts(1, 3, zero);
+  const claws = megumiClawSlashes(1);
+  assert.equal(claws.length, 5, 'cakar = 3 goresan utama + 2 jejak kuku sekunder');
+  assert.deepEqual(megumiClawSlashes(1), megumiClawSlashes(1), 'geometri cakar TETAP');
+  // tiap goresan punya bow (lengkung) + thick (tebal) → bentuk sabit organik,
+  // bukan stroke rata; dan menyeberang kartu (x0 → x1 hampir penuh)
+  assert.ok(claws.every((s) => s.bow < 0 && s.thick > 0));
+  assert.ok(claws.every((s) => s.x1 - s.x0 >= 25), 'goresan punya panjang nyata');
+  // goresan sengaja TIDAK sejajar (mengipas): kemiringan antar goresan beda
+  const slopes = claws.map((s) => (s.y1 - s.y0) / (s.x1 - s.x0));
+  assert.ok(new Set(slopes.map((v) => v.toFixed(2))).size > 1, 'goresan tidak sejajar');
+  // path alur: tertutup (Z) poligon tersapu, koordinat px dari ukuran kartu
+  const p = megumiClawPath(claws[0], 300, 100);
+  assert.ok(p.trench.startsWith('M') && p.trench.endsWith('Z'), 'trench = alur tertutup');
+  assert.ok((p.trench.match(/L/g) || []).length > 20, 'alur tersapu (banyak titik)');
+  assert.ok(p.lit.startsWith('M') && p.lit.endsWith('Z'), 'lit = pita dinding (tertutup)');
+  assert.ok(p.core.startsWith('M') && !p.core.endsWith('Z'), 'core = garis terbuka');
+  assert.notEqual(p.trench, p.lit, 'trench & lit beda (kedalaman, bukan garis rata)');
+  assert.deepEqual(megumiClawPath(claws[0], 300, 100), megumiClawPath(claws[0], 300, 100));
+  // wobble mengubah jalur: alur tidak simetris sempurna (organik, bukan rapi)
+  const straight = megumiClawPath({ ...claws[0], wobble: 0, phase: 0 }, 300, 100);
+  assert.notEqual(straight.trench, p.trench, 'wobble/chatter bikin jalur goyang');
+  const bolts = megumiShadowBolts(1, 3);
   assert.equal(bolts.length, 3);
-  // petir mulai DI ATAS layar (y negatif) lalu turun sampai bawah
+  // petir mulai DI ATAS layar (y negatif) lalu BERHENTI di atas soal (y ≤ 36)
+  // — redesign v2: dulu turun sampai bawah (>= 95) & nembus karakter soal.
   assert.ok(bolts[0].pts[0][1] < 0);
-  assert.ok(bolts[0].pts[bolts[0].pts.length - 1][1] >= 95);
+  const lastY = bolts[0].pts[bolts[0].pts.length - 1][1];
+  assert.ok(lastY > 20 && lastY <= 36, `petir berhenti di band atas (dapat ${lastY})`);
   // sambaran tersebar kiri → tengah → kanan
   assert.ok(bolts[0].pts[0][0] < bolts[2].pts[0][0]);
 
-  assert.ok(megumiWingSpread(1, zero).dur > 0);
-  assert.equal(megumiSerpentCoils(1, 5, zero).length, 5);
-  assert.equal(megumiScales(1, 9, zero).length, 9);
-  assert.equal(megumiCracks(1, 5, zero).length, 5);
-  assert.ok(megumiWaterJet(1, zero).len > 0);
-  assert.equal(megumiRipples(1, 4, zero).length, 4);
-  const tiger = megumiTigerLeap(1, zero);
-  assert.ok(tiger.toX > tiger.fromX, 'harimau menerkam maju (kiri → kanan)');
-  assert.equal(megumiAmberClaws(1, zero).length, 3);
-  assert.equal(megumiFangCracks(1, 6, zero).length, 6);
-  const motes = megumiShadowMotes(1, 8, zero);
+  assert.ok(megumiWingSpread(1).dur > 0);
+  assert.equal(megumiSerpentCoils(1, 5).length, 5);
+  assert.equal(megumiScales(1, 9).length, 9);
+  assert.equal(megumiCracks(1, 5).length, 5);
+  assert.ok(megumiWaterJet(1).len > 0);
+  assert.equal(megumiRipples(1, 4).length, 4);
+  const tiger = megumiTigerLeap(1);
+  assert.ok(tiger.lunge > 0, 'harimau menerkam maju setelah bangkit');
+  assert.equal(megumiFangCracks(1, 6).length, 6);
+  const motes = megumiShadowMotes(1, 8);
   assert.equal(motes.length, 8);
   assert.ok(motes.every((m) => m.drift < 0), 'bara naik (drift negatif)');
 });
 
-test('generator partikel: hasil berbeda dengan rng berbeda (bukan konstanta)', () => {
-  let i = 0;
-  const seq = () => { i = (i * 9301 + 49297) % 233280; return i / 233280; };
-  const a = megumiPoolBlobs(1, 4, seq);
-  const b = megumiPoolBlobs(1, 4, seq);
-  assert.notDeepEqual(a.map((p) => p.x), b.map((p) => p.x));
+test('generator partikel: hasil KONSISTEN antar panggilan (redesign v2.1 — deterministik)', () => {
+  // Dulu generator pakai rng → tiap jawaban posisi beda ("random"). User minta
+  // posisi tetap di pinggir; generator sekarang murni pola → panggilan berulang
+  // harus IDENTIK (kontrak baru).
+  const a = megumiPoolBlobs(1, 4);
+  const b = megumiPoolBlobs(1, 4);
+  assert.deepEqual(a.map((p) => p.x), b.map((p) => p.x));
+  assert.deepEqual(megumiWolfRise(3), megumiWolfRise(3));
+  assert.deepEqual(megumiSerpentCoils(9, 5), megumiSerpentCoils(9, 5));
+  assert.deepEqual(megumiShadowMotes(2, 6), megumiShadowMotes(2, 6));
+});
+
+// ── v2.5 "PENJAGA SOAL": hewan di SAYAP soal, bukan tepi layar ───────────────
+// Kritik user 29/09: 鵺 nempel tepi kiri + nabrak banner "✓ Correct!".
+// Kontrak: (1) hewan rapat ke SOAL (bukan tepi layar), (2) sejajar tengah soal,
+// (3) tidak masuk area konten (bounds), (4) sayap sempit → null (jangan gambar).
+test('megumiFlankSlot: hewan rapat SOAL, bukan tepi layar (kasus HP 390×844)', () => {
+  const vp = { w: 390, h: 844 };
+  const q = { x: 159, y: 241, w: 72, h: 72 };          // あ ukuran nyata (ukur DOM)
+  const L = megumiFlankSlot(vp, q, 'left', { aspect: 0.72 });
+  const R = megumiFlankSlot(vp, q, 'right', { aspect: 0.72 });
+  assert.ok(L && R);
+  // Kiri: sisi KANAN hewan menempel ke soal (jarak ~gap), BUKAN menempel tepi layar
+  assert.ok(L.left >= 12, `kiri tidak melewati tepi aman (left=${L.left})`);
+  assert.ok(Math.abs((L.left + L.w) - (q.x - 10)) <= 0.5, 'kiri rapat ke soal (gap 10)');
+  // Kanan: mulai setelah soal + gap, tidak melewati tepi aman
+  assert.ok(Math.abs(R.left - (q.x + q.w + 10)) <= 0.5, 'kanan rapat ke soal (gap 10)');
+  assert.ok(R.left + R.w <= vp.w - 12, 'kanan tidak melewati tepi');
+  // Sejajar TENGAH soal (toleransi 1px — clamp tepi aman boleh geser sedikit)
+  const cyL = L.top + L.h / 2;
+  const cyR = R.top + R.h / 2;
+  assert.ok(Math.abs(cyL - (q.y + q.h / 2)) <= 1, `kiri sejajar tengah soal (cy=${cyL})`);
+  assert.ok(Math.abs(cyR - (q.y + q.h / 2)) <= 1, 'kanan sejajar tengah soal');
+  // Ukuran proporsional: tidak kerdil, tidak lebih tinggi dari maxH·vh
+  assert.ok(L.w >= 64 && L.h >= 80);
+  assert.ok(L.h <= vp.h * 0.30 + 0.01, 'tinggi ≤ 30% vh');
+  // Deterministik
+  assert.deepEqual(megumiFlankSlot(vp, q, 'left', { aspect: 0.72 }), L);
+});
+
+test('megumiFlankSlot: tidak masuk area konten (bounds) & sayap sempit → null', () => {
+  const vp = { w: 390, h: 844 };
+  const q = { x: 159, y: 241, w: 72, h: 72 };
+  // bounds = bawah header (y 200) s/d atas grid jawaban (y 377) — hewan wajib
+  // berada di dalam band ini (tidak nabrak header/jawaban/banner).
+  const s = megumiFlankSlot(vp, q, 'left', { aspect: 0.72, bounds: { top: 200, bottom: 377 } });
+  assert.ok(s.top >= 200 - 0.01, `top di bawah bounds.top (top=${s.top})`);
+  assert.ok(s.top + s.h <= 377 + 0.01, 'tidak masuk grid jawaban');
+  // Soal LEBAR (grammar) → sayap kiri sempit → null (lebih baik tidak muncul)
+  const wide = { x: 20, y: 300, w: 350, h: 60 };
+  assert.equal(megumiFlankSlot(vp, wide, 'left', { aspect: 0.72 }), null);
+  assert.equal(megumiFlankSlot(vp, wide, 'right', { aspect: 0.72 }), null);
+  // Input kotor → null (tidak pernah crash / salah posisi)
+  assert.equal(megumiFlankSlot(null, q, 'left'), null);
+  assert.equal(megumiFlankSlot(vp, null, 'left'), null);
+  assert.equal(megumiFlankSlot(vp, q, 'middle'), null);
+  assert.equal(megumiFlankSlot({ w: 0, h: 844 }, q, 'left'), null);
+  assert.equal(megumiFlankSlot(vp, { x: NaN, y: 1, w: 2, h: 2 }, 'left'), null);
 });

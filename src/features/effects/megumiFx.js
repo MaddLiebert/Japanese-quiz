@@ -175,48 +175,205 @@ export const megumiWheelNotchPlan = (notches, max = MEGUMI_WHEEL_NOTCHES) => {
 // ── Generator partikel murni (rng injectable; dipakai MegumiBurst/MegumiShadow) ──
 const r2 = (v) => +v.toFixed(2);
 
-// Genangan bayangan: blob mengalir di lantai (dasar SEMUA jurus Megumi).
-export const megumiPoolBlobs = (seed = 1, count = 7, rng = Math.random) =>
+// Genangan bayangan: blob mengalir di lantai — pola TETAP (redesign v2.1:
+// dulu rng → tiap kali beda). Semua di band lantai bawah.
+export const megumiPoolBlobs = (seed = 1, count = 7) =>
   Array.from({ length: count }, (_, i) => ({
     id: `${seed}-pb${i}`,
-    x: r2(6 + rng() * 88),            // persen horizontal
-    w: r2(18 + rng() * 26),           // lebar (persen)
-    h: r2(6 + rng() * 10),            // tinggi genangan (persen)
-    dur: r2(0.5 + rng() * 0.6),
-    delay: r2(rng() * 0.25),
+    x: r2(6 + i * 13),                // persen horizontal — merata
+    w: r2(18 + (i % 4) * 4),          // lebar (persen)
+    h: r2(6 + (i % 3) * 1.6),         // tinggi genangan (persen)
+    dur: r2(0.5 + (i % 4) * 0.12),
+    delay: r2((i % 5) * 0.05),
   }));
 
-// 玉犬: 2 siluet serigala bangkit dari genangan (kiri & kanan).
-export const megumiWolfRise = (seed = 1, rng = Math.random) =>
+// 玉犬: 2 siluet serigala BANGKIT dari genangan di TEPI kiri & kanan — posisi
+// TETAP (redesign v2.1: dulu x/scale/tilt acak → terasa random; user minta
+// "penempatan di pinggir, jangan random"). Komponen menempelkan side ke tepi.
+export const megumiWolfRise = (seed = 1) =>
   ['left', 'right'].map((side, i) => ({
     id: `${seed}-w${i}`,
     side,
-    x: side === 'left' ? r2(16 + rng() * 8) : r2(76 + rng() * 8),
-    scale: r2(0.85 + rng() * 0.3),
-    tilt: r2(-9 + rng() * 18),        // derajat
-    delay: r2(i * 0.08 + rng() * 0.06),
+    tilt: side === 'left' ? 4 : -4,   // condong halus ke tengah (bingkai)
+    delay: r2(i * 0.08),
   }));
 
-// 玉犬: 3 goresan cakar melintang (garis bayangan tajam + rim perak).
-export const megumiClawMarks = (seed = 1, rng = Math.random) =>
-  Array.from({ length: 3 }, (_, i) => ({
-    id: `${seed}-cl${i}`,
-    y: r2(30 + i * 9 + rng() * 4),    // persen vertikal
-    angle: r2(-26 + rng() * 16),
-    len: r2(46 + rng() * 26),
-    dur: r2(0.22 + rng() * 0.16),
-    delay: r2(i * 0.06),
-  }));
+// ── Slot "PENJAGA SOAL" (v2.5): hewan berdiri di SAYAP karakter soal ─────────
+// Kritik user 29/09 (screenshot HP): 鵺 nempel tepi kiri-bawah & nabrak banner
+// "✓ Correct!" — "ini kenapa nue disini? sama hewan2 yang lain nya? gw mau ga
+// di pinggir si ini tapi jangan halangin". Jadi hewan TIDAK di tepi layar:
+// ditempatkan di sayap kiri/kanan karakter soal (rapat ke SOAL, bukan ke tepi),
+// sejajar tengah soal. Kalau sayap sempit (soal grammar lebar) → null: hewan
+// TIDAK digambar (lebih baik tidak muncul daripada halangin konten).
+// vp { w, h } · qRect { x, y, w, h } hasil getBoundingClientRect (WAJIB —
+// tanpa ukuran soal tak bisa dijamin aman) · side 'left'|'right' ·
+// opts { aspect (w/h), maxH (fraksi vh), inset (jaga tepi layar), gap (jaga
+// jarak dari soal), minW/minH (batas bawah biar tidak kerdil), bounds { top,
+// bottom } px (mis. bawah header & atas grid jawaban — hewan tidak boleh
+// masuk area konten) }.
+export const megumiFlankSlot = (vp, qRect, side, opts = {}) => {
+  if (!vp || !(vp.w > 0) || !(vp.h > 0)) return null;
+  if (side !== 'left' && side !== 'right') return null;
+  if (!qRect || ![qRect.x, qRect.y, qRect.w, qRect.h].every((v) => Number.isFinite(v))) return null;
+  const inset = Number.isFinite(opts.inset) ? opts.inset : 12;
+  const gap = Number.isFinite(opts.gap) ? opts.gap : 10;
+  const aspect = Number.isFinite(opts.aspect) && opts.aspect > 0 ? opts.aspect : 1;
+  const minW = Number.isFinite(opts.minW) ? opts.minW : 48;
+  const minH = Number.isFinite(opts.minH) ? opts.minH : 56;
+  const maxH = Number.isFinite(opts.maxH) ? opts.maxH : 0.30;
+  // Zona sayap: dari tepi aman layar sampai GAP sebelum karakter soal.
+  const zoneX0 = side === 'left' ? inset : qRect.x + qRect.w + gap;
+  const zoneX1 = side === 'left' ? qRect.x - gap : vp.w - inset;
+  const zw = zoneX1 - zoneX0;
+  if (!(zw > 0)) return null;                       // sayap sempit → jangan gambar
+  // Band vertikal aman: di dalam tepi layar DAN di dalam bounds konten.
+  const bTop = opts.bounds && Number.isFinite(opts.bounds.top) ? opts.bounds.top : -Infinity;
+  const bBot = opts.bounds && Number.isFinite(opts.bounds.bottom) ? opts.bounds.bottom : Infinity;
+  const availTop = Math.max(inset, bTop);
+  const availBottom = Math.min(vp.h - inset, bBot);
+  const availH = availBottom - availTop;
+  if (!(availH > 0)) return null;                   // tak ada ruang vertikal aman
+  // Kotak hewan: sebesar mungkin di dalam zona; tinggi ≤ maxH·vh, ≤ 3× soal,
+  // ≤ band aman; lebar ≤ maxWf·zona (sisakan NAPAS dari tepi layar — kritik
+  // user: "gw mau ga di pinggir").
+  const maxWf = Number.isFinite(opts.maxWf) ? opts.maxWf : 0.78;
+  const hMax = Math.min(vp.h * maxH, Math.max(qRect.h * 3, vp.h * 0.16), availH);
+  let h = hMax, w = h * aspect;
+  if (w > zw * maxWf) { w = zw * maxWf; h = w / aspect; }
+  if (w < minW || h < minH) return null;
+  // Vertikal: sejajar TENGAH soal, di-clamp ke band aman.
+  const cy = qRect.y + qRect.h / 2;
+  const top = Math.max(availTop, Math.min(availBottom - h, cy - h / 2));
+  // Rapat ke SOAL (sisi dalam zona) — bukan rapat ke tepi layar.
+  const left = side === 'left' ? zoneX1 - w : zoneX0;
+  const r1 = (v) => +v.toFixed(1);
+  return { left: r1(left), top: r1(top), w: r1(w), h: r1(h) };
+};
+
+// 玉犬/虎葬: goresan cakar ORGANIK di kartu jawaban yg dipencet (v2.3).
+// Kritik user 29/09: "jaring laba2 bukan cakaran", "kek png dikasih animasi",
+// "gw maunya organik". Jaring radial+cincin (v2.2) DIBUANG TOTAL.
+// Kritik lanjutan (review visual): "glowing decal", "too smooth, no trench" →
+// sekarang goresan = ALUR LUKA (gouge), bukan pita menyala:
+//   - MENGIPAS: 3 goresan utama konvergen di kiri (asal cakar) lalu melebar
+//     ke kanan — kemiringan jauh beda, bukan paralel;
+//   - CHATTER: jalur & lebar digetarkan frekuensi tinggi (kuku nyangkut-nyangkut);
+//   - lebar naik-turun (bukan lensa simetris rapi) + taper (masuk > keluar);
+//   - `wobble` = goyangan besar (S); `phase` = fase chatter (beda tiap goresan).
+// Koordinat dinormalisasi 0-100 (x = lebar kartu, y = tinggi kartu).
+// Goresan TIPIS (4-6% tinggi kartu = ~3px di kartu HP) & DIAGONAL turun ke
+// kanan (bukan horizontal — horizontal kebaca kayak strikethrough/barcode);
+// 3 goresan utama (sapuan satu kaki, sedikit mengipas) + 2 flick pendek.
+// Tepi kasar dibuat oleh feTurbulence di komponen.
+export const megumiClawSlashes = (seed = 1) =>
+  [
+    // 3 goresan utama — NEMBUS tepi kartu (masuk dari luar kiri-atas, keluar
+    // kanan-bawah) = sapuan satu kaki yang melewati kartu, bukan garis rapi
+    // di dalam kotak. Kemiringan & lengkung beda-beda (tidak sejajar).
+    { x0: -4, y0: 6, x1: 104, y1: 64, bow: -15, thick: 5, skew: 0.14, wobble: 0.45, phase: 0.7, rough: 0.9, dur: 0.14, delay: 0.02 },
+    { x0: -6, y0: 24, x1: 106, y1: 82, bow: -11, thick: 6.5, skew: 0.05, wobble: -0.35, phase: 2.3, rough: 0.55, dur: 0.17, delay: 0.07 },
+    { x0: 2, y0: 46, x1: 98, y1: 100, bow: -8, thick: 4.5, skew: -0.06, wobble: 0.3, phase: 4.1, rough: 0.75, dur: 0.15, delay: 0.13 },
+    // 2 flick pendek (kuku terakhir lepas) — menyilang sapuan = chaos organik
+    { x0: 38, y0: -2, x1: 64, y1: 26, bow: -4, thick: 3, skew: 0.2, wobble: 0.5, phase: 5.2, rough: 1.0, dur: 0.1, delay: 0.18 },
+    { x0: 40, y0: 58, x1: 66, y1: 86, bow: -3, thick: 2.5, skew: -0.12, wobble: -0.45, phase: 1.4, rough: 0.7, dur: 0.09, delay: 0.22 },
+  ].map((s, i) => ({ id: `${seed}-cs${i}`, ...s }));
+
+// Path ALUR LUKA: jalur tengah (bezier + wobble + chatter) disapu jadi poligon
+// dengan setengah-lebar variabel (lensa × chatter × taper) — goresan beneran
+// tidak pernah lurus & lebarnya naik-turun karena kuku nyangkut.
+// w/h = ukuran kartu dalam px (dari getBoundingClientRect).
+// Mengembalikan { trench, lit, core } — lapisan untuk KEDALAMAN:
+//   trench = alur penuh (gelap) — dasar luka
+//   lit    = pita TIPIS di dinding bawah (logam kena cahaya) — bukan glow penuh
+//   core   = garis tajam di bibir atas (catchlight)
+// Dinding atas tetap gelap → terbaca sebagai alur masuk ke dalam kartu (3D).
+export const megumiClawPath = (s, w, h) => {
+  const X0 = (s.x0 * w) / 100, Y0 = (s.y0 * h) / 100;
+  const X1 = (s.x1 * w) / 100, Y1 = (s.y1 * h) / 100;
+  const dx = X1 - X0, dy = Y1 - Y0;
+  const len = Math.hypot(dx, dy) || 1;
+  const nx = -dy / len, ny = dx / len;         // normal satuan (px)
+  const sk = Number.isFinite(s.skew) ? s.skew : 0;
+  const wb = Number.isFinite(s.wobble) ? s.wobble : 0;
+  const ph = Number.isFinite(s.phase) ? s.phase : 0.7;
+  const rg = Number.isFinite(s.rough) ? s.rough : 0.6;
+  const bx = X0 + dx * (0.5 + sk), by = Y0 + dy * (0.5 + sk);   // bulge (digeser)
+  const off = (s.bow * h) / 100;
+  const th = (s.thick * h) / 100;
+  const r = (v) => +v.toFixed(1);
+
+  const N = 40;
+  // titik tengah jalur di u: bezier kuadratik (bow) + wobble S + chatter kuku
+  // (dua frekuensi = kuku nyangkut & tersentak, bukan gelombang rapi)
+  const center = (u) => {
+    const cx = bx + nx * off, cy = by + ny * off;
+    const a = (1 - u) * (1 - u), b2 = 2 * u * (1 - u), c = u * u;
+    const px = a * X0 + b2 * cx + c * X1;
+    const py = a * Y0 + b2 * cy + c * Y1;
+    const chat = Math.sin(u * 7.3 + ph * 4.1) * 0.72 + Math.sin(u * 15.7 + ph * 9.3) * 0.34;
+    const g = wb * th * Math.sin(u * Math.PI)     // goyangan besar (S)
+      + th * 0.24 * rg * chat;                     // chatter (getaran kuku)
+    return [px + nx * g, py + ny * g];
+  };
+  // setengah-lebar di u: lensa × chatter × taper × modulasi lambat
+  // (lebar naik-turun drastis — kuku menekan lalu terangkat)
+  const half = (u) => {
+    const lens = Math.pow(Math.sin(Math.max(0.001, u) * Math.PI), 0.7);
+    const chat = 1 + rg * 0.45 * Math.sin(u * 13.4 + ph * 7.1) + rg * 0.22 * Math.sin(u * 27.9 + ph * 3.7);
+    const taper = 1 - 0.4 * u;
+    const slow = 1 + rg * 0.22 * Math.sin(u * 4.2 + ph * 2.2);
+    return Math.max(0.35, th * 0.5 * lens * chat * taper * slow);
+  };
+  // tepi k: 0 = sisi atas, 1 = sisi bawah. Tiap tepi punya mikro-robekan
+  // sendiri (frekuensi beda) → tepi luka TIDAK paralel/mulus.
+  const edgeTear = (u, side) => {
+    const f = side === 0 ? 31.7 : 24.3;
+    const o = side === 0 ? 1.9 : 4.6;
+    const f2 = side === 0 ? 57.1 : 43.7;
+    return rg * th * (0.1 * Math.sin(u * f + ph * 5.1 + o) + 0.055 * Math.sin(u * f2 + ph * 8.8));
+  };
+  const pt = (u, k) => {
+    const [px, py] = center(u);
+    const hw = half(u) * (1 - 2 * k) + edgeTear(u, k < 0.5 ? 0 : 1);
+    return [r(px + nx * hw), r(py + ny * hw)];
+  };
+  // pita tertutup dari kedalaman kA → kB di sepanjang u
+  const strip = (kA, kB, u0 = 0, u1 = 1) => {
+    const a = [], b = [];
+    for (let i = 0; i <= N; i++) {
+      const u = u0 + (u1 - u0) * (i / N);
+      a.push(pt(u, kA)); b.push(pt(u, kB));
+    }
+    const p = [...a, ...b.reverse()].map(([x, y]) => `${x},${y}`);
+    return `M${p.join('L')}Z`;
+  };
+  const line = (k, u0 = 0.02, u1 = 0.98) => {
+    const pts = [];
+    for (let i = 0; i <= N; i++) {
+      const u = u0 + (u1 - u0) * (i / N);
+      pts.push(pt(u, k));
+    }
+    return `M${pts.map(([x, y]) => `${x},${y}`).join('L')}`;
+  };
+  return {
+    trench: strip(0, 1),                // alur gelap penuh — dinding luka
+    sub: strip(0.28, 0.72),             // material dalam kartu (kebuka) — terang di tengah
+    lit: strip(0, 0.16, 0.16, 0.72),    // glint PENDEK di dinding atas (bukan full-length)
+    core: line(0.04, 0.3, 0.62),        // catchlight pendek (kilau sesaat)
+  };
+};
 
 // 鵺: petir ungu nyamber dari ATAS (beda Gojo: dari tepi) — 3 sambaran.
+// REDESIGN v2: petir BERHENTI di atas soal (y ≤ 32%) — dulu turun sampai y=100
+// (nembus karakter soal & tombol jawaban). Zona aman HP: soal 33-41%.
 export const megumiShadowBolts = (seed = 1, count = 3, rng = Math.random) =>
   Array.from({ length: count }, (_, i) => {
     const x0 = 18 + (i / Math.max(1, count - 1)) * 64;   // kiri → tengah → kanan
-    const segments = 5 + Math.floor(rng() * 3);
+    const segments = 4 + Math.floor(rng() * 2);
     const pts = [[r2(x0 + (rng() - 0.5) * 6), -4]];
     let x = pts[0][0];
     for (let s = 1; s <= segments; s++) {
-      const y = (100 / segments) * s;
+      const y = (-4 + 36 * (s / segments));              // -4% → 32% (atas soal)
       x = Math.max(2, Math.min(98, x + (rng() - 0.5) * 16));
       pts.push([r2(x), r2(y)]);
     }
@@ -229,106 +386,100 @@ export const megumiShadowBolts = (seed = 1, count = 3, rng = Math.random) =>
     };
   });
 
-// 鵺: bulu/sayap bayangan melebar menutupi layar (0.3s lalu hilang).
-export const megumiWingSpread = (seed = 1, rng = Math.random) => ({
+// 鵺: gust sayap gelap — kilatan di belakang burung (TEPI KANAN, posisi tetap).
+export const megumiWingSpread = (seed = 1) => ({
   id: `${seed}-wg`,
-  span: r2(62 + rng() * 22),          // persen lebar bentangan
-  y: r2(26 + rng() * 16),
-  dur: r2(0.3 + rng() * 0.14),
-  delay: r2(0.18 + rng() * 0.1),
+  span: 46,                            // persen lebar bentangan
+  y: 16,                               // jarak dari bawah (%)
+  dur: 0.34,
+  delay: 0.16,
 });
 
 // 大蛇: cincin lilitan ular raksasa (nglilit) + sisik perak berkilau.
-export const megumiSerpentCoils = (seed = 1, count = 5, rng = Math.random) =>
+// REDESIGN v2.1: SEMUA nilai FIX (dulu rng → tiap kali beda = terasa random);
+// radius dipisah + cy naik pelan → spiral yang konsisten.
+export const megumiSerpentCoils = (seed = 1, count = 5) =>
   Array.from({ length: count }, (_, i) => ({
     id: `${seed}-sc${i}`,
-    r: r2(16 + i * 7 + rng() * 4),     // radius viewBox 0..100
-    tilt: r2(-14 + rng() * 28),
-    width: r2(1.6 + rng() * 1.2),
-    dur: r2(0.5 + rng() * 0.4),
+    r: r2(15 + i * 8.5),              // radius viewBox 0..100 (jarak antar coil > 6)
+    cy: r2(56 - i * 2.2),             // naik pelan tiap lilitan → spiral
+    tilt: r2(-18 + i * 7),
+    width: r2(1.6 + (i % 3) * 0.5),
+    dur: r2(0.5 + (i % 3) * 0.14),
     delay: r2(i * 0.09),
   }));
 
-export const megumiScales = (seed = 1, count = 9, rng = Math.random) =>
+export const megumiScales = (seed = 1, count = 9) =>
   Array.from({ length: count }, (_, i) => ({
     id: `${seed}-scl${i}`,
-    x: r2(12 + rng() * 76),
-    y: r2(22 + rng() * 58),
-    size: r2(3 + rng() * 5),
-    dur: r2(0.4 + rng() * 0.5),
-    delay: r2(rng() * 0.5),
+    x: r2(14 + (i % 5) * 17),                     // pola tetap (bukan acak)
+    y: r2(26 + Math.floor(i / 5) * 24 + (i % 5) * 3),
+    size: r2(3.4 + (i % 3) * 1.2),
+    dur: r2(0.4 + (i % 4) * 0.12),
+    delay: r2((i % 5) * 0.1),
   }));
 
 // 大蛇/虎葬: garis retak lantai (gelap) — pecahan tanah.
-export const megumiCracks = (seed = 1, count = 5, rng = Math.random) =>
+export const megumiCracks = (seed = 1, count = 5) =>
   Array.from({ length: count }, (_, i) => ({
     id: `${seed}-ck${i}`,
-    x: r2(10 + rng() * 80),
-    y: r2(58 + rng() * 30),           // area lantai
-    len: r2(20 + rng() * 40),
-    angle: r2(-40 + rng() * 80),
-    delay: r2(i * 0.07 + rng() * 0.08),
+    x: r2(12 + i * 18),
+    y: r2(80 + (i % 3) * 3),          // band BAWAH (zona aman HP)
+    len: r2(24 + (i % 3) * 8),
+    angle: r2(-32 + i * 16),
+    delay: r2(i * 0.07),
   }));
 
 // 満象: semburan air dari belalai (gradient biru, BUKAN api) + riak menyebar.
-export const megumiWaterJet = (seed = 1, rng = Math.random) => ({
+export const megumiWaterJet = (seed = 1) => ({
   id: `${seed}-wj`,
-  angle: r2(-38 + rng() * 22),        // derajat (naik lalu jatuh)
-  len: r2(40 + rng() * 24),
-  width: r2(6 + rng() * 6),
-  dur: r2(0.7 + rng() * 0.4),
+  angle: -27,                         // derajat (naik lalu jatuh) — FIX
+  len: 52,
+  width: 9,
+  dur: 0.9,
 });
 
-export const megumiRipples = (seed = 1, count = 4, rng = Math.random) =>
+export const megumiRipples = (seed = 1, count = 4) =>
   Array.from({ length: count }, (_, i) => ({
     id: `${seed}-rp${i}`,
-    x: r2(20 + rng() * 60),
-    y: r2(66 + rng() * 24),
-    r0: r2(6 + rng() * 6),
-    r1: r2(26 + rng() * 22),
-    dur: r2(0.6 + rng() * 0.5),
-    delay: r2(i * 0.12 + rng() * 0.08),
+    x: r2(26 + i * 16),
+    y: r2(82 + (i % 2) * 4),          // band BAWAH (zona aman HP)
+    r0: 6,
+    r1: r2(26 + i * 4),
+    dur: r2(0.6 + i * 0.1),
+    delay: r2(i * 0.12),
   }));
 
-// 虎葬: harimau bayangan menerkam dari sisi + cakar raksasa amber.
-export const megumiTigerLeap = (seed = 1, rng = Math.random) => ({
+// 虎葬: harimau bayangan — BANGKIT dari genangan di TEPI KIRI lalu menerkam
+// maju sedikit. REDESIGN v2.1: jalur & nilai TETAP (dulu acak + melintas
+// kiri→kanan; user minta "muncul dari lumpur ke atas, di pinggir, jangan random").
+export const megumiTigerLeap = (seed = 1) => ({
   id: `${seed}-tl`,
-  fromX: r2(8 + rng() * 14),          // persen (masuk dari kiri)
-  toX: r2(70 + rng() * 20),
-  y: r2(38 + rng() * 18),
-  tilt: r2(-16 + rng() * 10),
-  scale: r2(0.9 + rng() * 0.35),
-  dur: r2(0.55 + rng() * 0.25),
+  y: 78,                              // band BAWAH (zona aman: di bawah tombol jawaban)
+  tilt: -11,
+  scale: 1,
+  dur: 0.66,
+  lunge: 3,                           // vw — maju sedikit setelah bangkit
 });
 
-export const megumiAmberClaws = (seed = 1, rng = Math.random) =>
-  Array.from({ length: 3 }, (_, i) => ({
-    id: `${seed}-ac${i}`,
-    angle: r2(-30 + i * 12 + rng() * 6),
-    offset: r2(i * 10 - 10),
-    width: r2(2.4 + rng() * 1.6),
-    dur: r2(0.26 + rng() * 0.18),
-    delay: r2(i * 0.05),
-  }));
-
-// 虎葬: lantai retak membentuk pola taring (zigzag gigi).
-export const megumiFangCracks = (seed = 1, count = 6, rng = Math.random) =>
+// 虎葬: lantai retak membentuk pola taring (zigzag gigi) — pola TETAP.
+export const megumiFangCracks = (seed = 1, count = 6) =>
   Array.from({ length: count }, (_, i) => ({
     id: `${seed}-fc${i}`,
-    x: r2(12 + i * 13 + rng() * 5),
-    y: r2(60 + rng() * 24),
-    len: r2(14 + rng() * 22),
-    angle: r2(50 + rng() * 40),       // miring membentuk taring
+    x: r2(12 + i * 13),
+    y: r2(80 + (i % 3) * 3),          // band BAWAH (zona aman HP)
+    len: r2(16 + (i % 3) * 6),
+    angle: r2(50 + (i % 3) * 13),     // miring membentuk taring
     delay: r2(i * 0.05),
   }));
 
-// Aura 影 (summon persist): bara hitam naik + drift.
-export const megumiShadowMotes = (seed = 1, count = 8, rng = Math.random) =>
+// Aura 影 (summon persist): bara hitam naik + drift — pola TETAP.
+export const megumiShadowMotes = (seed = 1, count = 8) =>
   Array.from({ length: count }, (_, i) => ({
     id: `${seed}-sm${i}`,
-    x: r2(8 + rng() * 84),
-    size: r2(3 + rng() * 5),
-    dur: r2(1.0 + rng() * 1.0),
-    delay: r2(rng() * 0.9),
-    drift: r2(-30 - rng() * 60),      // px, negatif = naik
+    x: r2(8 + (i % 8) * 11),
+    size: r2(3.4 + (i % 4) * 1.1),
+    dur: r2(1.0 + (i % 5) * 0.2),
+    delay: r2((i % 6) * 0.15),
+    drift: r2(-34 - (i % 5) * 9),     // px, negatif = naik
   }));

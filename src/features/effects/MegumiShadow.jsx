@@ -240,23 +240,41 @@ function SequentialChars({ text, start, perChar, reduced, className, style }) {
 
 // ── Siluet raksasa 魔虚羅: badan hitam + kepala ular + roda 八握剣 di punggung ──
 // Versi Megumi = KECIL/terbatas/切札 (anti-nabrak: Sukuna = raksasa/Meguna).
-function MakoraSilhouette({ reduced, start, seed = 1 }) {
+// REDESIGN v2: (a) leher TEBAL nyambung kepala↔bahu, (b) roda di belakang bahu
+// KANAN (mengambang, poking keluar), (c) backlight ungu → kontras di tema gelap,
+// (d) siluet MEMUDAR saat settle (dulu nangkring 30 dtk nutupin kuis).
+function MakoraSilhouette({ reduced, start, settleAt = 4.85, settleDur = 0.6, seed = 1 }) {
+  const total = Math.max(0.6, settleAt + settleDur - start);
+  const tRise = Math.min(0.9, 1.1 / total);            // fraksi waktu fase bangkit
+  const tSettle = Math.max(tRise + 0.05, (settleAt - start) / total);
+  const times = [0, tRise, tSettle, 1];
   return (
     <motion.div
       data-megumi-makora
       className="absolute inset-x-0 bottom-[6%] flex justify-center"
       initial={{ opacity: 0, y: '16vh', scaleY: 0.72 }}
       animate={reduced
-        ? { opacity: 1, y: 0, scaleY: 1 }
-        : { opacity: [0, 1, 0.98], y: ['16vh', '-2vh', '0vh'], scaleY: [0.72, 1.05, 1] }}
-      transition={{ duration: reduced ? 0 : 1.1, delay: reduced ? 0 : start, ease: [0.16, 1, 0.3, 1] }}
+        ? { opacity: [1, 1, 0], y: 0, scaleY: 1 }
+        : { opacity: [0, 1, 1, 0], y: ['16vh', '0vh', '0vh', '-16vh'], scaleY: [0.72, 1, 1, 0.92] }}
+      transition={reduced
+        ? { duration: total, delay: start, times: [0, tSettle, 1], ease: 'easeOut' }
+        : { duration: total, delay: start, times, ease: [0.16, 1, 0.3, 1] }}
     >
-      <svg viewBox="0 0 300 340" className="w-[min(62vh,88vw)] h-auto" aria-label="魔虚羅">
+      <div className="relative">
+        {/* Backlight ungu — misahin siluet dari background gelap (redesign v2) */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-[14%]"
+          style={{ background: 'radial-gradient(50% 46% at 50% 56%, rgba(109,40,217,0.30), rgba(67,56,202,0.12) 55%, transparent 78%)' }}
+        />
+        <svg viewBox="0 0 300 340" className="relative w-[min(62vh,88vw)] h-auto" aria-label="魔虚羅">
         <defs>
           <linearGradient id={`makora-${seed}`} x1="0" y1="1" x2="0" y2="0">
-            <stop offset="0%" stopColor="#050508" />
-            <stop offset="62%" stopColor="#0e0e18" />
-            <stop offset="100%" stopColor="#1a1a2e" />
+            {/* REDESIGN v2: kontras dinaikkan (#0d0d18 → #2a2a44) supaya siluet
+                kebaca di tema gelap (dulu #050508 nyatu sama background). */}
+            <stop offset="0%" stopColor="#0d0d18" />
+            <stop offset="58%" stopColor="#1a1a2e" />
+            <stop offset="100%" stopColor="#2a2a44" />
           </linearGradient>
           <radialGradient id={`makoraEye-${seed}`} cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#c4b5fd" />
@@ -265,10 +283,22 @@ function MakoraSilhouette({ reduced, start, seed = 1 }) {
           </radialGradient>
         </defs>
 
-        {/* Kaki & badan (raksasa, sedikit membungkuk) */}
+        {/* Roda 八握剣 di PUNGGUNG — render DULUAN (di belakang badan, kanon:
+            roda mengambang di belakang bahu, bukan di leher). Redesign v2. */}
+        <g opacity="0.95">
+          <circle cx="228" cy="180" r="30" fill="none" stroke="#6d28d9" strokeWidth="1.6" strokeOpacity="0.9" />
+          <circle cx="228" cy="180" r="24" fill="none" stroke={MEGUMI_INDIGO} strokeWidth="0.7" strokeOpacity="0.7" />
+          {Array.from({ length: 8 }).map((_, i) => {
+            const rad = ((i / 8) * 360 * Math.PI) / 180;
+            return <line key={i} x1="228" y1="180" x2={228 + Math.cos(rad) * 30} y2={180 + Math.sin(rad) * 30}
+              stroke={MEGUMI_SILVER} strokeWidth="0.9" strokeOpacity="0.75" />;
+          })}
+        </g>
+
+        {/* Kaki & badan (raksasa, sedikit membungkuk) — stroke dipertegas */}
         <path
           d="M74,340 L68,236 C64,196 82,166 112,156 L188,156 C218,166 236,196 232,236 L226,340 L196,340 L192,250 L176,340 L124,340 L108,250 L104,340 Z"
-          fill={`url(#makora-${seed})`} stroke={MEGUMI_SILVER} strokeWidth="1.3" strokeOpacity="0.6"
+          fill={`url(#makora-${seed})`} stroke={MEGUMI_SILVER} strokeWidth="1.8" strokeOpacity="0.95"
         />
         {/* Lengan panjang + cakar */}
         <path d="M112,166 C86,178 70,206 68,236 C82,222 96,210 108,204" fill="none" stroke="#14141f" strokeWidth="16" strokeLinecap="round" />
@@ -277,27 +307,24 @@ function MakoraSilhouette({ reduced, start, seed = 1 }) {
           <path key={`cl${i}`} d={`M${66 + i * 6},238 L${60 + i * 7},262 M${232 - i * 6},238 L${238 - i * 7},262`}
             stroke={MEGUMI_SILVER} strokeWidth="1.6" strokeOpacity="0.55" strokeLinecap="round" fill="none" />
         ))}
-        {/* Bahu + kepala ular (tanpa mata manusia) */}
-        <path d="M118,156 C124,126 140,110 150,108 C160,110 176,126 182,156 Z" fill={`url(#makora-${seed})`} stroke={MEGUMI_SILVER} strokeWidth="1.2" strokeOpacity="0.55" />
-        <path d="M150,108 C146,88 150,68 158,54 C166,42 178,40 184,48 C190,58 184,72 174,84 C166,94 158,102 150,108 Z"
-          fill="#0c0c16" stroke={MEGUMI_INDIGO} strokeWidth="1.2" strokeOpacity="0.8" />
-        {/* Mata menyala (2 titik ungu-bayangan, bukan mata manusia) */}
-        <motion.circle cx="163" cy="58" r="3.4" fill={`url(#makoraEye-${seed})`}
+        {/* LEHER: satu siluet lebar nyambung bahu ↔ kepala (redesign v2 —
+            dulu dua path terpisah → kepala kelihatan "nempel"). */}
+        <path d="M110,160 C112,128 124,106 138,98 L162,98 C176,106 188,128 190,160 Z"
+          fill={`url(#makora-${seed})`} stroke={MEGUMI_SILVER} strokeWidth="1.4" strokeOpacity="0.75" />
+        <path d="M136,100 C140,86 145,76 150,70 C155,76 160,86 164,100 Z"
+          fill={`url(#makora-${seed})`} stroke={MEGUMI_SILVER} strokeWidth="1.1" strokeOpacity="0.55" />
+        {/* Kepala ular (tanpa mata manusia) — pangkal kepala di y=72, overlap leher */}
+        <path d="M150,74 C146,56 150,38 158,28 C166,18 178,18 184,26 C190,36 184,50 174,60 C166,68 158,72 150,74 Z"
+          fill="#14142a" stroke={MEGUMI_INDIGO} strokeWidth="1.4" strokeOpacity="0.9" />
+        {/* Mata menyala (2 titik ungu-bayangan, bukan mata manusia) — posisi ikut kepala baru */}
+        <motion.circle cx="164" cy="32" r="3.4" fill={`url(#makoraEye-${seed})`}
           initial={{ opacity: 0 }} animate={reduced ? { opacity: 1 } : { opacity: [0, 1, 0.85] }}
           transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : start + 0.5 }} />
-        <motion.circle cx="176" cy="60" r="3.4" fill={`url(#makoraEye-${seed})`}
+        <motion.circle cx="177" cy="34" r="3.4" fill={`url(#makoraEye-${seed})`}
           initial={{ opacity: 0 }} animate={reduced ? { opacity: 1 } : { opacity: [0, 1, 0.85] }}
           transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : start + 0.56 }} />
-        {/* Roda 八握剣 di punggung (siluet) */}
-        <g opacity="0.9">
-          <circle cx="150" cy="128" r="26" fill="none" stroke="#6d28d9" strokeWidth="1.4" strokeOpacity="0.8" />
-          {Array.from({ length: 8 }).map((_, i) => {
-            const rad = ((i / 8) * 360 * Math.PI) / 180;
-            return <line key={i} x1="150" y1="128" x2={150 + Math.cos(rad) * 26} y2={128 + Math.sin(rad) * 26}
-              stroke={MEGUMI_SILVER} strokeWidth="0.8" strokeOpacity="0.6" />;
-          })}
-        </g>
-      </svg>
+        </svg>
+      </div>
     </motion.div>
   );
 }
@@ -338,27 +365,37 @@ export function MegumiSummonCine() {
         transition={{ delay: t.settleAt, duration: reduced ? 0.3 : t.settleDur, ease: 'easeInOut' }}
       />
 
-      {/* Genangan bayangan menyebar dari TENGAH ke seluruh lantai (0.10) */}
+      {/* Genangan bayangan menyebar dari TENGAH ke seluruh lantai (0.10) —
+          REDESIGN v2: ikut MEMUDAR saat settle (dulu nangkring 30 dtk nutupin kuis). */}
       <motion.div
         className="absolute inset-x-0 bottom-0 h-[62vh]"
         style={{ background: 'radial-gradient(84% 100% at 50% 100%, rgba(10,10,14,0.96), rgba(6,6,10,0.6) 52%, transparent 82%)' }}
         initial={{ opacity: 0, scaleY: 0.3 }}
-        animate={reduced ? { opacity: 0.9, scaleY: 1 } : { opacity: [0, 1, 0.92], scaleY: [0.3, 1.05, 1] }}
-        transition={{ duration: reduced ? 0 : 0.9, delay: reduced ? 0 : t.poolAt, ease: [0.16, 1, 0.3, 1] }}
+        animate={reduced
+          ? { opacity: [0.9, 0.9, 0], scaleY: 1 }
+          : { opacity: [0, 1, 0.92, 0], scaleY: [0.3, 1.05, 1, 1] }}
+        transition={reduced
+          ? { duration: Math.max(0.6, t.settleAt + t.settleDur - t.poolAt), delay: t.poolAt, times: [0, (t.settleAt - t.poolAt) / Math.max(0.6, t.settleAt + t.settleDur - t.poolAt), 1], ease: 'easeOut' }
+          : { duration: t.settleAt + t.settleDur - t.poolAt, delay: t.poolAt, times: [0, 0.9 / (t.settleAt + t.settleDur - t.poolAt), (t.settleAt - t.poolAt) / (t.settleAt + t.settleDur - t.poolAt), 1], ease: [0.16, 1, 0.3, 1] }}
       />
 
-      {/* Roda 八握剣 muncul di atas, muter 8 jari-jari (1.80) */}
+      {/* Roda 八握剣 muncul di atas, muter 8 jari-jari (1.80) — REDESIGN v2:
+          memudar saat settle (roda kecil persist diambil alih MegumiAura). */}
       <motion.div
         className="absolute inset-x-0 top-[4vh] flex justify-center"
         initial={{ opacity: 0, scale: 0.8 }}
-        animate={reduced ? { opacity: 0.9, scale: 1 } : { opacity: [0, 0.95, 0.85], scale: [0.8, 1, 1] }}
-        transition={{ duration: reduced ? 0 : 0.9, delay: reduced ? 0 : t.wheelAt, ease: [0.16, 1, 0.3, 1] }}
+        animate={reduced
+          ? { opacity: [0.9, 0.9, 0], scale: 1 }
+          : { opacity: [0, 0.95, 0.85, 0], scale: [0.8, 1, 1, 1] }}
+        transition={reduced
+          ? { duration: Math.max(0.6, t.settleAt + t.settleDur - t.wheelAt), delay: t.wheelAt, times: [0, (t.settleAt - t.wheelAt) / Math.max(0.6, t.settleAt + t.settleDur - t.wheelAt), 1], ease: 'easeOut' }
+          : { duration: t.settleAt + t.settleDur - t.wheelAt, delay: t.wheelAt, times: [0, 0.9 / (t.settleAt + t.settleDur - t.wheelAt), (t.settleAt - t.wheelAt) / (t.settleAt + t.settleDur - t.wheelAt), 1], ease: [0.16, 1, 0.3, 1] }}
       >
         <AdaptWheel notches={0} reduced={reduced} size="min(30vh, 52vw)" spin glow={0.85} />
       </motion.div>
 
-      {/* Siluet raksasa 魔虚羅 bangkit dari bayangan (2.60) */}
-      <MakoraSilhouette reduced={reduced} start={t.riseAt} seed={7} />
+      {/* Siluet raksasa 魔虚羅 bangkit dari bayangan (2.60) → memudar saat settle */}
+      <MakoraSilhouette reduced={reduced} start={t.riseAt} settleAt={t.settleAt} settleDur={t.settleDur} seed={7} />
 
       {/* Blok teks: 布瑠部由良由良 (per-karakter) + 魔虚羅; naik & mengecil saat settle */}
       <motion.div
@@ -420,65 +457,132 @@ export function MegumiSummonCine() {
         transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : t.flashAt - 0.1, times: [0, 0.3, 0.5, 1], ease: 'easeOut' }}
       />
 
+      {/* Cut-in GIF 魔虚羅 saat boom (redesign v2) — kecil (max 26vh), blend
+          screen, muncul 0.5s pas FLASH. Aset 220×147px → JANGAN dibesarkan. */}
+      {!reduced && (
+        <motion.div
+          data-megumi-gif-cutin
+          className="absolute left-1/2 top-1/2 z-20"
+          style={{ x: '-50%', y: '-50%', mixBlendMode: 'screen' }}
+          initial={{ opacity: 0, scale: 0.86 }}
+          animate={{ opacity: [0, 1, 1, 0], scale: [0.86, 1, 1, 1.04] }}
+          transition={{ duration: 0.9, delay: t.boomAt, times: [0, 0.18, 0.7, 1], ease: 'easeOut' }}
+        >
+          <img
+            src={MEGUMI_GIFS.mahoraga[0]}
+            alt=""
+            decoding="sync"
+            loading="eager"
+            draggable={false}
+            className="select-none"
+            style={{
+              width: 'min(26vh, 44vw)',
+              height: 'auto',
+              WebkitMaskImage: 'radial-gradient(ellipse 52% 52% at 50% 50%, #000 40%, rgba(0,0,0,0.5) 68%, transparent 92%)',
+              maskImage: 'radial-gradient(ellipse 52% 52% at 50% 50%, #000 40%, rgba(0,0,0,0.5) 68%, transparent 92%)',
+            }}
+          />
+        </motion.div>
+      )}
+
       {/* Penanda segmen (aria) — durasi chant utuh */}
       <span className="sr-only">布瑠部由良由良 魔虚羅 — {v.dur}s</span>
     </motion.div>
   );
 }
 
-// ── Persist 30 dtk: genangan + aura 影 di BELAKANG layar quiz (portal z-6) ────
+// ── Persist 30 dtk: genangan + aura 影 + PENANDA summon aktif ────────────────
+// REDESIGN v2: split 2 layer (dulu semua di z-6 → ketutup main z-10, penanda
+// roda+kanji TIDAK PERNAH kelihatan):
+//   • z-6  : atmosfer (wash, genangan, napas indigo, bara) — di BELAKANG konten
+//   • z-11 : PENANDA (vignette tepi + roda kecil + kanji 魔虚羅) — di ATAS konten,
+//            tapi cuma di zona aman (tepi/atas) supaya soal & jawaban tetap kebaca.
 export function MegumiAura({ seed = 1 }) {
   const [reduced] = useState(prefersReduced);
   const [motes] = useState(() => megumiShadowMotes(seed, reduced ? 5 : 9));
   const t = MEGUMI_SUMMON_TIMELINE;
 
   return createPortal(
-    <motion.div
-      data-megumi-aura
-      className="pointer-events-none fixed inset-0 z-[6] overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: reduced ? 0 : 0.8, delay: reduced ? 0 : t.settleAt, ease: 'easeOut' }}
-    >
-      {/* Latar bayangan (gelap, bukan merah — identitas Megumi) */}
-      <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 92% at 50% 8%, #0b0b16 0%, #06060c 48%, #020204 100%)' }} />
-
-      {/* Genangan bayangan besar di lantai (persist) */}
+    <>
+      {/* ── Layer belakang: atmosfer ── */}
       <motion.div
-        className="absolute inset-x-0 bottom-0 h-[54vh]"
-        style={{ background: 'radial-gradient(90% 100% at 50% 100%, rgba(10,10,16,0.94), rgba(6,6,10,0.5) 54%, transparent 84%)' }}
-        initial={{ opacity: 0, scaleY: 0.6 }}
-        animate={reduced ? { opacity: 0.8, scaleY: 1 } : { opacity: [0, 0.9, 0.8], scaleY: [0.6, 1, 1], y: [0, -6, 0] }}
-        transition={reduced
-          ? { duration: 0 }
-          : { opacity: { duration: 1.2, delay: 0.1 }, scaleY: { duration: 1.2, delay: 0.1 }, y: { duration: 7, repeat: Infinity, ease: 'easeInOut' } }
-        }
-      />
+        data-megumi-aura
+        className="pointer-events-none fixed inset-0 z-[6] overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: reduced ? 0 : 0.8, delay: reduced ? 0 : t.settleAt, ease: 'easeOut' }}
+      >
+        {/* Latar bayangan (gelap, bukan merah — identitas Megumi) */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 92% at 50% 8%, #0b0b16 0%, #06060c 48%, #020204 100%)' }} />
 
-      {/* Napas indigo (aura summon) */}
-      <motion.div
-        className="absolute inset-0"
-        style={{ background: 'radial-gradient(88% 70% at 50% 50%, rgba(67,56,202,0.14), transparent 74%)' }}
-        animate={reduced ? { opacity: 0.5 } : { opacity: [0.32, 0.72, 0.32] }}
-        transition={reduced ? { duration: 0 } : { duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      {/* Bara/bayangan naik (aura 影) */}
-      {motes.map((m) => (
-        <motion.span
-          key={m.id}
-          className="absolute rounded-full"
-          style={{ left: `${m.x}%`, bottom: '6%', width: m.size, height: m.size, background: '#12121e', boxShadow: `0 0 10px ${MEGUMI_INDIGO}88` }}
-          animate={reduced ? { opacity: 0.4 } : { opacity: [0, 0.85, 0], y: m.drift }}
-          transition={{ duration: reduced ? 0 : m.dur + 1.4, delay: reduced ? 0 : m.delay, repeat: reduced ? 0 : Infinity, repeatDelay: m.dur, ease: 'easeOut' }}
+        {/* Genangan bayangan besar di lantai (persist) */}
+        <motion.div
+          className="absolute inset-x-0 bottom-0 h-[54vh]"
+          style={{ background: 'radial-gradient(90% 100% at 50% 100%, rgba(10,10,16,0.94), rgba(6,6,10,0.5) 54%, transparent 84%)' }}
+          initial={{ opacity: 0, scaleY: 0.6 }}
+          animate={reduced ? { opacity: 0.8, scaleY: 1 } : { opacity: [0, 0.9, 0.8], scaleY: [0.6, 1, 1], y: [0, -6, 0] }}
+          transition={reduced
+            ? { duration: 0 }
+            : { opacity: { duration: 1.2, delay: 0.1 }, scaleY: { duration: 1.2, delay: 0.1 }, y: { duration: 7, repeat: Infinity, ease: 'easeInOut' } }
+          }
         />
-      ))}
 
-      {/* Roda 八握剣 KECIL persist di belakang (penanda Mahoraga aktif) */}
-      <div className="absolute inset-x-0 top-[5vh] flex justify-center opacity-80">
-        <AdaptWheel notches={0} reduced={reduced} size="min(20vh, 34vw)" spin glow={0.6} />
-      </div>
-    </motion.div>,
+        {/* Napas indigo (aura summon) */}
+        <motion.div
+          className="absolute inset-0"
+          style={{ background: 'radial-gradient(88% 70% at 50% 50%, rgba(67,56,202,0.14), transparent 74%)' }}
+          animate={reduced ? { opacity: 0.5 } : { opacity: [0.32, 0.72, 0.32] }}
+          transition={reduced ? { duration: 0 } : { duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Bara/bayangan naik (aura 影) */}
+        {motes.map((m) => (
+          <motion.span
+            key={m.id}
+            className="absolute rounded-full"
+            style={{ left: `${m.x}%`, bottom: '6%', width: m.size, height: m.size, background: '#12121e', boxShadow: `0 0 10px ${MEGUMI_INDIGO}88` }}
+            animate={reduced ? { opacity: 0.4 } : { opacity: [0, 0.85, 0], y: m.drift }}
+            transition={{ duration: reduced ? 0 : m.dur + 1.4, delay: reduced ? 0 : m.delay, repeat: reduced ? 0 : Infinity, repeatDelay: m.dur, ease: 'easeOut' }}
+          />
+        ))}
+      </motion.div>
+
+      {/* ── Layer depan: PENANDA summon aktif (di atas konten, zona aman) ── */}
+      <motion.div
+        data-megumi-aura-front
+        className="pointer-events-none fixed inset-0 z-[11] overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: reduced ? 0 : 0.8, delay: reduced ? 0 : t.settleAt, ease: 'easeOut' }}
+      >
+        {/* Vignette tepi tipis — tengah transparan (soal tetap kebaca) */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(130% 112% at 50% 50%, transparent 58%, rgba(6,6,12,0.42) 100%)' }} />
+
+        {/* Roda 八握剣 KECIL persist (penanda Mahoraga aktif) */}
+        <div className="absolute inset-x-0 top-[5vh] flex justify-center opacity-80">
+          <AdaptWheel notches={0} reduced={reduced} size="min(20vh, 34vw)" spin glow={0.6} />
+        </div>
+
+        {/* Kanji 魔虚羅 persist (redesign v2) — penanda summon aktif, kecil & samar
+            di bawah roda. Sebelumnya kanji hilang total setelah settle. */}
+        <motion.span
+          data-megumi-makora-kanji
+          className="absolute inset-x-0 top-[calc(5vh+min(20vh,34vw)+1.2vh)] text-center font-serif font-black select-none pointer-events-none"
+          style={{
+            fontSize: 'clamp(18px, 3vw, 34px)',
+            color: MEGUMI_STYLE.mahoraga.color,
+            opacity: 0.55,
+            WebkitTextStroke: `1px ${MEGUMI_INK}`,
+            textShadow: `0 0 18px ${MEGUMI_STYLE.mahoraga.color}88`,
+          }}
+          initial={{ opacity: 0 }}
+          animate={reduced ? { opacity: 0.55 } : { opacity: [0, 0.7, 0.55] }}
+          transition={{ duration: reduced ? 0 : 0.9, ease: 'easeOut' }}
+        >
+          魔虚羅
+        </motion.span>
+      </motion.div>
+    </>,
     document.body,
   );
 }
