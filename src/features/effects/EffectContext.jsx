@@ -18,6 +18,20 @@ import { YujiBurst } from './YujiBurst';
 import { YujiCurseBar, YujiTakeoverCine, YujiAura } from './YujiTakeover';
 import { SukunaBurst } from './SukunaBurst';
 import { SukunaCurseBar, SukunaDomainCine, SukunaAura } from './SukunaDomain';
+import { MegumiBurst } from './MegumiBurst';
+import { MegumiCurseBar, MegumiSummonCine, MegumiAura } from './MegumiShadow';
+import {
+  megumiTechniqueFor, megumiCurseCharge, MEGUMI_ULT_THRESHOLD,
+  MEGUMI_SUMMON_DURATION_S, megumiSummonLeft as megumiSummonLeftMs, megumiSummonStartDelayMs,
+  MEGUMI_WHEEL_NOTCHES, megumiWrongOutcome, megumiAdaptCut, megumiSwordCut, megumiSwordReady,
+  MEGUMI_ADAPT_DELAY_MS, MEGUMI_SWORD_DELAY_MS, MEGUMI_ADAPT_CUT,
+} from './megumiFx';
+import { megumiGifForAnswer, megumiAnswerHoldMs, preloadMegumiGifs } from './megumiGifs';
+import {
+  playMegumiTechnique, playMegumiTechniqueLayers, playShadowSwallow,
+  playAdaptFlash, playSwordUnsheathe, playWheelShatter, playMakoraChant, playMakoraRoar,
+} from '../../utils/sfx';
+import { startMegumiShadowBgm, stopMegumiShadowBgm, duckMegumiAmbience } from '../../utils/megumiAmbience';
 import {
   sukunaTechniqueFor, sukunaCurseCharge, SUKUNA_ULT_THRESHOLD,
   SUKUNA_DOMAIN_DURATION_S, sukunaDomainLeft as sukunaDomainLeftMs, sukunaDomainStartDelayMs,
@@ -187,6 +201,30 @@ export function EffectProvider({ children }) {
   const sukunaSkillArmedOnRef = useRef(null); // correctId soal saat skill di-arm
   const sukunaQuizOptionsRef = useRef(null);  // { options, correctId } soal aktif
   const sukunaSkillReadyAtRef = useRef(0);    // streak minimal skill bisa dipakai lagi (cooldown)
+  // ── Megumi: bar 呪力 20 + summon 魔虚羅 適応 (30 dtk; timer JALAN) ──────────
+  const [megumiCharge, setMegumiCharge] = useState(0);
+  const [megumiSummon, setMegumiSummon] = useState(false);
+  const [megumiSummonSeed, setMegumiSummonSeed] = useState(0);
+  const [megumiSummonLeft, setMegumiSummonLeft] = useState(MEGUMI_SUMMON_DURATION_S);
+  const [megumiWheel, setMegumiWheel] = useState(0);          // takik 適応 0..8
+  const [megumiAdaptCutIds, setMegumiAdaptCutIds] = useState([]);   // opsi dihapus 適応 (soal aktif)
+  const [megumiAdaptForId, setMegumiAdaptForId] = useState(null);
+  const [megumiSwordCutIds, setMegumiSwordCutIds] = useState([]);   // opsi terpotong 八握剣 (soal aktif)
+  const [megumiSwordForId, setMegumiSwordForId] = useState(null);
+  const [megumiQuizOptionsState, setMegumiQuizOptionsState] = useState(null); // { options, correctId }
+  const megumiSummonEndsAtRef = useRef(null);
+  const megumiEndedRef = useRef(false);
+  const megumiSummonRef = useRef(false);
+  const megumiWheelRef = useRef(0);
+  const megumiQuizOptionsRef = useRef(null);
+  // (megumiAdaptCutIds tidak perlu ref — potongan selalu dibaca dari state)
+  const megumiAdaptForRef = useRef(null);      // correctId soal pemilik potongan 適応
+  const megumiAdaptPendingRef = useRef(null);  // correctId yang 適応-nya dijadwalkan
+  const megumiAdaptArmedRef = useRef(false);   // 適応 di-arm: potong 1 opsi soal BERIKUTNYA
+  const megumiAdaptArmedOnRef = useRef(null);  // correctId soal saat 適応 di-arm
+  const megumiSwordCutForRef = useRef(null);   // correctId soal pemilik potongan 八握剣
+  const megumiSwordArmedRef = useRef(false);   // 八握剣 tercabut: SEMUA opsi salah terpotong
+  const megumiSwordPendingRef = useRef(null);  // correctId yang potongan pedangnya dijadwalkan
   const timersRef = useRef([]);
   const hitTimerRef = useRef(null);
   // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
@@ -411,6 +449,171 @@ export function EffectProvider({ children }) {
     }
   }, []);
 
+  // ── Satu jawaban untuk pack Megumi (visual 'megumi') — 十種影法術 ─────────
+  // Mirror triggerSukuna, dengan BEDA FUNDAMENTAL: Megumi = KETAHANAN.
+  //  • Salah selama summon 魔虚羅 → 適応 (streak TIDAK hangus, roda +1, kanji
+  //    flash, 1 opsi salah soal berikutnya dihapus).
+  //  • Roda penuh 8/8 → Mahoraga cabut 八握剣 → SEMUA opsi salah terpotong
+  //    (必中 mini) selama sisa summon.
+  //  • Salah ke-9 (roda sudah penuh) → 輪砕け: roda pecah, summon bubar,
+  //    streak BARU hangus (backlash 切札 — kanon: Mahoraga membunuh pemanggil).
+  //  • Timeout → padam alami, streak tetap.
+  // prevStreak = nilai streak SEBELUM triggerEffect me-reset (dipakai 適応).
+  const triggerMegumi = useCallback((type, kind, cfg, prevStreak = 0) => {
+    const streak = streakRef.current;
+    const inSummon = megumiSummonRef.current;
+    const tech = megumiTechniqueFor(kind, type === 'correct' ? streak : 0);
+
+    // ── CABANG 1: SALAH SELAMA SUMMON → 適応 / 輪砕け ───────────────────────
+    // Streak dipulihkan ke prevStreak (TIDAK hangus) KECUALI 輪砕け.
+    if (type === 'wrong' && inSummon) {
+      const { notches, outcome } = megumiWrongOutcome(megumiWheelRef.current, MEGUMI_WHEEL_NOTCHES);
+
+      if (outcome === 'shatter') {
+        // 輪砕け — salah ke-9 saat roda penuh. Summon bubar, streak HANGUS.
+        megumiEndedRef.current = true;
+        playWheelShatter();
+        playShadowSwallow();
+        stopMegumiShadowBgm();
+        megumiSummonRef.current = false;
+        megumiEndedRef.current = false;
+        setMegumiSummon(false);
+        setMegumiWheel(0);
+        megumiWheelRef.current = 0;
+        setMegumiAdaptCutIds([]); megumiAdaptForRef.current = null; megumiAdaptPendingRef.current = null;
+        megumiAdaptArmedRef.current = false; megumiAdaptArmedOnRef.current = null;
+        setMegumiSwordCutIds([]); megumiSwordCutForRef.current = null; megumiSwordPendingRef.current = null;
+        megumiSwordArmedRef.current = false;
+        streakRef.current = 0;   // backlash: streak hangus
+        setMegumiCharge(0);
+        // fx 輪砕け: kanji + roda pecah di komponen (kind 'wrong' + tech 'shatter').
+        const shatterId = ++seq;
+        setFx({
+          kind: 'wrong', tech: 'shatter', id: shatterId, gifSrc: null,
+          seed: Math.floor(Math.random() * 900) + 1,
+          level: 0, milestone: 0, streak: 0, signature: null, onMilestone: false,
+        });
+        const st = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, shatterId)), 1900);
+        timersRef.current.push(st);
+        return;
+      }
+
+      // 適応 — roda +1 takik, streak TIDAK hangus (pulihkan prevStreak), arm
+      // pemotongan 1 opsi salah untuk soal BERIKUTNYA (pola skill Sukuna).
+      streakRef.current = prevStreak;
+      megumiWheelRef.current = notches;
+      setMegumiWheel(notches);
+      playAdaptFlash();
+      // Roda PENUH (8/8 八握) → Mahoraga cabut 八握剣 → 必中 mini sampai summon
+      // padam: SEMUA opsi salah terpotong tiap soal (armed; efek di useEffect).
+      if (megumiSwordReady(notches, MEGUMI_WHEEL_NOTCHES) && !megumiSwordArmedRef.current) {
+        megumiSwordArmedRef.current = true;
+        playSwordUnsheathe();
+        playMakoraRoar();
+      }
+      // Bar 呪力 ikut prevStreak (streak pulih — charge tidak boleh ikut reset).
+      setMegumiCharge(megumiCurseCharge(prevStreak));
+      // Arm 適応 ke soal BERIKUTNYA: catat soal yang barusan dijawab.
+      megumiAdaptArmedRef.current = true;
+      megumiAdaptArmedOnRef.current = megumiQuizOptionsRef.current?.correctId ?? null;
+      // fx 適応: kanji 適応 flash (kind 'correct' + tech 'adapt').
+      const adaptId = ++seq;
+      setFx({
+        kind: 'correct', tech: 'adapt', id: adaptId, gifSrc: null,
+        seed: Math.floor(Math.random() * 900) + 1,
+        level: 0, milestone: 0, streak: prevStreak, signature: null, onMilestone: false,
+      });
+      const at = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, adaptId)), 1500);
+      timersRef.current.push(at);
+      return;
+    }
+
+    // ── CABANG 2: BENAR SELAMA SUMMON ──────────────────────────────────────
+    // Roda tidak maju (tidak ada yang perlu diadaptasi). Kalau 八握剣 sudah
+    // tercabut, potongan 必中 mini tetap berjalan (efek persist).
+    if (type === 'correct' && inSummon) {
+      duckMegumiAmbience(1400);
+      let clipMs = 0;
+      if (tech) {
+        clipMs = playMegumiTechnique(tech);
+        playMegumiTechniqueLayers(tech);
+      } else {
+        clipMs = playCorrectSound();
+      }
+      if (typeof document !== 'undefined') {
+        const root = document.documentElement;
+        root.dataset.megumiHit = tech || 'none';
+        if (hitTimerRef.current) clearTimeout(hitTimerRef.current);
+        hitTimerRef.current = setTimeout(() => { delete root.dataset.megumiHit; }, 700);
+      }
+      const fxId = ++seq;
+      const gifSrc = megumiGifForAnswer('correct', tech);
+      const holdMs = megumiAnswerHoldMs(tech, gifSrc, clipMs, cfg?.hold || 0, false);
+      setFx({
+        kind, tech, id: fxId, gifSrc,
+        seed: Math.floor(Math.random() * 900) + 1,
+        level: 0, milestone: 0, streak,
+        signature: null, onMilestone: false,
+      });
+      const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
+      timersRef.current.push(t);
+      setMegumiCharge(megumiCurseCharge(streak));
+      return;
+    }
+
+    // ── CABANG 3: DI LUAR SUMMON (jalur normal, mirror Sukuna) ─────────────
+    megumiAdaptArmedRef.current = false;   // salah biasa → 適応 yang belum kepakai hangus
+    let clipMs = 0;
+    let gifSrc = null;
+    if (type === 'wrong') {
+      clipMs = playWrongSound();
+      playShadowSwallow();   // bayangan nelan tombol yang dipencet (lapisan khas Megumi)
+      megumiAdaptArmedRef.current = false;
+      megumiAdaptArmedOnRef.current = null;
+      setMegumiAdaptCutIds([]); megumiAdaptForRef.current = null; megumiAdaptPendingRef.current = null;
+      setMegumiSwordCutIds([]); megumiSwordCutForRef.current = null; megumiSwordPendingRef.current = null;
+      megumiSwordArmedRef.current = false;
+      setMegumiWheel(0); megumiWheelRef.current = 0;
+    } else if (tech) {
+      clipMs = playMegumiTechnique(tech);
+      playMegumiTechniqueLayers(tech);
+    } else {
+      clipMs = playCorrectSound();
+    }
+    gifSrc = megumiGifForAnswer(type, tech);
+
+    if (typeof document !== 'undefined') {
+      const root = document.documentElement;
+      root.dataset.megumiHit = type === 'wrong' ? 'wrong' : (tech || 'none');
+      if (hitTimerRef.current) clearTimeout(hitTimerRef.current);
+      hitTimerRef.current = setTimeout(() => { delete root.dataset.megumiHit; }, 700);
+    }
+
+    const fxId = ++seq;
+    const holdMs = megumiAnswerHoldMs(
+      type === 'wrong' ? 'hazushita' : tech, gifSrc, clipMs,
+      Math.max(cfg?.hold || 0, tech === 'kosou' ? 2200 : 0, tech === 'bansou' ? 2000 : 0),
+      type === 'wrong',
+    );
+    setFx({
+      kind, tech, id: fxId, gifSrc,
+      seed: Math.floor(Math.random() * 900) + 1,
+      level: 0, milestone: 0,
+      streak: type === 'correct' ? streak : 0,
+      signature: null, onMilestone: false,
+    });
+    const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
+    timersRef.current.push(t);
+
+    // Bar 呪力 20 slot: ikut streak; salah → kosong.
+    const newCharge = megumiCurseCharge(streak);
+    setMegumiCharge(newCharge);
+    if (type === 'correct' && newCharge > 0) {
+      if (newCharge >= MEGUMI_ULT_THRESHOLD) playCurseReady();
+      else playCurseTick(newCharge);
+    }
+  }, []);
+
   const triggerEffect = useCallback((type) => {
     // Efek tidak aktif → tetap bunyi suara dasar (perilaku lama), lalu berhenti.
     if (!active) {
@@ -419,7 +622,9 @@ export function EffectProvider({ children }) {
       return;
     }
 
-    // Satu salah → streak hangus total.
+    // Satu salah → streak hangus total. Snapshot SEBELUM reset dipakai jalur
+    // Megumi: salah selama summon 適応 TIDAK menghanguskan streak (ketahanan).
+    const prevStreak = streakRef.current;
     if (type === 'correct') streakRef.current += 1;
     else if (type === 'wrong') streakRef.current = 0;
 
@@ -440,6 +645,9 @@ export function EffectProvider({ children }) {
 
     // ── Jalur Sukuna (pack 'sukuna') — mirror Yuji ──────────────────────────
     if (activeVisual === 'sukuna') { triggerSukuna(type, kind, cfg); return; }
+
+    // ── Jalur Megumi (pack 'megumi') — 十種影法術 + 魔虚羅·適応 ──────────────
+    if (activeVisual === 'megumi') { triggerMegumi(type, kind, cfg, prevStreak); return; }
 
     // GIF Hina: hanya saat suara Hina bunyi (salah / tepat milestone). Benar biasa → null.
     // GIF Gojo: salah → meme "kalah"; teknik 茈 → murasaki; ao/aka → null (bola plasma).
@@ -554,7 +762,7 @@ export function EffectProvider({ children }) {
     // prematur oleh timer 蒼 lama (keluhan user: "efek murasaki kecepetan").
     const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
     timersRef.current.push(t);
-  }, [active, spawnInk, activeVisual, gojoDomain, triggerYuji, triggerSukuna]);
+  }, [active, spawnInk, activeVisual, gojoDomain, triggerYuji, triggerSukuna, triggerMegumi]);
 
   const resetEffectStreak = useCallback(() => {
     streakRef.current = 0;
@@ -589,6 +797,21 @@ export function EffectProvider({ children }) {
     setSukunaQuizOptionsState(null);
     sukunaSkillUsesRef.current = 0;
     stopSukunaDomainBgm();
+    // Megumi
+    setMegumiCharge(0);
+    setMegumiSummon(false);
+    megumiSummonRef.current = false;
+    megumiSummonEndsAtRef.current = null;
+    megumiEndedRef.current = false;
+    setMegumiWheel(0); megumiWheelRef.current = 0;
+    setMegumiAdaptCutIds([]); setMegumiAdaptForId(null);
+    megumiAdaptForRef.current = null; megumiAdaptPendingRef.current = null;
+    megumiAdaptArmedRef.current = false; megumiAdaptArmedOnRef.current = null;
+    setMegumiSwordCutIds([]); setMegumiSwordForId(null);
+    megumiSwordCutForRef.current = null; megumiSwordPendingRef.current = null;
+    megumiSwordArmedRef.current = false;
+    setMegumiQuizOptionsState(null);
+    stopMegumiShadowBgm();
   }, [setTakeover]);
 
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
@@ -630,6 +853,21 @@ export function EffectProvider({ children }) {
     setSukunaQuizOptionsState(null);
     sukunaSkillUsesRef.current = 0;
     stopSukunaDomainBgm();
+    // Megumi: summon & semua potongan ikut padam (jangan ada elemen nyangkut).
+    setMegumiCharge(0);
+    setMegumiSummon(false);
+    megumiSummonRef.current = false;
+    megumiSummonEndsAtRef.current = null;
+    megumiEndedRef.current = false;
+    setMegumiWheel(0); megumiWheelRef.current = 0;
+    setMegumiAdaptCutIds([]); setMegumiAdaptForId(null);
+    megumiAdaptForRef.current = null; megumiAdaptPendingRef.current = null;
+    megumiAdaptArmedRef.current = false; megumiAdaptArmedOnRef.current = null;
+    setMegumiSwordCutIds([]); setMegumiSwordForId(null);
+    megumiSwordCutForRef.current = null; megumiSwordPendingRef.current = null;
+    megumiSwordArmedRef.current = false;
+    setMegumiQuizOptionsState(null);
+    stopMegumiShadowBgm();
     stopAllAmbience();
   }, [setTakeover]);
 
@@ -820,6 +1058,160 @@ export function EffectProvider({ children }) {
     return null;
   })();
 
+  // ── Cast 魔虚羅 (tap bar Megumi) — summon 30 dtk, timer JALAN ─────────────
+  // Mirror castSukunaDomain, TAPI bukan domain: ini SUMMON 切札 (rare = one-shot,
+  // tanpa Domain Expansion). Timeline cinematic di-anchor ke klip chant 4.959s
+  // (MEGUMI_SUMMON_TIMELINE) — semua sync SFX di MegumiSummonCine.
+  const castMegumiSummon = useCallback(() => {
+    if (activeVisual !== 'megumi') return;
+    streakRef.current = 0;
+    megumiEndedRef.current = false;
+    setMegumiCharge(0);
+    setMegumiSummonSeed((n) => n + 1);
+    megumiSummonRef.current = true;
+    setMegumiSummon(true);
+    // 適応 mulai dari nol di cast baru (roda bersih, tidak ada sisa).
+    megumiWheelRef.current = 0;
+    setMegumiWheel(0);
+    setMegumiAdaptCutIds([]); setMegumiAdaptForId(null);
+    megumiAdaptForRef.current = null; megumiAdaptPendingRef.current = null;
+    megumiAdaptArmedRef.current = false; megumiAdaptArmedOnRef.current = null;
+    setMegumiSwordCutIds([]); setMegumiSwordForId(null);
+    megumiSwordCutForRef.current = null; megumiSwordPendingRef.current = null;
+    megumiSwordArmedRef.current = false;
+    // 30 dtk mulai SETELAH cinematic settle (bukan dari cast) — waktu main penuh.
+    megumiSummonEndsAtRef.current = Date.now() + megumiSummonStartDelayMs() + MEGUMI_SUMMON_DURATION_S * 1000;
+    setMegumiSummonLeft(MEGUMI_SUMMON_DURATION_S);
+    // Klip chant 布瑠部由良由良……魔虚羅 (4.959s) + drone ritual + dentuman cast.
+    playMegumiTechnique('mahoraga');
+    playMakoraChant();
+    playDomainBoom('cast');
+  }, [activeVisual]);
+
+  // ── Registrasi opsi soal aktif (konsumen: Practice/KanaQuiz) ───────────────
+  // Dipakai mekanik 適応 (hapus 1 opsi salah soal berikutnya) & 八握剣 (semua).
+  const setMegumiQuizOptions = useCallback((options, correctId) => {
+    if (!Array.isArray(options) || options.length === 0) {
+      megumiQuizOptionsRef.current = null;
+      setMegumiQuizOptionsState(null);
+      return;
+    }
+    const reg = { options, correctId };
+    megumiQuizOptionsRef.current = reg;
+    setMegumiQuizOptionsState(reg);
+  }, []);
+
+  // ── 適応: 1 opsi salah soal BERIKUTNYA dihapus (pola skill Sukuna) ────────
+  // Di-arm saat salah selama summon (triggerMegumi cabang 1). Begitu soal baru
+  // terdaftar (beda dari soal saat arm) → tunggu MEGUMI_ADAPT_DELAY_MS →
+  // potong 1 opsi salah. Batal kalau summon padam lebih dulu.
+  useEffect(() => {
+    if (activeVisual !== 'megumi') return undefined;
+    const reg = megumiQuizOptionsState;
+    if (!reg) return undefined;
+    // Soal baru bukan pemilik potongan → bersihkan sisa 適応 soal lama.
+    if (megumiAdaptForRef.current !== reg.correctId) {
+      setMegumiAdaptCutIds([]);
+      setMegumiAdaptForId(null);
+    }
+    if (!megumiAdaptArmedRef.current) return undefined;
+    if (reg.correctId === megumiAdaptArmedOnRef.current) return undefined;   // masih soal yang barusan dijawab
+    if (!megumiSummonRef.current) return undefined;                          // summon padam → 適応 batal
+    if (megumiAdaptPendingRef.current === reg.correctId) return undefined;   // sudah dijadwalkan
+    megumiAdaptPendingRef.current = reg.correctId;
+    const t = setTimeout(() => {
+      megumiAdaptPendingRef.current = null;
+      if (!megumiSummonRef.current) return;
+      const cur = megumiQuizOptionsRef.current;
+      if (!cur || cur.correctId !== reg.correctId) return;
+      const ids = megumiAdaptCut(cur.options, cur.correctId, MEGUMI_ADAPT_CUT);
+      if (ids.length === 0) return;
+      megumiAdaptForRef.current = cur.correctId;
+      setMegumiAdaptCutIds(ids);
+      setMegumiAdaptForId(cur.correctId);
+      megumiAdaptArmedRef.current = false;
+      megumiAdaptArmedOnRef.current = null;
+    }, MEGUMI_ADAPT_DELAY_MS);
+    timersRef.current.push(t);
+    return undefined;
+  }, [activeVisual, megumiQuizOptionsState]);
+
+  // ── 八握剣 (必中 mini): roda penuh → SEMUA opsi salah terpotong ───────────
+  // Berulang tiap soal baru selama summon masih hidup & pedang masih tercabut.
+  useEffect(() => {
+    if (activeVisual !== 'megumi') return undefined;
+    if (!megumiSwordArmedRef.current) return undefined;
+    const reg = megumiQuizOptionsState;
+    if (!reg) return undefined;
+    if (megumiSwordCutForRef.current === reg.correctId) return undefined;   // soal ini sudah kena
+    if (!megumiSummonRef.current) return undefined;
+    // Soal baru (belum kena) → bersihkan sisa potongan soal sebelumnya.
+    setMegumiSwordCutIds([]);
+    setMegumiSwordForId(null);
+    if (megumiSwordPendingRef.current === reg.correctId) return undefined;
+    megumiSwordPendingRef.current = reg.correctId;
+    const t = setTimeout(() => {
+      megumiSwordPendingRef.current = null;
+      if (!megumiSummonRef.current || !megumiSwordArmedRef.current) return;
+      const cur = megumiQuizOptionsRef.current;
+      if (!cur || cur.correctId !== reg.correctId) return;
+      const ids = megumiSwordCut(cur.options, cur.correctId);
+      if (ids.length === 0) return;
+      megumiSwordCutForRef.current = cur.correctId;
+      setMegumiSwordCutIds(ids);
+      setMegumiSwordForId(cur.correctId);
+      playSlash(false);   // bunyi tebasan 八握剣
+    }, MEGUMI_SWORD_DELAY_MS);
+    timersRef.current.push(t);
+    return undefined;
+  }, [activeVisual, megumiQuizOptionsState]);
+
+  // Hitung mundur summon (30 dtk) — habis → padam sendiri (streak TETAP).
+  useEffect(() => {
+    if (!megumiSummon) return undefined;
+    const tick = () => {
+      const left = megumiSummonLeftMs(megumiSummonEndsAtRef.current);
+      setMegumiSummonLeft(left);
+      if (left <= 0) {
+        if (!megumiEndedRef.current) { megumiEndedRef.current = true; playDomainCollapse('timeout'); }
+        megumiSummonRef.current = false;
+        setMegumiSummon(false);
+        setMegumiWheel(0); megumiWheelRef.current = 0;
+        setMegumiAdaptCutIds([]); setMegumiAdaptForId(null);
+        megumiAdaptForRef.current = null; megumiAdaptPendingRef.current = null;
+        megumiAdaptArmedRef.current = false; megumiAdaptArmedOnRef.current = null;
+        setMegumiSwordCutIds([]); setMegumiSwordForId(null);
+        megumiSwordCutForRef.current = null; megumiSwordPendingRef.current = null;
+        megumiSwordArmedRef.current = false;
+        stopMegumiShadowBgm();
+      }
+    };
+    tick();
+    const id = setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [megumiSummon]);
+
+  useEffect(() => {
+    if (megumiSummon) return;
+    megumiSummonEndsAtRef.current = null;
+    setMegumiSummonLeft(MEGUMI_SUMMON_DURATION_S);
+  }, [megumiSummon]);
+
+  // ── Ambience Megumi: BGM 影 hidup setelah cinematic settle ────────────────
+  useEffect(() => {
+    if (!megumiSummon || activeVisual !== 'megumi') { stopMegumiShadowBgm(); return undefined; }
+    const t = setTimeout(() => startMegumiShadowBgm(), megumiSummonStartDelayMs());
+    timersRef.current.push(t);
+    return () => clearTimeout(t);
+  }, [megumiSummon, activeVisual]);
+
+  // Preload GIF kanon (bansou/mahoraga/kalah) supaya frame pertama siap.
+  useEffect(() => {
+    if (activeVisual !== 'megumi') return undefined;
+    preloadMegumiGifs();
+    return undefined;
+  }, [activeVisual]);
+
   // Hitung mundur domain Sukuna — habis → padam sendiri (bukan salah).
   useEffect(() => {
     if (!sukunaDomain) return undefined;
@@ -974,7 +1366,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
@@ -988,13 +1380,17 @@ export function EffectProvider({ children }) {
         sukunaDomainOn={sukunaDomain} sukunaDomainSeed={sukunaDomainSeed}
         sukunaDomainLeft={sukunaDomainLeft} onCastSukuna={castSukunaDomain}
         sukunaCutSkill={sukunaCutSkill} onCastSukunaSkill={castSukunaQuizSkill}
+        megumiCharge={megumiCharge}
+        megumiSummonOn={megumiSummon} megumiSummonSeed={megumiSummonSeed}
+        megumiSummonLeft={megumiSummonLeft} onCastMegumi={castMegumiSummon}
+        megumiWheel={megumiWheel} megumiSwordReady={megumiWheel >= MEGUMI_WHEEL_NOTCHES}
       />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -1202,6 +1598,29 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
           onCast={onCastSukuna} domainOn={sukunaDomainOn} domainLeft={sukunaDomainLeft}
           skills={sukunaSkills}
           onSkill={onCastSukunaSkill}
+        />
+      )}
+
+      {/* ── Megumi Fushiguro (pack 'megumi') — 十種影法術 · 魔虚羅 適応 ─────── */}
+      {visual === 'megumi' && (
+        <>
+          {/* Summon: aura 影 (portal z-6, di BELAKANG kuis) + cinematic chant
+              (布瑠部由良由良 → roda 八握剣 → siluet → flash/boom → settle).
+              Tanpa AnimatePresence — padamnya harus instan & pasti (pola Gojo/Sukuna). */}
+          {megumiSummonOn && <MegumiAura key={`megumi-aura-${megumiSummonSeed}`} seed={megumiSummonSeed} />}
+          {megumiSummonOn && <MegumiSummonCine key={`megumi-summon-${megumiSummonSeed}`} />}
+          <AnimatePresence>
+            {fx && <MegumiBurst key={`megumi-${fx.id}`} fx={fx} kind={kind} />}
+          </AnimatePresence>
+        </>
+      )}
+
+      {visual === 'megumi' && quizActive && (
+        <MegumiCurseBar
+          charge={megumiCharge}
+          ready={megumiCharge >= MEGUMI_ULT_THRESHOLD && !megumiSummonOn}
+          onCast={onCastMegumi} summonOn={megumiSummonOn} summonLeft={megumiSummonLeft}
+          notches={megumiWheel} swordReady={megumiSwordReady}
         />
       )}
     </div>

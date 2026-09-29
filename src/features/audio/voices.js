@@ -104,13 +104,22 @@ export const VOICES = {
     ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  // VP Megumi Fushiguro (pack_10) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  // VP Megumi Fushiguro (pack_10) — aset user di public/voices/megumi/ (十種影法術).
+  //   wrong : 3 klip kalah (hazushita/chi/tsugi_de_kimeru) — dipilih acak tiap salah.
+  //   clips : klip jalur khusus — 5 jurus ladder (玉犬/鵺/大蛇/満象/虎葬) + chant
+  //           魔虚羅 (ultimate). Diputar DETERMINISTIK oleh playMegumiTechnique.
+  //   correct/streak: KOSONG (benar = jurus deterministik; summon = klip chant sendiri).
   megumi: {
     files: {
-      correct: ['/voices/megumi/correct_1.mp3', '/voices/megumi/correct_2.mp3', '/voices/megumi/correct_3.mp3'],
-      wrong:   ['/voices/megumi/wrong_1.mp3',   '/voices/megumi/wrong_2.mp3',   '/voices/megumi/wrong_3.mp3'],
-      streak:  ['/voices/megumi/streak_1.mp3',  '/voices/megumi/streak_2.mp3',  '/voices/megumi/streak_3.mp3'],
+      correct: [],
+      wrong: ['/voices/megumi/hazushita.mp3', '/voices/megumi/chi.mp3', '/voices/megumi/tsugi_de_kimeru.mp3'],
+      streak: [],
     },
+    clips: [
+      '/voices/megumi/gyokuken.mp3', '/voices/megumi/nue.mp3',
+      '/voices/megumi/orochi.mp3', '/voices/megumi/bansou.mp3',
+      '/voices/megumi/kosou.mp3', '/voices/megumi/mahoraga.mp3',
+    ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
   // VP Nanami Kento (pack_11) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
