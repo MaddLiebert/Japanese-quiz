@@ -20,6 +20,8 @@ import { SukunaBurst } from './SukunaBurst';
 import { SukunaCurseBar, SukunaDomainCine, SukunaAura } from './SukunaDomain';
 import { MegumiBurst } from './MegumiBurst';
 import { MegumiCurseBar, MegumiSummonCine, MegumiAura } from './MegumiShadow';
+import { NobaraBurst } from './NobaraBurst';
+import { NobaraCurseBar, NobaraUltCine } from './NobaraShadow';
 import {
   megumiTechniqueFor, megumiCurseCharge, MEGUMI_ULT_THRESHOLD,
   MEGUMI_SUMMON_DURATION_S, megumiSummonLeft as megumiSummonLeftMs, megumiSummonStartDelayMs,
@@ -28,8 +30,14 @@ import {
 } from './megumiFx';
 import { megumiGifForAnswer, megumiAnswerHoldMs, preloadMegumiGifs } from './megumiGifs';
 import {
+  nobaraTechniqueFor, nobaraCurseCharge, NOBARA_ULT_THRESHOLD,
+  NOBARA_ULT_TIMELINE, nobaraUltCut, nobaraAnswerHoldMs, nobaraUltHoldMs,
+  NOBARA_ULT_MIN_WRONG,
+} from './nobaraFx';
+import {
   playMegumiTechnique, playMegumiTechniqueLayers, playShadowSwallow,
   playAdaptFlash, playSwordUnsheathe, playWheelShatter, playMakoraChant, playMakoraRoar,
+  playNobaraTechnique, playNobaraTechniqueLayers,
 } from '../../utils/sfx';
 import { startMegumiShadowBgm, stopMegumiShadowBgm, duckMegumiAmbience } from '../../utils/megumiAmbience';
 import {
@@ -225,6 +233,19 @@ export function EffectProvider({ children }) {
   const megumiSwordCutForRef = useRef(null);   // correctId soal pemilik potongan 八握剣
   const megumiSwordArmedRef = useRef(false);   // 八握剣 tercabut: SEMUA opsi salah terpotong
   const megumiSwordPendingRef = useRef(null);  // correctId yang potongan pedangnya dijadwalkan
+
+  // ── Nobara: bar 呪力 20 + ultimate 全弾爆発 (ONE-SHOT 2.2 dtk; rarity common) ──
+  // Beda fundamental dari Megumi (rare, summon 30 dtk dengan timer): Nobara
+  // TIDAK punya state mekanik — sekali cast, semua selesai. Potongan opsi salah
+  // hanya untuk SOAL AKTIF (soal berikutnya kembali normal).
+  const [nobaraCharge, setNobaraCharge] = useState(0);
+  const [nobaraCasting, setNobaraCasting] = useState(false);
+  const [nobaraUltSeed, setNobaraUltSeed] = useState(0);
+  const [nobaraCutIds, setNobaraCutIds] = useState([]);
+  const [nobaraCutForId, setNobaraCutForId] = useState(null);
+  const [nobaraQuizOptionsState, setNobaraQuizOptionsState] = useState(null);
+  const nobaraQuizOptionsRef = useRef(null);
+  const nobaraCutForRef = useRef(null);
   const timersRef = useRef([]);
   const hitTimerRef = useRef(null);
   // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
@@ -614,6 +635,54 @@ export function EffectProvider({ children }) {
     }
   }, []);
 
+  // ── Satu jawaban untuk pack Nobara (visual 'nobara') — 芻霊呪法 ───────────
+  // Mirror triggerMegumi, TAPI tanpa cabang state (rarity common, ultimate
+  // one-shot). Suara deterministik per jurus + lapisan SFX ≥2 (spec).
+  const triggerNobara = useCallback((type, kind, cfg) => {
+    const streak = streakRef.current;
+    const tech = nobaraTechniqueFor(kind, type === 'correct' ? streak : 0);
+
+    let clipMs = 0;
+    if (type === 'wrong') {
+      clipMs = playWrongSound();
+      playStrawRustle();
+    } else if (tech) {
+      clipMs = playNobaraTechnique(tech);
+      playNobaraTechniqueLayers(tech);
+    } else {
+      clipMs = playCorrectSound();
+    }
+
+    // Atribut <html> untuk efek "kena paku" pada TOMBOL yang dipencet
+    // (CSS di index.css: [data-nobara-hit] [data-picked]). Auto-clear 700ms.
+    if (typeof document !== 'undefined') {
+      const root = document.documentElement;
+      root.dataset.nobaraHit = type === 'wrong' ? 'wrong' : (tech || 'none');
+      if (hitTimerRef.current) clearTimeout(hitTimerRef.current);
+      hitTimerRef.current = setTimeout(() => { delete root.dataset.nobaraHit; }, 700);
+    }
+
+    const fxId = ++seq;
+    const holdMs = nobaraAnswerHoldMs(type === 'wrong' ? null : tech, clipMs, cfg?.hold || 0);
+    setFx({
+      kind, tech, id: fxId, gifSrc: null,
+      seed: Math.floor(Math.random() * 900) + 1,
+      level: 0, milestone: 0,
+      streak: type === 'correct' ? streak : 0,
+      signature: null, onMilestone: false,
+    });
+    const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
+    timersRef.current.push(t);
+
+    // Bar 呪力 20 slot: ikut streak; salah → kosong (pola JJK konsisten).
+    const newCharge = nobaraCurseCharge(streak);
+    setNobaraCharge(newCharge);
+    if (type === 'correct' && newCharge > 0) {
+      if (newCharge >= NOBARA_ULT_THRESHOLD) playCurseReady();
+      else playCurseTick(newCharge);
+    }
+  }, []);
+
   const triggerEffect = useCallback((type) => {
     // Efek tidak aktif → tetap bunyi suara dasar (perilaku lama), lalu berhenti.
     if (!active) {
@@ -648,6 +717,9 @@ export function EffectProvider({ children }) {
 
     // ── Jalur Megumi (pack 'megumi') — 十種影法術 + 魔虚羅·適応 ──────────────
     if (activeVisual === 'megumi') { triggerMegumi(type, kind, cfg, prevStreak); return; }
+
+    // ── Jalur Nobara (pack 'nobara') — 芻霊呪法 · 全弾爆発 ────────────────────
+    if (activeVisual === 'nobara') { triggerNobara(type, kind, cfg); return; }
 
     // GIF Hina: hanya saat suara Hina bunyi (salah / tepat milestone). Benar biasa → null.
     // GIF Gojo: salah → meme "kalah"; teknik 茈 → murasaki; ao/aka → null (bola plasma).
@@ -762,7 +834,7 @@ export function EffectProvider({ children }) {
     // prematur oleh timer 蒼 lama (keluhan user: "efek murasaki kecepetan").
     const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
     timersRef.current.push(t);
-  }, [active, spawnInk, activeVisual, gojoDomain, triggerYuji, triggerSukuna, triggerMegumi]);
+  }, [active, spawnInk, activeVisual, gojoDomain, triggerYuji, triggerSukuna, triggerMegumi, triggerNobara]);
 
   const resetEffectStreak = useCallback(() => {
     streakRef.current = 0;
@@ -812,6 +884,13 @@ export function EffectProvider({ children }) {
     megumiSwordArmedRef.current = false;
     setMegumiQuizOptionsState(null);
     stopMegumiShadowBgm();
+    // Nobara
+    setNobaraCharge(0);
+    setNobaraCasting(false);
+    setNobaraCutIds([]);
+    setNobaraCutForId(null);
+    nobaraCutForRef.current = null;
+    setNobaraQuizOptionsState(null);
   }, [setTakeover]);
 
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
@@ -868,6 +947,13 @@ export function EffectProvider({ children }) {
     megumiSwordArmedRef.current = false;
     setMegumiQuizOptionsState(null);
     stopMegumiShadowBgm();
+    // Nobara: bar & potongan padam (one-shot — tidak ada yang persist).
+    setNobaraCharge(0);
+    setNobaraCasting(false);
+    setNobaraCutIds([]);
+    setNobaraCutForId(null);
+    nobaraCutForRef.current = null;
+    setNobaraQuizOptionsState(null);
     stopAllAmbience();
   }, [setTakeover]);
 
@@ -1088,6 +1174,38 @@ export function EffectProvider({ children }) {
     playDomainBoom('cast');
   }, [activeVisual]);
 
+  // ── Cast 全弾爆発 (tap bar Nobara) — ONE-SHOT 2.2 dtk ──────────────────────
+  // Beda dari castMegumiSummon: TIDAK ada timer/state lanjutan. streak di-reset,
+  // potongan opsi salah dijadwalkan di tengah timeline (t=1.0s), selesai di 2.5s.
+  const castNobaraUlt = useCallback(() => {
+    if (activeVisual !== 'nobara') return;
+    streakRef.current = 0;
+    setNobaraCharge(0);
+    setNobaraCasting(true);
+    setNobaraUltSeed((n) => n + 1);
+    // Klip seruan anime 「共鳴り!」 + SFX lapis (paku/hammer/ledakan/resonansi).
+    playNobaraTechnique('ult');
+    playNobaraTechniqueLayers('ult');
+    // Mekanik cut: jadwalkan penghapusan opsi salah soal AKTIF di t=1.0s
+    // (sesuai timeline cutAt). Sisakan min 1 salah (NOBARA_ULT_MIN_WRONG).
+    const cur = nobaraQuizOptionsRef.current;
+    if (cur && Array.isArray(cur.options) && cur.options.length > 0) {
+      const t = setTimeout(() => {
+        const now = nobaraQuizOptionsRef.current;
+        if (!now || now.correctId !== cur.correctId) return;
+        const ids = nobaraUltCut(now.options, now.correctId, NOBARA_ULT_MIN_WRONG);
+        if (ids.length === 0) return;
+        nobaraCutForRef.current = now.correctId;
+        setNobaraCutIds(ids);
+        setNobaraCutForId(now.correctId);
+      }, Math.round(NOBARA_ULT_TIMELINE.cutAt * 1000));
+      timersRef.current.push(t);
+    }
+    // Selesai: casting mati (one-shot — tidak ada state tersisa).
+    const done = setTimeout(() => setNobaraCasting(false), nobaraUltHoldMs());
+    timersRef.current.push(done);
+  }, [activeVisual]);
+
   // ── Registrasi opsi soal aktif (konsumen: Practice/KanaQuiz) ───────────────
   // Dipakai mekanik 適応 (hapus 1 opsi salah soal berikutnya) & 八握剣 (semua).
   const setMegumiQuizOptions = useCallback((options, correctId) => {
@@ -1100,6 +1218,30 @@ export function EffectProvider({ children }) {
     megumiQuizOptionsRef.current = reg;
     setMegumiQuizOptionsState(reg);
   }, []);
+
+  // ── Registrasi opsi soal aktif untuk Nobara (cut 全弾爆発) ─────────────────
+  const setNobaraQuizOptions = useCallback((options, correctId) => {
+    if (!Array.isArray(options) || options.length === 0) {
+      nobaraQuizOptionsRef.current = null;
+      setNobaraQuizOptionsState(null);
+      return;
+    }
+    const reg = { options, correctId };
+    nobaraQuizOptionsRef.current = reg;
+    setNobaraQuizOptionsState(reg);
+  }, []);
+
+  // Potongan 全弾爆発 hanya berlaku untuk SOAL AKTIF (soal baru → bersih).
+  useEffect(() => {
+    if (activeVisual !== 'nobara') return undefined;
+    const reg = nobaraQuizOptionsState;
+    if (!reg) return undefined;
+    if (nobaraCutForRef.current !== reg.correctId) {
+      setNobaraCutIds([]);
+      setNobaraCutForId(null);
+    }
+    return undefined;
+  }, [activeVisual, nobaraQuizOptionsState]);
 
   // ── 適応: 1 opsi salah soal BERIKUTNYA dihapus (pola skill Sukuna) ────────
   // Di-arm saat salah selama summon (triggerMegumi cabang 1). Begitu soal baru
@@ -1366,7 +1508,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
@@ -1384,13 +1526,16 @@ export function EffectProvider({ children }) {
         megumiSummonOn={megumiSummon} megumiSummonSeed={megumiSummonSeed}
         megumiSummonLeft={megumiSummonLeft} onCastMegumi={castMegumiSummon}
         megumiWheel={megumiWheel} megumiSwordReady={megumiWheel >= MEGUMI_WHEEL_NOTCHES}
+        nobaraCharge={nobaraCharge} nobaraCasting={nobaraCasting}
+        nobaraUltSeed={nobaraUltSeed} nobaraCutIds={nobaraCutIds}
+        onCastNobara={castNobaraUlt}
       />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -1621,6 +1766,27 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
           ready={megumiCharge >= MEGUMI_ULT_THRESHOLD && !megumiSummonOn}
           onCast={onCastMegumi} summonOn={megumiSummonOn} summonLeft={megumiSummonLeft}
           notches={megumiWheel} swordReady={megumiSwordReady}
+        />
+      )}
+
+      {/* ── Nobara Kugisaki (pack 'nobara') — 芻霊呪法 · 全弾爆発 ───────────── */}
+      {visual === 'nobara' && (
+        <>
+          {nobaraCasting && (
+            <NobaraUltCine key={`nobara-ult-${nobaraUltSeed}`} seed={nobaraUltSeed} cutIds={nobaraCutIds} />
+          )}
+          <AnimatePresence>
+            {fx && <NobaraBurst key={`nobara-${fx.id}`} fx={fx} kind={kind} />}
+          </AnimatePresence>
+        </>
+      )}
+
+      {visual === 'nobara' && quizActive && (
+        <NobaraCurseBar
+          charge={nobaraCharge}
+          ready={nobaraCharge >= NOBARA_ULT_THRESHOLD && !nobaraCasting}
+          onCast={onCastNobara}
+          casting={nobaraCasting}
         />
       )}
     </div>

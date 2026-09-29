@@ -34,6 +34,8 @@ const YUJI_PACK_ID = "pack_09";
 const SUKUNA_PACK_ID = "pack_14";
 // Pack Megumi — target preview streak & summon 魔虚羅 (十種影法術).
 const MEGUMI_PACK_ID = "pack_10";
+// Pack Nobara — target preview streak & ult 全弾爆発 (芻霊呪法).
+const NOBARA_PACK_ID = "pack_08";
 
 const ALL_BADGES = [
   "hiragana_origin", "katakana_edge", "kanji_slayer", "kanji_hell", "eagle_eye",
@@ -61,7 +63,7 @@ function writeProgress(patch) {
 export function DevPanel() {
   const { language } = useLanguage();
   const { progress, togglePack } = useUserStats();
-  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, castMegumiSummon, triggerEffect } = useEffectLayer();
+  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, castMegumiSummon, castNobaraUlt, triggerEffect } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
   // Review suara & skill (dev): karakter terpilih, kursor rotasi klip, status.
@@ -99,6 +101,14 @@ export function DevPanel() {
     setPendingMegumi(null);
     previewStreak(pendingMegumi);
   }, [pendingMegumi, progress.activePack, previewStreak]);
+
+  // Sama: begitu pack Nobara aktif, tembak preview streak-nya (芻霊呪法).
+  const [pendingNobara, setPendingNobara] = useState(null);
+  useEffect(() => {
+    if (pendingNobara == null || progress.activePack !== NOBARA_PACK_ID) return;
+    setPendingNobara(null);
+    previewStreak(pendingNobara);
+  }, [pendingNobara, progress.activePack, previewStreak]);
 
   // Guard: panel ini TIDAK dirender di build produksi.
   if (!import.meta.env.DEV) return null;
@@ -239,6 +249,24 @@ export function DevPanel() {
   const castMegumi = () => {
     if (progress.activePack === MEGUMI_PACK_ID) { castMegumiSummon(); return; }
     previewMegumi(20);   // aktifkan pack dulu → klik sekali lagi
+  };
+
+  // Preview efek Nobara tanpa quiz (pola previewMegumi).
+  const previewNobara = (target) => {
+    if (progress.activePack === NOBARA_PACK_ID) { previewStreak(target); return; }
+    const owned = (progress.ownedPacks || []).includes(NOBARA_PACK_ID);
+    if (owned) { togglePack(NOBARA_PACK_ID); setPendingNobara(target); return; }
+    writeProgress({
+      medaru: 999999,
+      ownedPacks: [...(progress.ownedPacks || []), NOBARA_PACK_ID],
+      activePack: NOBARA_PACK_ID,
+    });
+    reload();
+  };
+
+  const castNobara = () => {
+    if (progress.activePack === NOBARA_PACK_ID) { castNobaraUlt(); return; }
+    previewNobara(20);   // aktifkan pack dulu → klik sekali lagi
   };
 
   // ── Review suara & skill (dev) ────────────────────────────────────────────
@@ -488,6 +516,38 @@ export function DevPanel() {
             </button>
             <button type="button" onClick={castMegumi} className={`${btn} bg-[#6d28d9] text-kinari-light`}>
               🌑 {id ? "Cast 魔虚羅" : "Cast Mahoraga"}
+            </button>
+          </div>
+        </div>
+
+        {/* DEV-ONLY — Preview efek Nobara tanpa quiz */}
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10">
+          <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 mb-2">
+            {id ? "Preview Efek Nobara (tanpa quiz)" : "Nobara Effect Preview (no quiz)"}
+          </p>
+          <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
+            {id
+              ? "Satu klik = satu jawaban benar di streak target. Pack Nobara otomatis diaktifkan bila perlu. Non-momen = ROTASI 簪 #1 / 簪・連 #2 … Momen: 簪・時限 #10 / 共鳴り #20 / 黒閃 #30+. Cast 全弾爆発 meledakkan semua opsi salah (sisakan 1) selama 2.2 dtk."
+              : "One click = one correct answer at the target streak. Nobara pack is equipped automatically if needed. Non-moments ROTATE 簪 #1 / 簪・連 #2 … Moments: 簪・時限 #10 / 共鳴り #20 / 黒閃 #30+. Cast 全弾爆発 explodes all wrong options (keep 1) over 2.2s."}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <button type="button" onClick={() => previewNobara(1)} className={`${btn} bg-[#f97316] text-kinari-light`}>
+              📌 {id ? "簪 #1" : "Kanzashi #1"}
+            </button>
+            <button type="button" onClick={() => previewNobara(2)} className={`${btn} bg-[#fb923c] text-sumi`}>
+              📌 {id ? "簪・連 #2" : "Kanzashi Ren #2"}
+            </button>
+            <button type="button" onClick={() => previewNobara(10)} className={`${btn} bg-[#fbbf24] text-sumi`}>
+              ⏱️ {id ? "簪・時限 #10" : "Kanzashi Jigen #10"}
+            </button>
+            <button type="button" onClick={() => previewNobara(20)} className={`${btn} bg-[#dc2626] text-kinari-light`}>
+              🪡 {id ? "共鳴り #20" : "Tomonari #20"}
+            </button>
+            <button type="button" onClick={() => previewNobara(30)} className={`${btn} bg-[#0f172a] text-kinari-light`}>
+              ⚡ {id ? "黒閃 #30" : "Kokusen #30"}
+            </button>
+            <button type="button" onClick={castNobara} className={`${btn} bg-[#7c2d12] text-kinari-light`}>
+              💥 {id ? "Cast 全弾爆発" : "Cast Ultimate"}
             </button>
           </div>
         </div>

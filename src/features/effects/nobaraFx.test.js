@@ -4,8 +4,9 @@ import {
   NOBARA_MILESTONES, isNobaraMilestone, nobaraTechniqueFor,
   NOBARA_LADDER, NOBARA_TOP_STREAK, NOBARA_NON_STREAK_CYCLE, nobaraNonStreakIndex,
   NOBARA_ULT_THRESHOLD, nobaraCurseCharge, nobaraUltReady,
-  NOBARA_ULT_DURATION_S, NOBARA_ULT_TIMELINE, NOBARA_ULT_MIN_WRONG, nobaraUltCut,
-  NOBARA_CLIPS, NOBARA_VOICE_FOR, NOBARA_STYLE, NOBARA_MOTION,
+  NOBARA_ULT_DURATION_S, NOBARA_ULT_TIMELINE, nobaraUltCut,
+  NOBARA_CLIPS, NOBARA_LEAD_S, NOBARA_VOICE_FOR, NOBARA_STYLE, NOBARA_MOTION,
+  nobaraAnswerHoldMs, nobaraUltHoldMs,
   NOBARA_CORE, NOBARA_ORANGE, NOBARA_LIGHT, NOBARA_RED, NOBARA_DARK, NOBARA_STRAW,
   nobaraNails, nobaraBurst, nobaraSparks, nobaraCracks, nobaraRipple,
   nobaraStrawDoll, nobaraUltNails,
@@ -128,11 +129,36 @@ test('nobaraUltCut: input kotor aman', () => {
   assert.deepEqual(nobaraUltCut(['a', 'b', 'c'], 'a', 99), [], 'keep besar → tidak ada cut');
 });
 
-test('NOBARA_CLIPS: durasi terukur (PyAV) — kanzashi ~0.99, tomonari ~1.12, kokusen ~1.25', () => {
-  assert.ok(Math.abs(NOBARA_CLIPS.kanzashi - 0.99) < 0.05);
-  assert.ok(Math.abs(NOBARA_CLIPS.tomonari - 1.12) < 0.05);
-  assert.ok(Math.abs(NOBARA_CLIPS.kokusen - 1.25) < 0.05);
-  assert.ok(NOBARA_CLIPS.ult > 1.0, 'ult pakai segmen anime (paling intens)');
+test('NOBARA_CLIPS: durasi TERUKUR PyAV — kanzashi 0.93, tomonari 1.06, kokusen 1.18, ult 1.45', () => {
+  assert.equal(NOBARA_CLIPS.kanzashi, 0.93);
+  assert.equal(NOBARA_CLIPS.tomonari, 1.06);
+  assert.equal(NOBARA_CLIPS.kokusen, 1.18);
+  assert.equal(NOBARA_CLIPS.ult, 1.45);
+  // ren/jigen reuse klip kanzashi (bukan file baru)
+  assert.equal(NOBARA_CLIPS.ren, NOBARA_CLIPS.kanzashi);
+  assert.equal(NOBARA_CLIPS.jigen, NOBARA_CLIPS.kanzashi);
+});
+
+test('NOBARA_LEAD_S: lead-silence terukur (RMS onset); hanya > 0.24 di-skip', () => {
+  assert.equal(NOBARA_LEAD_S.kanzashi, 0.12);
+  assert.equal(NOBARA_LEAD_S.tomonari, 0.16);
+  assert.equal(NOBARA_LEAD_S.kokusen, 0.16);
+  assert.equal(NOBARA_LEAD_S.ult, 0.30);
+  // pola Sukuna/Megumi: klip pendek TIDAK di-skip
+  assert.ok(NOBARA_LEAD_S.kanzashi <= 0.24 && NOBARA_LEAD_S.tomonari <= 0.24);
+});
+
+test('nobaraAnswerHoldMs: durasi terukur + 400ms, min 1.2s; clipMs eksplisit menang', () => {
+  assert.equal(nobaraAnswerHoldMs('kanzashi'), 1330, '0.93s + 400ms');
+  assert.equal(nobaraAnswerHoldMs('kokusen'), 1580, '1.18s + 400ms');
+  assert.equal(nobaraAnswerHoldMs('tomonari'), 1460, '1.06s + 400ms');
+  assert.equal(nobaraAnswerHoldMs('zzz'), 1200, 'tak dikenal → min hold');
+  assert.equal(nobaraAnswerHoldMs('kanzashi', 5000), 5400, 'clipMs eksplisit menang');
+  assert.equal(nobaraAnswerHoldMs('kanzashi', 0, 3000), 3000, 'baseHold menang');
+});
+
+test('nobaraUltHoldMs: 2.2s timeline + 300ms settle', () => {
+  assert.equal(nobaraUltHoldMs(), 2500);
 });
 
 test('NOBARA_VOICE_FOR: tiap jurus punya klip (ren/jigen reuse kanzashi)', () => {
@@ -141,7 +167,7 @@ test('NOBARA_VOICE_FOR: tiap jurus punya klip (ren/jigen reuse kanzashi)', () =>
   assert.equal(NOBARA_VOICE_FOR.jigen, 'kanzashi');
   assert.equal(NOBARA_VOICE_FOR.tomonari, 'tomonari');
   assert.equal(NOBARA_VOICE_FOR.kokusen, 'kokusen');
-  assert.equal(NOBARA_VOICE_FOR.ult, 'tomonari');
+  assert.equal(NOBARA_VOICE_FOR.ult, 'ult', 'ultimate = seruan anime 共鳴り');
 });
 
 test('NOBARA_STYLE: kanji + warna utk tiap jurus', () => {

@@ -100,17 +100,24 @@ export const nobaraUltCut = (options = [], correctId = null, keepWrong = NOBARA_
   return ids.slice(0, cutCount);
 };
 
-// ── Durasi klip (terukur PyAV — JANGAN ditebak) ─────────────────────────────
+// ── Durasi klip (TERUKUR PyAV + RMS onset — JANGAN ditebak) ────────────────
+// Lead-silence juga terukur (RMS 20ms window, threshold 6% peak):
+//   kanzashi 0.12 · tomonari 0.16 · kokusen 0.16 · ult 0.30 · wrong_* (TTS)
 export const NOBARA_CLIPS = {
-  kanzashi: 0.99,
-  ren: 0.99,          // reuse klip kanzashi (rentetan = 3× putar cepat)
-  jigen: 0.99,        // reuse klip kanzashi (time-delay = jeda lalu ledak)
-  tomonari: 1.12,
-  kokusen: 1.25,
-  waraningyou: 1.59,  // klip boneka (bonus/ambience)
-  juriyoku: 1.04,     // klip 呪力 (bonus/ambience)
-  ult: 1.45,          // anime_seg3 (seruan paling intens)
+  kanzashi: 0.93,     // "簪 (かんざし)!" — jurus dasar
+  ren: 0.93,          // reuse klip kanzashi (rentetan = 3× putar stagger)
+  jigen: 0.93,        // reuse klip kanzashi (time-delay = jeda 420ms lalu ledak)
+  tomonari: 1.06,     // "共鳴り (ともなり)!"
+  kokusen: 1.18,      // "黒閃 (こくせん)!"
+  waraningyou: 1.53,  // "藁人形 (わらにんぎょう)!" — klip ambience/bonus
+  juriyoku: 0.98,     // "呪力 (じゅりょく)!" — klip ambience/bonus
+  ult: 1.45,          // seruan anime 「共鳴り!」— klip ultimate
 };
+
+// Lead-silence per klip (detik) — hanya yang > 0.24s yang di-skip (pola
+// Sukuna/Megumi: klip pendek tanpa skip biar responsif; ult = anchor timeline
+// 2.2s jadi TIDAK di-skip).
+export const NOBARA_LEAD_S = { kanzashi: 0.12, tomonari: 0.16, kokusen: 0.16, ult: 0.30 };
 
 // ── Generator murni (DETERMINISTIK — pola redesign Megumi v2.1: tanpa rng) ──
 const r2 = (v) => +v.toFixed(2);
@@ -249,5 +256,17 @@ export const NOBARA_VOICE_FOR = {
   jigen: 'kanzashi',     // reuse — time-delay
   tomonari: 'tomonari',
   kokusen: 'kokusen',
-  ult: 'tomonari',       // ultimate = momen 共鳴り
+  ult: 'ult',            // seruan anime 「共鳴り!」 (segmen paling intens)
 };
+
+// ── Hold effect (ms): efek tampil selama klip suara + 400ms, min 1.2s ───────
+// Pola megumiAnswerHoldMs: pakai durasi TERUKUR kalau clipMs tidak tersedia.
+export const NOBARA_MIN_HOLD_MS = 1200;
+export const nobaraAnswerHoldMs = (tech, clipMs = 0, baseHoldMs = 0) => {
+  const measured = Number.isFinite(NOBARA_CLIPS[tech]) ? Math.round(NOBARA_CLIPS[tech] * 1000) : 0;
+  const clip = (Number.isFinite(clipMs) && clipMs > 0) ? clipMs : measured;
+  return Math.max(baseHoldMs || 0, clip > 0 ? clip + 400 : 0, NOBARA_MIN_HOLD_MS);
+};
+
+// ── Ultimate hold: timeline penuh 2.2s + settle 300ms ──────────────────────
+export const nobaraUltHoldMs = () => Math.round(NOBARA_ULT_DURATION_S * 1000) + 300;

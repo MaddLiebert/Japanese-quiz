@@ -110,7 +110,7 @@ export function Practice() {
   const timerRef = useRef(null);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions } = useEffectLayer();
 
   // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
   // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
@@ -214,12 +214,25 @@ export function Practice() {
     [megumiAdaptCutIdsNow, megumiSwordCutIdsNow],
   );
 
+  // ── Nobara 全弾爆発: potongan opsi (guard forId pola Megumi) ───────────────
+  // Ultimate one-shot → potongan hanya untuk SOAL AKTIF saat cast.
+  useEffect(() => {
+    if (!currentQuestion) return;
+    setNobaraQuizOptions(options, currentQuestion.id);
+  }, [currentQuestion?.id, options, setNobaraQuizOptions]);
+
+  const nobaraCutIdsNow = useMemo(
+    () => ((nobaraCutForId === currentQuestion?.id) ? nobaraCutIds : []),
+    [nobaraCutForId, currentQuestion?.id, nobaraCutIds],
+  );
+
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option, e) => {
     if (isAnswered) return;
     if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
     if (sukunaCutAll.includes(option.id)) return; // terbelah 必中 / dipotong skill quiz → tidak bisa dipilih
     if (megumiCutAll.includes(option.id)) return; // diadaptasi 適応 / dipotong 八握剣 → tidak bisa dipilih
+    if (nobaraCutIdsNow.includes(option.id)) return; // diledakkan 全弾爆発 → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
 
     const correct = option.id === currentQuestion.id;
@@ -238,6 +251,7 @@ export function Practice() {
     if (burnedIds.includes(option.id)) return;   // opsi dibakar 開 → tidak bisa dipilih
     if (sukunaCutAll.includes(option.id)) return; // terbelah 必中 / dipotong skill quiz → tidak bisa dipilih
     if (megumiCutAll.includes(option.id)) return; // diadaptasi 適応 / dipotong 八握剣 → tidak bisa dipilih
+    if (nobaraCutIdsNow.includes(option.id)) return; // diledakkan 全弾爆発 → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
     const correct = option.id === currentQuestion.id;
 
@@ -475,6 +489,7 @@ export function Practice() {
                   const isBurned = burnedIds.includes(option.id);
                   const isCut = sukunaCutAll.includes(option.id);
                   const isMegumiCut = megumiCutAll.includes(option.id);
+                  const isNobaraCut = nobaraCutIdsNow.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -488,7 +503,7 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
-                  if (isBurned || isCut || isMegumiCut) btnClass += " pointer-events-none";
+                  if (isBurned || isCut || isMegumiCut || isNobaraCut) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
@@ -498,6 +513,7 @@ export function Practice() {
                       data-burned={isBurned || undefined}
                       data-sukuna-cut={isCut || undefined}
                       data-megumi-cut={isMegumiCut || undefined}
+                      data-nobara-cut={isNobaraCut || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -641,6 +657,7 @@ export function Practice() {
                   const isBurned = burnedIds.includes(option.id);
                   const isCut = sukunaCutAll.includes(option.id);
                   const isMegumiCut = megumiCutAll.includes(option.id);
+                  const isNobaraCut = nobaraCutIdsNow.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -655,7 +672,7 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
-                  if (isBurned || isCut || isMegumiCut) btnClass += " pointer-events-none";
+                  if (isBurned || isCut || isMegumiCut || isNobaraCut) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
@@ -665,6 +682,7 @@ export function Practice() {
                       data-burned={isBurned || undefined}
                       data-sukuna-cut={isCut || undefined}
                       data-megumi-cut={isMegumiCut || undefined}
+                      data-nobara-cut={isNobaraCut || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -672,7 +690,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered || isBurned || isCut || isMegumiCut}
+                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNobaraCut}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -734,6 +752,7 @@ export function Practice() {
           burnedIds={burnedIds}
           sukunaCutIds={sukunaCutAll}
           megumiCutIds={megumiCutAll}
+          nobaraCutIds={nobaraCutIdsNow}
         />
       );
     }

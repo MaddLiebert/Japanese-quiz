@@ -557,3 +557,95 @@ button[data-megumi-cut]::after {
   button[data-megumi-cut]::before,
   button[data-megumi-cut]::after { animation: none; }
 }
+
+
+/* ── Nobara Kugisaki: efek "kena paku" pada tombol + opsi TERLEDAK 全弾爆発 ───
+   [data-nobara-hit] di-set provider saat jawaban (identitas 釘と爆発: hentakan
+   PAKU — tombol tersentak pendek, bukan tebasan/hentakan halus) ·
+   [data-nobara-cut] = opsi salah yang diledakkan 全弾爆発 — terbakar oranye lalu
+   memudar gelap, nonaktif tapi tetap terbaca (pelajaran UX Megumi). */
+@keyframes nobaraNailHit {
+  0%   { transform: translate(0, 0) scale(1); }
+  14%  { transform: translate(1px, -3px) scale(1.012); }
+  38%  { transform: translate(0, 2px) scale(0.99); }
+  62%  { transform: translate(0, -1px) scale(1.004); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes nobaraNailWrong {
+  0%, 100% { transform: translateY(0); filter: brightness(1); }
+  20% { transform: translateY(3px) rotate(-0.6deg); filter: brightness(0.72); }
+  55% { transform: translateY(-2px) rotate(0.4deg); filter: brightness(0.88); }
+}
+html[data-nobara-hit] button[data-picked] {
+  animation: nobaraNailHit 0.34s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+html[data-nobara-hit='kanzashi'] button[data-picked] {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.55), 0 0 20px 4px rgba(249, 115, 22, 0.4);
+}
+html[data-nobara-hit='ren'] button[data-picked] {
+  border-color: #fb923c !important;
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.55), 0 0 24px 5px rgba(249, 115, 22, 0.42);
+}
+html[data-nobara-hit='jigen'] button[data-picked] {
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.55), 0 0 26px 6px rgba(251, 191, 36, 0.42);
+}
+html[data-nobara-hit='tomonari'] button[data-picked] {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.55), 0 0 26px 6px rgba(220, 38, 38, 0.45);
+}
+html[data-nobara-hit='kokusen'] button[data-picked] {
+  border-color: #0f172a !important;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.75), 0 0 30px 8px rgba(220, 38, 38, 0.5);
+}
+html[data-nobara-hit='wrong'] button[data-picked] {
+  animation: nobaraNailWrong 0.44s ease-in-out both;
+  border-color: #7c2d12 !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-nobara-hit] button[data-picked] { animation: none; }
+  html[data-nobara-hit='kokusen'] button[data-picked] { outline: 3px solid rgba(220, 38, 38, 0.75); outline-offset: 2px; }
+  html[data-nobara-hit='wrong'] button[data-picked] { outline: 3px solid rgba(124, 45, 18, 0.7); outline-offset: 2px; }
+}
+/* 全弾爆発: opsi salah "terbakar ledakan" — kilat oranye → arang gelap. */
+button[data-nobara-cut] {
+  position: relative;
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.4;
+  border-color: #7c2d12 !important;
+  filter: grayscale(0.4) brightness(0.75);
+  animation: nobaraBurnCut 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes nobaraBurnCut {
+  0%   { transform: scale(1); filter: brightness(1); opacity: 1; box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+  18%  { transform: scale(1.03); filter: brightness(1.6) saturate(1.6); opacity: 1; box-shadow: 0 0 24px 6px rgba(249, 115, 22, 0.75); }
+  46%  { transform: scale(0.97); filter: brightness(0.9) saturate(1.2); opacity: 0.8; box-shadow: 0 0 14px 3px rgba(220, 38, 38, 0.5); }
+  100% { transform: scale(1); filter: grayscale(0.4) brightness(0.75); opacity: 0.4; box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+/* Sisa panas: gradasi oranye→gelap dari bawah + kanji 爆 di pojok. */
+button[data-nobara-cut]::before {
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(120, 53, 15, 0.55) 0%, rgba(15, 23, 42, 0.5) 60%, rgba(15, 23, 42, 0.15) 100%);
+  animation: nobaraBurnIn 0.5s ease-out both;
+}
+@keyframes nobaraBurnIn {
+  0%   { opacity: 0; transform: translateY(10%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+button[data-nobara-cut]::after {
+  content: '爆';
+  position: absolute; right: 6px; top: 2px;
+  font-family: ui-serif, serif; font-weight: 900; font-size: 12px;
+  color: rgba(251, 146, 60, 0.95);
+  text-shadow: 0 0 8px rgba(249, 115, 22, 0.8);
+  animation: nobaraBurnIn 0.4s 0.08s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  button[data-nobara-cut] { animation: none; filter: none; opacity: 0.45; }
+  button[data-nobara-cut]::before,
+  button[data-nobara-cut]::after { animation: none; }
+}
