@@ -717,3 +717,60 @@ html[data-nanami-hit='wrong'] button[data-picked] {
   html[data-nanami-hit] button[data-picked] { outline: 3px solid rgba(245, 158, 11, 0.75); outline-offset: 2px; }
   html[data-nanami-hit='wrong'] button[data-picked] { animation: none; outline: 3px solid rgba(30, 58, 138, 0.75); outline-offset: 2px; }
 }
+
+/* ── Nanami 瓦落瓦落・連鎖: opsi salah DIHANCURKAN puing selama lembur ──────────
+   [data-nanami-cut] = opsi yang dihancurkan puing 瓦 (mekanik FINAL B: benar
+   selama lembur → +1 puing → soal berikutnya menghancurkan opsi salah).
+   Tampilan: retak + debu emas pudar, nonaktif tapi tetap terbaca (pelajaran
+   UX Megumi — jangan hilangkan dari layout). */
+@keyframes nanamiRubbleCrush {
+  0%   { transform: translate(0, 0) scale(1); filter: brightness(1); }
+  18%  { transform: translate(-1px, 2px) scale(0.985); filter: brightness(0.82); }
+  44%  { transform: translate(1px, -1px) scale(0.995); filter: brightness(0.94); }
+  100% { transform: translate(0, 0) scale(1); filter: brightness(0.9); }
+}
+button[data-nanami-cut] {
+  position: relative;
+  opacity: 0.62;
+  filter: grayscale(0.45) brightness(0.92);
+  border-color: #b45309 !important;
+  cursor: not-allowed;
+  animation: nanamiRubbleCrush 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+button[data-nanami-cut]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(72deg, transparent 46%, rgba(245, 158, 11, 0.85) 47.5%, rgba(245, 158, 11, 0.85) 48.5%, transparent 50%),
+    linear-gradient(-38deg, transparent 60%, rgba(180, 83, 9, 0.7) 61.5%, rgba(180, 83, 9, 0.7) 62.5%, transparent 64%);
+  animation: nanamiRubbleCracks 0.6s ease-out both;
+}
+button[data-nanami-cut]::after {
+  content: '瓦';
+  position: absolute;
+  right: 4px;
+  top: 2px;
+  font-size: 11px;
+  font-family: ui-serif, serif;
+  font-weight: 900;
+  color: #f59e0b;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+  animation: nanamiRubbleDust 0.7s ease-out both;
+}
+@keyframes nanamiRubbleCracks {
+  0%   { opacity: 0; transform: scale(1.04); }
+  40%  { opacity: 1; }
+  100% { opacity: 0.85; transform: scale(1); }
+}
+@keyframes nanamiRubbleDust {
+  0%   { opacity: 0; transform: translateY(-4px); }
+  55%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button[data-nanami-cut] { animation: none; filter: grayscale(0.45); opacity: 0.55; }
+  button[data-nanami-cut]::before,
+  button[data-nanami-cut]::after { animation: none; }
+}

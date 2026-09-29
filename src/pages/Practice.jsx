@@ -110,7 +110,7 @@ export function Practice() {
   const timerRef = useRef(null);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions } = useEffectLayer();
 
   // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
   // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
@@ -226,6 +226,19 @@ export function Practice() {
     [nobaraCutForId, currentQuestion?.id, nobaraCutIds],
   );
 
+  // ── Nanami 瓦落瓦落・連鎖: potongan opsi (guard forId pola Nobara) ─────────
+  // Puing menghancurkan opsi salah selama state lembur → potongan untuk soal
+  // aktif saja (soal baru → puing dihitung ulang oleh provider).
+  useEffect(() => {
+    if (!currentQuestion) return;
+    setNanamiQuizOptions(options, currentQuestion.id);
+  }, [currentQuestion?.id, options, setNanamiQuizOptions]);
+
+  const nanamiCutIdsNow = useMemo(
+    () => ((nanamiRubbleForId === currentQuestion?.id) ? nanamiRubbleCutIds : []),
+    [nanamiRubbleForId, currentQuestion?.id, nanamiRubbleCutIds],
+  );
+
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option, e) => {
     if (isAnswered) return;
@@ -233,6 +246,7 @@ export function Practice() {
     if (sukunaCutAll.includes(option.id)) return; // terbelah 必中 / dipotong skill quiz → tidak bisa dipilih
     if (megumiCutAll.includes(option.id)) return; // diadaptasi 適応 / dipotong 八握剣 → tidak bisa dipilih
     if (nobaraCutIdsNow.includes(option.id)) return; // diledakkan 全弾爆発 → tidak bisa dipilih
+    if (nanamiCutIdsNow.includes(option.id)) return; // dihancurkan puing 瓦落瓦落 → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
 
     const correct = option.id === currentQuestion.id;
@@ -252,6 +266,7 @@ export function Practice() {
     if (sukunaCutAll.includes(option.id)) return; // terbelah 必中 / dipotong skill quiz → tidak bisa dipilih
     if (megumiCutAll.includes(option.id)) return; // diadaptasi 適応 / dipotong 八握剣 → tidak bisa dipilih
     if (nobaraCutIdsNow.includes(option.id)) return; // diledakkan 全弾爆発 → tidak bisa dipilih
+    if (nanamiCutIdsNow.includes(option.id)) return; // dihancurkan puing 瓦落瓦落 → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
     const correct = option.id === currentQuestion.id;
 
@@ -515,6 +530,7 @@ export function Practice() {
                       data-sukuna-cut={isCut || undefined}
                       data-megumi-cut={isMegumiCut || undefined}
                       data-nobara-cut={isNobaraCut || undefined}
+                      data-nanami-cut={isNanamiCut || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -522,7 +538,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered || isBurned || isCut || isMegumiCut}
+                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNanamiCut}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -685,6 +701,7 @@ export function Practice() {
                       data-sukuna-cut={isCut || undefined}
                       data-megumi-cut={isMegumiCut || undefined}
                       data-nobara-cut={isNobaraCut || undefined}
+                      data-nanami-cut={isNanamiCut || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -692,7 +709,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNobaraCut}
+                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNobaraCut || isNanamiCut}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -755,6 +772,7 @@ export function Practice() {
           sukunaCutIds={sukunaCutAll}
           megumiCutIds={megumiCutAll}
           nobaraCutIds={nobaraCutIdsNow}
+          nanamiCutIds={nanamiCutIdsNow}
         />
       );
     }

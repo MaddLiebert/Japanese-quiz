@@ -10,6 +10,7 @@ import {
   NANAMI_STYLE, NANAMI_MOTION, NANAMI_STAGGER, NANAMI_COLORS,
   NANAMI_WHITE, NANAMI_GOLD, NANAMI_GOLD_DEEP, NANAMI_NAVY, NANAMI_BLACK, NANAMI_RED,
   NANAMI_MIN_HOLD_MS, nanamiAnswerHoldMs,
+  nanamiOvertimeLeft, NANAMI_RUBBLE_DELAY_MS,
   nanamiRatioLine, nanamiRubble, nanamiAura, nanamiCracks,
 } from './nanamiFx.js';
 import { GOJO_MILESTONES } from './gojoFx.js';
@@ -263,4 +264,43 @@ test('nanamiCracks: retakan dinding punya cabang & makin tipis (w0 > w1)', () =>
     assert.ok(c.branch.length >= 1 && c.branch.length <= 2, 'cabang 1-2 per retakan utama');
     assert.ok(c.w0 > c.w1, 'pangkal lebih tebal dari ujung');
   }
+});
+
+// ── T3: state lembur 30 dtk + mekanik 瓦落瓦落・連鎖 ────────────────────────────
+
+test('nanamiOvertimeLeft: hitung mundur 0..30 (clamp, input kotor aman)', () => {
+  const now = 1_000_000;
+  assert.equal(nanamiOvertimeLeft(now + 30_000, now), 30);
+  assert.equal(nanamiOvertimeLeft(now + 12_400, now), 13, 'ceil detik');
+  assert.equal(nanamiOvertimeLeft(now + 100, now), 1);
+  assert.equal(nanamiOvertimeLeft(now, now), 0, 'habis → 0');
+  assert.equal(nanamiOvertimeLeft(now - 5_000, now), 0, 'lewat → 0');
+  assert.equal(nanamiOvertimeLeft(now + 99_000, now), NANAMI_OVERTIME_S, 'clamp di durasi');
+  for (const bad of [NaN, null, undefined, 'x']) assert.equal(nanamiOvertimeLeft(bad, now), 0, String(bad));
+  assert.equal(nanamiOvertimeLeft(now + 30_000, NaN), 0);
+});
+
+test('NANAMI_RUBBLE_DELAY_MS: jeda puing mendarat di soal berikutnya (manusiawi 0.5–1.5s)', () => {
+  assert.ok(Number.isFinite(NANAMI_RUBBLE_DELAY_MS));
+  assert.ok(NANAMI_RUBBLE_DELAY_MS >= 500 && NANAMI_RUBBLE_DELAY_MS <= 1500);
+});
+
+test('連鎖 state transition: benar beruntun menumpuk puing → soal baru cut; salah → kontrak batal', () => {
+  // simulasi penuh alur mekanik B (spec FINAL):
+  let piles = 0;
+  let out = nanamiOvertimeOutcome('correct', piles);
+  piles = out.piles;
+  assert.deepEqual({ piles, outcome: out.outcome }, { piles: 1, outcome: 'stack' });
+  out = nanamiOvertimeOutcome('correct', piles);
+  piles = out.piles;
+  assert.equal(piles, 2, '2 benar beruntun → 2 puing');
+  // soal berikutnya: 2 puing menghancurkan 2 opsi salah dari 4 opsi (sisakan 1)
+  const opts = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
+  assert.deepEqual(nanamiRubbleCut(opts, 'a', piles), ['b', 'c']);
+  // salah → kontrak batal: state bubar + puing rontok
+  out = nanamiOvertimeOutcome('wrong', piles);
+  assert.deepEqual(out, { piles: 0, outcome: 'contract' });
+  // timeout → padam alami
+  out = nanamiOvertimeOutcome('timeout', piles);
+  assert.deepEqual(out, { piles: 0, outcome: 'expire' });
 });
