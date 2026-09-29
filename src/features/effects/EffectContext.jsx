@@ -46,6 +46,7 @@ import {
   playMegumiTechnique, playMegumiTechniqueLayers, playShadowSwallow,
   playAdaptFlash, playSwordUnsheathe, playWheelShatter, playMakoraChant, playMakoraRoar,
   playNobaraTechnique, playNobaraTechniqueLayers, playStrawRustle,
+  playNanamiTechniqueLayers,
 } from '../../utils/sfx';
 import { startMegumiShadowBgm, stopMegumiShadowBgm, duckMegumiAmbience } from '../../utils/megumiAmbience';
 import {
@@ -724,8 +725,18 @@ export function EffectProvider({ children }) {
     const inOvertime = nanamiOvertimeRef.current;
     const tech = nanamiTechniqueFor(kind, type === 'correct' ? streak : 0);
 
-    // Suara: T2 masih generik (SFX jurus Nanami menyusul di T4).
-    const clipMs = type === 'wrong' ? playWrongSound() : playCorrectSound();
+    // Suara: jurus Nanami berlapis (T4) — salah biasa = generik; salah SAAT
+    // LEMBUR = kontrak batal (縛り破棄); benar = jurus berlapis (core→body→edge).
+    let clipMs = 0;
+    if (type === 'wrong') {
+      clipMs = playWrongSound();
+      if (inOvertime) playNanamiTechniqueLayers('contract');
+    } else if (tech) {
+      clipMs = playCorrectSound();
+      playNanamiTechniqueLayers(tech);
+    } else {
+      clipMs = playCorrectSound();
+    }
 
     // ── SELAMA LEMBUR: mekanik 瓦落瓦落・連鎖 (spec FINAL B) ────────────────
     if (inOvertime) {
@@ -1358,6 +1369,7 @@ export function EffectProvider({ children }) {
     nanamiOvertimeEndsAtRef.current = Date.now() + nanamiUltHoldMs() + NANAMI_OVERTIME_S * 1000;
     setNanamiOvertimeLeft(NANAMI_OVERTIME_S);
     // Selesai cinematic → masuk state lembur + dentuman cast (T4 ganti SFX jurus).
+    playNanamiTechniqueLayers('ult');
     const done = setTimeout(() => {
       setNanamiCasting(false);
       nanamiOvertimeRef.current = true;

@@ -1866,3 +1866,165 @@ export const playNobaraTechnique = (technique) => {
   const lead = NOBARA_LEAD_S[technique] || 0;
   return playFile(path, lead);
 };
+
+// ── SFX Nanami Kento (十劃呪法 · 7:3) — ~10 fungsi baru (T4) ──────────────────
+// Identitas 十劃呪法: tebasan PRESISI (gesekan pendek) + ding kristal (titik lemah
+// kena) + puing (dinding retak → reruntuhan menghantam) + emas korporat (riser
+// lembur) + dasi & jam (motif waktu). Reuse: kokusen = crackle+thunder Sukuna,
+// ult = + domainBoom. Semua murni & deterministik (tanpa rng).
+
+// Tebasan 7:3 — gesekan presisi TINGGI→rendah, durasi PENDEK (bukan slash berat).
+export const ratioSlashParams = () => ({ type: 'bandpass', fromHz: 3600, toHz: 900, dur: 0.12, gain: 0.22, noiseGain: 0.16 });
+// Titik lemah 7:3 kena — ding kristal (nada tinggi bersih, decay cepat).
+export const criticalDingParams = () => ({ hz: 1760, dur: 0.22, gain: 0.16, overtone: 2640 });
+// Sapuan 大鉈 — golok berat menyapu (durasi > tebasan, body rendah).
+export const oonataSweepParams = () => ({ type: 'sawtooth', fromHz: 1100, toHz: 180, dur: 0.34, gain: 0.26, noiseGain: 0.14 });
+// 呪符 berterbangan — kertas (3 lapis bandpass tinggi, gap beruntun).
+export const jufuFlutterParams = () => ({ layers: 3, fromHz: 5200, toHz: 1400, dur: 0.16, gain: 0.09, gapMs: 55 });
+// Dinding retak — crackle beruntun rendah (batu mulai pecah).
+export const wallCrackParams = () => ({ baseHz: 480, bursts: 4, gapMs: 45, dur: 0.08, gain: 0.18 });
+// Puing menghantam — boom rendah + noise (reruntuhan jatuh).
+export const rubbleCrashParams = () => ({ type: 'sine', fromHz: 120, toHz: 38, dur: 0.55, gain: 0.34, noiseGain: 0.2 });
+// Dasi lepas — kain (bandpass lembut, bukan logam).
+export const tieSnapParams = () => ({ type: 'bandpass', fromHz: 1400, toHz: 300, dur: 0.28, gain: 0.14 });
+// Jam berdetak — tick pendek dua nada.
+export const watchTickParams = () => ({ hz: 1200, hz2: 1800, dur: 0.045, gap: 0.09, gain: 0.12 });
+// Riser aura emas lembur — naik (tension).
+export const overtimeRiserParams = () => ({ type: 'sawtooth', fromHz: 160, toHz: 980, dur: 1.1, gain: 0.16, noiseGain: 0.08 });
+// Kontrak batal (縛り破棄) — turun gelap + sub.
+export const contractBreakParams = () => ({ type: 'sine', fromHz: 320, toHz: 42, dur: 0.9, gain: 0.3, noiseGain: 0.14 });
+
+export const playRatioSlash = () => sweepNoise(ratioSlashParams(), { noise: true });
+export const playOonataSweep = () => sweepNoise(oonataSweepParams());
+export const playTieSnap = () => sweepNoise(tieSnapParams(), { noise: true });
+export const playOvertimeRiser = () => sweepNoise(overtimeRiserParams());
+export const playRubbleCrash = () => sweepNoise(rubbleCrashParams());
+export const playContractBreak = () => sweepNoise(contractBreakParams());
+
+// Ding kristal — dua osc (fundamental + overtone) decay cepat.
+export const playCriticalDing = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = criticalDingParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  for (const [hz, g0] of [[p.hz, p.gain], [p.overtone, p.gain * 0.45]]) {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(hz, t);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(g0, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + p.dur + 0.05);
+  }
+  return Math.round(p.dur * 1000);
+};
+
+// 呪符 berterbangan — `layers` sweep bandpass tinggi beruntun.
+export const playJufuFlutter = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = jufuFlutterParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  for (let i = 0; i < p.layers; i += 1) {
+    const at = t + (i * p.gapMs) / 1000;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'bandpass';
+    osc.frequency.setValueAtTime(p.fromHz - i * 400, at);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(200, p.toHz - i * 200), at + p.dur);
+    g.gain.setValueAtTime(0, at);
+    g.gain.linearRampToValueAtTime(p.gain, at + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0008, at + p.dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(at);
+    osc.stop(at + p.dur + 0.04);
+    noiseBurst(ctx, at, { dur: p.dur * 0.8, gain: p.gain * 0.7, type: 'bandpass', fromHz: p.fromHz, toHz: p.toHz });
+  }
+  return Math.round((p.layers * p.gapMs + p.dur * 1000));
+};
+
+// Dinding retak — `bursts` crackle beruntun (tiap burst = noise pendek).
+export const playWallCrack = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = wallCrackParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  for (let i = 0; i < p.bursts; i += 1) {
+    noiseBurst(ctx, t + (i * p.gapMs) / 1000, {
+      dur: p.dur, gain: p.gain * (1 - i * 0.12),
+      type: 'bandpass', fromHz: p.baseHz * (1 + i * 0.35), toHz: Math.max(60, p.baseHz * 0.6),
+    });
+  }
+  return Math.round((p.bursts * p.gapMs + p.dur * 1000));
+};
+
+// Jam berdetak — dua tick pendek (tick-tock motif waktu).
+export const playWatchTick = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = watchTickParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  for (const [at, hz] of [[t, p.hz], [t + p.gap, p.hz2]]) {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(hz, at);
+    g.gain.setValueAtTime(0, at);
+    g.gain.linearRampToValueAtTime(p.gain, at + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0008, at + p.dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(at);
+    osc.stop(at + p.dur + 0.02);
+  }
+  return Math.round((p.gap + p.dur) * 1000);
+};
+
+// ── Registry lapis SFX Nanami (urut identitas: core → body → edge) ──────────
+export const NANAMI_TECHNIQUE_SFX_LAYERS = {
+  shichisan: ['playRatioSlash', 'playCriticalDing'],
+  oonata: ['playOonataSweep', 'playJufuFlutter'],
+  garagara: ['playWallCrack', 'playRubbleCrash'],
+  kokusen: ['playKokusenCrackle', 'playKokusenThunder'],
+  jikangai: ['playWatchTick', 'playTieSnap', 'playOvertimeRiser'],
+  ult: ['playWatchTick', 'playTieSnap', 'playOvertimeRiser', 'playDomainBoom'],
+  contract: ['playContractBreak'],
+  wrong: ['playContractBreak'],
+};
+
+export const nanamiTechniqueSfxLayers = (technique) =>
+  Array.isArray(NANAMI_TECHNIQUE_SFX_LAYERS[technique]) ? NANAMI_TECHNIQUE_SFX_LAYERS[technique] : [];
+
+const NANAMI_SFX_FNS = {
+  playRatioSlash, playCriticalDing, playOonataSweep, playJufuFlutter,
+  playWallCrack, playRubbleCrash, playTieSnap, playWatchTick,
+  playOvertimeRiser, playContractBreak,
+  playKokusenCrackle, playKokusenThunder, playDomainBoom,
+};
+
+// Putar SEMUA lapis SFX satu jurus Nanami (urutan registry), kembalikan jumlah
+// lapis yang benar-benar terpanggil. Node/test = no-op (semua player return 0).
+export const playNanamiTechniqueLayers = (technique) => {
+  const layers = nanamiTechniqueSfxLayers(technique);
+  let n = 0;
+  for (const name of layers) {
+    const fn = NANAMI_SFX_FNS[name];
+    if (typeof fn !== 'function') continue;
+    fn();
+    n += 1;
+  }
+  return n;
+};
