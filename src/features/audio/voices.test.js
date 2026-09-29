@@ -72,15 +72,16 @@ test('voice JJK placeholder: 7 key terdaftar & reachable (bukan fallback taiko)'
 });
 
 
-test('voice nobara: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
+test('voice nobara: 3 klip kalah (wrong) + 6 klip jurus (clips) — pola Yuji/Megumi', () => {
   const v = VOICES.nobara;
   assert.ok(v, 'VOICES.nobara harus ada');
-  assert.equal(v.files.correct.length, 3);
-  assert.equal(v.files.wrong.length, 3);
-  assert.equal(v.files.streak.length, 3);
-  const all = [...v.files.correct, ...v.files.wrong, ...v.files.streak];
-  assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
-  for (const p of all) assert.match(p, /^\/voices\/nobara\/[a-z0-9_]+\.mp3$/);
+  assert.deepEqual(v.files.correct, [], 'jurus diputar deterministik, bukan random');
+  assert.equal(v.files.wrong.length, 3, '3 klip kalah TTS: wawa/shijidesho/tsugi_wa_makenai');
+  assert.deepEqual(v.files.streak, [], 'jurus = klip deterministik (clips), bukan streak acak');
+  assert.equal(v.clips.length, 6, 'kanzashi, tomonari, kokusen, ult, juriyoku, waraningyou');
+  for (const p of [...v.files.wrong, ...v.clips]) assert.match(p, /^\/voices\/nobara\/[a-z0-9_]+\.mp3$/);
+  assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 9, 'tidak boleh duplikat');
+  assert.equal(getVoice('nobara'), VOICES.nobara);
 });
 
 

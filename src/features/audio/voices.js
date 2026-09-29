@@ -75,13 +75,23 @@ export const VOICES = {
   // ── Seri Jujutsu Kaisen (pack_08..pack_14) — placeholder DUMMY ──────────────
   // files kosong → otomatis fallback synth (gong/thud), perilakunya sama
   // seperti voice 'dummy'. Klip mp3 diisi bertahap oleh task "VP <karakter>".
-  // VP Nobara Kugisaki (pack_08) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  // VP Nobara Kugisaki (pack_08) — aset user di public/voices/nobara/ (芻霊呪法).
+  //   wrong : 3 klip kalah TTS (wawa/shijidesho/tsugi_wa_makenai) — acak tiap salah.
+  //   clips : klip jalur khusus — jurus ladder (簪/共鳴り/黒閃) + seruan anime
+  //           「共鳴り!」 (ultimate) + klip ambience (呪力/藁人形). Diputar
+  //           DETERMINISTIK oleh playNobaraTechnique.
+  //   correct/streak: KOSONG (benar = jurus deterministik, pola Gojo/Yuji/Megumi/Sukuna).
   nobara: {
     files: {
-      correct: ['/voices/nobara/correct_1.mp3', '/voices/nobara/correct_2.mp3', '/voices/nobara/correct_3.mp3'],
-      wrong:   ['/voices/nobara/wrong_1.mp3',   '/voices/nobara/wrong_2.mp3',   '/voices/nobara/wrong_3.mp3'],
-      streak:  ['/voices/nobara/streak_1.mp3',  '/voices/nobara/streak_2.mp3',  '/voices/nobara/streak_3.mp3'],
+      correct: [],
+      wrong: ['/voices/nobara/wrong_1.mp3', '/voices/nobara/wrong_2.mp3', '/voices/nobara/wrong_3.mp3'],
+      streak: [],
     },
+    clips: [
+      '/voices/nobara/kanzashi.mp3', '/voices/nobara/tomonari.mp3',
+      '/voices/nobara/kokusen.mp3', '/voices/nobara/ult.mp3',
+      '/voices/nobara/juriyoku.mp3', '/voices/nobara/waraningyou.mp3',
+    ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
   // VP Yuji Itadori (pack_09) — aset user di public/voices/yuji/.
