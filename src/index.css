@@ -649,3 +649,71 @@ button[data-nobara-cut]::after {
   button[data-nobara-cut]::before,
   button[data-nobara-cut]::after { animation: none; }
 }
+
+/* ── Nanami Kento: efek "tebasan presisi 7:3" pada tombol jawaban ────────────
+   [data-nanami-hit] di-set provider saat jawaban (identitas 十劃呪法: garis
+   7:3 "memilih" titik lemah → tebasan TEPAT di titik itu). Beda dari Nobara
+   (hentakan paku) & Megumi (cakar): di sini garis emas tipis menyapu tombol
+   presisi + recoil bersih, tanpa bounce. Salah → wash navy redup (suit). */
+@keyframes nanamiSlashHit {
+  0%   { transform: translate(0, 0) scale(1); }
+  16%  { transform: translate(0, -2px) scale(1.012); }
+  44%  { transform: translate(0, 1px) scale(0.995); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes nanamiSlashSweep {
+  0%   { opacity: 0; transform: translateX(-16%); }
+  22%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(14%); }
+}
+@keyframes nanamiSlashWrong {
+  0%, 100% { transform: translateX(0); filter: brightness(1); }
+  24% { transform: translateX(-2px); filter: brightness(0.78); }
+  62% { transform: translateX(2px); filter: brightness(0.9); }
+}
+html[data-nanami-hit] button[data-picked] {
+  animation: nanamiSlashHit 0.3s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+html[data-nanami-hit] button[data-picked]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg,
+    transparent 40%,
+    rgba(180, 83, 9, 0.75) 47%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(180, 83, 9, 0.75) 53%,
+    transparent 60%);
+  animation: nanamiSlashSweep 0.34s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+html[data-nanami-hit='shichisan'] button[data-picked] {
+  border-color: #b45309 !important;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.5), 0 0 22px 5px rgba(245, 158, 11, 0.42);
+}
+html[data-nanami-hit='oonata'] button[data-picked] {
+  border-color: #1e3a8a !important;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.55), 0 0 24px 6px rgba(180, 83, 9, 0.38);
+}
+html[data-nanami-hit='garagara'] button[data-picked] {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.55), 0 0 26px 6px rgba(245, 158, 11, 0.42);
+}
+html[data-nanami-hit='kokusen'] button[data-picked] {
+  border-color: #0a0a0a !important;
+  box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.8), 0 0 30px 8px rgba(220, 38, 38, 0.5);
+}
+html[data-nanami-hit='jikangai'] button[data-picked] {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.6), 0 0 32px 8px rgba(180, 83, 9, 0.45);
+}
+html[data-nanami-hit='wrong'] button[data-picked] {
+  animation: nanamiSlashWrong 0.42s ease-in-out both;
+  border-color: #1e3a8a !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-nanami-hit] button[data-picked] { animation: none; }
+  html[data-nanami-hit] button[data-picked]::before { animation: none; opacity: 0; }
+  html[data-nanami-hit] button[data-picked] { outline: 3px solid rgba(245, 158, 11, 0.75); outline-offset: 2px; }
+  html[data-nanami-hit='wrong'] button[data-picked] { animation: none; outline: 3px solid rgba(30, 58, 138, 0.75); outline-offset: 2px; }
+}

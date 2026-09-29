@@ -36,6 +36,8 @@ const SUKUNA_PACK_ID = "pack_14";
 const MEGUMI_PACK_ID = "pack_10";
 // Pack Nobara — target preview streak & ult 全弾爆発 (芻霊呪法).
 const NOBARA_PACK_ID = "pack_08";
+// Pack Nanami — target preview streak & ult 時間外労働・全開 (十劃呪法).
+const NANAMI_PACK_ID = "pack_11";
 
 const ALL_BADGES = [
   "hiragana_origin", "katakana_edge", "kanji_slayer", "kanji_hell", "eagle_eye",
@@ -63,7 +65,7 @@ function writeProgress(patch) {
 export function DevPanel() {
   const { language } = useLanguage();
   const { progress, togglePack } = useUserStats();
-  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, castMegumiSummon, castNobaraUlt, triggerEffect } = useEffectLayer();
+  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, castMegumiSummon, castNobaraUlt, castNanamiUlt, triggerEffect } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
   // Review suara & skill (dev): karakter terpilih, kursor rotasi klip, status.
@@ -109,6 +111,14 @@ export function DevPanel() {
     setPendingNobara(null);
     previewStreak(pendingNobara);
   }, [pendingNobara, progress.activePack, previewStreak]);
+
+  // Sama: begitu pack Nanami aktif, tembak preview streak-nya (十劃呪法).
+  const [pendingNanami, setPendingNanami] = useState(null);
+  useEffect(() => {
+    if (pendingNanami == null || progress.activePack !== NANAMI_PACK_ID) return;
+    setPendingNanami(null);
+    previewStreak(pendingNanami);
+  }, [pendingNanami, progress.activePack, previewStreak]);
 
   // Guard: panel ini TIDAK dirender di build produksi.
   if (!import.meta.env.DEV) return null;
@@ -267,6 +277,24 @@ export function DevPanel() {
   const castNobara = () => {
     if (progress.activePack === NOBARA_PACK_ID) { castNobaraUlt(); return; }
     previewNobara(20);   // aktifkan pack dulu → klik sekali lagi
+  };
+
+  // Preview efek Nanami tanpa quiz (pola previewNobara).
+  const previewNanami = (target) => {
+    if (progress.activePack === NANAMI_PACK_ID) { previewStreak(target); return; }
+    const owned = (progress.ownedPacks || []).includes(NANAMI_PACK_ID);
+    if (owned) { togglePack(NANAMI_PACK_ID); setPendingNanami(target); return; }
+    writeProgress({
+      medaru: 999999,
+      ownedPacks: [...(progress.ownedPacks || []), NANAMI_PACK_ID],
+      activePack: NANAMI_PACK_ID,
+    });
+    reload();
+  };
+
+  const castNanami = () => {
+    if (progress.activePack === NANAMI_PACK_ID) { castNanamiUlt(); return; }
+    previewNanami(20);   // aktifkan pack dulu → klik sekali lagi
   };
 
   // ── Review suara & skill (dev) ────────────────────────────────────────────
@@ -548,6 +576,38 @@ export function DevPanel() {
             </button>
             <button type="button" onClick={castNobara} className={`${btn} bg-[#7c2d12] text-kinari-light`}>
               💥 {id ? "Cast 全弾爆発" : "Cast Ultimate"}
+            </button>
+          </div>
+        </div>
+
+        {/* DEV-ONLY — Preview efek Nanami tanpa quiz */}
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10">
+          <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 mb-2">
+            {id ? "Preview Efek Nanami (tanpa quiz)" : "Nanami Effect Preview (no quiz)"}
+          </p>
+          <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
+            {id
+              ? "Satu klik = satu jawaban benar di streak target. Pack Nanami otomatis diaktifkan bila perlu. Non-momen = ROTASI 七三 #1 / 大鉈 #2 … Momen: 瓦落瓦落 #10 / 黒閃 #20 / 時間外労働 #30+. Cast 時間外労働・全開 = cinematic 2.4 dtk lalu state lembur 30 dtk (T3)."
+              : "One click = one correct answer at the target streak. Nanami pack is equipped automatically if needed. Non-moments ROTATE Shichisan #1 / Oonata #2 … Moments: Garagara #10 / Kokusen #20 / Jikangai #30+. Cast Overtime: All-Out = 2.4s cinematic then 30s overtime state (T3)."}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <button type="button" onClick={() => previewNanami(1)} className={`${btn} bg-[#b45309] text-kinari-light`}>
+              ⚖️ {id ? "七三 #1" : "Shichisan #1"}
+            </button>
+            <button type="button" onClick={() => previewNanami(2)} className={`${btn} bg-[#1e3a8a] text-kinari-light`}>
+              🗡️ {id ? "大鉈 #2" : "Oonata #2"}
+            </button>
+            <button type="button" onClick={() => previewNanami(10)} className={`${btn} bg-[#f59e0b] text-sumi`}>
+              🧱 {id ? "瓦落瓦落 #10" : "Garagara #10"}
+            </button>
+            <button type="button" onClick={() => previewNanami(20)} className={`${btn} bg-[#0a0a0a] text-kinari-light`}>
+              ⚡ {id ? "黒閃 #20" : "Kokusen #20"}
+            </button>
+            <button type="button" onClick={() => previewNanami(30)} className={`${btn} bg-[#78350f] text-kinari-light`}>
+              🕐 {id ? "時間外労働 #30" : "Jikangai #30"}
+            </button>
+            <button type="button" onClick={castNanami} className={`${btn} bg-[#dc2626] text-kinari-light`}>
+              💼 {id ? "Cast 全開" : "Cast Ultimate"}
             </button>
           </div>
         </div>

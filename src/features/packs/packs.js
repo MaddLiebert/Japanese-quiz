@@ -83,8 +83,9 @@ export const PACKS = [
   },
   {
     id: 'pack_11', name: 'Nanami Kento', kanji: '七海建人', icon: '👔',
-    desc: 'Voice pack Nanami (visual menyusul)', desc_en: 'Nanami voice pack (visual coming)',
-    price: 2500, rarity: 'rare', visual: 'dummy', voice: 'nanami',
+    desc: '十劃呪法: 七三↔大鉈→瓦落瓦落(10)→黒閃(20)→時間外労働(30) + ultimate 時間外労働・全開 (puing 瓦落瓦落・連鎖)',
+    desc_en: 'Ratio Technique: 7:3↔Oonata→Garagara(10)→Black Flash(20)→Overtime(30) + ultimate Overtime: All-Out (rubble chain)',
+    price: 2500, rarity: 'rare', visual: 'nanami', voice: 'nanami',
   },
   {
     id: 'pack_12', name: 'Yuta Okkotsu', kanji: '乙骨憂太', icon: '💍',
