@@ -23,12 +23,16 @@ test('reviewClips: fallback clips (Gojo correct) — TIDAK untuk streak/wrong', 
   assert.deepEqual(reviewClips(g, 'streak'), []);             // streak Gojo = synth gong
 });
 
-test('reviewClips: karakter JJK → 3 klip per jenis (Yuji & Sukuna sudah pola Gojo)', () => {
-  for (const k of ['nobara', 'megumi', 'nanami', 'yuta', 'toji']) {
+test('reviewClips: karakter JJK → 3 klip per jenis (Yuji/Megumi/Sukuna sudah pola Gojo)', () => {
+  for (const k of ['nobara', 'nanami', 'yuta', 'toji']) {
     for (const kind of ['correct', 'wrong', 'streak']) {
       assert.equal(reviewClips(VOICES[k], kind).length, 3, `${k}/${kind}`);
     }
   }
+  // Megumi: correct -> clips (6 jurus ladder + chant), wrong -> 3 kalah, streak -> [].
+  assert.equal(reviewClips(VOICES.megumi, 'correct').length, 6);
+  assert.equal(reviewClips(VOICES.megumi, 'wrong').length, 3);
+  assert.deepEqual(reviewClips(VOICES.megumi, 'streak'), []);
   // Yuji: correct -> clips (8 klip teknik), wrong -> 3 meme, streak -> [].
   assert.equal(reviewClips(VOICES.yuji, 'correct').length, 8);
   assert.equal(reviewClips(VOICES.yuji, 'wrong').length, 3);

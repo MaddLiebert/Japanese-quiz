@@ -390,6 +390,30 @@ export const playSukunaTechnique = (technique) => {
   return path ? playFile(path) : 0;
 };
 
+// ── Suara khusus Megumi (pack_10) — 十種影法術 ───────────────────────────────
+// Jurus diputar DETERMINISTIK lewat klip (pola Gojo/Yuji/Sukuna).
+// Lead-silence (hasil ukur RMS 29/09): gyokuken 0.14 · nue 0.15 · orochi 0.13
+// (≤0.24 → tanpa skip, pola Sukuna); bansou 0.35 · kosou 0.41 → di-skip supaya
+// suara tidak kerasa telat. mahoraga TIDAK di-skip: timeline cinematic 魔虚羅
+// di-anchor dari t=0 ke klip chant (skip akan menggeser semua sync).
+export const MEGUMI_TECHNIQUE_FILES = {
+  gyokuken: '/voices/megumi/gyokuken.mp3',
+  nue: '/voices/megumi/nue.mp3',
+  orochi: '/voices/megumi/orochi.mp3',
+  bansou: '/voices/megumi/bansou.mp3',
+  kosou: '/voices/megumi/kosou.mp3',
+  mahoraga: '/voices/megumi/mahoraga.mp3',
+};
+
+export const MEGUMI_LEAD_S = { bansou: 0.35, kosou: 0.41 };
+
+export const playMegumiTechnique = (technique) => {
+  const path = MEGUMI_TECHNIQUE_FILES[technique];
+  if (!path) return 0;
+  const lead = MEGUMI_LEAD_S[technique] || 0;
+  return playFile(path, lead);
+};
+
 
 // ── API publik ──────────────────────────────────────────────────────────────
 // Semua mengembalikan durasi klip (ms) supaya efek visual (GIF Hina) bisa
@@ -837,6 +861,30 @@ export const sukunaMotifParams = () => ({
   filterHz: 2200,
   filterCloseS: 0.9,
 });
+
+// ── Ambience Megumi (pack_10): drone bayangan + bisikan 呪詞 — TIDAK ada taiko ──
+// (Sukuna = taiko perang; Megumi = sunyi & berat — beda karakter.) Satu titik tune
+// (pola sukunaBgmPlan), dipakai src/utils/megumiAmbience.js. Angka = spec §Ambience.
+export const MEGUMI_BGM_LOOP_STEPS = 16;
+export const MEGUMI_BGM_STEP_S = 0.6;
+
+export const megumiBgmPlan = () => ({
+  level: 0.20,            // spec: level 0.20, fadeIn 1600ms, fadeOut 900ms
+  fadeInMs: 1600,
+  fadeOutMs: 900,
+  // Drone bayangan 55/110Hz + sub 41.2Hz (dasar gelap; sama register Sukuna tapi
+  // tanpa organ tritone → tidak mencekam, lebih "dalam/berat").
+  drone: { freqs: [55, 110, 41.2], detune: [0, -5, 2], gain: 0.52 },
+  // Pad gelap: triangle mid (kedengaran di speaker HP) + lowpass napas pelan.
+  pad: { type: 'triangle', freqs: [146.83, 196, 293.66], filterHz: 700, lfoHz: 0.04, lfoDepth: 280, gain: 0.42 },
+  // Bisikan 呪詞: noise bandpass 200–900Hz termodulasi pelan (spec persis).
+  whisper: { filterType: 'bandpass', filterHz: 550, q: 0.9, modHz: 0.09, modDepth: 340, gain: 0.06 },
+  // Gema takik roda 八握剣: ketukan kayu pelan tiap 3.2 dtk (penanda adaptasi).
+  wheelEveryMs: 3200,
+  wheel: { freq: 220, freq2: 176, dur: 0.16, gain: 0.06, noiseGain: 0.02 },
+});
+
+export const megumiWheelTickParams = () => megumiBgmPlan().wheel;
 
 // ── SFX one-shot Yuji (pack_09) — TIDAK ada ambience sustained (keputusan desain) ──
 // Semua params murni & deterministik -> dites di sfx.yuji.test.js.
@@ -1396,6 +1444,236 @@ export const playSukunaTechniqueLayers = (technique, streak = 21) => {
     if (typeof fn !== 'function') continue;
     if (name === 'playChantDrone') fn(streak);
     else fn();
+    n += 1;
+  }
+  return n;
+};
+
+// ── SFX jurus Megumi (pack_10) — 十種影法術 ──────────────────────────────────
+// Referensi desain: spec Megumi.md §SFX (bayangan = desir, desis, rumble dalam).
+// Semua params murni & deterministik (dites di sfx.megumi.test.js); pemutar
+// no-op di node (guard window). Reuse yang sudah ada (playSlash, playWheelCreak,
+// playGiantStep, playNueScreech/playNueThunder, playShadowRustle, playDomainBoom).
+export const gyokukenParams = () => ({ type: 'sawtooth', fromHz: 420, toHz: 180, dur: 0.6, gain: 0.22, noiseGain: 0.1 });
+export const clawSwipeParams = () => ({ swipes: 3, fromHz: 2200, toHz: 600, gapMs: 70, dur: 0.12, gain: 0.17 });
+export const orochiHissParams = () => ({ layers: 3, fromHz: 4000, toHz: 800, dur: 1.1, gain: 0.11, gapMs: 90 });
+export const orochiRumbleParams = () => ({ type: 'sine', fromHz: 38, toHz: 22, dur: 1.2, gain: 0.34, noiseGain: 0.12 });
+export const bansouWaterParams = () => ({ type: 'bandpass', fromHz: 1600, toHz: 300, dur: 0.9, gain: 0.18, noiseGain: 0.14 });
+export const bansouTrumpetParams = () => ({ type: 'sawtooth', fromHz: 300, toHz: 140, dur: 0.7, gain: 0.24, noiseGain: 0.08 });
+export const kosouRoarParams = () => ({ type: 'sawtooth', fromHz: 260, toHz: 90, dur: 0.9, gain: 0.3, noiseGain: 0.16 });
+export const kosouSlashParams = () => ({
+  slashes: 3, fromHz: 2600, toHz: 500, gapMs: 80, dur: 0.14, gain: 0.2,
+  boom: { type: 'sine', fromHz: 60, toHz: 26, dur: 0.9, gain: 0.34, noiseGain: 0.14 },
+});
+export const makoraChantParams = () => ({
+  droneHz: 55, droneGain: 0.24, dur: 2.2,
+  bellPartials: [1, 2.76, 5.4], bellGain: 0.11,
+});
+export const makoraRoarParams = () => ({ type: 'sine', fromHz: 70, toHz: 30, dur: 1.5, gain: 0.42, noiseGain: 0.18 });
+export const adaptFlashParams = () => ({
+  chimeHz: 740, chimeGain: 0.16, chimeDur: 0.5,
+  shimmerFromHz: 1800, shimmerToHz: 4200, shimmerGain: 0.07, shimmerDur: 0.7,
+});
+export const swordUnsheatheParams = () => ({ type: 'sawtooth', fromHz: 1200, toHz: 400, dur: 0.55, gain: 0.22, noiseGain: 0.12 });
+export const wheelShatterParams = () => ({
+  shardHz: 3000, shards: 5, shardDur: 0.09, shardGain: 0.16, gapMs: 40,
+  boom: { type: 'sine', fromHz: 80, toHz: 24, dur: 1.1, gain: 0.4, noiseGain: 0.18 },
+});
+export const shadowSwallowParams = () => ({ type: 'bandpass', fromHz: 500, toHz: 80, dur: 0.55, gain: 0.2, noiseGain: 0.1 });
+
+export const playGyokuken = () => sweepNoise(gyokukenParams());
+
+export const playClawSwipe = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = clawSwipeParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = ctx.currentTime;
+  // 3 goresan berurutan — SEMUA dijadwalkan absolut (tanpa setTimeout) supaya
+  // presisi & tidak ada timer nyangkut.
+  for (let i = 0; i < p.swipes; i++) {
+    const at = t0 + (i * p.gapMs) / 1000;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(Math.max(60, p.fromHz - i * 300), at);
+    osc.frequency.exponentialRampToValueAtTime(p.toHz, at + p.dur * 0.85);
+    g.gain.setValueAtTime(0, at);
+    g.gain.linearRampToValueAtTime(p.gain * (1 - i * 0.1), at + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0008, at + p.dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(at);
+    osc.stop(at + p.dur + 0.03);
+    noiseBurst(ctx, at, {
+      dur: p.dur * 0.8, gain: p.gain * 0.42, type: 'highpass',
+      fromHz: p.fromHz, toHz: p.toHz,
+    });
+  }
+  return (p.swipes - 1) * p.gapMs + Math.round(p.dur * 1000);
+};
+
+export const playOrochiHiss = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = orochiHissParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  for (let i = 0; i < p.layers; i++) {
+    noiseBurst(ctx, ctx.currentTime + (i * p.gapMs) / 1000, {
+      dur: p.dur, gain: p.gain * (1 - i * 0.18), type: 'highpass',
+      fromHz: p.fromHz - i * 700, toHz: p.toHz,
+    });
+  }
+  return p.layers * p.gapMs + Math.round(p.dur * 1000);
+};
+
+export const playOrochiRumble = () => sweepNoise(orochiRumbleParams());
+export const playBansouWater = () => sweepNoise(bansouWaterParams(), { noise: true });
+export const playBansouTrumpet = () => sweepNoise(bansouTrumpetParams());
+export const playKosouRoar = () => sweepNoise(kosouRoarParams());
+
+export const playKosouSlash = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = kosouSlashParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = ctx.currentTime;
+  for (let i = 0; i < p.slashes; i++) {
+    noiseBurst(ctx, t0 + (i * p.gapMs) / 1000, {
+      dur: p.dur, gain: p.gain * (1 - i * 0.08), type: 'bandpass',
+      fromHz: p.fromHz - i * 400, toHz: p.toHz,
+    });
+  }
+  const boomMs = sweepNoise(p.boom);
+  return Math.max(p.slashes * p.gapMs + Math.round(p.dur * 1000), boomMs);
+};
+
+export const playMakoraChant = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = makoraChantParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  // Drone ritual bayangan (55Hz) — dasar rasa "masuk bayangan".
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(p.droneHz, t);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.droneGain, t + 0.12);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.dur + 0.05);
+  // Bel inharmonik (ritual 布瑠部由良由良).
+  for (const ratio of p.bellPartials) {
+    const b = ctx.createOscillator();
+    const bg = ctx.createGain();
+    b.type = 'sine';
+    b.frequency.setValueAtTime(p.droneHz * 4 * ratio, t);
+    const bgain = p.bellGain / (1 + ratio * 0.5);
+    bg.gain.setValueAtTime(0, t);
+    bg.gain.linearRampToValueAtTime(bgain, t + 0.01);
+    bg.gain.exponentialRampToValueAtTime(0.0008, t + p.dur * 0.8);
+    b.connect(bg);
+    bg.connect(ctx.destination);
+    b.start(t);
+    b.stop(t + p.dur);
+  }
+  return Math.round(p.dur * 1000);
+};
+
+export const playMakoraRoar = () => sweepNoise(makoraRoarParams());
+
+export const playAdaptFlash = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = adaptFlashParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  // Chime gelap (momen "belajar" — roda +1 takik).
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(p.chimeHz, t);
+  osc.frequency.exponentialRampToValueAtTime(p.chimeHz * 0.94, t + p.chimeDur);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(p.chimeGain, t + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0008, t + p.chimeDur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + p.chimeDur + 0.05);
+  // Shimmer naik (adaptasi "menyerap" serangan).
+  noiseBurst(ctx, t, { dur: p.shimmerDur, gain: p.shimmerGain, type: 'bandpass', fromHz: p.shimmerFromHz, toHz: p.shimmerToHz });
+  return Math.round((p.chimeDur + p.shimmerDur) * 500);
+};
+
+export const playSwordUnsheathe = () => sweepNoise(swordUnsheatheParams(), { noise: true });
+
+export const playWheelShatter = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = wheelShatterParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t0 = ctx.currentTime;
+  for (let i = 0; i < p.shards; i++) {
+    noiseBurst(ctx, t0 + (i * p.gapMs) / 1000, {
+      dur: p.shardDur, gain: p.shardGain * (1 - i * 0.12), type: 'highpass',
+      fromHz: p.shardHz - i * 350, toHz: p.shardHz * 0.35,
+    });
+  }
+  const boomMs = sweepNoise(p.boom);
+  return Math.max(p.shards * p.gapMs + Math.round(p.shardDur * 1000), boomMs);
+};
+
+export const playShadowSwallow = () => sweepNoise(shadowSwallowParams(), { noise: true });
+
+// Registry lapis per jurus Megumi — tiap jurus ≥2 lapis (spec, dites).
+// Reuse lintas-pack: playNueScreech/playNueThunder (kanon Megumi — Sukuna pakai
+// karena Meguna), playShadowRustle, playWheelCreak, playGiantStep, playSlash.
+export const MEGUMI_TECHNIQUE_SFX_LAYERS = {
+  gyokuken: ['playGyokuken', 'playClawSwipe'],
+  nue: ['playNueScream', 'playNueThunder', 'playShadowRustle'],
+  orochi: ['playOrochiHiss', 'playOrochiRumble'],
+  bansou: ['playBansouWater', 'playBansouTrumpet'],
+  kosou: ['playKosouRoar', 'playKosouSlash'],
+  mahoraga: ['playMakoraChant', 'playWheelCreak', 'playGiantStep', 'playMakoraRoar'],
+  adapt: ['playAdaptFlash'],
+  sword: ['playSwordUnsheathe'],
+  shatter: ['playWheelShatter'],
+  wrong: ['playShadowSwallow'],
+};
+
+export const megumiTechniqueSfxLayers = (technique) =>
+  Array.isArray(MEGUMI_TECHNIQUE_SFX_LAYERS[technique]) ? MEGUMI_TECHNIQUE_SFX_LAYERS[technique] : [];
+
+// Nama → fungsi (registry di atas berupa string supaya murni & dites di node).
+const MEGUMI_SFX_FNS = {
+  playGyokuken, playClawSwipe, playOrochiHiss, playOrochiRumble,
+  playBansouWater, playBansouTrumpet, playKosouRoar, playKosouSlash,
+  playMakoraChant, playMakoraRoar, playAdaptFlash, playSwordUnsheathe,
+  playWheelShatter, playShadowSwallow,
+  playNueScream, playNueThunder, playShadowRustle,
+  playWheelCreak, playGiantStep, playSlash,
+};
+
+// Putar SEMUA lapis SFX satu jurus Megumi (urutan registry), kembalikan jumlah
+// lapis yang benar-benar terpanggil. Node/test = no-op (semua player return 0).
+export const playMegumiTechniqueLayers = (technique) => {
+  const layers = megumiTechniqueSfxLayers(technique);
+  let n = 0;
+  for (const name of layers) {
+    const fn = MEGUMI_SFX_FNS[name];
+    if (typeof fn !== 'function') continue;
+    fn();
     n += 1;
   }
   return n;

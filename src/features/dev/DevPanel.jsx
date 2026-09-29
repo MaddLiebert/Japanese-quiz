@@ -32,6 +32,8 @@ const GOJO_PACK_ID = "pack_07";
 const YUJI_PACK_ID = "pack_09";
 // Pack Sukuna — target preview streak & domain 伏魔御廚子.
 const SUKUNA_PACK_ID = "pack_14";
+// Pack Megumi — target preview streak & summon 魔虚羅 (十種影法術).
+const MEGUMI_PACK_ID = "pack_10";
 
 const ALL_BADGES = [
   "hiragana_origin", "katakana_edge", "kanji_slayer", "kanji_hell", "eagle_eye",
@@ -59,7 +61,7 @@ function writeProgress(patch) {
 export function DevPanel() {
   const { language } = useLanguage();
   const { progress, togglePack } = useUserStats();
-  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, triggerEffect } = useEffectLayer();
+  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, castMegumiSummon, triggerEffect } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
   // Review suara & skill (dev): karakter terpilih, kursor rotasi klip, status.
@@ -89,6 +91,14 @@ export function DevPanel() {
     setPendingSukuna(null);
     previewStreak(pendingSukuna);
   }, [pendingSukuna, progress.activePack, previewStreak]);
+
+  // Sama: begitu pack Megumi aktif, tembak preview streak-nya (十種影法術).
+  const [pendingMegumi, setPendingMegumi] = useState(null);
+  useEffect(() => {
+    if (pendingMegumi == null || progress.activePack !== MEGUMI_PACK_ID) return;
+    setPendingMegumi(null);
+    previewStreak(pendingMegumi);
+  }, [pendingMegumi, progress.activePack, previewStreak]);
 
   // Guard: panel ini TIDAK dirender di build produksi.
   if (!import.meta.env.DEV) return null;
@@ -211,6 +221,24 @@ export function DevPanel() {
   const castSukuna = () => {
     if (progress.activePack === SUKUNA_PACK_ID) { castSukunaDomain(); return; }
     previewSukuna(20);   // aktifkan pack dulu → klik sekali lagi
+  };
+
+  // Preview efek Megumi tanpa quiz (pola previewSukuna).
+  const previewMegumi = (target) => {
+    if (progress.activePack === MEGUMI_PACK_ID) { previewStreak(target); return; }
+    const owned = (progress.ownedPacks || []).includes(MEGUMI_PACK_ID);
+    if (owned) { togglePack(MEGUMI_PACK_ID); setPendingMegumi(target); return; }
+    writeProgress({
+      medaru: 999999,
+      ownedPacks: [...(progress.ownedPacks || []), MEGUMI_PACK_ID],
+      activePack: MEGUMI_PACK_ID,
+    });
+    reload();
+  };
+
+  const castMegumi = () => {
+    if (progress.activePack === MEGUMI_PACK_ID) { castMegumiSummon(); return; }
+    previewMegumi(20);   // aktifkan pack dulu → klik sekali lagi
   };
 
   // ── Review suara & skill (dev) ────────────────────────────────────────────
@@ -428,6 +456,38 @@ export function DevPanel() {
             </button>
             <button type="button" onClick={castSukuna} className={`${btn} bg-[#c1121f] text-kinari-light`}>
               👁️ {id ? "Cast 伏魔御廚子" : "Cast Domain"}
+            </button>
+          </div>
+        </div>
+
+        {/* DEV-ONLY — Preview efek Megumi tanpa quiz */}
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10">
+          <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 mb-2">
+            {id ? "Preview Efek Megumi (tanpa quiz)" : "Megumi Effect Preview (no quiz)"}
+          </p>
+          <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
+            {id
+              ? "Satu klik = satu jawaban benar di streak target. Pack Megumi otomatis diaktifkan bila perlu. Non-momen = ROTASI 玉犬 #1 / 鵺 #2 … Momen: 大蛇 #10 / 満象 #20 / 虎葬 #30+. Cast 魔虚羅 menyalakan summon 30 dtk (roda 八握剣 8 takik + mekanik 適応)."
+              : "One click = one correct answer at the target streak. Megumi pack is equipped automatically if needed. Non-moments ROTATE 玉犬 #1 / 鵺 #2 … Moments: 大蛇 #10 / 満象 #20 / 虎葬 #30+. Cast 魔虚羅 starts the 30s summon (8-notch 八握剣 wheel + 適応 mechanic)."}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <button type="button" onClick={() => previewMegumi(1)} className={`${btn} bg-[#cbd5e1] text-sumi`}>
+              🐺 {id ? "玉犬 #1" : "Gyokuken #1"}
+            </button>
+            <button type="button" onClick={() => previewMegumi(2)} className={`${btn} bg-[#4338ca] text-kinari-light`}>
+              🦉 {id ? "鵺 #2" : "Nue #2"}
+            </button>
+            <button type="button" onClick={() => previewMegumi(10)} className={`${btn} bg-[#14b8a6] text-kinari-light`}>
+              🐍 {id ? "大蛇 #10" : "Orochi #10"}
+            </button>
+            <button type="button" onClick={() => previewMegumi(20)} className={`${btn} bg-[#38bdf8] text-sumi`}>
+              🐘 {id ? "満象 #20" : "Bansou #20"}
+            </button>
+            <button type="button" onClick={() => previewMegumi(30)} className={`${btn} bg-[#f59e0b] text-sumi`}>
+              🐯 {id ? "虎葬 #30" : "Kosou #30"}
+            </button>
+            <button type="button" onClick={castMegumi} className={`${btn} bg-[#6d28d9] text-kinari-light`}>
+              🌑 {id ? "Cast 魔虚羅" : "Cast Mahoraga"}
             </button>
           </div>
         </div>

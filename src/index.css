@@ -464,3 +464,96 @@ button[data-sukuna-cut]::after {
   button[data-sukuna-cut]::before,
   button[data-sukuna-cut]::after { animation: none; }
 }
+
+/* ── Megumi Fushiguro: efek "ditelan bayangan" pada tombol + opsi TERADAPTASI 適応 ─
+   [data-megumi-hit] di-set provider saat jawaban (identitas 影: hentakan halus,
+   bukan tebasan) · [data-megumi-cut] = opsi salah yang dihapus 適応 / dipotong
+   八握剣 — memudar ke gelap, tertutup bayangan, nonaktif tapi tetap terbaca. */
+@keyframes megumiSwallowHit {
+  0%   { transform: translate(0, 0) scale(1); filter: brightness(1); }
+  18%  { transform: translate(0, 3px) scale(0.985); filter: brightness(0.72); }
+  46%  { transform: translate(0, -1px) scale(1.004); filter: brightness(0.9); }
+  100% { transform: translate(0, 0) scale(1); filter: brightness(1); }
+}
+@keyframes megumiSwallowWrong {
+  0%, 100% { transform: translateY(0); filter: brightness(1); }
+  22% { transform: translateY(4px); filter: brightness(0.68); }
+  55% { transform: translateY(-2px); filter: brightness(0.86); }
+  80% { transform: translateY(1px); filter: brightness(0.94); }
+}
+html[data-megumi-hit] button[data-picked] {
+  animation: megumiSwallowHit 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+html[data-megumi-hit='gyokuken'] button[data-picked] {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 0 0 3px rgba(203, 213, 225, 0.55), 0 4px 14px 2px rgba(10, 10, 10, 0.45);
+}
+html[data-megumi-hit='nue'] button[data-picked] {
+  border-color: #4338ca !important;
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.55), 0 0 22px 4px rgba(67, 56, 202, 0.4);
+}
+html[data-megumi-hit='orochi'] button[data-picked] {
+  border-color: #14b8a6 !important;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.5), 0 0 20px 4px rgba(20, 184, 166, 0.36);
+}
+html[data-megumi-hit='bansou'] button[data-picked] {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.55), 0 0 22px 5px rgba(56, 189, 248, 0.4);
+}
+html[data-megumi-hit='kosou'] button[data-picked] {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.55), 0 0 24px 6px rgba(245, 158, 11, 0.42);
+}
+html[data-megumi-hit='adapt'] button[data-picked] {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.6), 0 0 26px 6px rgba(139, 92, 246, 0.45);
+}
+html[data-megumi-hit='wrong'] button[data-picked] {
+  animation: megumiSwallowWrong 0.52s ease-in-out both;
+  border-color: #334155 !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-megumi-hit] button[data-picked] { animation: none; }
+  html[data-megumi-hit='adapt'] button[data-picked] { outline: 3px solid rgba(139, 92, 246, 0.7); outline-offset: 2px; }
+  html[data-megumi-hit='wrong'] button[data-picked] { outline: 3px solid rgba(51, 65, 85, 0.7); outline-offset: 2px; }
+}
+/* 適応 / 八握剣: opsi salah "ditelan bayangan" — memudar gelap, nonaktif, terbaca. */
+button[data-megumi-cut] {
+  position: relative;
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.34;
+  border-color: #1e1b4b !important;
+  filter: grayscale(0.65) brightness(0.7);
+  animation: megumiSwallowCut 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes megumiSwallowCut {
+  0%   { transform: translateY(0) scale(1); filter: grayscale(0) brightness(1); opacity: 1; }
+  30%  { transform: translateY(5px) scale(0.97); filter: grayscale(0.3) brightness(0.6); opacity: 0.7; }
+  100% { transform: translateY(0) scale(1); filter: grayscale(0.65) brightness(0.7); opacity: 0.34; }
+}
+/* Bayangan menutup dari bawah + kanji 適応 di pojok (penanda "sudah diadaptasi"). */
+button[data-megumi-cut]::before {
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(6, 6, 14, 0.92) 0%, rgba(10, 10, 18, 0.55) 55%, rgba(10, 10, 18, 0.18) 100%);
+  animation: megumiCutIn 0.5s ease-out both;
+}
+@keyframes megumiCutIn {
+  0%   { opacity: 0; transform: translateY(12%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+button[data-megumi-cut]::after {
+  content: '適応';
+  position: absolute; right: 6px; top: 2px;
+  font-family: ui-serif, serif; font-weight: 900; font-size: 12px;
+  color: rgba(139, 92, 246, 0.9);
+  text-shadow: 0 0 8px rgba(67, 56, 202, 0.75);
+  animation: megumiCutIn 0.4s 0.08s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  button[data-megumi-cut] { animation: none; filter: none; opacity: 0.4; }
+  button[data-megumi-cut]::before,
+  button[data-megumi-cut]::after { animation: none; }
+}

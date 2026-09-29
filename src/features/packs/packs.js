@@ -76,8 +76,9 @@ export const PACKS = [
   },
   {
     id: 'pack_10', name: 'Megumi Fushiguro', kanji: '伏黒恵', icon: '🐺',
-    desc: 'Voice pack Megumi (visual menyusul)', desc_en: 'Megumi voice pack (visual coming)',
-    price: 2500, rarity: 'rare', visual: 'dummy', voice: 'megumi',
+    desc: '十種影法術: 玉犬→鵺→大蛇→満象→虎葬 + ultimate 魔虚羅·適応',
+    desc_en: 'Ten Shadows: Dogs→Nue→Serpent→Elephant→Tiger + Mahoraga·Adaptation',
+    price: 2500, rarity: 'rare', visual: 'megumi', voice: 'megumi',
   },
   {
     id: 'pack_11', name: 'Nanami Kento', kanji: '七海建人', icon: '👔',
