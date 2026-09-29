@@ -132,13 +132,23 @@ export const VOICES = {
     ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  // VP Nanami Kento (pack_11) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  // VP Nanami Kento (pack_11) — aset user di public/voices/nanami/ (十劃呪法).
+  //   wrong : 3 klip kalah TTS (zangnendesuka/rodowa kuso desu/hipakatimashyou)
+  //           — acak tiap salah.
+  //   clips : klip jalur khusus — 5 jurus (七三/大鉈/瓦落瓦落/黒閃/時間外労働),
+  //           diputar DETERMINISTIK oleh playNanamiTechnique.
+  //   correct/streak: KOSONG (benar = jurus deterministik, pola Gojo/Megumi/Nobara).
   nanami: {
     files: {
-      correct: ['/voices/nanami/correct_1.mp3', '/voices/nanami/correct_2.mp3', '/voices/nanami/correct_3.mp3'],
-      wrong:   ['/voices/nanami/wrong_1.mp3',   '/voices/nanami/wrong_2.mp3',   '/voices/nanami/wrong_3.mp3'],
-      streak:  ['/voices/nanami/streak_1.mp3',  '/voices/nanami/streak_2.mp3',  '/voices/nanami/streak_3.mp3'],
+      correct: [],
+      wrong: ['/voices/nanami/wrong_1.mp3', '/voices/nanami/wrong_2.mp3', '/voices/nanami/wrong_3.mp3'],
+      streak: [],
     },
+    clips: [
+      '/voices/nanami/shichisan.mp3', '/voices/nanami/oonata.mp3',
+      '/voices/nanami/garagara.mp3', '/voices/nanami/kokusen.mp3',
+      '/voices/nanami/jikangai.mp3',
+    ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
   // VP Yuta Okkotsu (pack_12) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.

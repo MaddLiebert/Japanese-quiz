@@ -2028,3 +2028,22 @@ export const playNanamiTechniqueLayers = (technique) => {
   }
   return n;
 };
+
+// ── Klip voice Nanami (pola Gojo/Nobara) — playNanamiTechnique ─────────────
+export const NANAMI_TECHNIQUE_FILES = {
+  shichisan: '/voices/nanami/shichisan.mp3',
+  oonata: '/voices/nanami/oonata.mp3',
+  garagara: '/voices/nanami/garagara.mp3',
+  kokusen: '/voices/nanami/kokusen.mp3',
+  jikangai: '/voices/nanami/jikangai.mp3',
+};
+
+// Lead-silence terukur (RMS onset, pola Nobara) — hanya > 0.24s yang di-skip.
+export const NANAMI_LEAD_S = { shichisan: 0.18, oonata: 0.14, garagara: 0.10, kokusen: 0.16, jikangai: 0.14 };
+
+export const playNanamiTechnique = (technique) => {
+  const path = NANAMI_TECHNIQUE_FILES[technique];
+  if (!path) return 0;
+  const lead = NANAMI_LEAD_S[technique] || 0;
+  return playFile(path, lead);
+};
