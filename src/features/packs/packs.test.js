@@ -195,6 +195,14 @@ test('pack_09 = Yuji Itadori, visual yuji (bukan dummy lagi)', () => {
   assert.ok(!/dummy|menyusul|coming/i.test(p.desc_en), 'desc_en tidak boleh "menyusul/dummy"');
 });
 
+test('pack_11 = Nanami Kento, visual nanami (bukan dummy lagi)', () => {
+  const p = getPack('pack_11');
+  assert.equal(p.visual, 'nanami');
+  assert.equal(p.voice, 'nanami');
+  assert.ok(!/dummy|menyusul|coming/i.test(p.desc), 'desc tidak boleh "menyusul/dummy"');
+  assert.ok(!/dummy|menyusul|coming/i.test(p.desc_en), 'desc_en tidak boleh "menyusul/dummy"');
+});
+
 
 // ── Seri Jujutsu Kaisen: 7 pack (dummy → VP) ─────────────────────────────────
 
