@@ -111,15 +111,16 @@ test('voice megumi: 3 klip kalah (wrong) + 6 klip jurus (clips) — pola Yuji/Su
 });
 
 
-test('voice nanami: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
+test('voice nanami: 3 klip kalah (wrong) + 5 klip jurus (clips) — pola Gojo', () => {
   const v = VOICES.nanami;
   assert.ok(v, 'VOICES.nanami harus ada');
-  assert.equal(v.files.correct.length, 3);
-  assert.equal(v.files.wrong.length, 3);
-  assert.equal(v.files.streak.length, 3);
-  const all = [...v.files.correct, ...v.files.wrong, ...v.files.streak];
-  assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
-  for (const p of all) assert.match(p, /^\/voices\/nanami\/[a-z0-9_]+\.mp3$/);
+  assert.deepEqual(v.files.correct, [], 'jurus diputar deterministik, bukan random');
+  assert.equal(v.files.wrong.length, 3, '3 klip kalah: zangnendesuka/rodowa_kuso_desu/hipakatimashyou');
+  assert.deepEqual(v.files.streak, [], 'jurus = klip deterministik (clips), bukan streak acak');
+  assert.equal(v.clips.length, 5, 'shichisan, oonata, garagara, kokusen, jikangai');
+  for (const p of [...v.files.wrong, ...v.clips]) assert.match(p, /^\/voices\/nanami\/[a-z0-9_]+\.mp3$/);
+  assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 8, 'tidak boleh duplikat');
+  assert.equal(getVoice('nanami'), VOICES.nanami);
 });
 
 

@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
 import {
   NANAMI_TECHNIQUE_SFX_LAYERS, nanamiTechniqueSfxLayers, playNanamiTechniqueLayers,
   playRatioSlash, playCriticalDing, playOonataSweep, playJufuFlutter,
@@ -8,7 +9,9 @@ import {
   ratioSlashParams, criticalDingParams, oonataSweepParams, jufuFlutterParams,
   wallCrackParams, rubbleCrashParams, tieSnapParams, watchTickParams,
   overtimeRiserParams, contractBreakParams,
+  NANAMI_TECHNIQUE_FILES, NANAMI_LEAD_S, playNanamiTechnique,
 } from './sfx.js';
+import { VOICES } from '../features/audio/voices.js';
 
 test('NANAMI_TECHNIQUE_SFX_LAYERS: tiap jurus >= 2 lapis (spec 十劃呪法)', () => {
   const keys = ['shichisan', 'oonata', 'garagara', 'kokusen', 'jikangai', 'ult', 'contract', 'wrong'];
@@ -86,4 +89,49 @@ test('params SFX Nanami: murni & deterministik (identitas 十劃呪法)', () => 
   assert.ok(overtimeRiserParams().fromHz < overtimeRiserParams().toHz);
   // kontrak batal = turun gelap (from > to) + sub
   assert.ok(contractBreakParams().fromHz > contractBreakParams().toHz);
+});
+
+test('NANAMI_TECHNIQUE_FILES: 5 klip jurus, path valid, file ada di disk', () => {
+  const keys = ['shichisan', 'oonata', 'garagara', 'kokusen', 'jikangai'];
+  assert.deepEqual(Object.keys(NANAMI_TECHNIQUE_FILES).sort(), keys.slice().sort());
+  for (const [k, p] of Object.entries(NANAMI_TECHNIQUE_FILES)) {
+    assert.equal(p, `/voices/nanami/${k}.mp3`);
+    assert.ok(existsSync('public' + p), `klip hilang: ${p}`);
+  }
+});
+
+test('playNanamiTechnique: node (tanpa window) -> no-op 0, jurus tak dikenal aman', () => {
+  for (const k of Object.keys(NANAMI_TECHNIQUE_FILES)) assert.equal(playNanamiTechnique(k), 0);
+  assert.equal(playNanamiTechnique('zzz'), 0);
+  assert.equal(playNanamiTechnique(null), 0);
+});
+
+test('NANAMI_LEAD_S: lead-silence terukur; klip pendek TIDAK di-skip (>0.24 baru skip)', () => {
+  assert.equal(NANAMI_LEAD_S.shichisan, 0.18);
+  assert.equal(NANAMI_LEAD_S.oonata, 0.14);
+  assert.equal(NANAMI_LEAD_S.garagara, 0.10);
+  assert.equal(NANAMI_LEAD_S.kokusen, 0.16);
+  assert.equal(NANAMI_LEAD_S.jikangai, 0.14);
+  assert.ok(NANAMI_LEAD_S.shichisan <= 0.24 && NANAMI_LEAD_S.kokusen <= 0.24 && NANAMI_LEAD_S.jikangai <= 0.24);
+});
+
+test('semua aset suara Nanami (3 kalah + 5 klip) ada di disk', () => {
+  for (const p of [...VOICES.nanami.files.wrong, ...VOICES.nanami.clips]) {
+    assert.ok(existsSync('public' + p), `klip hilang: ${p}`);
+  }
+});
+
+test('VOICES.nanami: pola Gojo (correct/streak KOSONG, clips 5 jurus, wrong 3 kalah)', () => {
+  assert.deepEqual(VOICES.nanami.files.correct, []);
+  assert.deepEqual(VOICES.nanami.files.streak, []);
+  assert.equal(VOICES.nanami.files.wrong.length, 3);
+  assert.equal(VOICES.nanami.clips.length, 5);
+  assert.deepEqual(VOICES.nanami.clips, [
+    '/voices/nanami/shichisan.mp3', '/voices/nanami/oonata.mp3',
+    '/voices/nanami/garagara.mp3', '/voices/nanami/kokusen.mp3',
+    '/voices/nanami/jikangai.mp3',
+  ]);
+  assert.deepEqual(VOICES.nanami.files.wrong, [
+    '/voices/nanami/wrong_1.mp3', '/voices/nanami/wrong_2.mp3', '/voices/nanami/wrong_3.mp3',
+  ]);
 });

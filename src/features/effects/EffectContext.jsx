@@ -46,7 +46,7 @@ import {
   playMegumiTechnique, playMegumiTechniqueLayers, playShadowSwallow,
   playAdaptFlash, playSwordUnsheathe, playWheelShatter, playMakoraChant, playMakoraRoar,
   playNobaraTechnique, playNobaraTechniqueLayers, playStrawRustle,
-  playNanamiTechniqueLayers,
+  playNanamiTechniqueLayers, playNanamiTechnique,
 } from '../../utils/sfx';
 import { startMegumiShadowBgm, stopMegumiShadowBgm, duckMegumiAmbience } from '../../utils/megumiAmbience';
 import {
@@ -725,14 +725,15 @@ export function EffectProvider({ children }) {
     const inOvertime = nanamiOvertimeRef.current;
     const tech = nanamiTechniqueFor(kind, type === 'correct' ? streak : 0);
 
-    // Suara: jurus Nanami berlapis (T4) — salah biasa = generik; salah SAAT
-    // LEMBUR = kontrak batal (縛り破棄); benar = jurus berlapis (core→body→edge).
+    // Suara: klip jurus deterministik (T5) + lapis SFX (T4). Salah biasa =
+    // generik; salah SAAT LEMBUR = kontrak batal (縛り破棄); benar = klip jurus
+    // (七三/大鉈/瓦落瓦落/黒閃/時間外労働) + lapis core→body→edge.
     let clipMs = 0;
     if (type === 'wrong') {
       clipMs = playWrongSound();
       if (inOvertime) playNanamiTechniqueLayers('contract');
     } else if (tech) {
-      clipMs = playCorrectSound();
+      clipMs = playNanamiTechnique(tech);
       playNanamiTechniqueLayers(tech);
     } else {
       clipMs = playCorrectSound();
