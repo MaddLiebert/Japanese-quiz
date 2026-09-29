@@ -23,7 +23,7 @@ import { MegumiCurseBar, MegumiSummonCine, MegumiAura } from './MegumiShadow';
 import { NobaraBurst } from './NobaraBurst';
 import { NobaraCurseBar, NobaraUltCine } from './NobaraShadow';
 import { NanamiBurst } from './NanamiBurst';
-import { NanamiCurseBar } from './NanamiShadow';
+import { NanamiCurseBar, NanamiUltCine, NanamiOvertimeAura, NanamiRubbleMarker } from './NanamiShadow';
 import {
   megumiTechniqueFor, megumiCurseCharge, MEGUMI_ULT_THRESHOLD,
   MEGUMI_SUMMON_DURATION_S, megumiSummonLeft as megumiSummonLeftMs, megumiSummonStartDelayMs,
@@ -39,6 +39,8 @@ import {
 import {
   nanamiTechniqueFor, nanamiCurseCharge, NANAMI_ULT_THRESHOLD,
   nanamiAnswerHoldMs, nanamiUltHoldMs,
+  nanamiOvertimeLeft as nanamiOvertimeLeftMs, nanamiRubbleCut, nanamiOvertimeOutcome,
+  NANAMI_OVERTIME_S, NANAMI_RUBBLE_DELAY_MS, NANAMI_ULT_MIN_WRONG,
 } from './nanamiFx';
 import {
   playMegumiTechnique, playMegumiTechniqueLayers, playShadowSwallow,
@@ -254,10 +256,27 @@ export function EffectProvider({ children }) {
   const nobaraCutForRef = useRef(null);
 
   // ── Nanami: bar 呪力 20 + ultimate 時間外労働・全開 (cinematic 2.4 dtk → state
-  // lembur 30 dtk; T3). T2 = jalur dasar: efek jawaban 5 jurus + bar + cast
-  // minimum (konsumsi charge). Mekanik 瓦落瓦落・連鎖 (puing) menyusul di T3.
+  // lembur 30 dtk; T3). Mekanik 瓦落瓦落・連鎖: benar selama lembur → +1 puing
+  // (cap 3); soal berikutnya puing menghancurkan opsi salah (sisa ≥1); salah →
+  // kontrak batal (縛り破棄) + streak hangus.
   const [nanamiCharge, setNanamiCharge] = useState(0);
   const [nanamiCasting, setNanamiCasting] = useState(false);
+  const [nanamiUltSeed, setNanamiUltSeed] = useState(0);
+  const [nanamiOvertime, setNanamiOvertime] = useState(false);      // state lembur hidup
+  const [nanamiOvertimeLeft, setNanamiOvertimeLeft] = useState(NANAMI_OVERTIME_S);
+  const [nanamiPiles, setNanamiPiles] = useState(0);                // puing 瓦 0..3
+  const [nanamiRubbleCutIds, setNanamiRubbleCutIds] = useState([]); // opsi dihancurkan (soal aktif)
+  const [nanamiRubbleForId, setNanamiRubbleForId] = useState(null);
+  const [nanamiQuizOptionsState, setNanamiQuizOptionsState] = useState(null);
+  const nanamiOvertimeEndsAtRef = useRef(null);
+  const nanamiEndedRef = useRef(false);
+  const nanamiOvertimeRef = useRef(false);
+  const nanamiPilesRef = useRef(0);
+  const nanamiQuizOptionsRef = useRef(null);
+  const nanamiRubbleForRef = useRef(null);      // correctId soal pemilik potongan puing
+  const nanamiRubblePendingRef = useRef(null);  // correctId yang potongan puingnya dijadwalkan
+  const nanamiRubbleArmedRef = useRef(false);   // benar saat lembur → arm cut soal berikutnya
+  const nanamiRubbleArmedOnRef = useRef(null);  // correctId soal saat arm
   const timersRef = useRef([]);
   const hitTimerRef = useRef(null);
   // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
@@ -696,15 +715,54 @@ export function EffectProvider({ children }) {
   }, []);
 
   // ── Satu jawaban untuk pack Nanami (visual 'nanami') — 十劃呪法 ────────────
-  // Mirror triggerNobara TANPA import SFX jurus (menyusul T4) & TANPA mekanik
-  // state (T3): benar → fx jurus (rotasi 七三↔大鉈 + ladder 瓦落瓦落/黒閃/
-  // 時間外労働); salah → wash navy + kanji 「残念ですが」. Bar 呪力 ikut streak.
+  // Benar → fx jurus (rotasi 七三↔大鉈 + ladder 瓦落瓦落/黒閃/時間外労働);
+  // salah → wash navy + kanji 「残念ですが」. SELAMA lembur (T3): benar → +1
+  // puing (stack); salah → kontrak batal (縛り破棄: state bubar + puing rontok +
+  // streak hangus). SFX jurus menyusul T4 (masih generik).
   const triggerNanami = useCallback((type, kind, cfg) => {
     const streak = streakRef.current;
+    const inOvertime = nanamiOvertimeRef.current;
     const tech = nanamiTechniqueFor(kind, type === 'correct' ? streak : 0);
 
     // Suara: T2 masih generik (SFX jurus Nanami menyusul di T4).
     const clipMs = type === 'wrong' ? playWrongSound() : playCorrectSound();
+
+    // ── SELAMA LEMBUR: mekanik 瓦落瓦落・連鎖 (spec FINAL B) ────────────────
+    if (inOvertime) {
+      const { piles: newPiles, outcome } = nanamiOvertimeOutcome(type === 'correct' ? 'correct' : 'wrong', nanamiPilesRef.current);
+
+      if (outcome === 'contract') {
+        // Kontrak batal (縛り破棄): state bubar + puing rontok + streak hangus.
+        nanamiEndedRef.current = true;
+        playDomainCollapse('wrong');
+        nanamiOvertimeRef.current = false;
+        nanamiEndedRef.current = false;
+        setNanamiOvertime(false);
+        setNanamiPiles(0); nanamiPilesRef.current = 0;
+        setNanamiRubbleCutIds([]); setNanamiRubbleForId(null);
+        nanamiRubbleForRef.current = null; nanamiRubblePendingRef.current = null;
+        nanamiRubbleArmedRef.current = false; nanamiRubbleArmedOnRef.current = null;
+        streakRef.current = 0;   // bayaran: streak hangus
+        setNanamiCharge(0);
+        // fx kanji 「残念ですが」 redup (kind 'wrong' + tech 'contract').
+        const cid = ++seq;
+        setFx({
+          kind: 'wrong', tech: 'contract', id: cid, gifSrc: null,
+          seed: Math.floor(Math.random() * 900) + 1,
+          level: 0, milestone: 0, streak: 0, signature: null, onMilestone: false,
+        });
+        const ct = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, cid)), 1900);
+        timersRef.current.push(ct);
+        return;
+      }
+
+      // outcome === 'stack': +1 puing (cap), fx jurus tetap jalan.
+      // Arm potongan puing untuk SOAL BERIKUTNYA (pola 適応 Megumi).
+      nanamiPilesRef.current = newPiles;
+      setNanamiPiles(newPiles);
+      nanamiRubbleArmedRef.current = true;
+      nanamiRubbleArmedOnRef.current = nanamiQuizOptionsRef.current?.correctId ?? null;
+    }
 
     // Atribut <html> untuk efek "kena tebasan" pada TOMBOL yang dipencet
     // (CSS index.css: [data-nanami-hit] [data-picked]). Auto-clear 700ms.
@@ -728,9 +786,10 @@ export function EffectProvider({ children }) {
     timersRef.current.push(t);
 
     // Bar 呪力 20 slot: ikut streak; salah → kosong (pola JJK konsisten).
+    // Saat lembur bar = TIMER → jangan bunyi tick/ready (bukan charge lagi).
     const newCharge = nanamiCurseCharge(streak);
     setNanamiCharge(newCharge);
-    if (type === 'correct' && newCharge > 0) {
+    if (!inOvertime && type === 'correct' && newCharge > 0) {
       if (newCharge >= NANAMI_ULT_THRESHOLD) playCurseReady();
       else playCurseTick(newCharge);
     }
@@ -947,9 +1006,15 @@ export function EffectProvider({ children }) {
     setNobaraCutForId(null);
     nobaraCutForRef.current = null;
     setNobaraQuizOptionsState(null);
-    // Nanami: bar & cast padam (state puing menyusul T3).
+    // Nanami: bar, cast, & state lembur padam (puing rontok).
     setNanamiCharge(0);
     setNanamiCasting(false);
+    setNanamiOvertime(false); nanamiOvertimeRef.current = false;
+    nanamiOvertimeEndsAtRef.current = null;
+    setNanamiPiles(0); nanamiPilesRef.current = 0;
+    setNanamiRubbleCutIds([]); setNanamiRubbleForId(null);
+    nanamiRubbleForRef.current = null; nanamiRubblePendingRef.current = null;
+    setNanamiQuizOptionsState(null);
   }, [setTakeover]);
 
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
@@ -1013,9 +1078,15 @@ export function EffectProvider({ children }) {
     setNobaraCutForId(null);
     nobaraCutForRef.current = null;
     setNobaraQuizOptionsState(null);
-    // Nanami: bar & cast padam (state puing menyusul T3).
+    // Nanami: bar, cast, & state lembur padam (one-shot — tidak persist).
     setNanamiCharge(0);
     setNanamiCasting(false);
+    setNanamiOvertime(false); nanamiOvertimeRef.current = false;
+    nanamiOvertimeEndsAtRef.current = null;
+    setNanamiPiles(0); nanamiPilesRef.current = 0;
+    setNanamiRubbleCutIds([]); setNanamiRubbleForId(null);
+    nanamiRubbleForRef.current = null; nanamiRubblePendingRef.current = null;
+    setNanamiQuizOptionsState(null);
     stopAllAmbience();
   }, [setTakeover]);
 
@@ -1268,15 +1339,31 @@ export function EffectProvider({ children }) {
     timersRef.current.push(done);
   }, [activeVisual]);
 
-  // ── Cast 時間外労働・全開 (tap bar Nanami) — T2: konsumsi charge + flag cast.
-  // T3 memperluas: cinematic NanamiUltCine (2.4 dtk) + state lembur 30 dtk +
-  // mekanik 瓦落瓦落・連鎖 (puing → cut opsi soal berikutnya / kontrak batal).
+  // ── Cast 時間外労働・全開 (tap bar Nanami) — cinematic 2.4 dtk → state lembur
+  // 30 dtk (pola Megumi: timer JALAN, mulai SETELAH settle supaya waktu main
+  // penuh). Puing mulai 0 (kerja dari nol); mekanik 連鎖 jalan di triggerNanami.
   const castNanamiUlt = useCallback(() => {
     if (activeVisual !== 'nanami') return;
     streakRef.current = 0;
+    nanamiEndedRef.current = false;
     setNanamiCharge(0);
     setNanamiCasting(true);
-    const done = setTimeout(() => setNanamiCasting(false), nanamiUltHoldMs());
+    setNanamiUltSeed((n) => n + 1);
+    nanamiPilesRef.current = 0;
+    setNanamiPiles(0);
+    setNanamiRubbleCutIds([]); setNanamiRubbleForId(null);
+    nanamiRubbleForRef.current = null; nanamiRubblePendingRef.current = null;
+    nanamiRubbleArmedRef.current = false; nanamiRubbleArmedOnRef.current = null;
+    // 30 dtk mulai SETELAH cinematic settle (bukan dari cast) — waktu main penuh.
+    nanamiOvertimeEndsAtRef.current = Date.now() + nanamiUltHoldMs() + NANAMI_OVERTIME_S * 1000;
+    setNanamiOvertimeLeft(NANAMI_OVERTIME_S);
+    // Selesai cinematic → masuk state lembur + dentuman cast (T4 ganti SFX jurus).
+    const done = setTimeout(() => {
+      setNanamiCasting(false);
+      nanamiOvertimeRef.current = true;
+      setNanamiOvertime(true);
+      playDomainBoom('cast');
+    }, nanamiUltHoldMs());
     timersRef.current.push(done);
   }, [activeVisual]);
 
@@ -1292,6 +1379,83 @@ export function EffectProvider({ children }) {
     megumiQuizOptionsRef.current = reg;
     setMegumiQuizOptionsState(reg);
   }, []);
+
+  // ── Registrasi opsi soal aktif untuk Nanami (mekanik 瓦落瓦落・連鎖) ─────────
+  // Puing menghancurkan opsi salah SOAL BERIKUTNYA (pola setMegumiQuizOptions).
+  const setNanamiQuizOptions = useCallback((options, correctId) => {
+    if (!Array.isArray(options) || options.length === 0) {
+      nanamiQuizOptionsRef.current = null;
+      setNanamiQuizOptionsState(null);
+      return;
+    }
+    const reg = { options, correctId };
+    nanamiQuizOptionsRef.current = reg;
+    setNanamiQuizOptionsState(reg);
+  }, []);
+
+  // ── 瓦落瓦落・連鎖: puing menghancurkan opsi salah soal BERIKUTNYA ────────
+  // Di-arm saat BENAR selama lembur (triggerNanami cabang stack). Begitu soal
+  // baru terdaftar (beda dari soal saat arm) → tunggu NANAMI_RUBBLE_DELAY_MS →
+  // hancurkan min(puing, salah−1) opsi. Batal kalau lembur padam/kontrak.
+  // Potongan hanya berlaku untuk SOAL AKTIF (soal baru → bersih).
+  useEffect(() => {
+    if (activeVisual !== 'nanami') return undefined;
+    const reg = nanamiQuizOptionsState;
+    if (!reg) return undefined;
+    // Soal baru bukan pemilik potongan → bersihkan sisa puing soal lama.
+    if (nanamiRubbleForRef.current !== reg.correctId) {
+      setNanamiRubbleCutIds([]);
+      setNanamiRubbleForId(null);
+    }
+    if (!nanamiRubbleArmedRef.current) return undefined;
+    if (reg.correctId === nanamiRubbleArmedOnRef.current) return undefined;  // masih soal yang barusan dijawab
+    if (!nanamiOvertimeRef.current) return undefined;                        // lembur padam → 連鎖 batal
+    if (nanamiRubblePendingRef.current === reg.correctId) return undefined;  // sudah dijadwalkan
+    nanamiRubblePendingRef.current = reg.correctId;
+    const t = setTimeout(() => {
+      nanamiRubblePendingRef.current = null;
+      if (!nanamiOvertimeRef.current) return;
+      const cur = nanamiQuizOptionsRef.current;
+      if (!cur || cur.correctId !== reg.correctId) return;
+      const ids = nanamiRubbleCut(cur.options, cur.correctId, nanamiPilesRef.current, NANAMI_ULT_MIN_WRONG);
+      if (ids.length === 0) return;
+      nanamiRubbleForRef.current = cur.correctId;
+      setNanamiRubbleCutIds(ids);
+      setNanamiRubbleForId(cur.correctId);
+      nanamiRubbleArmedRef.current = false;
+      nanamiRubbleArmedOnRef.current = null;
+    }, NANAMI_RUBBLE_DELAY_MS);
+    timersRef.current.push(t);
+    return undefined;
+  }, [activeVisual, nanamiQuizOptionsState]);
+
+  // Hitung mundur lembur (30 dtk) — habis → padam sendiri (streak TETAP, puing
+  // rontok; bukan salah). Beda dari kontrak batal (salah → streak hangus).
+  useEffect(() => {
+    if (!nanamiOvertime) return undefined;
+    const tick = () => {
+      const left = nanamiOvertimeLeftMs(nanamiOvertimeEndsAtRef.current);
+      setNanamiOvertimeLeft(left);
+      if (left <= 0) {
+        if (!nanamiEndedRef.current) { nanamiEndedRef.current = true; playDomainCollapse('timeout'); }
+        nanamiOvertimeRef.current = false;
+        setNanamiOvertime(false);
+        setNanamiPiles(0); nanamiPilesRef.current = 0;
+        setNanamiRubbleCutIds([]); setNanamiRubbleForId(null);
+        nanamiRubbleForRef.current = null; nanamiRubblePendingRef.current = null;
+        nanamiRubbleArmedRef.current = false; nanamiRubbleArmedOnRef.current = null;
+      }
+    };
+    tick();
+    const id = setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [nanamiOvertime]);
+
+  useEffect(() => {
+    if (nanamiOvertime) return;
+    nanamiOvertimeEndsAtRef.current = null;
+    setNanamiOvertimeLeft(NANAMI_OVERTIME_S);
+  }, [nanamiOvertime]);
 
   // ── Registrasi opsi soal aktif untuk Nobara (cut 全弾爆発) ─────────────────
   const setNobaraQuizOptions = useCallback((options, correctId) => {
@@ -1582,7 +1746,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, castNanamiUlt }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
@@ -1604,6 +1768,9 @@ export function EffectProvider({ children }) {
         nobaraUltSeed={nobaraUltSeed} nobaraCutIds={nobaraCutIds}
         onCastNobara={castNobaraUlt}
         nanamiCharge={nanamiCharge} nanamiCasting={nanamiCasting}
+        nanamiUltSeed={nanamiUltSeed} nanamiOvertimeOn={nanamiOvertime}
+        nanamiOvertimeLeft={nanamiOvertimeLeft} nanamiPiles={nanamiPiles}
+        nanamiRubbleCutIds={nanamiRubbleCutIds}
         onCastNanami={castNanamiUlt}
       />
     </EffectContext.Provider>
@@ -1611,7 +1778,7 @@ export function EffectProvider({ children }) {
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, onCastNanami = null }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, nanamiUltSeed = 0, nanamiOvertimeOn = false, nanamiOvertimeLeft = 0, nanamiPiles = 0, nanamiRubbleCutIds = [], onCastNanami = null }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -1868,9 +2035,21 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
 
       {/* ── Nanami Kento (pack 'nanami') — 十劃呪法 · 時間外労働・全開 ─────────── */}
       {visual === 'nanami' && (
-        <AnimatePresence>
-          {fx && <NanamiBurst key={`nanami-${fx.id}`} fx={fx} kind={kind} />}
-        </AnimatePresence>
+        <>
+          {nanamiCasting && (
+            <NanamiUltCine key={`nanami-ult-${nanamiUltSeed}`} seed={nanamiUltSeed} />
+          )}
+          {nanamiOvertimeOn && (
+            <NanamiOvertimeAura key={`nanami-ot-${nanamiUltSeed}`} seed={nanamiUltSeed} />
+          )}
+          <AnimatePresence>
+            {fx && <NanamiBurst key={`nanami-${fx.id}`} fx={fx} kind={kind} />}
+          </AnimatePresence>
+          {/* Puing menghantam opsi yang dihancurkan (marker ring emas) */}
+          {nanamiRubbleCutIds.map((id, i) => (
+            <NanamiRubbleMarker key={`nanami-rubble-${id}`} id={id} reduced={false} delay={i * 0.12} />
+          ))}
+        </>
       )}
 
       {visual === 'nanami' && quizActive && (
@@ -1879,6 +2058,9 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
           ready={nanamiCharge >= NANAMI_ULT_THRESHOLD && !nanamiCasting}
           onCast={onCastNanami}
           casting={nanamiCasting}
+          overtimeOn={nanamiOvertimeOn}
+          overtimeLeft={nanamiOvertimeLeft}
+          piles={nanamiPiles}
         />
       )}
     </div>

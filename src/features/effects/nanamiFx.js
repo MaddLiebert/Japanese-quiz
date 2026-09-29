@@ -104,6 +104,14 @@ export const NANAMI_TIMELINE = {
 // State lembur 30 dtk (pola `rare` — timer JALAN; jam kecil di pojok).
 export const NANAMI_OVERTIME_S = 30;
 
+// Hitung mundur state lembur (clamp 0..NANAMI_OVERTIME_S; input kotor → 0).
+export const nanamiOvertimeLeft = (endsAt, now = Date.now()) => {
+  if (!Number.isFinite(endsAt) || !Number.isFinite(now)) return 0;
+  const left = Math.ceil((endsAt - now) / 1000);
+  if (!Number.isFinite(left) || left <= 0) return 0;
+  return Math.min(NANAMI_OVERTIME_S, left);
+};
+
 // Mulai hitung mundur SETELAH cinematic settle → 30 dtk itu waktu main penuh.
 export const nanamiOvertimeStartDelayMs = () => Math.round(NANAMI_ULT_DURATION_S * 1000);
 
@@ -113,6 +121,9 @@ export const nanamiOvertimeStartDelayMs = () => Math.round(NANAMI_ULT_DURATION_S
 // sisakan ≥1 opsi salah (gak pernah auto-benar).
 export const NANAMI_RUBBLE_MAX = 3;
 export const NANAMI_ULT_MIN_WRONG = 1;
+// Jeda puing mendarat di soal berikutnya (pola MEGUMI_ADAPT_DELAY_MS 1100 tapi
+// lebih cepat — puing MENGHANTAM, bukan bayangan menelan: responsif tapi kebaca).
+export const NANAMI_RUBBLE_DELAY_MS = 900;
 
 // Benar selama state: +1 puing, clamp cap. Input kotor → 1 (benar tetap bernilai).
 export const nanamiRubbleGain = (piles) => {
