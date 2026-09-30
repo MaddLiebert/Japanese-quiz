@@ -1,0 +1,116 @@
+{
+ "measured_at": "2026-09-30",
+ "source": "C:/Users/maddo/Downloads/Toji.mp3",
+ "container_check": "MP3 (CBR 160kbps 32kHz) — bukan MP4/DASH",
+ "segments": [
+  {
+   "id": "seg1",
+   "t0": 0.0,
+   "t1": 4.42,
+   "stt": "すべて問題なし。いや、これでいい。",
+   "use": "SKIP — tidak ketemu di daftar quote kanon"
+  },
+  {
+   "id": "seg2",
+   "t0": 4.42,
+   "t1": 8.58,
+   "stt": "殺す。オマエ名前は。",
+   "use": "opsional — kalah alternatif (kanon ch.113)"
+  },
+  {
+   "id": "seg3",
+   "t0": 8.58,
+   "t1": 13.12,
+   "stt": "禪院じゃねぇのか、よかったな",
+   "use": "CAST ultimate (klip quote, kanon ch.113)"
+  },
+  {
+   "id": "seg4",
+   "t0": 13.12,
+   "t1": 16.74,
+   "stt": "化け物が。",
+   "use": "wrong_1 (kalah, kanon vs Gojo)"
+  }
+ ],
+ "gifs": [
+  {
+   "file": "Downloads/toji/toji kalah 1.gif",
+   "w": 220,
+   "h": 220,
+   "frames": 44,
+   "dur_s": 4.4,
+   "isi": "Toji + 武器庫呪霊 di bahu (懐玉・玉折)"
+  },
+  {
+   "file": "Downloads/toji/toji kalah 2.gif",
+   "w": 220,
+   "h": 233,
+   "frames": 18,
+   "dur_s": 1.8,
+   "isi": "close-up Toji bangkit Shibuya (VERIFIKASI ULANG saat integrasi)"
+  }
+ ],
+ "target_clips": {
+  "nanami_pattern": "public/voices/toji/{shakkontou,banri_no_kusari,amanosakahoko,yuuyun,bukiko_jurei}.mp3 + wrong_1..3 + cast.mp3"
+ },
+ "final_clips_measured": {
+  "measured_at": "2026-09-30",
+  "method": "PyAV mono16k RMS 20ms thr4%",
+  "clips": {
+   "cast.mp3": {
+    "dur_s": 4.539,
+    "lead_s": 0.06,
+    "tail_s": 4.5,
+    "peak": 5576
+   },
+   "shakkontou.mp3": {
+    "dur_s": 2.087,
+    "lead_s": 0.2,
+    "tail_s": 1.08,
+    "peak": 6602
+   },
+   "banri_no_kusari.mp3": {
+    "dur_s": 2.087,
+    "lead_s": 0.18,
+    "tail_s": 0.94,
+    "peak": 6872
+   },
+   "amanosakahoko.mp3": {
+    "dur_s": 2.087,
+    "lead_s": 0.2,
+    "tail_s": 0.94,
+    "peak": 7985
+   },
+   "yuuyun.mp3": {
+    "dur_s": 2.087,
+    "lead_s": 0.2,
+    "tail_s": 0.64,
+    "peak": 7452
+   },
+   "bukiko_jurei.mp3": {
+    "dur_s": 2.087,
+    "lead_s": 0.18,
+    "tail_s": 0.98,
+    "peak": 6804
+   },
+   "wrong_1.mp3": {
+    "dur_s": 1.119,
+    "lead_s": 0.06,
+    "tail_s": 0.98,
+    "peak": 5908
+   },
+   "wrong_2.mp3": {
+    "dur_s": 3.983,
+    "lead_s": 0.22,
+    "tail_s": 2.96,
+    "peak": 6650
+   },
+   "wrong_3.mp3": {
+    "dur_s": 2.975,
+    "lead_s": 0.2,
+    "tail_s": 1.98,
+    "peak": 7289
+   }
+  }
+ }
+}
