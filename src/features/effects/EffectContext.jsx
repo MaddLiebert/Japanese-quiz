@@ -55,6 +55,7 @@ import {
   playAdaptFlash, playSwordUnsheathe, playWheelShatter, playMakoraChant, playMakoraRoar,
   playNobaraTechnique, playNobaraTechniqueLayers, playStrawRustle,
   playNanamiTechniqueLayers, playNanamiTechnique,
+  playTojiTechniqueLayers,
 } from '../../utils/sfx';
 import { startMegumiShadowBgm, stopMegumiShadowBgm, duckMegumiAmbience } from '../../utils/megumiAmbience';
 import {
@@ -843,8 +844,17 @@ export function EffectProvider({ children }) {
     const inState = tojiStateRef.current;
     const tech = tojiTechniqueFor(kind, type === 'correct' ? streak : 0);
 
-    // Suara: T2 masih generik (SFX jurus Toji menyusul di T4).
-    const clipMs = type === 'wrong' ? playWrongSound() : playCorrectSound();
+    // Suara (T4): benar = jurus berlapis (core→edge: baja/rantai/debu — TANPA
+    // glow 呪力); salah = generik. Saat state: kill 術師殺し / 叩き (bubar).
+    let clipMs = 0;
+    if (type === 'wrong') {
+      clipMs = playWrongSound();
+    } else if (tech) {
+      clipMs = playCorrectSound();
+      playTojiTechniqueLayers(tech);
+    } else {
+      clipMs = playCorrectSound();
+    }
 
     // ── SELAMA state 全開: mekanik FINAL A 武器庫・一撃離脱 ───────────────────
     if (inState) {
@@ -856,6 +866,7 @@ export function EffectProvider({ children }) {
         // Lanjut ke jalur fx salah normal di bawah (fall-through).
         tojiEndedRef.current = true;
         playDomainCollapse('wrong');
+        playTojiTechniqueLayers('wrong');
         tojiStateRef.current = false;
         tojiEndedRef.current = false;
         setTojiStateOn(false);
@@ -886,6 +897,8 @@ export function EffectProvider({ children }) {
           if (hitTimerRef.current) clearTimeout(hitTimerRef.current);
           hitTimerRef.current = setTimeout(() => { delete root.dataset.tojiHit; }, 700);
         }
+        // SFX kill: belahan jiwa + dawai baja (術師殺し berlapis).
+        playTojiTechniqueLayers('kill');
         // fx kill: seluruh opsi tertebas (kind 'streak' + tech 'kill' — merah).
         const kid = ++seq;
         setFx({
@@ -1537,7 +1550,9 @@ export function EffectProvider({ children }) {
     // 30 dtk mulai SETELAH cinematic settle (bukan dari cast) — waktu main penuh.
     tojiStateEndsAtRef.current = Date.now() + tojiUltHoldMs() + TOJI_STATE_S * 1000;
     setTojiStateLeft(TOJI_STATE_S);
-    // Selesai cinematic → masuk state 全開 + dentuman cast (T4 ganti SFX jurus).
+    // SFX ult berlapis (T4): chant rendah + dentuman cast (hening 呪力ゼロ).
+    playTojiTechniqueLayers('ult');
+    // Selesai cinematic → masuk state 全開 + dentuman settle (pola Nanami).
     const done = setTimeout(() => {
       setTojiCasting(false);
       tojiStateRef.current = true;
