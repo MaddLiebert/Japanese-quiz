@@ -26,6 +26,7 @@ import { NanamiBurst } from './NanamiBurst';
 import { NanamiCurseBar, NanamiUltCine, NanamiOvertimeAura, NanamiRubbleMarker } from './NanamiShadow';
 import { TojiBurst } from './TojiBurst';
 import { TojiCurseBar, TojiUltCine } from './TojiShadow';
+import { tojiGifForAnswer, tojiGifHoldMs, preloadTojiGifs } from './tojiGifs';
 import {
   megumiTechniqueFor, megumiCurseCharge, MEGUMI_ULT_THRESHOLD,
   MEGUMI_SUMMON_DURATION_S, megumiSummonLeft as megumiSummonLeftMs, megumiSummonStartDelayMs,
@@ -922,9 +923,11 @@ export function EffectProvider({ children }) {
     }
 
     const fxId = ++seq;
-    const holdMs = tojiAnswerHoldMs(clipMs, cfg?.hold || 0);
+    // GIF kalah Toji (2 klip, acak) → hold ikut GIF/klip (cap salah 4,6s).
+    const gifSrc = tojiGifForAnswer(type);
+    const holdMs = tojiGifHoldMs(gifSrc, tojiAnswerHoldMs(clipMs, cfg?.hold || 0), type === 'wrong');
     setFx({
-      kind, tech, id: fxId, gifSrc: null,
+      kind, tech, id: fxId, gifSrc,
       seed: Math.floor(Math.random() * 900) + 1,
       level: 0, milestone: 0,
       streak: type === 'correct' ? streak : 0,
@@ -1531,6 +1534,13 @@ export function EffectProvider({ children }) {
       playDomainBoom('cast');
     }, nanamiUltHoldMs());
     timersRef.current.push(done);
+  }, [activeVisual]);
+
+  // Preload GIF kalah Toji (2 klip) supaya frame pertama siap — pola Megumi/Sukuna.
+  useEffect(() => {
+    if (activeVisual !== 'toji') return undefined;
+    preloadTojiGifs();
+    return undefined;
   }, [activeVisual]);
 
   // ── Cast 天与呪縛・全開 (tap bar Toji) — cinematic 4,54 dtk (sinkron cast.mp3
