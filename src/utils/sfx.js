@@ -2058,3 +2058,143 @@ export const playNanamiTechnique = (technique) => {
   const lead = NANAMI_LEAD_S[technique] || 0;
   return playFile(path, lead);
 };
+
+// ── SFX Toji Fushiguro (天与呪縛・術師殺し) — 11 fungsi baru (T4) ──────────────
+// Identitas 冷たい鋼: BAJA (刃鳴り = dawai logam tinggi) + RANTAI (gemerincing
+// beruntun) + DEBU/BATU (crunch) + TANPA GLOW 呪力 (semua fisik, bukan energi).
+// Reuse: playSlash(heavy), playBlackSpark, playKokusenCrackle, playDomainBoom,
+// playDomainCollapse, playCurseTick, playCurseReady, playChainBurst, playNailThud.
+// Semua murni & deterministik (tanpa rng di params).
+
+// 刃鳴り (はなり): baja berdesir — dua nada tinggi berdenyut (beat 1.5 Hz), decay pendek.
+export const steelRingParams = () => ({ hz: 3140, hz2: 4310, dur: 0.5, gain: 0.15, beatHz: 1.5 });
+// 釈魂刀: belahan jiwa — split rendah (bilah membelah) + noise logam.
+export const soulSplitParams = () => ({ type: 'sawtooth', fromHz: 1400, toHz: 42, dur: 0.42, gain: 0.3, noiseGain: 0.18 });
+// 万里ノ鎖: gemerincing rantai — bursts pendek beruntun, bandpass tinggi (logam).
+export const chainRattleParams = () => ({ bursts: 6, fromHz: 5200, toHz: 2600, dur: 0.06, gapMs: 42, gain: 0.13 });
+// Seretan rantai: DISERET keluar — naik (ditarik) + hentakan akhir.
+export const chainYankParams = () => ({ type: 'bandpass', fromHz: 700, toHz: 2400, dur: 0.34, gain: 0.2, noiseGain: 0.16 });
+// 天逆鉾: tusukan belati — turun tajam pendek (tusuk masuk) + impact.
+export const spearPierceParams = () => ({ type: 'sine', fromHz: 2600, toHz: 90, dur: 0.22, gain: 0.28, noiseGain: 0.2 });
+// Pembatalan jurus (術式強制解除): reverse-whoosh NAIK + glitch kecil.
+export const techniqueCancelParams = () => ({ type: 'triangle', fromHz: 220, toHz: 1900, dur: 0.46, gain: 0.16, noiseGain: 0.1 });
+// 遊雲 (三節棍): sapuan tongkat 3 ruas — naik melebar, durasi panjang.
+export const staffWhirlParams = () => ({ type: 'sawtooth', fromHz: 260, toHz: 1300, dur: 0.52, gain: 0.22, noiseGain: 0.14 });
+// Hantaman: crunch tumpul beruntun (tulang/batu).
+export const boneCrunchParams = () => ({ bursts: 3, fromHz: 320, toHz: 90, dur: 0.07, gapMs: 38, gain: 0.22 });
+// 武器庫呪霊: geraman ulat raksasa — rendah panjang TURUN (bukan drone).
+export const inventoryGrowlParams = () => ({ type: 'sawtooth', fromHz: 180, toHz: 48, dur: 0.95, gain: 0.24, noiseGain: 0.12 });
+// Senjata dimuntahkan: metal slide (tinggi → sedang) + thud.
+export const weaponEjectParams = () => ({ type: 'square', fromHz: 1900, toHz: 260, dur: 0.3, gain: 0.2, noiseGain: 0.22 });
+// Chant cast: rendah panjang (hening 呪力ゼロ — napas, bukan teriakan).
+export const chantParams = () => ({ type: 'sine', fromHz: 96, toHz: 58, dur: 1.4, gain: 0.18, noiseGain: 0.06 });
+
+export const playSteelRing = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = steelRingParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  for (const [hz, g0] of [[p.hz, p.gain], [p.hz2, p.gain * 0.6]]) {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(hz, t);
+    // beat lambat dua nada (berdenyut, bukan statis — khas dawai logam)
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.frequency.setValueAtTime(p.beatHz, t);
+    lfoGain.gain.setValueAtTime(g0 * 0.35, t);
+    lfo.connect(lfoGain);
+    lfoGain.connect(g.gain);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(g0, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0008, t + p.dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + p.dur + 0.05);
+    lfo.start(t);
+    lfo.stop(t + p.dur + 0.05);
+  }
+  return Math.round(p.dur * 1000);
+};
+
+export const playSoulSplit = () => sweepNoise(soulSplitParams());
+
+export const playChainRattle = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = chainRattleParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  for (let i = 0; i < p.bursts; i += 1) {
+    noiseBurst(ctx, t + (i * p.gapMs) / 1000, {
+      dur: p.dur, gain: p.gain * (1 - i * 0.08),
+      type: 'bandpass', fromHz: p.fromHz - i * 260, toHz: p.toHz,
+    });
+  }
+  return Math.round((p.bursts * p.gapMs + p.dur * 1000));
+};
+
+export const playChainYank = () => sweepNoise(chainYankParams(), { noise: true });
+export const playSpearPierce = () => sweepNoise(spearPierceParams());
+export const playTechniqueCancel = () => sweepNoise(techniqueCancelParams());
+export const playStaffWhirl = () => sweepNoise(staffWhirlParams());
+export const playInventoryGrowl = () => sweepNoise(inventoryGrowlParams());
+export const playWeaponEject = () => sweepNoise(weaponEjectParams());
+export const playTojiChant = () => sweepNoise(chantParams());
+
+export const playBoneCrunch = () => {
+  if (typeof window === 'undefined') return 0;
+  const p = boneCrunchParams();
+  const ctx = initAudioContext();
+  if (!ctx) return 0;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  for (let i = 0; i < p.bursts; i += 1) {
+    noiseBurst(ctx, t + (i * p.gapMs) / 1000, {
+      dur: p.dur, gain: p.gain * (1 - i * 0.15),
+      type: 'lowpass', fromHz: p.fromHz * (1 + i * 0.3), toHz: p.toHz,
+    });
+  }
+  return Math.round((p.bursts * p.gapMs + p.dur * 1000));
+};
+
+// ── Registry lapis SFX Toji (urut identitas: core → edge) ───────────────────
+export const TOJI_TECHNIQUE_SFX_LAYERS = {
+  shakkontou: ['playSteelRing', 'playSoulSplit'],
+  banri_no_kusari: ['playChainRattle', 'playChainYank'],
+  amanosakahoko: ['playSpearPierce', 'playTechniqueCancel'],
+  yuuyun: ['playStaffWhirl', 'playBoneCrunch'],
+  bukiko_jurei: ['playInventoryGrowl', 'playWeaponEject'],
+  kill: ['playSoulSplit', 'playSteelRing'],
+  ult: ['playTojiChant', 'playDomainBoom'],
+  wrong: ['playNailThud'],
+};
+
+export const tojiTechniqueSfxLayers = (technique) =>
+  Array.isArray(TOJI_TECHNIQUE_SFX_LAYERS[technique]) ? TOJI_TECHNIQUE_SFX_LAYERS[technique] : [];
+
+const TOJI_SFX_FNS = {
+  playSteelRing, playSoulSplit, playChainRattle, playChainYank,
+  playSpearPierce, playTechniqueCancel, playStaffWhirl, playBoneCrunch,
+  playInventoryGrowl, playWeaponEject, playTojiChant,
+  playNailThud, playDomainBoom,
+};
+
+// Putar SEMUA lapis SFX satu jurus Toji (urutan registry), kembalikan jumlah
+// lapis yang benar-benar terpanggil. Node/test = no-op (semua player return 0).
+export const playTojiTechniqueLayers = (technique) => {
+  const layers = tojiTechniqueSfxLayers(technique);
+  let n = 0;
+  for (const name of layers) {
+    const fn = TOJI_SFX_FNS[name];
+    if (typeof fn !== 'function') continue;
+    fn();
+    n += 1;
+  }
+  return n;
+};
