@@ -53,6 +53,9 @@ export const TOJI_STYLE = {
   yuuyun:          { kanji: '遊雲',         color: TOJI_STEEL,   label: '遊雲 · Yuuyun' },
   bukiko_jurei:    { kanji: '武器庫呪霊',   color: TOJI_WORM,    label: '武器庫呪霊 · Bukiko Jurei' },
   ult:             { kanji: '天与呪縛・全開', color: TOJI_BLOOD,   label: '天与呪縛・全開 · Tenyo Jubaku Zenkai' },
+  // 術師殺し (じゅつしごろし) — soal "dibunuh" selama state (mekanik 一撃離脱:
+  // salah beramunisi → bayar 1 → skip). Julukan kanon Toji.
+  kill:            { kanji: '術師殺し',     color: TOJI_BLOOD,   label: '術師殺し · Jutsushi Goroshi' },
 };
 
 // ── Ladder jurus per streak (spec §Skill per streak — FINAL) ────────────────
@@ -127,6 +130,15 @@ export const tojiStateLeft = (endsAt, now = Date.now()) => {
 
 // Mulai hitung mundur SETELAH cinematic settle → 30 dtk itu waktu main penuh.
 export const tojiStateStartDelayMs = () => Math.round(TOJI_ULT_DURATION_S * 1000);
+
+// ── Timing mekanik 術師殺し (soal "dibunuh" saat salah beramunisi) ──────────
+// Tebasan kill (TojiBurst tech 'kill') tampil dulu → baru lompat soal. 1250ms:
+// cukup utk 5 tebasan staggered (0→340ms) + tail terbaca, tanpa nunggu lama
+// (pola MEGUMI_ADAPT_DELAY_MS 1100 — responsif, bukan dramatis).
+export const TOJI_SKIP_DELAY_MS = 1250;
+// fx kill ditahan lebih lama dari delay skip → tail tebasan tidak terpotong
+// saat soal berganti (hold 1500 > skip 1250, sisa 250ms terbaca di soal baru).
+export const TOJI_KILL_HOLD_MS = 1500;
 
 // ── Mekanik 武器庫・一撃離脱 (FINAL A — keputusan Nacht) ────────────────────
 // Ekonomi amunisi: benar → +1 senjata di rail (cap 3). Salah → bayar 1:

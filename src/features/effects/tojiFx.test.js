@@ -11,6 +11,7 @@ import {
   TOJI_FLASH, TOJI_STEEL, TOJI_GUNMETAL, TOJI_VOID, TOJI_BLOOD, TOJI_WORM,
   TOJI_MIN_HOLD_MS, tojiAnswerHoldMs, tojiUltHoldMs, tojiStateLeft,
   tojiBlade, tojiChain, tojiSoulSplit, tojiWorm, TOJI_WORM_WEAPONS,
+  tojiStateStartDelayMs, TOJI_SKIP_DELAY_MS, TOJI_KILL_HOLD_MS,
 } from './tojiFx.js';
 import { GOJO_MILESTONES } from './gojoFx.js';
 
@@ -337,4 +338,28 @@ test('武器庫・一撃離脱 state transition: benar menabung → salah membay
   out = tojiUltOutcome('wrong', ammo);
   assert.deepEqual(out, { ammo: 0, outcome: 'break' });
   assert.deepEqual(tojiCutOptions(opts, 'a', 0), [], 'amunisi 0 → tidak ada cut');
+});
+
+// ── T3: wiring state 全開 (skip soal dibunuh + timing) ──────────────────────
+test('TOJI_STATE_S = 30 dtk (state 全開 — timer JALAN, TANPA domain)', () => {
+  assert.equal(TOJI_STATE_S, 30);
+});
+
+test('TOJI_STYLE.kill: 術師殺し utk soal yang dibunuh (mekanik 一撃離脱)', () => {
+  assert.ok(TOJI_STYLE.kill, 'style kill harus ada');
+  assert.equal(TOJI_STYLE.kill.kanji, '術師殺し');
+  assert.equal(TOJI_STYLE.kill.color, TOJI_BLOOD);
+  assert.ok(TOJI_STYLE.kill.label.includes('Jutsushi'), 'label kana romaji');
+});
+
+test('tojiStateStartDelayMs: 30 dtk mulai SETELAH cinematic settle (4,54 dtk)', () => {
+  assert.equal(tojiStateStartDelayMs(), 4540);
+  assert.equal(tojiUltHoldMs(), tojiStateStartDelayMs() + 300, 'settle = cinematic + buffer');
+});
+
+test('TOJI_SKIP_DELAY_MS & TOJI_KILL_HOLD_MS: tebasan terbaca dulu, baru skip', () => {
+  assert.equal(TOJI_SKIP_DELAY_MS, 1250);
+  assert.equal(TOJI_KILL_HOLD_MS, 1500);
+  assert.ok(TOJI_SKIP_DELAY_MS < TOJI_KILL_HOLD_MS, 'fx kill tetap tampil saat skip (tail)');
+  assert.ok(TOJI_SKIP_DELAY_MS > TOJI_MOTION.durMid * 3, 'tebasan (320ms) kebaca sebelum lompat');
 });
