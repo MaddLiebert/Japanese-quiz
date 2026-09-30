@@ -27,3 +27,15 @@ dist-ssr
 
 # Screenshot lokal di .hermes/ (plan .md tetap di-track, ikut konvensi repo)
 .hermes/*.png
+
+# Scratch kerja agent — dump output, script sekali pakai, hasil recon.
+# Plans (*.md) dan file spec tetap di-track; folder review dipindah ke sini
+# biar tidak ikut ke-deploy lewat public/.
+.hermes/__pycache__/
+.hermes/_*
+.hermes/nanami-clips/
+.hermes/review/
+.hermes/cli-help.txt
+
+# Folder kerja sementara di root (screenshot, diff, referensi)
+_tmp_*
