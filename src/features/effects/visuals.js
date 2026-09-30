@@ -9,6 +9,7 @@ export const VISUALS = {
   megumi:{ id: 'megumi', label: 'Megumi Ten Shadows', component: 'megumi' },
   nobara:{ id: 'nobara', label: 'Nobara Straw Doll', component: 'nobara' },
   nanami:{ id: 'nanami', label: 'Nanami Ratio Technique', component: 'nanami' },
+  toji:  { id: 'toji',   label: 'Toji Heavenly Restriction', component: 'toji' },
 };
 
 export const getVisual = (key) => VISUALS[key] || null;

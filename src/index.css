@@ -774,3 +774,85 @@ button[data-nanami-cut]::after {
   button[data-nanami-cut]::before,
   button[data-nanami-cut]::after { animation: none; }
 }
+
+/* ── Toji Fushiguro: efek "tebasan 術師殺し" pada tombol jawaban ─────────────
+   [data-toji-hit] di-set provider saat jawaban (identitas 天与呪縛: NOL tenaga
+   kutukan → bukan energi berwarna, tapi KILATAN BAJA + tebasan silang tipis
+   yang "memotong" tombol; recoil bersih tanpa bounce, lalu bilah pergi).
+   Beda dari Nanami (garis 7:3 emas presisi) & Sukuna (cakar): di sini kilatan
+   putih 1 frame + dua garis baja menyilang + bayangan gunmetal. Salah → wash
+   blood red redup (残穢). */
+@keyframes tojiSlashHit {
+  0%   { transform: translate(0, 0) scale(1); }
+  12%  { transform: translate(0, -3px) scale(1.014); }
+  38%  { transform: translate(0, 1px) scale(0.994); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes tojiSlashSweep {
+  0%   { opacity: 0; transform: translateX(-20%) rotate(-8deg); }
+  18%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(16%) rotate(-8deg); }
+}
+@keyframes tojiSlashFlash {
+  0%   { opacity: 0; }
+  10%  { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+@keyframes tojiSlashWrong {
+  0%, 100% { transform: translateX(0); filter: brightness(1); }
+  22% { transform: translateX(-2px); filter: brightness(0.72); }
+  60% { transform: translateX(2px); filter: brightness(0.88); }
+}
+html[data-toji-hit] button[data-picked] {
+  animation: tojiSlashHit 0.32s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+html[data-toji-hit] button[data-picked]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(112deg, transparent 44%, rgba(203, 213, 225, 0.85) 49.4%, rgba(255, 255, 255, 0.98) 50%, rgba(203, 213, 225, 0.85) 50.6%, transparent 56%),
+    linear-gradient(64deg, transparent 46%, rgba(63, 63, 70, 0.7) 49.6%, rgba(255, 255, 255, 0.9) 50%, rgba(63, 63, 70, 0.7) 50.4%, transparent 54%);
+  animation: tojiSlashSweep 0.36s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+html[data-toji-hit] button[data-picked]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.55);
+  animation: tojiSlashFlash 0.3s ease-out both;
+}
+html[data-toji-hit='shakkontou'] button[data-picked] {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 0 0 3px rgba(203, 213, 225, 0.5), 0 0 22px 5px rgba(255, 255, 255, 0.35);
+}
+html[data-toji-hit='banri_no_kusari'] button[data-picked] {
+  border-color: #3f3f46 !important;
+  box-shadow: 0 0 0 3px rgba(63, 63, 70, 0.6), 0 0 24px 6px rgba(203, 213, 225, 0.3);
+}
+html[data-toji-hit='amanosakahoko'] button[data-picked] {
+  border-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.6), 0 0 26px 6px rgba(203, 213, 225, 0.45);
+}
+html[data-toji-hit='yuuyun'] button[data-picked] {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 0 0 3px rgba(203, 213, 225, 0.55), 0 0 28px 7px rgba(12, 12, 12, 0.5);
+}
+html[data-toji-hit='bukiko_jurei'] button[data-picked] {
+  border-color: #5b21b6 !important;
+  box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.55), 0 0 30px 8px rgba(91, 33, 182, 0.4);
+}
+html[data-toji-hit='wrong'] button[data-picked] {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.5), 0 0 20px 5px rgba(220, 38, 38, 0.35);
+  animation: tojiSlashWrong 0.34s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-toji-hit] button[data-picked] { animation: none; }
+  html[data-toji-hit] button[data-picked]::before,
+  html[data-toji-hit] button[data-picked]::after { animation: none; opacity: 0; }
+  html[data-toji-hit] button[data-picked] { outline: 3px solid rgba(203, 213, 225, 0.8); outline-offset: 2px; }
+  html[data-toji-hit='wrong'] button[data-picked] { animation: none; outline: 3px solid rgba(220, 38, 38, 0.75); outline-offset: 2px; }
+}

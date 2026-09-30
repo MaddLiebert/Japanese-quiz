@@ -94,8 +94,9 @@ export const PACKS = [
   },
   {
     id: 'pack_13', name: 'Toji Fushiguro', kanji: '伏黒甚爾', icon: '🗡️',
-    desc: 'Voice pack Toji (visual menyusul)', desc_en: 'Toji voice pack (visual coming)',
-    price: 2500, rarity: 'legendary', visual: 'dummy', voice: 'toji',
+    desc: '天与呪縛: 釈魂刀↔万里ノ鎖→天逆鉾(10)→遊雲(20)→武器庫呪霊(30) + ultimate 天与呪縛・全開 (mekanik 武器庫・一撃離脱 — amunisi bayar salah)',
+    desc_en: 'Heavenly Restriction: Shakkontou↔Banri no Kusari→Amanosakahoko(10)→Yuuyun(20)→Bukiko Jurei(30) + ultimate Tenyo Jubaku: Zenkai (armory mechanic — ammo pays for mistakes)',
+    price: 2500, rarity: 'legendary', visual: 'toji', voice: 'toji',
   },
   {
     id: 'pack_14', name: 'Ryomen Sukuna', kanji: '両面宿儺', icon: '👹',

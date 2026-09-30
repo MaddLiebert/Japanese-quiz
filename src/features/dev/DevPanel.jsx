@@ -38,6 +38,8 @@ const MEGUMI_PACK_ID = "pack_10";
 const NOBARA_PACK_ID = "pack_08";
 // Pack Nanami — target preview streak & ult 時間外労働・全開 (十劃呪法).
 const NANAMI_PACK_ID = "pack_11";
+// Pack Toji — target preview streak & ult 天与呪縛・全開 (術師殺し).
+const TOJI_PACK_ID = "pack_13";
 
 const ALL_BADGES = [
   "hiragana_origin", "katakana_edge", "kanji_slayer", "kanji_hell", "eagle_eye",
@@ -65,7 +67,7 @@ function writeProgress(patch) {
 export function DevPanel() {
   const { language } = useLanguage();
   const { progress, togglePack } = useUserStats();
-  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, castMegumiSummon, castNobaraUlt, castNanamiUlt, triggerEffect } = useEffectLayer();
+  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, castMegumiSummon, castNobaraUlt, castNanamiUlt, castTojiUlt, triggerEffect } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
   // Review suara & skill (dev): karakter terpilih, kursor rotasi klip, status.
@@ -119,6 +121,13 @@ export function DevPanel() {
     setPendingNanami(null);
     previewStreak(pendingNanami);
   }, [pendingNanami, progress.activePack, previewStreak]);
+  // Sama: begitu pack Toji aktif, tembak preview streak-nya (術師殺し).
+  const [pendingToji, setPendingToji] = useState(null);
+  useEffect(() => {
+    if (pendingToji == null || progress.activePack !== TOJI_PACK_ID) return;
+    setPendingToji(null);
+    previewStreak(pendingToji);
+  }, [pendingToji, progress.activePack, previewStreak]);
 
   // Guard: panel ini TIDAK dirender di build produksi.
   if (!import.meta.env.DEV) return null;
@@ -295,6 +304,24 @@ export function DevPanel() {
   const castNanami = () => {
     if (progress.activePack === NANAMI_PACK_ID) { castNanamiUlt(); return; }
     previewNanami(20);   // aktifkan pack dulu → klik sekali lagi
+  };
+
+  // Preview efek Toji tanpa quiz (pola previewNanami).
+  const previewToji = (target) => {
+    if (progress.activePack === TOJI_PACK_ID) { previewStreak(target); return; }
+    const owned = (progress.ownedPacks || []).includes(TOJI_PACK_ID);
+    if (owned) { togglePack(TOJI_PACK_ID); setPendingToji(target); return; }
+    writeProgress({
+      medaru: 999999,
+      ownedPacks: [...(progress.ownedPacks || []), TOJI_PACK_ID],
+      activePack: TOJI_PACK_ID,
+    });
+    reload();
+  };
+
+  const castToji = () => {
+    if (progress.activePack === TOJI_PACK_ID) { castTojiUlt(); return; }
+    previewToji(20);   // aktifkan pack dulu → klik sekali lagi
   };
 
   // ── Review suara & skill (dev) ────────────────────────────────────────────
@@ -608,6 +635,38 @@ export function DevPanel() {
             </button>
             <button type="button" onClick={castNanami} className={`${btn} bg-[#dc2626] text-kinari-light`}>
               💼 {id ? "Cast 全開" : "Cast Ultimate"}
+            </button>
+          </div>
+        </div>
+
+        {/* DEV-ONLY — Preview efek Toji tanpa quiz */}
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10">
+          <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 mb-2">
+            {id ? "Preview Efek Toji (tanpa quiz)" : "Toji Effect Preview (no quiz)"}
+          </p>
+          <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
+            {id
+              ? "Satu klik = satu jawaban benar di streak target. Pack Toji otomatis diaktifkan bila perlu. Non-momen = ROTASI 釈魂刀 #1 / 万里ノ鎖 #2 … Momen: 天逆鉾 #10 / 遊雲 #20 / 武器庫呪霊 #30+. Cast 天与呪縛・全開 = cinematic 4,54 dtk (sync cast.mp3) lalu state 30 dtk (T3)."
+              : "One click = one correct answer at the target streak. Toji pack is equipped automatically if needed. Non-moments ROTATE Shakkontou #1 / Banri no Kusari #2 … Moments: Amanosakahoko #10 / Yuuyun #20 / Bukiko Jurei #30+. Cast Heavenly Restriction: Full Release = 4.54s cinematic (cast.mp3-synced) then 30s state (T3)."}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <button type="button" onClick={() => previewToji(1)} className={`${btn} bg-[#cbd5e1] text-sumi`}>
+              🔪 {id ? "釈魂刀 #1" : "Shakkontou #1"}
+            </button>
+            <button type="button" onClick={() => previewToji(2)} className={`${btn} bg-[#3f3f46] text-kinari-light`}>
+              ⛓️ {id ? "万里ノ鎖 #2" : "Banri #2"}
+            </button>
+            <button type="button" onClick={() => previewToji(10)} className={`${btn} bg-[#ffffff] text-sumi border-sumi`}>
+              🗡️ {id ? "天逆鉾 #10" : "Amanosakahoko #10"}
+            </button>
+            <button type="button" onClick={() => previewToji(20)} className={`${btn} bg-[#0c0c0c] text-kinari-light`}>
+              ☁️ {id ? "遊雲 #20" : "Yuuyun #20"}
+            </button>
+            <button type="button" onClick={() => previewToji(30)} className={`${btn} bg-[#5b21b6] text-kinari-light`}>
+              👁️ {id ? "武器庫呪霊 #30" : "Bukiko Jurei #30"}
+            </button>
+            <button type="button" onClick={castToji} className={`${btn} bg-[#dc2626] text-kinari-light`}>
+              🩸 {id ? "Cast 全開" : "Cast Ultimate"}
             </button>
           </div>
         </div>
