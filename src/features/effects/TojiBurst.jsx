@@ -599,6 +599,37 @@ function JutsushiGoroshi({ reduced }) {
   );
 }
 
+// ── GIF kalah Toji — bingkai baja dingin (TANPA glow 呪力), band ATAS zona aman.
+//    Tanpa GIF: TojiWrong (wash + 残穢) yang bicara. Dengan GIF: bingkai di atas,
+//    kanji 「化け物が」 tetap di bawah (dekat kartu) — tidak tumpuk.
+function TojiGifLayer({ src, reduced }) {
+  if (!src) return null;
+  return (
+    <div className="absolute left-1/2 top-[3%] z-10 -translate-x-1/2">
+      <motion.div
+        data-toji-gif
+        initial={{ opacity: 0, scale: 0.92, rotate: 2 }}
+        animate={{ opacity: 1, scale: 1, rotate: -1.5, x: reduced ? 0 : [0, -7, 6, -4, 3, 0] }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: reduced ? 0 : 0.34, ease: 'easeOut' }}
+      >
+        {/* Bingkai baja: bg hitam pekat + border gunmetal + bayangan keras
+            (tanpa glow — identitas 冷たい鋼). */}
+        <div className="w-[30vh] h-[30vh] max-w-[46vw] max-h-[46vw] border-[3px] border-[#3F3F46] bg-[#0C0C0C] shadow-[8px_8px_0_0_rgba(12,12,12,0.55)] overflow-hidden">
+          <img
+            src={src}
+            alt="Toji — 化け物が"
+            decoding="sync"
+            loading="eager"
+            className="w-full h-full object-contain select-none"
+            draggable={false}
+          />
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 // ── Dispatcher ───────────────────────────────────────────────────────────────
 export function TojiBurst({ fx, kind }) {
   const [reduced] = useState(prefersReduced);
@@ -622,6 +653,8 @@ export function TojiBurst({ fx, kind }) {
       exit={{ opacity: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
     >
       {wrong && <TojiWrong reduced={reduced} />}
+      {/* GIF kalah (2 klip, acak) — bingkai baja di band atas */}
+      {wrong && <TojiGifLayer src={fx?.gifSrc} reduced={reduced} />}
       {/* Kill 術師殺し: tebasan seluruh layar (soal mati total) */}
       {kill && (
         <div className="fixed inset-0 z-[130] pointer-events-none">
