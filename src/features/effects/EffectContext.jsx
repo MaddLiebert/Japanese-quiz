@@ -25,7 +25,7 @@ import { NobaraCurseBar, NobaraUltCine } from './NobaraShadow';
 import { NanamiBurst } from './NanamiBurst';
 import { NanamiCurseBar, NanamiUltCine, NanamiOvertimeAura, NanamiRubbleMarker } from './NanamiShadow';
 import { TojiBurst } from './TojiBurst';
-import { TojiCurseBar } from './TojiShadow';
+import { TojiCurseBar, TojiUltCine } from './TojiShadow';
 import {
   megumiTechniqueFor, megumiCurseCharge, MEGUMI_ULT_THRESHOLD,
   MEGUMI_SUMMON_DURATION_S, megumiSummonLeft as megumiSummonLeftMs, megumiSummonStartDelayMs,
@@ -47,6 +47,8 @@ import {
 import {
   tojiTechniqueFor, tojiCurseCharge, TOJI_ULT_THRESHOLD,
   tojiAnswerHoldMs, tojiUltHoldMs,
+  tojiUltOutcome, tojiCutOptions, tojiStateLeft as tojiStateLeftMs,
+  TOJI_STATE_S, TOJI_KILL_HOLD_MS,
 } from './tojiFx';
 import {
   playMegumiTechnique, playMegumiTechniqueLayers, playShadowSwallow,
@@ -59,7 +61,7 @@ import {
   sukunaTechniqueFor, sukunaCurseCharge, SUKUNA_ULT_THRESHOLD,
   SUKUNA_DOMAIN_DURATION_S, sukunaDomainLeft as sukunaDomainLeftMs, sukunaDomainStartDelayMs,
   SUKUNA_HITSUME_DELAY_MS, sukunaHitsumeCut,
-  sukunaQuizSkillAt, sukunaSkillCut, SUKUNA_QUIZ_SKILLS,
+  sukunaQuizSkillAt, sukunaSkillCut, SUKUNA_QUIZ_SKILLS, SUKUNA_SKILL_COOLDOWN,
 } from './sukunaFx';
 import { sukunaGifForAnswer, sukunaAnswerHoldMs, preloadSukunaGifs } from './sukunaGifs';
 import {
@@ -288,10 +290,20 @@ export function EffectProvider({ children }) {
   // ── Toji: bar 武器庫 20 + ultimate 天与呪縛・全開 (cinematic 4,54 dtk → state
   // 30 dtk; T3). Mekanik FINAL A 武器庫・一撃離脱: benar selama state → +1 amunisi
   // (cap 3); salah → bayar 1 amunisi: soal "dibunuh" (skip, streak AMAN); salah
-  // saat 0 → salah biasa + state bubar. T2 = jalur dasar: efek jawaban 5 jurus +
-  // bar + cast minimum (konsumsi charge). Cinematic & amunisi menyusul di T3.
+  // saat 0 → salah biasa + state bubar. T3 = cinematic penuh + state + rail.
   const [tojiCharge, setTojiCharge] = useState(0);
   const [tojiCasting, setTojiCasting] = useState(false);
+  const [tojiUltSeed, setTojiUltSeed] = useState(0);
+  const [tojiStateOn, setTojiStateOn] = useState(false);            // state 全開 hidup
+  const [tojiStateLeft, setTojiStateLeft] = useState(TOJI_STATE_S);
+  const [tojiAmmo, setTojiAmmo] = useState(0);                      // rail 武器 0..3
+  const [tojiKillCutIds, setTojiKillCutIds] = useState([]);         // opsi tertebas (soal dibunuh)
+  const [tojiKillForId, setTojiKillForId] = useState(null);
+  const tojiStateEndsAtRef = useRef(null);
+  const tojiEndedRef = useRef(false);
+  const tojiStateRef = useRef(false);
+  const tojiAmmoRef = useRef(0);
+  const tojiQuizOptionsRef = useRef(null);   // opsi + correctId soal aktif (mekanik 一撃離脱)
   const timersRef = useRef([]);
   const hitTimerRef = useRef(null);
   // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
@@ -823,14 +835,69 @@ export function EffectProvider({ children }) {
 
   // ── Satu jawaban untuk pack Toji (visual 'toji') — 天与呪縛・術師殺し ────────
   // Benar → fx jurus (rotasi 釈魂刀↔万里ノ鎖 + ladder 天逆鉾/遊雲/武器庫呪霊);
-  // salah → wash 冷たい鋼 redup + kanji 「化け物が」. SFX jurus menyusul T4 (masih
-  // generik). TANPA mekanik amunisi di T2 (menyusul T3 — 武器庫・一撃離脱).
-  const triggerToji = useCallback((type, kind, cfg) => {
+  // salah → wash 冷たい鋼 redup + kanji 「化け物が」. SELAMA state 全開 (T3):
+  // benar → +1 amunisi (rail); salah → bayar 1: soal DIBUNUH 術師殺し (skip,
+  // streak AMAN, tanpa XP); salah saat 0 → salah biasa + state bubar.
+  const triggerToji = useCallback((type, kind, cfg, prevStreak) => {
     const streak = streakRef.current;
+    const inState = tojiStateRef.current;
     const tech = tojiTechniqueFor(kind, type === 'correct' ? streak : 0);
 
     // Suara: T2 masih generik (SFX jurus Toji menyusul di T4).
     const clipMs = type === 'wrong' ? playWrongSound() : playCorrectSound();
+
+    // ── SELAMA state 全開: mekanik FINAL A 武器庫・一撃離脱 ───────────────────
+    if (inState) {
+      const kindNow = type === 'correct' ? 'correct' : 'wrong';
+      const { ammo: newAmmo, outcome } = tojiUltOutcome(kindNow, tojiAmmoRef.current);
+
+      if (outcome === 'break') {
+        // Amunisi 0 saat salah → salah biasa (streak hangus) + state bubar.
+        // Lanjut ke jalur fx salah normal di bawah (fall-through).
+        tojiEndedRef.current = true;
+        playDomainCollapse('wrong');
+        tojiStateRef.current = false;
+        tojiEndedRef.current = false;
+        setTojiStateOn(false);
+        setTojiAmmo(0); tojiAmmoRef.current = 0;
+        setTojiKillCutIds([]); setTojiKillForId(null);
+        setTojiCharge(0);
+      } else if (outcome === 'load') {
+        // Benar → +1 amunisi (cap 3), fx jurus tetap jalan di bawah.
+        tojiAmmoRef.current = newAmmo;
+        setTojiAmmo(newAmmo);
+      } else {
+        // outcome === 'spend': soal DIBUNUH 術師殺し — seluruh opsi tertebas,
+        // Practice menjadwalkan skip (TOJI_SKIP_DELAY_MS). Bayar 1 amunisi;
+        // streak AMAN (dipulihkan) — kesalahan dibayar persiapan sebelumnya.
+        if (Number.isFinite(prevStreak)) streakRef.current = prevStreak;
+        tojiAmmoRef.current = newAmmo;
+        setTojiAmmo(newAmmo);
+        const reg = tojiQuizOptionsRef.current;
+        const ids = tojiCutOptions(reg?.options || [], reg?.correctId ?? null, 1);
+        if (ids.length > 0) {
+          setTojiKillCutIds(ids);
+          setTojiKillForId(reg?.correctId ?? null);
+        }
+        // Jejak tebasan di tombol yang dipencet (CSS [data-toji-hit='kill']).
+        if (typeof document !== 'undefined') {
+          const root = document.documentElement;
+          root.dataset.tojiHit = 'kill';
+          if (hitTimerRef.current) clearTimeout(hitTimerRef.current);
+          hitTimerRef.current = setTimeout(() => { delete root.dataset.tojiHit; }, 700);
+        }
+        // fx kill: seluruh opsi tertebas (kind 'streak' + tech 'kill' — merah).
+        const kid = ++seq;
+        setFx({
+          kind: 'streak', tech: 'kill', id: kid, gifSrc: null,
+          seed: Math.floor(Math.random() * 900) + 1,
+          level: 0, milestone: 0, streak: 0, signature: null, onMilestone: false,
+        });
+        const kt = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, kid)), TOJI_KILL_HOLD_MS);
+        timersRef.current.push(kt);
+        return;   // soal dibunuh — bukan salah biasa (tanpa reveal/XP)
+      }
+    }
 
     // Atribut <html> untuk efek "kena tebasan" pada TOMBOL yang dipencet
     // (CSS index.css: [data-toji-hit] [data-picked]). Auto-clear 700ms.
@@ -854,9 +921,10 @@ export function EffectProvider({ children }) {
     timersRef.current.push(t);
 
     // Bar 武器庫 20 slot: ikut streak; salah → kosong (pola JJK konsisten).
+    // Saat state hidup bar = TIMER → jangan bunyi tick/ready (bukan charge lagi).
     const newCharge = tojiCurseCharge(streak);
     setTojiCharge(newCharge);
-    if (type === 'correct' && newCharge > 0) {
+    if (!inState && type === 'correct' && newCharge > 0) {
       if (newCharge >= TOJI_ULT_THRESHOLD) playCurseReady();
       else playCurseTick(newCharge);
     }
@@ -904,7 +972,7 @@ export function EffectProvider({ children }) {
     if (activeVisual === 'nanami') { triggerNanami(type, kind, cfg); return; }
 
     // ── Jalur Toji (pack 'toji') — 天与呪縛・術師殺し · 全開 ──────────────────
-    if (activeVisual === 'toji') { triggerToji(type, kind, cfg); return; }
+    if (activeVisual === 'toji') { triggerToji(type, kind, cfg, prevStreak); return; }
 
     // GIF Hina: hanya saat suara Hina bunyi (salah / tepat milestone). Benar biasa → null.
     // GIF Gojo: salah → meme "kalah"; teknik 茈 → murasaki; ao/aka → null (bola plasma).
@@ -1085,9 +1153,13 @@ export function EffectProvider({ children }) {
     setNanamiRubbleCutIds([]); setNanamiRubbleForId(null);
     nanamiRubbleForRef.current = null; nanamiRubblePendingRef.current = null;
     setNanamiQuizOptionsState(null);
-    // Toji: bar & cast padam (state amunisi menyusul T3).
+    // Toji: bar, cast, & state 全開 padam (amunisi hangus).
     setTojiCharge(0);
     setTojiCasting(false);
+    setTojiStateOn(false); tojiStateRef.current = false;
+    tojiStateEndsAtRef.current = null;
+    setTojiAmmo(0); tojiAmmoRef.current = 0;
+    setTojiKillCutIds([]); setTojiKillForId(null);
   }, [setTakeover]);
 
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
@@ -1160,9 +1232,13 @@ export function EffectProvider({ children }) {
     setNanamiRubbleCutIds([]); setNanamiRubbleForId(null);
     nanamiRubbleForRef.current = null; nanamiRubblePendingRef.current = null;
     setNanamiQuizOptionsState(null);
-    // Toji: bar & cast padam (one-shot — tidak persist).
+    // Toji: bar, cast, & state 全開 padam (one-shot — tidak persist).
     setTojiCharge(0);
     setTojiCasting(false);
+    setTojiStateOn(false); tojiStateRef.current = false;
+    tojiStateEndsAtRef.current = null;
+    setTojiAmmo(0); tojiAmmoRef.current = 0;
+    setTojiKillCutIds([]); setTojiKillForId(null);
     stopAllAmbience();
   }, [setTakeover]);
 
@@ -1444,17 +1520,69 @@ export function EffectProvider({ children }) {
     timersRef.current.push(done);
   }, [activeVisual]);
 
-  // ── Cast 天与呪縛・全開 (tap bar Toji) — T2: konsumsi charge + flag cast.
-  // T3 memperluas: cinematic TojiUltCine (4,54 dtk, sinkron cast.mp3) + state
-  // 30 dtk + rail amunisi + mekanik 武器庫・一撃離脱 (amunisi bayar salah).
+  // ── Cast 天与呪縛・全開 (tap bar Toji) — cinematic 4,54 dtk (sinkron cast.mp3
+  // TERUKUR) → state 30 dtk. Timer JALAN mulai SETELAH cinematic settle supaya
+  // waktu main penuh (pola Nanami/Megumi). Amunisi mulai 0 (kerja dari nol);
+  // mekanik 武器庫・一撃離脱 jalan di triggerToji.
   const castTojiUlt = useCallback(() => {
     if (activeVisual !== 'toji') return;
     streakRef.current = 0;
+    tojiEndedRef.current = false;
     setTojiCharge(0);
     setTojiCasting(true);
-    const done = setTimeout(() => setTojiCasting(false), tojiUltHoldMs());
+    setTojiUltSeed((n) => n + 1);
+    tojiAmmoRef.current = 0;
+    setTojiAmmo(0);
+    setTojiKillCutIds([]); setTojiKillForId(null);
+    // 30 dtk mulai SETELAH cinematic settle (bukan dari cast) — waktu main penuh.
+    tojiStateEndsAtRef.current = Date.now() + tojiUltHoldMs() + TOJI_STATE_S * 1000;
+    setTojiStateLeft(TOJI_STATE_S);
+    // Selesai cinematic → masuk state 全開 + dentuman cast (T4 ganti SFX jurus).
+    const done = setTimeout(() => {
+      setTojiCasting(false);
+      tojiStateRef.current = true;
+      setTojiStateOn(true);
+      playDomainBoom('cast');
+    }, tojiUltHoldMs());
     timersRef.current.push(done);
   }, [activeVisual]);
+
+  // ── Registrasi opsi soal aktif untuk Toji (mekanik 武器庫・一撃離脱) ─────────
+  // Dipakai saat salah selama state: seluruh opsi soal itu tertebas (kill) →
+  // Practice skip soal. `correctId` disimpan untuk paritas API pack lain.
+  const setTojiQuizOptions = useCallback((options, correctId) => {
+    if (!Array.isArray(options) || options.length === 0) {
+      tojiQuizOptionsRef.current = null;
+      return;
+    }
+    tojiQuizOptionsRef.current = { options, correctId };
+  }, []);
+
+  // Hitung mundur state 全開 (30 dtk) — habis → padam sendiri (streak TETAP,
+  // amunisi hangus; bukan salah). Beda dari salah saat amunisi 0 (streak hangus).
+  useEffect(() => {
+    if (!tojiStateOn) return undefined;
+    const tick = () => {
+      const left = tojiStateLeftMs(tojiStateEndsAtRef.current);
+      setTojiStateLeft(left);
+      if (left <= 0) {
+        if (!tojiEndedRef.current) { tojiEndedRef.current = true; playDomainCollapse('timeout'); }
+        tojiStateRef.current = false;
+        setTojiStateOn(false);
+        setTojiAmmo(0); tojiAmmoRef.current = 0;
+        setTojiKillCutIds([]); setTojiKillForId(null);
+      }
+    };
+    tick();
+    const id = setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [tojiStateOn]);
+
+  useEffect(() => {
+    if (tojiStateOn) return;
+    tojiStateEndsAtRef.current = null;
+    setTojiStateLeft(TOJI_STATE_S);
+  }, [tojiStateOn]);
 
   // ── Registrasi opsi soal aktif (konsumen: Practice/KanaQuiz) ───────────────
   // Dipakai mekanik 適応 (hapus 1 opsi salah soal berikutnya) & 八握剣 (semua).
@@ -1835,7 +1963,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt, tojiCharge, tojiCasting, castTojiUlt }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt, tojiCharge, tojiCasting, tojiStateOn, tojiStateLeft, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, castTojiUlt }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
@@ -1862,6 +1990,8 @@ export function EffectProvider({ children }) {
         nanamiRubbleCutIds={nanamiRubbleCutIds}
         onCastNanami={castNanamiUlt}
         tojiCharge={tojiCharge} tojiCasting={tojiCasting}
+        tojiUltSeed={tojiUltSeed} tojiStateOn={tojiStateOn}
+        tojiStateLeft={tojiStateLeft} tojiAmmo={tojiAmmo}
         onCastToji={castTojiUlt}
       />
     </EffectContext.Provider>
@@ -1869,7 +1999,7 @@ export function EffectProvider({ children }) {
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, nanamiUltSeed = 0, nanamiOvertimeOn = false, nanamiOvertimeLeft = 0, nanamiPiles = 0, nanamiRubbleCutIds = [], onCastNanami = null, tojiCharge = 0, tojiCasting = false, onCastToji = null }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, nanamiUltSeed = 0, nanamiOvertimeOn = false, nanamiOvertimeLeft = 0, nanamiPiles = 0, nanamiRubbleCutIds = [], onCastNanami = null, tojiCharge = 0, tojiCasting = false, tojiUltSeed = 0, tojiStateOn = false, tojiStateLeft = 0, tojiAmmo = 0, onCastToji = null }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -2157,17 +2287,25 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
 
       {/* ── Toji Fushiguro (pack 'toji') — 天与呪縛・術師殺し · 全開 ────────────── */}
       {visual === 'toji' && (
-        <AnimatePresence>
-          {fx && <TojiBurst key={`toji-${fx.id}`} fx={fx} kind={kind} />}
-        </AnimatePresence>
+        <>
+          {tojiCasting && (
+            <TojiUltCine key={`toji-ult-${tojiUltSeed}`} seed={tojiUltSeed} />
+          )}
+          <AnimatePresence>
+            {fx && <TojiBurst key={`toji-${fx.id}`} fx={fx} kind={kind} />}
+          </AnimatePresence>
+        </>
       )}
 
       {visual === 'toji' && quizActive && (
         <TojiCurseBar
           charge={tojiCharge}
-          ready={tojiCharge >= TOJI_ULT_THRESHOLD && !tojiCasting}
+          ready={tojiCharge >= TOJI_ULT_THRESHOLD && !tojiCasting && !tojiStateOn}
           onCast={onCastToji}
           casting={tojiCasting}
+          stateOn={tojiStateOn}
+          stateLeft={tojiStateLeft}
+          ammo={tojiAmmo}
         />
       )}
     </div>

@@ -19,6 +19,7 @@ import { useEffectLayer } from "../features/effects/EffectContext";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 import { yujiBurnedIds, YUJI_FINISHER_XP_MULT } from "../features/effects/yujiFx";
 import { markYujiPicked } from "../features/effects/yujiHit";
+import { TOJI_SKIP_DELAY_MS } from "../features/effects/tojiFx";
 
 function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome }) {
   const { language } = useLanguage();
@@ -110,7 +111,7 @@ export function Practice() {
   const timerRef = useRef(null);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, tojiStateOn, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions } = useEffectLayer();
 
   // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
   // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
@@ -239,6 +240,34 @@ export function Practice() {
     [nanamiRubbleForId, currentQuestion?.id, nanamiRubbleCutIds],
   );
 
+  // ── Toji 武器庫・一撃離脱: opsi soal aktif + skip soal dibunuh ──────────────
+  // Registrasi opsi + jawaban benar soal aktif → provider memakainya saat salah
+  // selama state 全開: SELURUH opsi soal itu tertebas (術師殺し) → soal di-skip.
+  useEffect(() => {
+    if (!currentQuestion) return;
+    setTojiQuizOptions(options, currentQuestion.id);
+  }, [currentQuestion?.id, options, setTojiQuizOptions]);
+
+  const tojiKillIdsNow = useMemo(
+    () => ((tojiKillForId === currentQuestion?.id) ? tojiKillCutIds : []),
+    [tojiKillForId, currentQuestion?.id, tojiKillCutIds],
+  );
+
+  // Soal dibunuh → tebasan terbaca dulu (TOJI_SKIP_DELAY_MS), baru lompat.
+  // Guard isAnswered: kalau timeout Hard keburu memproses soal ini, jangan
+  // double-advance (timeout sudah menjadwalkan advance-nya sendiri).
+  const isAnsweredMirrorRef = useRef(false);
+  useEffect(() => { isAnsweredMirrorRef.current = isAnswered; }, [isAnswered]);
+  useEffect(() => {
+    if (!tojiKillForId || tojiKillForId !== currentQuestion?.id) return undefined;
+    if (tojiKillCutIds.length === 0) return undefined;
+    const t = setTimeout(() => {
+      if (isAnsweredMirrorRef.current) return;
+      advanceQuestion();
+    }, TOJI_SKIP_DELAY_MS);
+    return () => clearTimeout(t);
+  }, [tojiKillForId, tojiKillCutIds.length, currentQuestion?.id, advanceQuestion]);
+
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option, e) => {
     if (isAnswered) return;
@@ -247,9 +276,19 @@ export function Practice() {
     if (megumiCutAll.includes(option.id)) return; // diadaptasi 適応 / dipotong 八握剣 → tidak bisa dipilih
     if (nobaraCutIdsNow.includes(option.id)) return; // diledakkan 全弾爆発 → tidak bisa dipilih
     if (nanamiCutIdsNow.includes(option.id)) return; // dihancurkan puing 瓦落瓦落 → tidak bisa dipilih
+    if (tojiKillIdsNow.includes(option.id)) return; // tertebas 術師殺し → soal dibunuh, tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
 
     const correct = option.id === currentQuestion.id;
+
+    // ── Toji 武器庫・一撃離脱: salah selama state 全開 + amunisi → soal DIBUNUH.
+    // Bayar 1 amunisi; soal di-skip (TOJI_SKIP_DELAY_MS) TANPA XP/reveal —
+    // bukan salah biasa (streak aman). Provider memutuskan & memotong opsi.
+    if (!correct && tojiStateOn && tojiAmmo > 0) {
+      triggerEffect('wrong');
+      return;
+    }
+
     if (correct) {
       triggerEffect('correct');
     } else {
@@ -267,8 +306,15 @@ export function Practice() {
     if (megumiCutAll.includes(option.id)) return; // diadaptasi 適応 / dipotong 八握剣 → tidak bisa dipilih
     if (nobaraCutIdsNow.includes(option.id)) return; // diledakkan 全弾爆発 → tidak bisa dipilih
     if (nanamiCutIdsNow.includes(option.id)) return; // dihancurkan puing 瓦落瓦落 → tidak bisa dipilih
+    if (tojiKillIdsNow.includes(option.id)) return; // tertebas 術師殺し → soal dibunuh, tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
     const correct = option.id === currentQuestion.id;
+
+    // ── Toji 武器庫・一撃離脱: salah selama state 全開 + amunisi → soal DIBUNUH.
+    if (!correct && tojiStateOn && tojiAmmo > 0) {
+      triggerEffect('wrong');
+      return;
+    }
 
     if (correct) {
       triggerEffect('correct');
@@ -505,6 +551,8 @@ export function Practice() {
                   const isCut = sukunaCutAll.includes(option.id);
                   const isMegumiCut = megumiCutAll.includes(option.id);
                   const isNobaraCut = nobaraCutIdsNow.includes(option.id);
+                  const isNanamiCut = nanamiCutIdsNow.includes(option.id);
+                  const isTojiKill = tojiKillIdsNow.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -518,7 +566,7 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
-                  if (isBurned || isCut || isMegumiCut || isNobaraCut) btnClass += " pointer-events-none";
+                  if (isBurned || isCut || isMegumiCut || isNobaraCut || isTojiKill) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
@@ -531,6 +579,7 @@ export function Practice() {
                       data-megumi-cut={isMegumiCut || undefined}
                       data-nobara-cut={isNobaraCut || undefined}
                       data-nanami-cut={isNanamiCut || undefined}
+                      data-toji-kill={isTojiKill || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -538,7 +587,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNanamiCut}
+                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNanamiCut || isTojiKill}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -675,6 +724,8 @@ export function Practice() {
                   const isCut = sukunaCutAll.includes(option.id);
                   const isMegumiCut = megumiCutAll.includes(option.id);
                   const isNobaraCut = nobaraCutIdsNow.includes(option.id);
+                  const isNanamiCut = nanamiCutIdsNow.includes(option.id);
+                  const isTojiKill = tojiKillIdsNow.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -689,7 +740,7 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
-                  if (isBurned || isCut || isMegumiCut || isNobaraCut) btnClass += " pointer-events-none";
+                  if (isBurned || isCut || isMegumiCut || isNobaraCut || isTojiKill) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
@@ -702,6 +753,7 @@ export function Practice() {
                       data-megumi-cut={isMegumiCut || undefined}
                       data-nobara-cut={isNobaraCut || undefined}
                       data-nanami-cut={isNanamiCut || undefined}
+                      data-toji-kill={isTojiKill || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -709,7 +761,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNobaraCut || isNanamiCut}
+                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNobaraCut || isNanamiCut || isTojiKill}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -773,6 +825,7 @@ export function Practice() {
           megumiCutIds={megumiCutAll}
           nobaraCutIds={nobaraCutIdsNow}
           nanamiCutIds={nanamiCutIdsNow}
+          tojiKillIds={tojiKillIdsNow}
         />
       );
     }

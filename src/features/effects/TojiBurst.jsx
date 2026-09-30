@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import {
   TOJI_STYLE, TOJI_FLASH, TOJI_STEEL, TOJI_GUNMETAL, TOJI_VOID, TOJI_BLOOD, TOJI_WORM,
-  TOJI_STAGGER, TOJI_MOTION, tojiBlade, tojiChain, tojiSoulSplit, tojiWorm,
+  TOJI_STAGGER, tojiBlade, tojiChain, tojiSoulSplit, tojiWorm,
 } from './tojiFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -170,7 +170,7 @@ function ShakkontouBlade({ seed, reduced, rect }) {
 
 // Flash putih 1 frame (≤80ms) + belahan jiwa: opsi terbelah 2, belahan putih
 // baja + tepi hitam, meluncur misah + TEPAT 2 percikan (spec). Clip ke kartu.
-function SoulSplit({ seed, reduced, rect }) {
+function SoulSplit({ seed, reduced }) {
   const [split] = useState(() => tojiSoulSplit(seed));
   return (
     <>
@@ -302,7 +302,7 @@ function BanriChain({ seed, reduced, rect }) {
 // "pembatalan" (kartu desaturasi 0,4 dtk = jurus dimatikan) → bilah ditarik +
 // pecahan. Ini satu-satunya efek yang menyasar KARTU SOAL (kanon: membatalkan
 // 無下限呪術 Gojo) — tetap di dalam bentuk kartu, tidak menutupi karakter soal.
-function Amanosakahoko({ seed, reduced, rect, stage }) {
+function Amanosakahoko({ reduced, rect, stage }) {
   // Kartu soal: sayap kiri (gap ≥12px dari soal); tanpa ruang → atas kartu opsi.
   let pos = null;
   if (stage && stage.qRect.x >= 90) {
@@ -367,7 +367,7 @@ function Amanosakahoko({ seed, reduced, rect, stage }) {
 // ── 遊雲 (yuuyun) @20: tongkat 3 ruas (三節棍) berputar menyapu SELURUH grid
 // opsi (arc baja lebar) → shockwave dorong + debu + tepi retak. Sapuan lewat
 // ATAS grid — tidak menutupi soal (band aman stage anchor).
-function YuuyunSweep({ seed, reduced, rect }) {
+function YuuyunSweep({ reduced, rect }) {
   const spanW = Math.max(rect.w * 2.4, 320);
   const barY = rect.h * 0.5;
   return (
@@ -533,6 +533,72 @@ function TojiWrong({ reduced }) {
   );
 }
 
+// ── 術師殺し (jutsushi goroshi) — soal DIBUNUH saat state 全開 (mekanik
+// 武器庫・一撃離脱): amunisi dibayar 1 → seluruh opsi soal itu tertebas. Bukan
+// reveal benar/salah — soal mati total lalu di-skip. 5 tebasan staggered
+// menyilang + 残穢 blood red + bayangan gunmetal (冷たい鋼, TANPA glow).
+function JutsushiGoroshi({ reduced }) {
+  const cuts = Array.from({ length: 5 });
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* 残穢 — jejak merah tipis menyilang kartu (bukan wash besar) */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ background: `linear-gradient(180deg, transparent 32%, rgba(220,38,38,0.16) 50%, transparent 68%)` }}
+        initial={{ opacity: 0 }}
+        animate={reduced ? { opacity: 0.7 } : { opacity: [0, 0.85, 0.55] }}
+        transition={{ duration: reduced ? 0 : 0.4, ease: 'easeOut' }}
+      />
+      {cuts.map((_, i) => {
+        const ang = -34 + i * 17;   // kipas tebasan menyilang
+        const y = 14 + i * 18;
+        return (
+          <motion.span
+            key={`kill-${i}`}
+            data-toji-kill
+            className="absolute"
+            style={{
+              left: '-12%', right: '-12%', top: `${y}%`, height: i % 2 ? 1.6 : 2.4,
+              background: `linear-gradient(90deg, transparent, ${i % 2 ? TOJI_BLOOD : TOJI_STEEL} 18%, ${TOJI_FLASH} 50%, ${i % 2 ? TOJI_BLOOD : TOJI_STEEL} 82%, transparent)`,
+              transform: `rotate(${ang}deg)`,
+              transformOrigin: 'center',
+            }}
+            initial={{ scaleX: 0, opacity: 0 }}
+            animate={reduced
+              ? { scaleX: 1, opacity: 0.85 }
+              : { scaleX: [0, 1, 1], opacity: [0, 1, 0.9] }}
+            transition={reduced ? { duration: 0 } : { duration: 0.3, delay: i * 0.075, times: [0, 0.55, 1], ease: EASE_LINE }}
+          />
+        );
+      })}
+      {/* bilah penutup (釈魂刀) melintas terakhir — diagonal besar */}
+      {!reduced && (
+        <motion.span
+          className="absolute"
+          style={{
+            left: '-16%', right: '-16%', top: '52%', height: 3,
+            background: `linear-gradient(90deg, transparent, ${TOJI_STEEL} 22%, ${TOJI_FLASH} 50%, ${TOJI_STEEL} 78%, transparent)`,
+            transform: 'rotate(-27deg)', transformOrigin: 'center',
+          }}
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: [0, 1], opacity: [0, 1, 0] }}
+          transition={{ duration: 0.34, delay: 0.38, times: [0, 0.6, 1], ease: EASE_EXIT }}
+        />
+      )}
+      {/* kilatan putih 1 frame di ujung tebasan */}
+      {!reduced && (
+        <motion.div
+          className="absolute inset-0"
+          style={{ background: TOJI_FLASH }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.4, 0] }}
+          transition={{ duration: 0.22, delay: 0.42, ease: 'linear' }}
+        />
+      )}
+    </div>
+  );
+}
+
 // ── Dispatcher ───────────────────────────────────────────────────────────────
 export function TojiBurst({ fx, kind }) {
   const [reduced] = useState(prefersReduced);
@@ -540,8 +606,10 @@ export function TojiBurst({ fx, kind }) {
   const seed = fx?.seed || 1;
   const style = tech ? TOJI_STYLE[tech] : null;
   const wrong = kind === 'wrong';
+  const kill = tech === 'kill';
   // Rect kartu yang dipencet — semua jurus menempel DI KARTU (aturan Megumi v2.5).
-  const rect = usePickedRect(!wrong, 900);
+  // Kill: tebasan seluruh layar (tidak butuh anchor kartu).
+  const rect = usePickedRect(!wrong && !kill, 900);
   const stage = useStageAnchor();
 
   return (
@@ -554,16 +622,22 @@ export function TojiBurst({ fx, kind }) {
       exit={{ opacity: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
     >
       {wrong && <TojiWrong reduced={reduced} />}
-      {rect && tech && !wrong && (
+      {/* Kill 術師殺し: tebasan seluruh layar (soal mati total) */}
+      {kill && (
+        <div className="fixed inset-0 z-[130] pointer-events-none">
+          <JutsushiGoroshi reduced={reduced} />
+        </div>
+      )}
+      {rect && tech && !wrong && !kill && (
         <>
           {/* Lapisan KARTU: clip ke bentuk kartu → tidak ada elemen nyembur keluar */}
           <div
             className="fixed z-[130] pointer-events-none overflow-hidden"
             style={{ left: rect.x, top: rect.y, width: rect.w, height: rect.h, borderRadius: 2 }}
           >
-            {tech === 'shakkontou' && <SoulSplit seed={seed} reduced={reduced} rect={rect} />}
-            {tech === 'amanosakahoko' && <Amanosakahoko seed={seed} reduced={reduced} rect={rect} stage={stage} />}
-            {tech === 'yuuyun' && <YuuyunSweep seed={seed} reduced={reduced} rect={rect} />}
+            {tech === 'shakkontou' && <SoulSplit seed={seed} reduced={reduced} />}
+            {tech === 'amanosakahoko' && <Amanosakahoko reduced={reduced} rect={rect} stage={stage} />}
+            {tech === 'yuuyun' && <YuuyunSweep reduced={reduced} rect={rect} />}
             {tech === 'bukiko_jurei' && <BukikoJurei seed={seed} reduced={reduced} rect={rect} stage={stage} />}
           </div>
 
@@ -577,11 +651,12 @@ export function TojiBurst({ fx, kind }) {
           </div>
         </>
       )}
-      {/* Kanji: teknik di bawah (dekat kartu); salah 「化け物が」 redup */}
+      {/* Kanji: teknik di bawah (dekat kartu); salah 「化け物が」 redup;
+          kill 「術師殺し」 blood red (soal dibunuh — mekanik 一撃離脱). */}
       <TechKanji
-        style={style || (wrong ? { kanji: '化け物が', color: TOJI_BLOOD } : null)}
+        style={style || (kill ? TOJI_STYLE.kill : (wrong ? { kanji: '化け物が', color: TOJI_BLOOD } : null))}
         reduced={reduced}
-        delay={tech === 'bukiko_jurei' ? 0.5 : tech === 'yuuyun' ? 0.34 : tech === 'amanosakahoko' ? 0.4 : 0.24}
+        delay={kill ? 0.42 : tech === 'bukiko_jurei' ? 0.5 : tech === 'yuuyun' ? 0.34 : tech === 'amanosakahoko' ? 0.4 : 0.24}
         anchor="bottom"
       />
     </motion.div>
