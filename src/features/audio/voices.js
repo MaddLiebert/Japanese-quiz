@@ -160,13 +160,24 @@ export const VOICES = {
     },
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  // VP Toji Fushiguro (pack_13) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  // VP Toji Fushiguro (pack_13) — aset user di public/voices/toji/ (天与呪縛).
+  //   wrong : 3 klip kalah (化け物が / 敗因？勝負はこれからだろ / タダ働きなんて
+  //          ゴメンだね) — acak tiap salah (Set A pilihan Nacht).
+  //   clips : klip jalur khusus — 5 jurus (釈魂刀/万里ノ鎖/天逆鉾/遊雲/武器庫呪霊),
+  //           diputar DETERMINISTIK oleh playTojiTechnique.
+  //   correct/streak: KOSONG (benar = jurus deterministik, pola Gojo/Nanami).
+  //   cast.mp3 (禪院じゃねぇのか、よかったな 4,54s) diputar oleh playTojiCast.
   toji: {
     files: {
-      correct: ['/voices/toji/correct_1.mp3', '/voices/toji/correct_2.mp3', '/voices/toji/correct_3.mp3'],
-      wrong:   ['/voices/toji/wrong_1.mp3',   '/voices/toji/wrong_2.mp3',   '/voices/toji/wrong_3.mp3'],
-      streak:  ['/voices/toji/streak_1.mp3',  '/voices/toji/streak_2.mp3',  '/voices/toji/streak_3.mp3'],
+      correct: [],
+      wrong: ['/voices/toji/wrong_1.mp3', '/voices/toji/wrong_2.mp3', '/voices/toji/wrong_3.mp3'],
+      streak: [],
     },
+    clips: [
+      '/voices/toji/shakkontou.mp3', '/voices/toji/banri_no_kusari.mp3',
+      '/voices/toji/amanosakahoko.mp3', '/voices/toji/yuuyun.mp3',
+      '/voices/toji/bukiko_jurei.mp3',
+    ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
   // VP Ryomen Sukuna (pack_14) — aset user di public/voices/sukuna/.
