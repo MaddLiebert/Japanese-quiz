@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
 import {
   TOJI_TECHNIQUE_SFX_LAYERS, tojiTechniqueSfxLayers, playTojiTechniqueLayers,
   playSteelRing, playSoulSplit, playChainRattle, playChainYank,
@@ -8,7 +9,9 @@ import {
   steelRingParams, soulSplitParams, chainRattleParams, chainYankParams,
   spearPierceParams, techniqueCancelParams, staffWhirlParams, boneCrunchParams,
   inventoryGrowlParams, weaponEjectParams, chantParams,
+  TOJI_TECHNIQUE_FILES, TOJI_LEAD_S, playTojiTechnique, playTojiCast,
 } from './sfx.js';
+import { VOICES } from '../features/audio/voices.js';
 
 test('TOJI_TECHNIQUE_SFX_LAYERS: tiap jurus >= 2 lapis (spec 天与呪縛)', () => {
   const keys = ['shakkontou', 'banri_no_kusari', 'amanosakahoko', 'yuuyun', 'bukiko_jurei', 'kill', 'ult', 'wrong'];
@@ -99,4 +102,59 @@ test('params SFX Toji: murni & deterministik (identitas 冷たい鋼 — baja, b
   // chant cast = rendah panjang (hening 呪力ゼロ, bukan teriakan)
   assert.ok(chantParams().fromHz < 200, 'chant rendah');
   assert.ok(chantParams().dur >= 1, 'chant panjang');
+});
+
+// ── T5: klip voice (aset FINAL — terukur PyAV) ──────────────────────────────
+test('TOJI_TECHNIQUE_FILES: 5 klip jurus, path valid, file ada di disk', () => {
+  const keys = ['shakkontou', 'banri_no_kusari', 'amanosakahoko', 'yuuyun', 'bukiko_jurei'];
+  assert.deepEqual(Object.keys(TOJI_TECHNIQUE_FILES).sort(), keys.slice().sort());
+  for (const [k, p] of Object.entries(TOJI_TECHNIQUE_FILES)) {
+    assert.equal(p, `/voices/toji/${k}.mp3`);
+    assert.ok(existsSync('public' + p), `klip hilang: ${p}`);
+  }
+});
+
+test('playTojiTechnique: node (tanpa window) -> no-op 0, jurus tak dikenal aman', () => {
+  for (const k of Object.keys(TOJI_TECHNIQUE_FILES)) assert.equal(playTojiTechnique(k), 0);
+  assert.equal(playTojiTechnique('zzz'), 0);
+  assert.equal(playTojiTechnique(null), 0);
+});
+
+test('TOJI_LEAD_S: lead-silence TERUKUR (PyAV) — semua <= 0.24 (pola Nanami)', () => {
+  assert.equal(TOJI_LEAD_S.shakkontou, 0.21);
+  assert.equal(TOJI_LEAD_S.banri_no_kusari, 0.19);
+  assert.equal(TOJI_LEAD_S.amanosakahoko, 0.20);
+  assert.equal(TOJI_LEAD_S.yuuyun, 0.21);
+  assert.equal(TOJI_LEAD_S.bukiko_jurei, 0.19);
+  assert.equal(TOJI_LEAD_S.cast, 0.06);
+  for (const [k, v] of Object.entries(TOJI_LEAD_S)) {
+    assert.ok(v <= 0.24, `${k}: lead ${v} > 0.24 — ukur ulang via PyAV`);
+  }
+});
+
+test('playTojiCast: node no-op 0; cast.mp3 ada di disk', () => {
+  assert.equal(playTojiCast(), 0);
+  assert.ok(existsSync('public/voices/toji/cast.mp3'), 'cast.mp3 hilang');
+});
+
+test('semua aset suara Toji (3 kalah + 5 jurus + cast) ada di disk', () => {
+  for (const p of [...VOICES.toji.files.wrong, ...VOICES.toji.clips]) {
+    assert.ok(existsSync('public' + p), `klip hilang: ${p}`);
+  }
+  assert.ok(existsSync('public/voices/toji/cast.mp3'), 'cast.mp3 hilang');
+});
+
+test('VOICES.toji: pola Gojo/Nanami (correct/streak KOSONG, clips 5 jurus, wrong 3 kalah)', () => {
+  assert.deepEqual(VOICES.toji.files.correct, []);
+  assert.deepEqual(VOICES.toji.files.streak, []);
+  assert.equal(VOICES.toji.files.wrong.length, 3);
+  assert.equal(VOICES.toji.clips.length, 5);
+  assert.deepEqual(VOICES.toji.clips, [
+    '/voices/toji/shakkontou.mp3', '/voices/toji/banri_no_kusari.mp3',
+    '/voices/toji/amanosakahoko.mp3', '/voices/toji/yuuyun.mp3',
+    '/voices/toji/bukiko_jurei.mp3',
+  ]);
+  assert.deepEqual(VOICES.toji.files.wrong, [
+    '/voices/toji/wrong_1.mp3', '/voices/toji/wrong_2.mp3', '/voices/toji/wrong_3.mp3',
+  ]);
 });

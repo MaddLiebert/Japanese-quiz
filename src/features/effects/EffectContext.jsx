@@ -55,7 +55,7 @@ import {
   playAdaptFlash, playSwordUnsheathe, playWheelShatter, playMakoraChant, playMakoraRoar,
   playNobaraTechnique, playNobaraTechniqueLayers, playStrawRustle,
   playNanamiTechniqueLayers, playNanamiTechnique,
-  playTojiTechniqueLayers,
+  playTojiTechniqueLayers, playTojiTechnique, playTojiCast,
 } from '../../utils/sfx';
 import { startMegumiShadowBgm, stopMegumiShadowBgm, duckMegumiAmbience } from '../../utils/megumiAmbience';
 import {
@@ -844,13 +844,13 @@ export function EffectProvider({ children }) {
     const inState = tojiStateRef.current;
     const tech = tojiTechniqueFor(kind, type === 'correct' ? streak : 0);
 
-    // Suara (T4): benar = jurus berlapis (core→edge: baja/rantai/debu — TANPA
-    // glow 呪力); salah = generik. Saat state: kill 術師殺し / 叩き (bubar).
+    // Suara (T4+T5): benar = klip jurus deterministik (T5) + lapis SFX (T4);
+    // salah = generik. Saat state: kill 術師殺し / 叩き (bubar).
     let clipMs = 0;
     if (type === 'wrong') {
       clipMs = playWrongSound();
     } else if (tech) {
-      clipMs = playCorrectSound();
+      clipMs = playTojiTechnique(tech);
       playTojiTechniqueLayers(tech);
     } else {
       clipMs = playCorrectSound();
@@ -1550,8 +1550,10 @@ export function EffectProvider({ children }) {
     // 30 dtk mulai SETELAH cinematic settle (bukan dari cast) — waktu main penuh.
     tojiStateEndsAtRef.current = Date.now() + tojiUltHoldMs() + TOJI_STATE_S * 1000;
     setTojiStateLeft(TOJI_STATE_S);
-    // SFX ult berlapis (T4): chant rendah + dentuman cast (hening 呪力ゼロ).
+    // SFX ult berlapis (T4) + klip cast penuh (T5): chant rendah + dentuman
+    // + 「禪院じゃねぇのか、よかったな」(4,54 dtk — sinkron cinematic).
     playTojiTechniqueLayers('ult');
+    playTojiCast();
     // Selesai cinematic → masuk state 全開 + dentuman settle (pola Nanami).
     const done = setTimeout(() => {
       setTojiCasting(false);

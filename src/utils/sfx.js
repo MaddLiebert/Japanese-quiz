@@ -2198,3 +2198,30 @@ export const playTojiTechniqueLayers = (technique) => {
   }
   return n;
 };
+
+// ── Klip voice Toji (pola Gojo/Nanami) — playTojiTechnique + playTojiCast ────
+export const TOJI_TECHNIQUE_FILES = {
+  shakkontou: '/voices/toji/shakkontou.mp3',
+  banri_no_kusari: '/voices/toji/banri_no_kusari.mp3',
+  amanosakahoko: '/voices/toji/amanosakahoko.mp3',
+  yuuyun: '/voices/toji/yuuyun.mp3',
+  bukiko_jurei: '/voices/toji/bukiko_jurei.mp3',
+};
+
+// Lead-silence TERUKUR (PyAV RMS onset) — semua <= 0.24s (pola Nanami; hanya
+// > 0.24 yang perlu skip agresif, jadi nilai ini murni informasional + test).
+export const TOJI_LEAD_S = {
+  shakkontou: 0.21, banri_no_kusari: 0.19, amanosakahoko: 0.20,
+  yuuyun: 0.21, bukiko_jurei: 0.19, cast: 0.06,
+};
+
+export const playTojiTechnique = (technique) => {
+  const path = TOJI_TECHNIQUE_FILES[technique];
+  if (!path) return 0;
+  const lead = TOJI_LEAD_S[technique] || 0;
+  return playFile(path, lead);
+};
+
+// Cast 天与呪縛・全開: klip penuh 「禪院じゃねぇのか、よかったな」(4,54s TERUKUR) —
+// cinematic TojiShadow tersinkron per-frasa ke TOJI_CAST_VOICE (bukan ditebak).
+export const playTojiCast = () => playFile('/voices/toji/cast.mp3', TOJI_LEAD_S.cast);
