@@ -11,6 +11,7 @@ import {
   yutaCopyMechanic, yutaCopyInit, yutaCopyOutcome, YUTA_COPY_LIMITS,
   YUTA_STYLE, yutaKatana, yutaRipples, yutaCopyRings, yutaSwordField,
   YUTA_COPY_EMBLEM, yutaCopyEmblem, yutaCopyTint, YUTA_DOMAIN,
+  yutaSparks, yutaCracks, yutaMotes,
 } from './yutaFx.js';
 import { SUKUNA_HITSUME_DELAY_MS, SUKUNA_BLOOD } from './sukunaFx.js';
 import { NOBARA_ULT_TIMELINE, NOBARA_STRAW } from './nobaraFx.js';
@@ -244,5 +245,50 @@ test('emblem deterministik & tanpa NaN saat dirender (sebaran) — pure data', (
   for (const id of YUTA_COPY_POOL) {
     const e = yutaCopyEmblem(id);
     assert.ok(e.color.startsWith('#') && e.color.length === 7, id);
+  }
+});
+
+// ── T8: perkaya jurus (setara Nobara) — sparks / cracks / motes ───────────────
+test('yutaSparks: radial konsisten, deterministik, tanpa NaN', () => {
+  const a = yutaSparks(7, 8);
+  assert.deepEqual(a, yutaSparks(7, 8));
+  assert.equal(a.length, 8);
+  const angs = a.map((s) => s.ang);
+  // radial merata: sudut tersebar ~360/8 = 45° antar partikel
+  for (let i = 1; i < angs.length; i++) {
+    assert.ok(Math.abs(angs[i] - angs[i - 1] - 45) < 0.01, `sudut #${i}`);
+  }
+  for (const s of a) {
+    assert.ok(Number.isFinite(s.dx) && Number.isFinite(s.dy), JSON.stringify(s));
+    assert.ok(s.dur > 0 && s.size > 0);
+    // arah KONSISTEN dari pusat (radial) — bukan acak
+    assert.ok(Math.abs(Math.hypot(s.dx, s.dy) - s.len) < 0.01);
+  }
+});
+
+test('yutaCracks: bercabang, menirus, punya akhir (tanpa loop)', () => {
+  const c = yutaCracks(3, 3);
+  assert.deepEqual(c, yutaCracks(3, 3));
+  assert.equal(c.length, 3);
+  for (const k of c) {
+    assert.ok(Number.isFinite(k.ang) && Number.isFinite(k.len) && k.len > 0);
+    assert.ok(k.w0 > k.w1, 'menirus: pangkal lebih tebal dari ujung');
+    assert.ok(Array.isArray(k.branch) && k.branch.length >= 1, 'bercabang');
+    for (const b of k.branch) {
+      assert.ok(Number.isFinite(b.ang) && Number.isFinite(b.len) && b.len > 0);
+    }
+  }
+  // sudut retakan menyebar (bukan semua arah sama)
+  assert.notEqual(c[0].ang, c[1].ang);
+});
+
+test('yutaMotes: naik bergelombang (deterministik, tanpa NaN)', () => {
+  const m = yutaMotes(5, 10);
+  assert.deepEqual(m, yutaMotes(5, 10));
+  assert.equal(m.length, 10);
+  for (const p of m) {
+    assert.ok(Number.isFinite(p.x) && p.x >= 0 && p.x <= 100, JSON.stringify(p));
+    assert.ok(p.rise > 0 && p.size > 0 && p.dur > 0);
+    assert.ok(Number.isFinite(p.phase) && Number.isFinite(p.sway));
   }
 });
