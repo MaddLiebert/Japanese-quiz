@@ -6,6 +6,7 @@ import { pickBadges, knownBadges } from "../features/progress/badges";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { countMasteredKanji, isN5ExamUnlocked, N5_EXAM_MIN_MASTERED_KANJI } from "../features/n5exam/n5exam";
+import { DailyQuestPanel } from "../features/quests/DailyQuestPanel";
 
 import { StreakIndicator } from "../components/StreakIndicator";
 import { isLegendary, badgeCircleClass } from "../features/progress/badgeSeal";
@@ -415,6 +416,9 @@ export function Home() {
 
           </div>
         </div>
+
+        {/* --- MISI HARIAN 日課 --- */}
+        <DailyQuestPanel />
 
         {/* --- ACHIEVEMENTS SECTION --- */}
         <div className="border-t-[4px] border-sumi relative z-10 p-6 sm:p-12 bg-kinari">
