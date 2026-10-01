@@ -1,11 +1,13 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useLocation } from 'react-router-dom';
 import { useUserStats } from '../progress/ProgressContext';
 import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs, playDomainBoom, playGojoTechnique, playGojoCast, playBallSound, playMurasakiRiser, playCurseTick, playCurseReady, playDomainCollapse } from '../../utils/sfx';
 import { startDomainBgm, stopDomainBgm, setBallHum, stopBallHum, duckAmbience, stopAllAmbience } from '../../utils/gojoAmbience';
 import { startSukunaDomainBgm, stopSukunaDomainBgm, duckSukunaAmbience } from '../../utils/sukunaAmbience';
 import { getPack } from '../packs/packs';
 import { getVisual } from './visuals';
+import { isQuietRoute } from './effectGate';
 import { hinaGifForAnswer } from './hinaGifs';
 import { gojoGifForAnswer, gojoAnswerHoldMs } from './gojoGifs';
 import { clearFxIfCurrent, isCurrentToken, nextBallToken, currentBallToken } from './fxLifecycle';
@@ -182,6 +184,12 @@ let seq = 0;
 
 export function EffectProvider({ children }) {
   const { progress } = useUserStats();
+  // Gerbang senyap efek: rute tertentu (mis. Ujian N5) mematikan SEMUA efek JJK
+  // (klip suara karakter + visual). Audio ISI halaman (soal Choukai) tidak lewat
+  // sini → tetap bunyi.
+  const { pathname } = useLocation();
+  const effectsQuiet = isQuietRoute(pathname);
+  const effectsQuietRef = useRef(effectsQuiet);
   const [fx, setFx] = useState(null); // { kind, id, seed, angle, y } | null
   const [drops, setDrops] = useState([]);
   // Bola Gojo PERSIST antar jawaban (konsep user): ao nempel, aka nyusul,
@@ -1081,6 +1089,10 @@ export function EffectProvider({ children }) {
   }, []);
 
   const triggerEffect = useCallback((type) => {
+    // Mode senyap (mis. Ujian N5) → tidak ada efek sama sekali: tanpa klip suara
+    // karakter & tanpa visual. Dicek via ref supaya selalu segar.
+    if (effectsQuietRef.current) return;
+
     // Efek tidak aktif → tetap bunyi suara dasar (perilaku lama), lalu berhenti.
     if (!active) {
       if (type === 'correct') playCorrectSound();
@@ -1425,6 +1437,15 @@ export function EffectProvider({ children }) {
     setYutaQuizOptionsState(null); yutaQuizOptionsRef.current = null;
     stopAllAmbience();
   }, [setTakeover]);
+
+  // Sinkronkan ref gerbang senyap (dibaca triggerEffect/cast tanpa stale closure).
+  useEffect(() => { effectsQuietRef.current = effectsQuiet; }, [effectsQuiet]);
+
+  // Masuk mode senyap (mis. buka Ujian N5) → padamkan semua efek yang sedang hidup
+  // (bar, domain, bola, BGM). endQuizSession sudah membersihkan secara menyeluruh.
+  useEffect(() => {
+    if (effectsQuiet) endQuizSession();
+  }, [effectsQuiet, endQuizSession]);
 
   // Cast 領域展開 dengan tap bar. Menghabiskan charge: streak & bar di-reset,
   // bar keisi dari 0 sampai 20 benar beruntun lagi. BOLA 蒼/赫 TETAP mengambang
@@ -2331,6 +2352,8 @@ export function EffectProvider({ children }) {
   return (
     <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt, tojiCharge, tojiCasting, tojiStateOn, tojiStateLeft, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, castTojiUlt, yutaCharge, yutaCasting, yutaPickOpen, yutaKatanas, yutaDomainOn: yutaDomain, yutaDomainLeft, yutaCopyId, yutaCutIds, yutaCutForId, yutaAmmo, yutaPiles, yutaWheel, yutaCombo, yutaCopyFreezes: yutaDomain && yutaCopyId === 'gojo', setYutaQuizOptions, castYutaUlt, pickYutaKatana, cancelYutaPick }}>
       {children}
+      {/* Mode senyap (mis. Ujian N5) → tidak ada overlay efek sama sekali. */}
+      {!effectsQuiet && (
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
         gojoBalls={gojoBalls} gojoExplode={gojoExplode}
@@ -2367,6 +2390,7 @@ export function EffectProvider({ children }) {
         onCastYuta={castYutaUlt} onPickYuta={pickYutaKatana}
         onCancelYuta={cancelYutaPick}
       />
+      )}
     </EffectContext.Provider>
   );
 }
