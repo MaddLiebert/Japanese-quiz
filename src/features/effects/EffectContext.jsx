@@ -66,6 +66,7 @@ import {
   playNobaraTechnique, playNobaraTechniqueLayers, playStrawRustle,
   playNanamiTechniqueLayers, playNanamiTechnique,
   playTojiTechniqueLayers, playTojiTechnique, playTojiCast, playTojiStateStart,
+  playYutaTechnique, playYutaTechniqueLayers, playYutaCast, playYutaCopy,
 } from '../../utils/sfx';
 import { startMegumiShadowBgm, stopMegumiShadowBgm, duckMegumiAmbience } from '../../utils/megumiAmbience';
 import {
@@ -1002,7 +1003,7 @@ export function EffectProvider({ children }) {
 
     let clipMs = 0;
     if (type === 'wrong') clipMs = playWrongSound();
-    else clipMs = playCorrectSound();
+    else { clipMs = playYutaTechnique(tech); playYutaTechniqueLayers(tech); }
 
     // ── SELAMA DOMAIN: ekonomi copy (full asli, delegasi) ────────────────────
     if (inDomain && copyId) {
@@ -1811,6 +1812,8 @@ export function EffectProvider({ children }) {
     const seed = Math.floor(Math.random() * 900) + 1;
     setYutaCopySeed(seed);
     setYutaKatanas(yutaDrawKatanas(seed));   // 3 katana unik (acak)
+    playYutaCast();                           // 「領域展開・真贋相愛」 (4,86s aset user)
+    playYutaTechniqueLayers('ult');
     playDomainBoom('cast');
     // Setelah cinematic settle → buka picker 3 katana.
     const t = setTimeout(() => { setYutaCasting(false); setYutaPickOpen(true); }, YUTA_CAST_SETTLE_MS);
@@ -1837,6 +1840,7 @@ export function EffectProvider({ children }) {
     setYutaDomainLeft(yutaCopyDurationS(copyId));
     // Ambience reuse (DRY): gojo (freeze) → startDomainBgm; selain itu → sukuna.
     if (yutaCopyFreezes(copyId)) startDomainBgm(); else startSukunaDomainBgm();
+    playYutaCopy(copyId);
     playDomainBoom('cast');
   }, [activeVisual]);
 
