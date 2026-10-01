@@ -211,6 +211,15 @@ test('pack_13 = Toji Fushiguro, visual toji (bukan dummy lagi)', () => {
   assert.ok(!/dummy|menyusul|coming/i.test(p.desc_en), 'desc_en tidak boleh "menyusul/dummy"');
 });
 
+test('pack_12 = Yuta Okkotsu, visual yuta (bukan dummy lagi)', () => {
+  const p = getPack('pack_12');
+  assert.equal(p.visual, 'yuta');
+  assert.equal(p.voice, 'yuta');
+  assert.equal(p.rarity, 'legendary');
+  assert.ok(!/dummy|menyusul|coming/i.test(p.desc), 'desc tidak boleh "menyusul/dummy"');
+  assert.ok(!/dummy|menyusul|coming/i.test(p.desc_en), 'desc_en tidak boleh "menyusul/dummy"');
+});
+
 
 // ── Seri Jujutsu Kaisen: 7 pack (dummy → VP) ─────────────────────────────────
 

@@ -151,12 +151,23 @@ export const VOICES = {
     ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  // VP Yuta Okkotsu (pack_12) — SENYAP TOTAL (30/09): klip TTS generik dihapus
-  // atas permintaan user ("hapus karna generik"). Visual masih 'dummy'; TIDAK
-  // ada fallback synth (silent: true) — benar-benar tanpa suara.
+  // VP Yuta Okkotsu (pack_12) — aset USER di public/voices/yuta/ (真贋相愛・模倣).
+  //   ⚠️ ATURAN USER: JANGAN bikin TTS generik. Semua klip = file user sendiri.
+  //   wrong : 1 klip kalah (gomenasai) — user cuma punya 1, itu cukup.
+  //   clips : jurus (太刀/呪力/反転術式/模倣) + cast 真贋相愛. Diputar DETERMINISTIK.
+  //   correct/streak: KOSONG (benar = jurus deterministik, pola Gojo/Nanami/Toji).
   yuta: {
-    files: { correct: [], wrong: [], streak: [] },
-    silent: true,
+    files: {
+      correct: [],
+      wrong: ['/voices/yuta/wrong_1.mp3'],
+      streak: [],
+    },
+    clips: [
+      '/voices/yuta/katana.mp3', '/voices/yuta/ripples.mp3',
+      '/voices/yuta/reversal.mp3', '/voices/yuta/mimic.mp3',
+      '/voices/yuta/cast.mp3',
+    ],
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
   // VP Toji Fushiguro (pack_13) — aset user di public/voices/toji/ (天与呪縛).
   //   wrong : 2 klip kalah (化け物が / タダ働きなんてゴメンだね) — acak tiap salah.

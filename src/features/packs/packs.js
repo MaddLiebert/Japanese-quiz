@@ -89,8 +89,9 @@ export const PACKS = [
   },
   {
     id: 'pack_12', name: 'Yuta Okkotsu', kanji: '乙骨憂太', icon: '💍',
-    desc: 'Voice pack Yuta (visual menyusul)', desc_en: 'Yuta voice pack (visual coming)',
-    price: 2500, rarity: 'legendary', visual: 'dummy', voice: 'yuta',
+    desc: '模倣・真贋相愛: 3 katana muncul — pilih 1, pakai ultimate siapa pun (Gojo/Sukuna/Nobara/Yuji/Megumi/Nanami/Toji) 30 dtk',
+    desc_en: 'Copy: 真贋相愛 — 3 katanas appear, pick 1, wield any ultimate (Gojo/Sukuna/Nobara/Yuji/Megumi/Nanami/Toji) for 30s',
+    price: 2500, rarity: 'legendary', visual: 'yuta', voice: 'yuta',
   },
   {
     id: 'pack_13', name: 'Toji Fushiguro', kanji: '伏黒甚爾', icon: '🗡️',
