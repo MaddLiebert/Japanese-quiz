@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { useDeathQuizSession } from "./useDeathQuizSession";
 import { isDeathQuizUnlocked, DEATH_UNLOCK_XP, DEATH_XP_PENALTY, DEATH_START_LIVES, deathMedaruReward } from "./deathQuiz";
+import { DEATH_SKILLS, DEATH_METER_PER_CHARGE } from "./deathSkills";
 
 // Kartu statistik kecil (nyawa/skor/waktu) — gaya neo-brutalist repo.
 function StatChip({ label, value, accent }) {
@@ -12,6 +13,25 @@ function StatChip({ label, value, accent }) {
     <div className={`flex flex-col items-center px-3 sm:px-4 py-2 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] ${accent || ''}`}>
       <span className="text-[9px] uppercase tracking-[0.25em] font-black text-sumi/50">{label}</span>
       <span className="text-lg sm:text-xl font-serif font-black text-sumi leading-tight">{value}</span>
+    </div>
+  );
+}
+
+// Bar meter 呪力 — 5 takik; penuh → +1 charge (六眼 dkk siap dipakai).
+function CurseMeter({ meter, charges, id }) {
+  return (
+    <div className="flex items-center gap-2" data-death-meter>
+      <div className="flex gap-[3px]">
+        {Array.from({ length: DEATH_METER_PER_CHARGE }).map((_, i) => (
+          <span
+            key={i}
+            className={`w-2.5 h-4 border-[2px] border-sumi transition-colors ${i < meter ? 'bg-shu' : 'bg-kinari-light'}`}
+          />
+        ))}
+      </div>
+      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-sumi/60">
+        {id ? '呪力' : 'Curse'} {charges > 0 ? `·${charges}✦` : ''}
+      </span>
     </div>
   );
 }
@@ -29,7 +49,8 @@ export function DeathQuizScreen() {
   const unlockPct = Math.round((xpNow / DEATH_UNLOCK_XP) * 100);
 
   const session = useDeathQuizSession();
-  const { phase, current, options, lives, score, timeLeft, answeredId, isAnswered, runResult } = session;
+  const { phase, current, options, lives, score, timeLeft, answeredId, isAnswered, runResult, skillState, eliminatedIds, lastCast } = session;
+  const skillBusy = phase !== 'playing' || isAnswered;
 
   // Keluar: run yang sedang jalan harus konfirmasi dulu (nyawa & skor hangus).
   const handleBack = () => {
@@ -152,6 +173,9 @@ export function DeathQuizScreen() {
           <div className="flex gap-4 mb-8 flex-wrap justify-center">
             <StatChip label={id ? 'Skor' : 'Score'} value={runResult?.score ?? score} />
             <StatChip label="命" value={`×${lives}`} />
+            {(runResult?.bestCombo || 0) > 1 && (
+              <StatChip label={id ? '連撃' : 'Combo'} value={`×${runResult.bestCombo}`} accent="!bg-shu/10 !border-shu" />
+            )}
             <StatChip
               label="XP"
               value={`−${runResult?.penaltyApplied ?? DEATH_XP_PENALTY}`}
@@ -265,6 +289,18 @@ export function DeathQuizScreen() {
               <span className="text-shu">▶</span>
               {id ? 'Kompensasi: dapat Medaru makin banyak tiap jawaban benar (min. skor 5).' : 'Compensation: earn Medaru for every correct answer (min. score 5).'}
             </li>
+            <li className="flex gap-3">
+              <span className="text-shu">▶</span>
+              {id
+                ? `Jawaban benar beruntun mengisi meter 呪力. Penuh (${DEATH_METER_PER_CHARGE}) = 1 charge untuk cast skill.`
+                : `Correct answers in a row fill the 呪力 meter. Full (${DEATH_METER_PER_CHARGE}) = 1 charge to cast a skill.`}
+            </li>
+            <li className="flex gap-3">
+              <span className="text-shu">▶</span>
+              {id
+                ? '3 skill: 六眼 (buang 2 opsi salah), 無下限 (+waktu), 反転術式 (+1 nyawa). Charge tersimpan walau salah.'
+                : '3 skills: 六眼 (eliminate 2 wrong options), 無下限 (+time), 反転術式 (+1 life). Charges are kept even after a wrong answer.'}
+            </li>
           </ul>
 
           <button
@@ -305,9 +341,13 @@ export function DeathQuizScreen() {
         <div className="flex gap-3">
           <StatChip label="命" value={`×${lives}`} accent={lives <= 1 ? '!bg-shu/15 !border-shu' : ''} />
           <StatChip label={id ? 'Skor' : 'Score'} value={score} />
+          {skillState?.combo > 1 && (
+            <StatChip label={id ? '連撃' : 'Combo'} value={`×${skillState.combo}`} accent="!bg-shu/10 !border-shu" />
+          )}
           <StatChip label="🪙" value={`+${deathMedaruReward(score)}`} />
         </div>
         <div className="flex items-center gap-3">
+          <CurseMeter meter={skillState?.meter || 0} charges={skillState?.charges || 0} id={id} />
           {timeLeft !== null && (
             <div className={`px-4 py-2 border-[3px] border-sumi shadow-[3px_3px_0_0_#1a1a1a] font-black ${timeLeft <= 3 ? 'bg-shu text-kinari-light animate-pulse' : 'bg-kinari-light text-sumi'}`}>
               <span className="text-[9px] uppercase tracking-[0.25em] font-black opacity-70 block">{id ? 'Waktu' : 'Time'}</span>
@@ -316,6 +356,45 @@ export function DeathQuizScreen() {
           )}
         </div>
       </header>
+
+      {/* Baris skill 呪術 — aktif saat ada charge */}
+      <div className="flex flex-wrap gap-2 mb-6 relative z-10" data-death-skills>
+        {DEATH_SKILLS.map((sk) => {
+          const ready = (skillState?.charges || 0) > 0 && !skillBusy;
+          return (
+            <button
+              key={sk.id}
+              onClick={() => session.useSkill(sk.id)}
+              disabled={!ready}
+              data-death-skill={sk.id}
+              title={id ? sk.desc : sk.desc_en}
+              className={`flex items-center gap-2 px-3 py-2 border-[3px] font-black text-xs uppercase tracking-[0.15em] transition-all ${
+                ready
+                  ? 'border-shu bg-kinari-light text-shu shadow-[3px_3px_0_0_#d3382f] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#d3382f] cursor-pointer'
+                  : 'border-sumi bg-kinari text-sumi/30 opacity-50 cursor-not-allowed'
+              }`}
+            >
+              <span className="text-base leading-none">{sk.icon}</span>
+              <span>{id ? sk.name : sk.name_en}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Toast cast skill (auto-hilang) */}
+      <AnimatePresence>
+        {lastCast && (
+          <motion.div
+            key={lastCast.id + String(score)}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mb-6 w-fit px-4 py-2 border-[3px] border-shu bg-shu/10 text-shu font-black text-xs uppercase tracking-[0.2em] relative z-10"
+          >
+            ✦ {lastCast.label} {id ? 'diaktifkan!' : 'activated!'}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Kartu soal */}
       <div className="flex-1 flex flex-col items-center">
@@ -354,11 +433,15 @@ export function DeathQuizScreen() {
           {options.map((option) => {
             const isThisClicked = answeredId === option.id;
             const isThisCorrect = option.id === current.target.id;
+            const isEliminated = eliminatedIds.includes(option.id);
             const showGreen = isAnswered && isThisCorrect;
             const showRed = isThisClicked && !isThisCorrect;
 
             let btnClass = "border-[3px] border-sumi shadow-[5px_5px_0_0_#1a1a1a] transition-all p-4 sm:p-5 font-bold text-sumi flex flex-col items-center justify-center rounded-none text-sm sm:text-base leading-snug min-h-[70px] ";
-            if (!isAnswered) {
+            if (isEliminated && !isAnswered) {
+              // Dibuang 六眼: tidak bisa dipilih, dicoret.
+              btnClass += "bg-kinari/50 text-sumi/25 line-through opacity-50 cursor-not-allowed";
+            } else if (!isAnswered) {
               btnClass += "bg-kinari hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#1a1a1a] hover:bg-kinari-light cursor-pointer";
             } else if (showGreen) {
               btnClass += "!bg-matcha !text-white !border-matcha translate-x-[2px] translate-y-[2px] !shadow-[3px_3px_0_0_rgba(0,0,0,0.3)]";
@@ -379,8 +462,9 @@ export function DeathQuizScreen() {
                 }
                 transition={{ duration: 0.35 }}
                 className={btnClass}
-                disabled={isAnswered}
+                disabled={isAnswered || isEliminated}
                 data-correct={isThisCorrect || undefined}
+                data-eliminated={isEliminated || undefined}
               >
                 <span className="text-center font-serif">{optionLabel(option)}</span>
               </motion.button>
