@@ -21,6 +21,7 @@ import { PACKS, getPack, isPackReady } from "../packs/packs";
 import { getVoice } from "../audio/voices.js";
 import { SHOP_ITEMS, countItems } from "../items/items";
 import { reviewClips, nextClip } from "./reviewClips.js";
+import { YUTA_COPY_POOL, yutaCopyMeta } from "../effects/yutaFx.js";
 
 // Kunci localStorage yang dipakai ProgressContext
 const PROGRESS_KEY = "user_progress_v2";
@@ -40,6 +41,8 @@ const NOBARA_PACK_ID = "pack_08";
 const NANAMI_PACK_ID = "pack_11";
 // Pack Toji — target preview streak & ult 天与呪縛・全開 (術師殺し).
 const TOJI_PACK_ID = "pack_13";
+// Pack Yuta — target preview streak & domain 真贋相愛 (模倣: 3 katana → pick 1).
+const YUTA_PACK_ID = "pack_12";
 
 const ALL_BADGES = [
   "hiragana_origin", "katakana_edge", "kanji_slayer", "kanji_hell", "eagle_eye",
@@ -67,7 +70,7 @@ function writeProgress(patch) {
 export function DevPanel() {
   const { language } = useLanguage();
   const { progress, togglePack } = useUserStats();
-  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, castMegumiSummon, castNobaraUlt, castNanamiUlt, castTojiUlt, triggerEffect } = useEffectLayer();
+  const { previewStreak, castDomain, castTakeover, previewYujiCombo, castSukunaDomain, castMegumiSummon, castNobaraUlt, castNanamiUlt, castTojiUlt, castYutaUlt, pickYutaKatana, triggerEffect } = useEffectLayer();
   // Target streak yang menunggu pack Gojo aktif (preview lintas-pack).
   const [pending, setPending] = useState(null);
   // Review suara & skill (dev): karakter terpilih, kursor rotasi klip, status.
@@ -128,6 +131,13 @@ export function DevPanel() {
     setPendingToji(null);
     previewStreak(pendingToji);
   }, [pendingToji, progress.activePack, previewStreak]);
+
+  const [pendingYuta, setPendingYuta] = useState(null);
+  useEffect(() => {
+    if (pendingYuta == null || progress.activePack !== YUTA_PACK_ID) return;
+    setPendingYuta(null);
+    previewStreak(pendingYuta);
+  }, [pendingYuta, progress.activePack, previewStreak]);
 
   // Guard: panel ini TIDAK dirender di build produksi.
   if (!import.meta.env.DEV) return null;
@@ -322,6 +332,31 @@ export function DevPanel() {
   const castToji = () => {
     if (progress.activePack === TOJI_PACK_ID) { castTojiUlt(); return; }
     previewToji(20);   // aktifkan pack dulu → klik sekali lagi
+  };
+
+  // Preview efek Yuta tanpa quiz (pola previewToji). Cast → 3 katana → pick 1.
+  const previewYuta = (target) => {
+    if (progress.activePack === YUTA_PACK_ID) { previewStreak(target); return; }
+    const owned = (progress.ownedPacks || []).includes(YUTA_PACK_ID);
+    if (owned) { togglePack(YUTA_PACK_ID); setPendingYuta(target); return; }
+    writeProgress({
+      medaru: 999999,
+      ownedPacks: [...(progress.ownedPacks || []), YUTA_PACK_ID],
+      activePack: YUTA_PACK_ID,
+    });
+    reload();
+  };
+
+  // Cast 真贋相愛 (dev): aktifkan pack dulu → klik sekali lagi untuk cast.
+  const castYuta = () => {
+    if (progress.activePack === YUTA_PACK_ID) { castYutaUlt(); return; }
+    previewYuta(20);
+  };
+
+  // Pilih katana (dev) — untuk uji tiap mekanik copy tanpa menunggu gacha.
+  const pickYuta = (copyId) => {
+    if (progress.activePack === YUTA_PACK_ID) { pickYutaKatana(copyId); return; }
+    previewYuta(20);
   };
 
   // ── Review suara & skill (dev) ────────────────────────────────────────────
@@ -670,6 +705,48 @@ export function DevPanel() {
             <button type="button" onClick={castToji} className={`${btn} bg-[#dc2626] text-kinari-light`}>
               🩸 {id ? "Cast 全開" : "Cast Ultimate"}
             </button>
+          </div>
+        </div>
+
+        {/* DEV-ONLY — Preview efek Yuta tanpa quiz (真贋相愛 · 模倣) */}
+        <div className="mt-8 pt-6 border-t-[2px] border-sumi/10">
+          <p className="text-xs uppercase tracking-[0.2em] font-bold text-sumi/60 mb-2">
+            {id ? "Preview Efek Yuta (tanpa quiz)" : "Yuta Effect Preview (no quiz)"}
+          </p>
+          <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
+            {id
+              ? "Satu klik = satu jawaban benar di streak target. Pack Yuta otomatis diaktifkan bila perlu. Non-momen = ROTASI 太刀 #1 / 呪力 #2 … Momen: 反転術式 #10 / 模倣 #20 / 真贋相愛 #30. Cast 領域展開・真贋相愛 = cinematic 4,86 dtk (sync cast.mp3) lalu GACHA 3 katana → pilih 1 ultimate (7 pool) yang jalan 30 dtk. Tombol pick di bawah = pilih langsung tiap mekanik copy."
+              : "One click = one correct answer at the target streak. Yuta pack is equipped automatically if needed. Non-moments ROTATE Katana #1 / Juryoku #2 … Moments: Reversal #10 / Mimic #20 / Shingan Soai #30. Cast Domain: Authentic Mutual Love = 4.86s cinematic (cast.mp3-synced) then GACHA 3 katanas → pick 1 of 7 ultimates for 30s. Pick buttons below = choose each copy mechanic directly."}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <button type="button" onClick={() => previewYuta(1)} className={`${btn} bg-[#cbd5e1] text-sumi`}>
+              🗡️ {id ? "太刀 #1" : "Katana #1"}
+            </button>
+            <button type="button" onClick={() => previewYuta(2)} className={`${btn} bg-[#1e3a8a] text-kinari-light`}>
+              💧 {id ? "呪力 #2" : "Juryoku #2"}
+            </button>
+            <button type="button" onClick={() => previewYuta(10)} className={`${btn} bg-[#7c3aed] text-kinari-light`}>
+              🔄 {id ? "反転術式 #10" : "Reversal #10"}
+            </button>
+            <button type="button" onClick={() => previewYuta(20)} className={`${btn} bg-[#0c0c0c] text-kinari-light`}>
+              🎭 {id ? "模倣 #20" : "Mimic #20"}
+            </button>
+            <button type="button" onClick={() => previewYuta(30)} className={`${btn} bg-[#dc2626] text-kinari-light`}>
+              ⚔️ {id ? "真贋相愛 #30" : "Shingan Soai #30"}
+            </button>
+            <button type="button" onClick={castYuta} className={`${btn} bg-[#991b1b] text-kinari-light`}>
+              🩸 {id ? "Cast 真贋相愛" : "Cast Domain"}
+            </button>
+          </div>
+          <p className="text-[11px] text-sumi/50 font-semibold mt-4 mb-2">
+            {id ? "Pilih katana (uji mekanik copy 30 dtk):" : "Pick a katana (test 30s copy mechanic):"}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+            {YUTA_COPY_POOL.map((cid) => (
+              <button key={cid} type="button" onClick={() => pickYuta(cid)} className={`${btn} bg-[#1a0505] text-kinari-light border-[2px] border-[#dc2626]/50`}>
+                {yutaCopyMeta(cid).kanji}
+              </button>
+            ))}
           </div>
         </div>
 
