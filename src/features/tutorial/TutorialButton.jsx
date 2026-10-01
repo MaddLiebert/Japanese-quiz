@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { tutorialFor, unseenCount } from './tutorials';
+import { tutorialFor, unseenCount, tutorialButtonVisible } from './tutorials';
 
 // Avatar Saku chann — kotak neo-brutalis dengan kanji 咲 (saku) + wajah kaomoji.
 // Gak ada file gambar maskot, jadi ini "muka" Saku yang konsisten dengan app.
@@ -24,15 +24,19 @@ function SakuFace({ size = 48 }) {
 // Tombol mengapung "Tutorial" (kanan-bawah) + panel balon teks Saku.
 // Context-aware: isi panel = tips halaman yang lagi dibuka (lihat tutorials.js).
 export function TutorialButton() {
-  const { progress, markTutorialSeen } = useUserStats();
+  const { progress, markTutorialSeen, setTutorialHidden } = useUserStats();
   const { language } = useLanguage();
   const { pathname } = useLocation();
   const id = language === 'id';
 
   const topic = tutorialFor(pathname);
   const unseen = unseenCount(progress.tutorialSeen);
+  const visible = tutorialButtonVisible(progress.tutorialHidden);
 
   const [open, setOpen] = useState(false);
+
+  // Sembunyikan tombol mengapung (user sudah hafal). Panel ikut ditutup.
+  const hide = () => { setOpen(false); setTutorialHidden(true); };
 
   // Saat panel dibuka → tandai halaman ini sudah dibaca (hilangkan badge "baru").
   useEffect(() => {
@@ -47,6 +51,9 @@ export function TutorialButton() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
+
+  // Tombol disembunyikan user (sudah hafal) → jangan render apa pun.
+  if (!visible) return null;
 
   return (
     <>
@@ -75,6 +82,14 @@ export function TutorialButton() {
                     <Glyph name={topic.emblem} className="mr-1.5" />{id ? topic.title : topic.title_en}
                   </h3>
                 </div>
+                <button
+                  type="button"
+                  onClick={hide}
+                  title={id ? 'Sembunyikan tombol Tutorial (bisa dinyalakan lagi di Pengaturan)' : 'Hide Tutorial button (re-enable in Settings)'}
+                  className="shrink-0 px-2 h-7 border-[2px] border-sumi bg-kinari text-sumi text-[9px] font-black uppercase tracking-wider flex items-center justify-center hover:bg-sumi hover:text-kinari-light transition-colors"
+                >
+                  {id ? 'Sembunyikan' : 'Hide'}
+                </button>
                 <button
                   onClick={() => setOpen(false)}
                   aria-label={id ? 'Tutup' : 'Close'}
