@@ -5,6 +5,7 @@ import { applyStreakBonus } from './streak';
 import { WRITE_GATE_KEY } from '../writing/writeGate';
 import { emptyExamRecord, mergeExamRecord, n5BadgesFor } from '../n5exam/certificate';
 import { dateKey, emptyQuests, ensureToday, bumpEvent, canClaim, markClaimed, questDef, SIDE_SOURCES, emptyWeekly, ensureWeek, weekBump, weekKey, canClaimWeek, markWeekClaimed, weeklyQuestDef } from '../quests/quests';
+import { emptySeen, ensureSeen, markSeen } from '../tutorial/tutorials';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -57,7 +58,8 @@ const DEFAULT_PROGRESS = {
   n5Exam: emptyExamRecord(),
   lastActiveDate: getLocalDateString(),
   quests: emptyQuests(),
-  weekly: emptyWeekly()
+  weekly: emptyWeekly(),
+  tutorialSeen: emptySeen()
 };
 
 const DIFFICULTY_MAP = { easy: 0.8, medium: 1.0, hard: 1.2 };
@@ -172,6 +174,7 @@ export const ProgressProvider = ({ children }) => {
       const merged = migratePacks({ ...DEFAULT_PROGRESS, ...(parsed || {}) });
       merged.quests = ensureToday(merged.quests);
       merged.weekly = ensureWeek(merged.weekly);
+      merged.tutorialSeen = ensureSeen(merged.tutorialSeen);
       return merged;
     } catch {
       return DEFAULT_PROGRESS;
@@ -652,6 +655,14 @@ export const ProgressProvider = ({ children }) => {
     setAchievements((prev) => (prev.includes(id) ? prev : [...prev, id]));
   }, []);
 
+  // Tandai tutorial satu halaman sudah dibaca (untuk badge "baru"). Immutable.
+  const markTutorialSeen = useCallback((pathname) => {
+    setProgress(prev => ({
+      ...prev,
+      tutorialSeen: markSeen(prev.tutorialSeen, pathname),
+    }));
+  }, []);
+
   const resetProgress = useCallback(() => {
     localStorage.removeItem('user_progress_v2');
     localStorage.removeItem('item_progress_v2');
@@ -665,7 +676,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, markTutorialSeen, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}
