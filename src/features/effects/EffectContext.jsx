@@ -26,6 +26,8 @@ import { NanamiBurst } from './NanamiBurst';
 import { NanamiCurseBar, NanamiUltCine, NanamiOvertimeAura, NanamiRubbleMarker } from './NanamiShadow';
 import { TojiBurst } from './TojiBurst';
 import { TojiCurseBar, TojiUltCine } from './TojiShadow';
+import { YutaBurst } from './YutaBurst';
+import { YutaCurseBar, YutaKatanaPicker, YutaDomainCine, YutaDomainField, YUTA_CAST_SETTLE_MS } from './YutaShadow';
 import { tojiGifForAnswer, tojiGifHoldMs, preloadTojiGifs } from './tojiGifs';
 import {
   megumiTechniqueFor, megumiCurseCharge, MEGUMI_ULT_THRESHOLD,
@@ -51,6 +53,13 @@ import {
   tojiUltOutcome, tojiCutOptions, tojiStateLeft as tojiStateLeftMs,
   TOJI_STATE_S, TOJI_KILL_HOLD_MS, tojiStateStartAmmo,
 } from './tojiFx';
+import {
+  yutaTechniqueFor, yutaCurseCharge, YUTA_ULT_THRESHOLD,
+  yutaCopyLeft, yutaCopyDurationS, yutaCopyFreezes,
+  yutaCopyCut, yutaCopyCutDelayMs, yutaCopyPerQuestionCut,
+  yutaCopyInit, yutaCopyOutcome, yutaCopyEconomyCut,
+  yutaDrawKatanas, isValidYutaCopy, YUTA_DOMAIN_DURATION_S,
+} from './yutaFx';
 import {
   playMegumiTechnique, playMegumiTechniqueLayers, playShadowSwallow,
   playAdaptFlash, playSwordUnsheathe, playWheelShatter, playMakoraChant, playMakoraRoar,
@@ -306,6 +315,39 @@ export function EffectProvider({ children }) {
   const tojiStateRef = useRef(false);
   const tojiAmmoRef = useRef(0);
   const tojiQuizOptionsRef = useRef(null);   // opsi + correctId soal aktif (mekanik 一撃離脱)
+
+  // ── Yuta: bar 呪力 20 + 真贋相愛 (3 katana → pilih 1 → ultimate copy 30 dtk).
+  // Mekanik: gacha 3 katana unik dari 7 ultimate voicepack; pilih 1 → jalankan
+  // mekanik ASLI copy itu selama 30 dtk (freeze/必中/ledak/combo/適応/puing/amunisi)
+  // — semua DELEGASI ke modul pack sumber (yutaFx).
+  const [yutaCharge, setYutaCharge] = useState(0);
+  const [yutaCasting, setYutaCasting] = useState(false);
+  const [yutaPickOpen, setYutaPickOpen] = useState(false);
+  const [yutaKatanas, setYutaKatanas] = useState([]);
+  const [yutaDomain, setYutaDomain] = useState(false);
+  const [yutaDomainLeft, setYutaDomainLeft] = useState(YUTA_DOMAIN_DURATION_S);
+  const [yutaCopyId, setYutaCopyId] = useState(null);
+  const [yutaCopySeed, setYutaCopySeed] = useState(0);
+  const [yutaCutIds, setYutaCutIds] = useState([]);
+  const [yutaCutForId, setYutaCutForId] = useState(null);
+  const [yutaAmmo, setYutaAmmo] = useState(0);
+  const [yutaPiles, setYutaPiles] = useState(0);
+  const [yutaWheel, setYutaWheel] = useState(0);
+  const [yutaCombo, setYutaCombo] = useState(0);
+  const [yutaQuizOptionsState, setYutaQuizOptionsState] = useState(null);
+  const yutaDomainRef = useRef(false);
+  const yutaDomainEndsAtRef = useRef(null);
+  const yutaEndedRef = useRef(false);
+  const yutaCopyIdRef = useRef(null);
+  const yutaAmmoRef = useRef(0);
+  const yutaPilesRef = useRef(0);
+  const yutaWheelRef = useRef(0);
+  const yutaComboRef = useRef(0);
+  const yutaQuizOptionsRef = useRef(null);
+  const yutaCutForRef = useRef(null);
+  const yutaCutPendingRef = useRef(null);
+  const yutaEconomyArmedRef = useRef(null);   // { copyId, onId } — potongan ekonomi siap di soal berikut
+
   const timersRef = useRef([]);
   const hitTimerRef = useRef(null);
   // Ref + state selalu sinkron — triggerEffect membaca ref (tanpa stale closure).
@@ -946,6 +988,95 @@ export function EffectProvider({ children }) {
     }
   }, []);
 
+  // ── Satu jawaban untuk pack Yuta (visual 'yuta') — 真贋相愛 · 模倣 ───────────
+  // Benar → fx jurus (太刀↔呪力 rotasi + ladder 反転術式/模倣/真贋相愛); salah →
+  // wash merah + kanji 「しまった」. SELAMA domain: mekanik copy ASLI jalan
+  // (delegasi): toji=amunisi (salah → soal dibunuh), nanami=puing (salah →
+  // kontrak batal), megumi=takik 適応, yuji=combo 解捌開; gojo/sukuna/nobara
+  // ditangani per-soal di useEffect.
+  const triggerYuta = useCallback((type, kind, cfg, prevStreak) => {
+    const streak = streakRef.current;
+    const inDomain = yutaDomainRef.current;
+    const copyId = yutaCopyIdRef.current;
+    const tech = yutaTechniqueFor(kind, type === 'correct' ? streak : 0);
+
+    let clipMs = 0;
+    if (type === 'wrong') clipMs = playWrongSound();
+    else clipMs = playCorrectSound();
+
+    // ── SELAMA DOMAIN: ekonomi copy (full asli, delegasi) ────────────────────
+    if (inDomain && copyId) {
+      const kindNow = type === 'correct' ? 'correct' : 'wrong';
+      const state = {
+        ammo: yutaAmmoRef.current, piles: yutaPilesRef.current,
+        wheel: yutaWheelRef.current, combo: yutaComboRef.current,
+      };
+      const res = yutaCopyOutcome(copyId, kindNow, state);
+
+      if (copyId === 'toji') {
+        if (res.outcome === 'break') {
+          yutaEndedRef.current = true; playDomainCollapse('wrong');
+          yutaDomainRef.current = false; setYutaDomain(false);
+          yutaAmmoRef.current = 0; setYutaAmmo(0);
+          setYutaCutIds([]); setYutaCutForId(null);
+          stopDomainBgm(); stopSukunaDomainBgm();
+        } else if (res.outcome === 'load') {
+          yutaAmmoRef.current = res.ammo; setYutaAmmo(res.ammo);
+        } else { // spend → soal dibunuh (streak aman)
+          if (Number.isFinite(prevStreak)) streakRef.current = prevStreak;
+          yutaAmmoRef.current = res.ammo; setYutaAmmo(res.ammo);
+          const reg = yutaQuizOptionsRef.current;
+          const ids = yutaCopyEconomyCut('toji', reg?.options || [], reg?.correctId ?? null, { ammo: 1 });
+          if (ids.length > 0) { setYutaCutIds(ids); setYutaCutForId(reg?.correctId ?? null); }
+        }
+      } else if (copyId === 'nanami') {
+        if (res.outcome === 'contract') {
+          yutaEndedRef.current = true; playDomainCollapse('wrong');
+          yutaDomainRef.current = false; setYutaDomain(false);
+          yutaPilesRef.current = 0; setYutaPiles(0);
+          setYutaCutIds([]); setYutaCutForId(null);
+          yutaEconomyArmedRef.current = null;
+          streakRef.current = 0; setYutaCharge(0);
+          stopDomainBgm(); stopSukunaDomainBgm();
+        } else {
+          yutaPilesRef.current = res.piles; setYutaPiles(res.piles);
+          // puing > 0 → arm potongan untuk soal berikutnya (連鎖).
+          yutaEconomyArmedRef.current = res.piles > 0
+            ? { copyId, onId: yutaQuizOptionsRef.current?.correctId ?? null } : null;
+        }
+      } else if (copyId === 'megumi') {
+        yutaWheelRef.current = res.notches ?? 0; setYutaWheel(res.notches ?? 0);
+        // salah → takik naik → arm 適応/八握剣 untuk soal berikutnya.
+        yutaEconomyArmedRef.current = (kindNow === 'wrong' && (res.notches ?? 0) > 0)
+          ? { copyId, onId: yutaQuizOptionsRef.current?.correctId ?? null } : null;
+      } else if (copyId === 'yuji') {
+        yutaComboRef.current = res.combo ?? 0; setYutaCombo(res.combo ?? 0);
+        // combo penuh (開) → arm bakar semua salah di soal berikutnya.
+        yutaEconomyArmedRef.current = (res.combo ?? 0) >= 3
+          ? { copyId, onId: yutaQuizOptionsRef.current?.correctId ?? null } : null;
+      }
+      // gojo/sukuna/nobara: per-soal (useEffect) / freeze — tidak ada ekonomi.
+    }
+
+    const fxId = ++seq;
+    const holdMs = Math.max(cfg?.hold || 0, 1200, clipMs + 300);
+    setFx({
+      kind, tech, id: fxId, gifSrc: null,
+      seed: Math.floor(Math.random() * 900) + 1,
+      level: 0, milestone: 0,
+      streak: type === 'correct' ? streak : 0, signature: null, onMilestone: false,
+    });
+    const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
+    timersRef.current.push(t);
+
+    const newCharge = yutaCurseCharge(streak);
+    setYutaCharge(newCharge);
+    if (type === 'correct' && newCharge > 0) {
+      if (newCharge >= YUTA_ULT_THRESHOLD) playCurseReady();
+      else playCurseTick(newCharge);
+    }
+  }, []);
+
   const triggerEffect = useCallback((type) => {
     // Efek tidak aktif → tetap bunyi suara dasar (perilaku lama), lalu berhenti.
     if (!active) {
@@ -989,6 +1120,8 @@ export function EffectProvider({ children }) {
 
     // ── Jalur Toji (pack 'toji') — 天与呪縛・術師殺し · 全開 ──────────────────
     if (activeVisual === 'toji') { triggerToji(type, kind, cfg, prevStreak); return; }
+    // ── Jalur Yuta (pack 'yuta') — 真贋相愛 · 模倣 ────────────────────────────
+    if (activeVisual === 'yuta') { triggerYuta(type, kind, cfg, prevStreak); return; }
 
     // GIF Hina: hanya saat suara Hina bunyi (salah / tepat milestone). Benar biasa → null.
     // GIF Gojo: salah → meme "kalah"; teknik 茈 → murasaki; ao/aka → null (bola plasma).
@@ -1103,7 +1236,7 @@ export function EffectProvider({ children }) {
     // prematur oleh timer 蒼 lama (keluhan user: "efek murasaki kecepetan").
     const t = setTimeout(() => setFx((cur) => clearFxIfCurrent(cur, fxId)), holdMs);
     timersRef.current.push(t);
-  }, [active, spawnInk, activeVisual, gojoDomain, triggerYuji, triggerSukuna, triggerMegumi, triggerNobara, triggerNanami, triggerToji]);
+  }, [active, spawnInk, activeVisual, gojoDomain, triggerYuji, triggerSukuna, triggerMegumi, triggerNobara, triggerNanami, triggerToji, triggerYuta]);
 
   const resetEffectStreak = useCallback(() => {
     streakRef.current = 0;
@@ -1176,6 +1309,22 @@ export function EffectProvider({ children }) {
     tojiStateEndsAtRef.current = null;
     setTojiAmmo(0); tojiAmmoRef.current = 0;
     setTojiKillCutIds([]); setTojiKillForId(null);
+    // Yuta: bar, cast, picker, domain, & ekonomi copy padam.
+    setYutaCharge(0);
+    setYutaCasting(false);
+    setYutaPickOpen(false);
+    setYutaKatanas([]);
+    setYutaDomain(false); yutaDomainRef.current = false;
+    yutaDomainEndsAtRef.current = null;
+    setYutaCopyId(null); yutaCopyIdRef.current = null;
+    setYutaCutIds([]); setYutaCutForId(null);
+    yutaCutForRef.current = null; yutaCutPendingRef.current = null;
+    yutaEconomyArmedRef.current = null;
+    setYutaAmmo(0); yutaAmmoRef.current = 0;
+    setYutaPiles(0); yutaPilesRef.current = 0;
+    setYutaWheel(0); yutaWheelRef.current = 0;
+    setYutaCombo(0); yutaComboRef.current = 0;
+    setYutaQuizOptionsState(null); yutaQuizOptionsRef.current = null;
   }, [setTakeover]);
 
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
@@ -1255,6 +1404,22 @@ export function EffectProvider({ children }) {
     tojiStateEndsAtRef.current = null;
     setTojiAmmo(0); tojiAmmoRef.current = 0;
     setTojiKillCutIds([]); setTojiKillForId(null);
+    // Yuta: bar, cast, picker, domain, & ekonomi copy padam.
+    setYutaCharge(0);
+    setYutaCasting(false);
+    setYutaPickOpen(false);
+    setYutaKatanas([]);
+    setYutaDomain(false); yutaDomainRef.current = false;
+    yutaDomainEndsAtRef.current = null;
+    setYutaCopyId(null); yutaCopyIdRef.current = null;
+    setYutaCutIds([]); setYutaCutForId(null);
+    yutaCutForRef.current = null; yutaCutPendingRef.current = null;
+    yutaEconomyArmedRef.current = null;
+    setYutaAmmo(0); yutaAmmoRef.current = 0;
+    setYutaPiles(0); yutaPilesRef.current = 0;
+    setYutaWheel(0); yutaWheelRef.current = 0;
+    setYutaCombo(0); yutaComboRef.current = 0;
+    setYutaQuizOptionsState(null); yutaQuizOptionsRef.current = null;
     stopAllAmbience();
   }, [setTakeover]);
 
@@ -1620,6 +1785,148 @@ export function EffectProvider({ children }) {
     tojiStateEndsAtRef.current = null;
     setTojiStateLeft(TOJI_STATE_S);
   }, [tojiStateOn]);
+
+  // ── Registrasi opsi soal aktif untuk Yuta (semua mekanik copy) ──────────────
+  const setYutaQuizOptions = useCallback((options, correctId) => {
+    if (!Array.isArray(options) || options.length === 0) {
+      yutaQuizOptionsRef.current = null;
+      setYutaQuizOptionsState(null);
+      return;
+    }
+    const reg = { options, correctId };
+    yutaQuizOptionsRef.current = reg;
+    setYutaQuizOptionsState(reg);
+  }, []);
+
+  // ── Cast 真贋相愛 (tap bar Yuta): cinematic → gacha 3 katana → buka picker ──
+  const castYutaUlt = useCallback(() => {
+    if (activeVisual !== 'yuta') return;
+    streakRef.current = 0;
+    yutaEndedRef.current = false;
+    setYutaCharge(0);
+    setYutaCasting(true);
+    setYutaCopyId(null); yutaCopyIdRef.current = null;
+    setYutaCutIds([]); setYutaCutForId(null);
+    yutaCutForRef.current = null; yutaCutPendingRef.current = null;
+    const seed = Math.floor(Math.random() * 900) + 1;
+    setYutaCopySeed(seed);
+    setYutaKatanas(yutaDrawKatanas(seed));   // 3 katana unik (acak)
+    playDomainBoom('cast');
+    // Setelah cinematic settle → buka picker 3 katana.
+    const t = setTimeout(() => { setYutaCasting(false); setYutaPickOpen(true); }, YUTA_CAST_SETTLE_MS);
+    timersRef.current.push(t);
+  }, [activeVisual]);
+
+  // ── Pilih 1 katana → domain 30 dtk + init ekonomi copy (delegasi) ──────────
+  const pickYutaKatana = useCallback((copyId) => {
+    if (activeVisual !== 'yuta' || !isValidYutaCopy(copyId)) return;
+    setYutaPickOpen(false);
+    setYutaCopyId(copyId); yutaCopyIdRef.current = copyId;
+    setYutaCopySeed((n) => n + 1);
+    const init = yutaCopyInit(copyId);
+    yutaAmmoRef.current = init.ammo ?? 0; setYutaAmmo(init.ammo ?? 0);
+    yutaPilesRef.current = init.piles ?? 0; setYutaPiles(init.piles ?? 0);
+    yutaWheelRef.current = init.wheel ?? 0; setYutaWheel(init.wheel ?? 0);
+    yutaComboRef.current = init.combo ?? 0; setYutaCombo(init.combo ?? 0);
+    setYutaCutIds([]); setYutaCutForId(null);
+    yutaCutForRef.current = null; yutaCutPendingRef.current = null;
+    yutaEndedRef.current = false;
+    yutaDomainRef.current = true;
+    setYutaDomain(true);
+    yutaDomainEndsAtRef.current = Date.now() + yutaCopyDurationS(copyId) * 1000;
+    setYutaDomainLeft(yutaCopyDurationS(copyId));
+    // Ambience reuse (DRY): gojo (freeze) → startDomainBgm; selain itu → sukuna.
+    if (yutaCopyFreezes(copyId)) startDomainBgm(); else startSukunaDomainBgm();
+    playDomainBoom('cast');
+  }, [activeVisual]);
+
+  // ── Countdown domain 30 dtk (habis → padam, streak TETAP) ──────────────────
+  useEffect(() => {
+    if (!yutaDomain) return undefined;
+    const tick = () => {
+      const left = yutaCopyLeft(yutaDomainEndsAtRef.current);
+      setYutaDomainLeft(left);
+      if (left <= 0) {
+        if (!yutaEndedRef.current) { yutaEndedRef.current = true; playDomainCollapse('timeout'); }
+        yutaDomainRef.current = false;
+        setYutaDomain(false);
+        setYutaCutIds([]); setYutaCutForId(null);
+        yutaCutForRef.current = null; yutaCutPendingRef.current = null;
+        yutaEconomyArmedRef.current = null;
+        stopDomainBgm(); stopSukunaDomainBgm();
+      }
+    };
+    tick();
+    const id = setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [yutaDomain]);
+
+  useEffect(() => {
+    if (yutaDomain) return;
+    yutaDomainEndsAtRef.current = null;
+    setYutaDomainLeft(YUTA_DOMAIN_DURATION_S);
+  }, [yutaDomain]);
+
+  // ── Mesin per-soal copy (sukuna=all · nobara=keep1 · ekonomi arm) ───────────
+  // gojo/sukuna/nobara: potongan RECURRING tiap soal baru (pola hitsume Sukuna).
+  // megumi/nanami/yuji: potongan di-arm saat jawaban lalu mendarat di soal
+  // berikutnya — pola ini ditangani di triggerYuta + di sini lewat state ekonomi.
+  useEffect(() => {
+    if (!yutaDomain || activeVisual !== 'yuta') return undefined;
+    const reg = yutaQuizOptionsState;
+    if (!reg) return undefined;
+    const copyId = yutaCopyIdRef.current;
+    if (!copyId) return undefined;
+    // Soal berganti → bersihkan potongan soal sebelumnya.
+    if (yutaCutForRef.current !== reg.correctId) {
+      setYutaCutIds([]); setYutaCutForId(null);
+    }
+    // Potongan PER-SOAL (sukuna=all / nobara=keep1) → recurring tiap soal.
+    const perQ = yutaCopyPerQuestionCut(copyId);
+    if (perQ) {
+      if (yutaCutForRef.current === reg.correctId) return undefined;
+      if (yutaCutPendingRef.current === reg.correctId) return undefined;
+      yutaCutPendingRef.current = reg.correctId;
+      const t = setTimeout(() => {
+        yutaCutPendingRef.current = null;
+        if (!yutaDomainRef.current) return;
+        const cur = yutaQuizOptionsRef.current;
+        if (!cur || cur.correctId !== reg.correctId) return;
+        const ids = yutaCopyCut(copyId, cur.options, cur.correctId, 1);
+        if (ids.length === 0) return;
+        yutaCutForRef.current = cur.correctId;
+        setYutaCutIds(ids); setYutaCutForId(cur.correctId);
+        playSlash(false);
+      }, yutaCopyCutDelayMs(copyId));
+      timersRef.current.push(t);
+      return undefined;
+    }
+    // Potongan EKONOMI yang sudah di-arm (megumi 適応/八握剣 · nanami puing ·
+    // yuji 開) diterapkan ke soal baru yang terdaftar.
+    const armed = yutaEconomyArmedRef.current;
+    if (!armed || armed.copyId !== copyId) return undefined;
+    if (reg.correctId === armed.onId) return undefined;           // masih soal saat arm
+    if (yutaCutPendingRef.current === reg.correctId) return undefined;
+    yutaCutPendingRef.current = reg.correctId;
+    const t = setTimeout(() => {
+      yutaCutPendingRef.current = null;
+      if (!yutaDomainRef.current) return;
+      const cur = yutaQuizOptionsRef.current;
+      if (!cur || cur.correctId !== reg.correctId) return;
+      const state = {
+        ammo: yutaAmmoRef.current, piles: yutaPilesRef.current,
+        wheel: yutaWheelRef.current, combo: yutaComboRef.current,
+      };
+      const ids = yutaCopyEconomyCut(copyId, cur.options, cur.correctId, state);
+      yutaEconomyArmedRef.current = null;
+      if (ids.length === 0) return;
+      yutaCutForRef.current = cur.correctId;
+      setYutaCutIds(ids); setYutaCutForId(cur.correctId);
+      playSlash(false);
+    }, copyId === 'megumi' ? 1100 : 900);
+    timersRef.current.push(t);
+    return undefined;
+  }, [yutaDomain, activeVisual, yutaQuizOptionsState]);
 
   // ── Registrasi opsi soal aktif (konsumen: Practice/KanaQuiz) ───────────────
   // Dipakai mekanik 適応 (hapus 1 opsi salah soal berikutnya) & 八握剣 (semua).
@@ -2000,7 +2307,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt, tojiCharge, tojiCasting, tojiStateOn, tojiStateLeft, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, castTojiUlt }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt, tojiCharge, tojiCasting, tojiStateOn, tojiStateLeft, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, castTojiUlt, yutaCharge, yutaCasting, yutaPickOpen, yutaKatanas, yutaDomainOn: yutaDomain, yutaDomainLeft, yutaCopyId, yutaCutIds, yutaCutForId, yutaAmmo, yutaPiles, yutaWheel, yutaCombo, yutaCopyFreezes: yutaDomain && yutaCopyId === 'gojo', setYutaQuizOptions, castYutaUlt, pickYutaKatana }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
@@ -2030,13 +2337,18 @@ export function EffectProvider({ children }) {
         tojiUltSeed={tojiUltSeed} tojiStateOn={tojiStateOn}
         tojiStateLeft={tojiStateLeft} tojiAmmo={tojiAmmo}
         onCastToji={castTojiUlt}
+        yutaCharge={yutaCharge} yutaCasting={yutaCasting}
+        yutaUltSeed={yutaCopySeed} yutaPickOpen={yutaPickOpen}
+        yutaKatanas={yutaKatanas} yutaCopyId={yutaCopyId}
+        yutaDomainOn={yutaDomain} yutaDomainLeft={yutaDomainLeft}
+        onCastYuta={castYutaUlt} onPickYuta={pickYutaKatana}
       />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, nanamiUltSeed = 0, nanamiOvertimeOn = false, nanamiOvertimeLeft = 0, nanamiPiles = 0, nanamiRubbleCutIds = [], onCastNanami = null, tojiCharge = 0, tojiCasting = false, tojiUltSeed = 0, tojiStateOn = false, tojiStateLeft = 0, tojiAmmo = 0, onCastToji = null }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, nanamiUltSeed = 0, nanamiOvertimeOn = false, nanamiOvertimeLeft = 0, nanamiPiles = 0, nanamiRubbleCutIds = [], onCastNanami = null, tojiCharge = 0, tojiCasting = false, tojiUltSeed = 0, tojiStateOn = false, tojiStateLeft = 0, tojiAmmo = 0, onCastToji = null, yutaCharge = 0, yutaCasting = false, yutaUltSeed = 0, yutaPickOpen = false, yutaKatanas = [], yutaCopyId = null, yutaDomainOn = false, yutaDomainLeft = 0, onCastYuta = null, onPickYuta = null }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -2343,6 +2655,42 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
           stateOn={tojiStateOn}
           stateLeft={tojiStateLeft}
           ammo={tojiAmmo}
+        />
+      )}
+
+      {visual === 'yuta' && (
+        <>
+          {yutaCasting && (
+            <YutaDomainCine key={`yuta-cine-${yutaUltSeed}`} copyId={yutaCopyId} />
+          )}
+          {yutaDomainOn && (
+            <YutaDomainField key={`yuta-field-${yutaUltSeed}`} seed={yutaUltSeed} copyId={yutaCopyId} />
+          )}
+          <AnimatePresence>
+            {fx && <YutaBurst key={`yuta-${fx.id}`} fx={fx} kind={kind} />}
+          </AnimatePresence>
+          <AnimatePresence>
+            {yutaPickOpen && (
+              <YutaKatanaPicker
+                key={`yuta-pick-${yutaUltSeed}`}
+                katanas={yutaKatanas}
+                onPick={onPickYuta}
+                onCancel={onPickYuta}
+              />
+            )}
+          </AnimatePresence>
+        </>
+      )}
+
+      {visual === 'yuta' && quizActive && (
+        <YutaCurseBar
+          charge={yutaCharge}
+          ready={yutaCharge >= YUTA_ULT_THRESHOLD && !yutaCasting && !yutaDomainOn}
+          onCast={onCastYuta}
+          casting={yutaCasting}
+          domainOn={yutaDomainOn}
+          domainLeft={yutaDomainLeft}
+          copyId={yutaCopyId}
         />
       )}
     </div>
