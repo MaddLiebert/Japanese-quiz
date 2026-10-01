@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { PACK_RARITY, getPack } from "../packs/packs";
+import { packPalette, accentInk } from "../packs/rarityStyle";
 import { useLanguage } from "../../context/LanguageContext";
 import { playReelTick, playFanfare } from "../../utils/sfx";
 import {
@@ -16,13 +17,6 @@ import {
 } from "./slot";
 
 const ITEM_H = 120; // px — tinggi satu sel reel
-
-const RARITY_STYLE = {
-  common:    { bg: 'bg-kinari-light', text: 'text-sumi',         border: 'border-sumi' },
-  rare:      { bg: 'bg-ai',           text: 'text-kinari-light', border: 'border-sumi' },
-  legendary: { bg: 'bg-shu',          text: 'text-kinari-light', border: 'border-sumi' },
-  special:   { bg: 'bg-[#9c27b0]',    text: 'text-kinari-light', border: 'border-sumi' },
-};
 
 const iconOf = (r) => getPack(r?.id)?.icon || '📦';
 const rarityOf = (r) => getPack(r?.id)?.rarity || 'common';
@@ -187,18 +181,22 @@ export function GachaSlotOverlay({ result, onClose }) {
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               {results.map((p, i) => {
                 const pack = getPack(p.id);
-                const st = RARITY_STYLE[pack?.rarity] || RARITY_STYLE.common;
+                const pal = packPalette(pack?.visual);
                 return (
                   <motion.li
                     key={i}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: i * 0.05 }}
-                    className={`${st.bg} ${st.text} border-[3px] border-sumi px-4 py-3 flex items-center gap-3`}
+                    className="border-[3px] border-sumi px-4 py-3 flex items-center gap-3"
+                    style={{ background: pal.deep, color: '#fdfcf9' }}
                   >
                     <span className="text-2xl">{pack?.icon || '📦'}</span>
                     <span className="font-black flex-grow">{pack?.name || p.id}</span>
-                    <span className="text-[10px] font-black uppercase tracking-[0.15em]">
+                    <span
+                      className="text-[10px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5"
+                      style={{ background: pal.accent, color: accentInk(pal.accent) }}
+                    >
                       {PACK_RARITY[pack?.rarity]?.label || 'COMMON'}
                     </span>
                     {!p.isNew && (

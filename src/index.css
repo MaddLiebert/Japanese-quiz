@@ -919,3 +919,184 @@ button[data-toji-kill]::after {
   button[data-toji-kill]::before { animation: none; opacity: 0.8; }
   button[data-toji-kill]::after { animation: none; opacity: 0.92; }
 }
+
+/* ══ Theme Pack v1.1 — kartu koleksi per-tier ═══════════════════════════════
+   Aturan TERKUNCI (lihat src/features/packs/rarityStyle.js):
+     • WARNA  = palet KANON karakter (--accent/--accent2/--deep), bukan warna rarity.
+     • RARITY = treatment (frame/foil/pola/badge/motion), escalating.
+     • Motion: common none → rare subtle → legendary smooth → special full.
+   Bahasa visual app: outline tinta tebal (blur 0) + hard shadow. Semua animasi
+   transform/opacity/background-position saja; semua mati di reduced-motion. */
+
+.packcard {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease;
+  background: var(--kinari-light-val);
+  color: var(--sumi-val);
+  border: 4px solid var(--ink);
+  box-shadow: 6px 6px 0 0 var(--ink);
+}
+/* Surface 'deep' = kartu berwarna (kedalaman dari overlay hitam/putih, bukan
+   warna baru) → identitas karakter tetap jadi warna utama. */
+.packcard[data-surface="deep"] {
+  background:
+    radial-gradient(120% 90% at 78% 6%, rgba(255, 255, 255, 0.16) 0%, transparent 55%),
+    linear-gradient(160deg, rgba(0, 0, 0, 0.44) 0%, rgba(0, 0, 0, 0.05) 45%, rgba(0, 0, 0, 0.36) 100%),
+    var(--deep);
+  color: #fdfcf9;
+}
+.packcard[data-shadow="8"] { box-shadow: 8px 8px 0 0 var(--ink); }
+.packcard[data-shadow="10"] { box-shadow: 10px 10px 0 0 var(--ink); }
+.packcard[data-motion="none"]:hover,
+.packcard[data-motion="subtle"]:hover { transform: translate(-2px, -2px); box-shadow: 9px 9px 0 0 var(--ink); }
+.packcard[data-motion="smooth"]:hover { transform: translate(-2px, -2px); box-shadow: 11px 11px 0 0 var(--ink); }
+.packcard[data-motion="full"]:hover { transform: translate(-2px, -2px); box-shadow: 13px 13px 0 0 var(--ink); }
+
+/* Frame ganda (legendary/special): garis accent2 di dalam outline tinta. */
+.packcard[data-frame="double"]::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 2px solid var(--accent2);
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 4;
+}
+.packcard[data-rarity="special"]::before {
+  border-width: 3px;
+  opacity: 0.92;
+  border-color: var(--accent);
+}
+
+/* Foil (material): sheen (rare, saat hover) / shimmer (legendary, loop) /
+   holo (special, conic rainbow loop). mix-blend-mode bikin terasa "foil". */
+.packcard[data-foil]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  background-repeat: no-repeat;
+  background-size: 260% 100%;
+  background-position: -160% 0;
+  mix-blend-mode: screen;
+}
+.packcard[data-foil="sheen"]::after {
+  background-image: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.5) 47%, rgba(255, 255, 255, 0.92) 50%, rgba(255, 255, 255, 0.5) 53%, transparent 62%);
+}
+.packcard[data-foil="sheen"]:hover::after {
+  animation: packSheen 0.62s cubic-bezier(0.4, 0, 0.2, 1) 1 both;
+}
+.packcard[data-foil="shimmer"]::after {
+  opacity: 0.85;
+  background-image: linear-gradient(115deg, transparent 36%, rgba(255, 236, 170, 0.35) 45%, rgba(255, 248, 214, 0.95) 50%, rgba(255, 236, 170, 0.35) 55%, transparent 64%);
+  animation: packSheen 4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+.packcard[data-foil="holo"]::after {
+  opacity: 0.5;
+  mix-blend-mode: color-dodge;
+  background-image: conic-gradient(from 0turn at 30% 20%, #ff5f6d, #ffc371, #7ee8fa, #a18cd1, #f6a5c0, #ff5f6d);
+  background-size: 200% 200%;
+  animation: packHolo 3s linear infinite;
+}
+
+/* Pola washi — layer sendiri (span) supaya bisa drift + tetap di atas warna. */
+.packcard-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-repeat: repeat;
+}
+.packcard-pattern[data-kind="asanoha"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30 Z' fill='none' stroke='%23ffffff' stroke-width='1'/%3E%3Cpath d='M0 0 L60 60 M60 0 L0 60 M30 0 L30 60 M0 30 L60 30' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E");
+}
+.packcard-pattern[data-kind="kumihimo"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.2'%3E%3Cpath d='M0 24 Q12 8 24 24 T48 24'/%3E%3Cpath d='M0 24 Q12 40 24 24 T48 24'/%3E%3Cpath d='M24 0 Q8 12 24 24 T24 48'/%3E%3Cpath d='M24 0 Q40 12 24 24 T24 48'/%3E%3C/g%3E%3C/svg%3E");
+}
+.packcard-pattern[data-kind="domain"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1'%3E%3Ccircle cx='60' cy='60' r='18'/%3E%3Ccircle cx='60' cy='60' r='34' stroke-dasharray='4 6'/%3E%3Ccircle cx='60' cy='60' r='52' stroke-dasharray='2 8'/%3E%3Cpath d='M60 2 V22 M60 98 V118 M2 60 H22 M98 60 H118'/%3E%3C/g%3E%3C/svg%3E");
+}
+.packcard[data-rarity="rare"] .packcard-pattern { opacity: 0.06; }
+.packcard[data-rarity="legendary"] .packcard-pattern { opacity: 0.1; }
+.packcard[data-rarity="special"] .packcard-pattern { opacity: 0.14; }
+.packcard[data-motion="full"] .packcard-pattern { animation: packDrift 12s linear infinite; }
+
+/* Aura (special): denyut radial dari warna kanon karakter di belakang konten. */
+.packcard-aura {
+  position: absolute;
+  inset: -30%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 42%, var(--accent) 0%, transparent 60%);
+}
+.packcard[data-motion="full"] .packcard-aura { animation: packAura 3s ease-in-out infinite; }
+
+/* Konten di atas pola, di bawah foil/frame. */
+.packcard-body { position: relative; z-index: 2; }
+
+/* Badge tier: pulse untuk legendary+. */
+.packcard-badge { border: 2px solid currentColor; }
+.packcard[data-badge="gold"] .packcard-badge,
+.packcard[data-badge="holo"] .packcard-badge {
+  color: #0a0a0a;
+  background: var(--accent);
+  border-color: #0a0a0a;
+}
+.packcard[data-motion="smooth"] .packcard-badge { animation: packBadgePulse 2.6s ease-in-out infinite; }
+.packcard[data-motion="full"] .packcard-badge { animation: packBadgePulse 2.2s ease-in-out infinite; }
+
+/* Emblem kanji: glow breathe (legendary+). text-shadow, bukan filter. */
+.packcard-emblem { color: var(--accent); line-height: 1; }
+.packcard[data-motion="smooth"] .packcard-emblem,
+.packcard[data-motion="full"] .packcard-emblem { animation: packEmblemGlow 3.4s ease-in-out infinite; }
+
+/* Partikel kilau (special) — 6 titik, posisi deterministik dari komponen. */
+.packcard-spark {
+  position: absolute;
+  z-index: 4;
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  box-shadow: 0 0 6px 1px var(--accent2);
+  transform: rotate(45deg);
+  opacity: 0;
+  pointer-events: none;
+  animation: packSpark 3s ease-in-out infinite;
+}
+
+@keyframes packSheen { from { background-position: -160% 0; } to { background-position: 260% 0; } }
+@keyframes packHolo { from { background-position: 0% 50%; } to { background-position: 200% 50%; } }
+@keyframes packDrift { from { background-position: 0 0; } to { background-position: 120px 120px; } }
+@keyframes packAura {
+  0%, 100% { opacity: 0.22; transform: scale(0.94); }
+  50%      { opacity: 0.5;  transform: scale(1.06); }
+}
+@keyframes packBadgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  50%      { box-shadow: 0 0 14px 2px var(--accent); }
+}
+@keyframes packEmblemGlow {
+  0%, 100% { text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35), 0 0 6px var(--accent); }
+  50%      { text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35), 0 0 18px var(--accent); }
+}
+@keyframes packSpark {
+  0%, 100% { opacity: 0; transform: scale(0.4) rotate(45deg); }
+  45%      { opacity: 1; transform: scale(1) rotate(45deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .packcard, .packcard::after, .packcard-aura, .packcard-pattern,
+  .packcard-badge, .packcard-emblem, .packcard-spark {
+    animation: none !important;
+    transition: none !important;
+  }
+  .packcard-aura { opacity: 0.3; }
+  .packcard[data-foil="shimmer"]::after { opacity: 0.55; }
+  .packcard[data-foil="holo"]::after { opacity: 0.35; }
+}

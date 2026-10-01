@@ -5,17 +5,11 @@ import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { SHOP_ITEMS, itemName, itemDesc } from "../items/items";
 import { gachaPoolInfo, PACK_RARITY, rarityOdds } from "../packs/packs";
+import { packPalette, accentInk } from "../packs/rarityStyle";
 import { GachaSlotOverlay } from "../gacha/GachaSlotOverlay";
 
 const GACHA_PRICE_1X = 100;
 const GACHA_PRICE_10X = 900;
-
-const RARITY_BADGE = {
-  common:    'bg-kinari-light/90 text-sumi',
-  rare:      'bg-ai text-kinari-light',
-  legendary: 'bg-[#ffd700] text-sumi',
-  special:   'bg-[#9c27b0] text-kinari-light',
-};
 
 export function Shop() {
   const { progress, buyItem, rollGacha } = useUserStats();
@@ -190,7 +184,11 @@ export function Shop() {
                         <div className="min-w-0 flex-grow">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-[11px] font-black text-kinari-light truncate">{p.name}</span>
-                            <span className={`text-[8px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5 ${RARITY_BADGE[p.rarity] || RARITY_BADGE.common}`}>
+                            {/* Badge pakai WARNA KANON karakter (bukan warna rarity) — v1.1 */}
+                            <span
+                              className="text-[8px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5 border-[1.5px] border-sumi/60"
+                              style={{ background: packPalette(p.visual).accent, color: accentInk(packPalette(p.visual).accent) }}
+                            >
                               {PACK_RARITY[p.rarity]?.label || 'COMMON'}
                             </span>
                             {p.owned && (
