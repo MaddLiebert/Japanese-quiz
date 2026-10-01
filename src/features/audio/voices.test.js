@@ -124,12 +124,16 @@ test('voice nanami: 3 klip kalah (wrong) + 5 klip jurus (clips) — pola Gojo', 
 });
 
 
-test('voice yuta: SENYAP total (klip dihapus 30/09) — files kosong + silent', () => {
+test('voice yuta: 1 klip kalah + 5 klip jurus/cast (aset user, bukan TTS)', () => {
   const v = VOICES.yuta;
   assert.ok(v, 'VOICES.yuta harus ada');
-  assert.equal(v.silent, true, 'yuta = pack senyap (tanpa fallback synth)');
-  assert.deepEqual(v.files, { correct: [], wrong: [], streak: [] });
-  assert.equal(v.clips, undefined, 'tidak ada klip jalur khusus');
+  assert.equal(v.silent, undefined, 'yuta bersuara (aset user)');
+  assert.deepEqual(v.files.correct, [], 'jurus diputar deterministik, bukan random');
+  assert.equal(v.files.wrong.length, 1, '1 klip kalah (gomenasai)');
+  assert.deepEqual(v.files.streak, [], 'jurus = klip deterministik (clips)');
+  assert.equal(v.clips.length, 5, 'katana, ripples, reversal, mimic, cast');
+  for (const p of [...v.files.wrong, ...v.clips]) assert.match(p, /^\/voices\/yuta\/[a-z0-9_]+\.mp3$/);
+  assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 6, 'tidak boleh duplikat');
   assert.equal(getVoice('yuta'), VOICES.yuta);
 });
 

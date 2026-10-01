@@ -10,6 +10,7 @@ export const VISUALS = {
   nobara:{ id: 'nobara', label: 'Nobara Straw Doll', component: 'nobara' },
   nanami:{ id: 'nanami', label: 'Nanami Ratio Technique', component: 'nanami' },
   toji:  { id: 'toji',   label: 'Toji Heavenly Restriction', component: 'toji' },
+  yuta:  { id: 'yuta',   label: 'Yuta Copy Domain', component: 'yuta' },
 };
 
 export const getVisual = (key) => VISUALS[key] || null;
