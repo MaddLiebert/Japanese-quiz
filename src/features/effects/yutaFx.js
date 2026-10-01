@@ -245,6 +245,18 @@ export const yutaCopyRings = (seed = 1, count = 3) =>
     dur: r2(2.4 + i * 0.6),
   }));
 
+// 真贋相愛 MOMEN PICK: cincin gelombang MERAH meluas dari pusat, full-screen.
+// ⚠️ Di sini `vmax` AMAN — field domain full-screen, tidak di-clip seperti kartu
+// (beda dgn bug cincin 呪力 di kartu yang wajib pakai px relatif rect).
+export const yutaDomainRings = (seed = 1, count = 3) =>
+  Array.from({ length: Math.max(1, count) }, (_, i) => ({
+    id: `${seed}-dr${i}`,
+    delay: r2(i * 0.18),
+    dur: r2(1.4 + i * 0.2),
+    width: r2(1.1 + i * 0.18),   // × vmax
+    w: r2(2.2 - i * 0.5),
+  }));
+
 // 真贋相愛 (latar domain): lautan pedang tertancap — posisi & sudut deterministik
 // (sebaran sudut berbasis i, bukan rng) supaya stabil antar render.
 export const yutaSwordField = (seed = 1, count = 24) =>

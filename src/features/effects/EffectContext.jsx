@@ -27,7 +27,7 @@ import { NanamiCurseBar, NanamiUltCine, NanamiOvertimeAura, NanamiRubbleMarker }
 import { TojiBurst } from './TojiBurst';
 import { TojiCurseBar, TojiUltCine } from './TojiShadow';
 import { YutaBurst } from './YutaBurst';
-import { YutaCurseBar, YutaKatanaPicker, YutaDomainCine, YutaDomainField, YUTA_CAST_SETTLE_MS } from './YutaShadow';
+import { YutaCurseBar, YutaKatanaPicker, YutaDomainCine, YutaPickBurst, YutaDomainField, YUTA_CAST_SETTLE_MS } from './YutaShadow';
 import { tojiGifForAnswer, tojiGifHoldMs, preloadTojiGifs } from './tojiGifs';
 import {
   megumiTechniqueFor, megumiCurseCharge, MEGUMI_ULT_THRESHOLD,
@@ -329,6 +329,7 @@ export function EffectProvider({ children }) {
   const [yutaDomainLeft, setYutaDomainLeft] = useState(YUTA_DOMAIN_DURATION_S);
   const [yutaCopyId, setYutaCopyId] = useState(null);
   const [yutaCopySeed, setYutaCopySeed] = useState(0);
+  const [yutaPickBurst, setYutaPickBurst] = useState(0);   // >0 = momen pick aktif
   const [yutaCutIds, setYutaCutIds] = useState([]);
   const [yutaCutForId, setYutaCutForId] = useState(null);
   const [yutaAmmo, setYutaAmmo] = useState(0);
@@ -1851,6 +1852,10 @@ export function EffectProvider({ children }) {
     setYutaDomain(true);
     yutaDomainEndsAtRef.current = Date.now() + yutaCopyDurationS(copyId) * 1000;
     setYutaDomainLeft(yutaCopyDurationS(copyId));
+    // Momen PICK (T10): burst dramatis 1 dtk → domain terasa "menyala".
+    setYutaPickBurst((n) => n + 1);
+    const burstT = setTimeout(() => setYutaPickBurst(0), 1000);
+    timersRef.current.push(burstT);
     // Ambience reuse (DRY): gojo (freeze) → startDomainBgm; selain itu → sukuna.
     if (yutaCopyFreezes(copyId)) startDomainBgm(); else startSukunaDomainBgm();
     playYutaCopy(copyId);
@@ -2358,6 +2363,7 @@ export function EffectProvider({ children }) {
         yutaUltSeed={yutaCopySeed} yutaPickOpen={yutaPickOpen}
         yutaKatanas={yutaKatanas} yutaCopyId={yutaCopyId}
         yutaDomainOn={yutaDomain} yutaDomainLeft={yutaDomainLeft}
+        yutaPickBurst={yutaPickBurst}
         onCastYuta={castYutaUlt} onPickYuta={pickYutaKatana}
         onCancelYuta={cancelYutaPick}
       />
@@ -2366,7 +2372,7 @@ export function EffectProvider({ children }) {
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, nanamiUltSeed = 0, nanamiOvertimeOn = false, nanamiOvertimeLeft = 0, nanamiPiles = 0, nanamiRubbleCutIds = [], onCastNanami = null, tojiCharge = 0, tojiCasting = false, tojiUltSeed = 0, tojiStateOn = false, tojiStateLeft = 0, tojiAmmo = 0, onCastToji = null, yutaCharge = 0, yutaCasting = false, yutaUltSeed = 0, yutaPickOpen = false, yutaKatanas = [], yutaCopyId = null, yutaDomainOn = false, yutaDomainLeft = 0, onCastYuta = null, onPickYuta = null, onCancelYuta = null }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, nanamiUltSeed = 0, nanamiOvertimeOn = false, nanamiOvertimeLeft = 0, nanamiPiles = 0, nanamiRubbleCutIds = [], onCastNanami = null, tojiCharge = 0, tojiCasting = false, tojiUltSeed = 0, tojiStateOn = false, tojiStateLeft = 0, tojiAmmo = 0, onCastToji = null, yutaCharge = 0, yutaCasting = false, yutaUltSeed = 0, yutaPickOpen = false, yutaKatanas = [], yutaCopyId = null, yutaDomainOn = false, yutaDomainLeft = 0, yutaPickBurst = 0, onCastYuta = null, onPickYuta = null, onCancelYuta = null }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -2680,6 +2686,9 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
         <>
           {yutaCasting && (
             <YutaDomainCine key={`yuta-cine-${yutaUltSeed}`} copyId={yutaCopyId} />
+          )}
+          {yutaPickBurst > 0 && (
+            <YutaPickBurst key={`yuta-burst-${yutaPickBurst}`} seed={yutaUltSeed} copyId={yutaCopyId} />
           )}
           {yutaDomainOn && (
             <YutaDomainField key={`yuta-field-${yutaUltSeed}`} seed={yutaUltSeed} copyId={yutaCopyId} />

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   YUTA_STYLE, YUTA_DOMAIN, YUTA_ULT_THRESHOLD, YUTA_DOMAIN_DURATION_S,
-  yutaCopyMeta, yutaSwordField, yutaCopyEmblem, yutaCopyTint,
+  yutaCopyMeta, yutaSwordField, yutaCopyEmblem, yutaCopyTint, yutaDomainRings,
 } from './yutaFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -343,6 +343,75 @@ export function YutaDomainCine({ copyId = null }) {
   );
 }
 
+// ── Momen PICK (T10): 3 katana menghujam + cincin merah meluas + flash.
+// Muncul SEKALI saat user memilih katana → domain baru terasa "menyala".
+// `vmax` di sini aman (field full-screen, bukan di dalam kartu).
+export function YutaPickBurst({ seed = 1, copyId = null }) {
+  const [reduced] = useState(prefersReduced);
+  const rings = yutaDomainRings(seed, 3);
+  const meta = copyId ? yutaCopyMeta(copyId) : null;
+  const accent = meta?.color || YUTA_DOMAIN.blood;
+
+  return (
+    <div data-yuta-pick-burst className="pointer-events-none fixed inset-0 z-[135]" aria-hidden="true">
+      {/* flash merah 1 frame */}
+      {!reduced && (
+        <motion.div
+          className="absolute inset-0"
+          style={{ background: YUTA_DOMAIN.blood }}
+          initial={{ opacity: 0 }} animate={{ opacity: [0, 0.5, 0] }}
+          transition={{ duration: 0.3, ease: 'linear' }}
+        />
+      )}
+      {/* cincin gelombang meluas dari pusat */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        {rings.map((r, i) => (
+          <motion.span
+            key={r.id}
+            className="absolute rounded-full"
+            style={{
+              width: `${r.width * 30}vmax`, height: `${r.width * 30}vmax`,
+              border: `${r.w}px solid ${i === 0 ? YUTA_DOMAIN.blood : accent}`,
+              boxShadow: `0 0 22px ${YUTA_DOMAIN.blood}88, inset 0 0 22px ${YUTA_DOMAIN.blood}44`,
+            }}
+            initial={{ opacity: 0, scale: 0.12 }}
+            animate={{ opacity: [0, 0.9, 0], scale: [0.12, 1, 1.15] }}
+            transition={{ duration: r.dur, delay: r.delay, ease: 'easeOut' }}
+          />
+        ))}
+      </div>
+      {/* 3 bilah menghujam dari atas (siluet) */}
+      {!reduced && [0, 1, 2].map((i) => (
+        <motion.span
+          key={`blade-${i}`}
+          className="absolute top-0"
+          style={{ left: `${30 + i * 20}%`, width: 3, height: '58vh',
+            background: `linear-gradient(180deg, ${YUTA_DOMAIN.steel}, ${YUTA_DOMAIN.steelD})`,
+            boxShadow: `0 0 12px ${YUTA_DOMAIN.steel}88` }}
+          initial={{ y: '-62vh', opacity: 0 }}
+          animate={{ y: '18vh', opacity: [0, 1, 0] }}
+          transition={{ duration: 0.5, delay: 0.05 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+        />
+      ))}
+      {/* kanji copy menyala di tengah */}
+      {meta && (
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center"
+          initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: [0, 1, 0.9], scale: [0.6, 1.12, 1] }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <span className="font-serif font-black select-none"
+            style={{ fontSize: 'clamp(64px, 17vmin, 190px)', color: accent,
+              WebkitTextStroke: `2px ${YUTA_DOMAIN.ground}`,
+              textShadow: `0 6px 0 ${YUTA_DOMAIN.ground}, 0 0 44px ${accent}, 0 0 80px ${YUTA_DOMAIN.blood}99` }}>
+            {meta.kanji}
+          </span>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 // ── Domain hidup 30 dtk: lautan pedang redup + mizuhiki + tint copy ─────────
 export function YutaDomainField({ seed = 1, copyId = null }) {
   const [reduced] = useState(prefersReduced);
@@ -356,17 +425,21 @@ export function YutaDomainField({ seed = 1, copyId = null }) {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: reduced ? 0 : 0.6 }}
     >
-      {/* langit merah darah → hitam (tint diperkuat sesuai copy — T7 opsi 2) */}
+      {/* langit MERAH DARAH kanon → hitam (warna utama SELALU merah Yuta).
+          T7: aksen warna copy hanya sebagai wash sekunder, BUKAN warna utama —
+          kalau warna copy jadi utama, pilih Gojo → lavender / Toji → abu-abu,
+          di tema gelap tenggelam → user lihatnya "gak ada efek". */}
       <div
+        data-yuta-domain-sky
         className="absolute inset-0"
-        style={{ background: `radial-gradient(130% 90% at 50% 78%, ${yutaCopyTint(copyId, 0.34)} 0%, rgba(26,5,5,0.4) 44%, rgba(11,5,8,0.7) 100%)` }}
+        style={{ background: `radial-gradient(130% 92% at 50% 82%, rgba(220,38,38,0.42) 0%, rgba(127,29,29,0.34) 30%, rgba(26,5,5,0.5) 58%, rgba(11,5,8,0.72) 100%)` }}
       />
-      {/* wash aksen copy (identitas warna pack sumber) */}
+      {/* wash aksen copy (identitas warna pack sumber) — sekunder, tipis */}
       {emblem && (
         <div
           data-yuta-copy-wash={copyId}
           className="absolute inset-0"
-          style={{ background: `radial-gradient(96% 72% at 50% 100%, ${yutaCopyTint(copyId, 0.18)}, transparent 72%)` }}
+          style={{ background: `radial-gradient(90% 60% at 50% 100%, ${yutaCopyTint(copyId, 0.30)}, transparent 70%)` }}
         />
       )}
 
@@ -384,15 +457,16 @@ export function YutaDomainField({ seed = 1, copyId = null }) {
         </svg>
       )}
 
-      {/* lautan pedang tertancap (redup, deterministik) */}
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-x-0 bottom-0 w-full h-[46vh]" aria-hidden="true">
+      {/* lautan pedang tertancap (redup, deterministik) — dipertegas (T10):
+          steelD dulu terlalu gelap di latar hitam → user lihat "polos". */}
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-x-0 bottom-0 w-full h-[50vh]" aria-hidden="true">
         {field.map((s) => {
           const tipX = s.x + Math.sin((s.rot * Math.PI) / 180) * s.h * 0.42;
           const tipY = 100 - s.h * (0.7 + s.scale * 0.5);
           return (
-            <g key={s.id} opacity={0.32 + s.scale * 0.14}>
-              <line x1={s.x} y1={100} x2={tipX} y2={tipY} stroke={YUTA_DOMAIN.steelD} strokeWidth={s.w * 0.6} vectorEffect="non-scaling-stroke" />
-              <line x1={s.x} y1={100} x2={tipX} y2={tipY} stroke={YUTA_DOMAIN.steel} strokeWidth={s.w * 0.22} vectorEffect="non-scaling-stroke" opacity="0.5" />
+            <g key={s.id} opacity={0.5 + s.scale * 0.2}>
+              <line x1={s.x} y1={100} x2={tipX} y2={tipY} stroke={YUTA_DOMAIN.steelD} strokeWidth={s.w * 0.9} vectorEffect="non-scaling-stroke" />
+              <line x1={s.x} y1={100} x2={tipX} y2={tipY} stroke={YUTA_DOMAIN.steel} strokeWidth={s.w * 0.3} vectorEffect="non-scaling-stroke" opacity="0.85" />
             </g>
           );
         })}
@@ -400,6 +474,9 @@ export function YutaDomainField({ seed = 1, copyId = null }) {
 
       {/* tanah retak (garis gelap di dasar) */}
       <div className="absolute inset-x-0 bottom-0 h-[16vh]" style={{ background: `linear-gradient(180deg, transparent, ${YUTA_DOMAIN.ground} 70%)` }} />
+
+      {/* semburat merah di dasar (langit pantul darah) — bikin domain terasa hidup */}
+      <div className="absolute inset-x-0 bottom-0 h-[34vh]" style={{ background: `radial-gradient(120% 100% at 50% 100%, ${YUTA_DOMAIN.blood}33, transparent 70%)` }} />
 
       {/* emblem copy (T7 opsi 2): 1 elemen ikonik pack sumber, ringan di pinggir */}
       {emblem && <YutaCopyEmblem id={copyId} emblem={emblem} reduced={reduced} />}
