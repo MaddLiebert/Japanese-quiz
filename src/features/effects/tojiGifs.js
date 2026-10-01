@@ -33,16 +33,6 @@ export const TOJI_GIF_MS = {
   '/effects/toji_kalah_2.gif': 1800,
 };
 
-// Durasi klip suara terukur (30/09, PyAV RMS di .hermes/toji_voice_timing.json)
-// — fallback saat elemen <audio> belum punya metadata (playFile → 0) supaya efek
-// tidak selesai sebelum suaranya. Mirror MEGUMI_CLIP_MS / NANAMI_CLIP_MS.
-export const TOJI_CLIP_MS = {
-  shakkontou: 2088, banri_no_kusari: 2088, amanosakahoko: 2088,
-  yuuyun: 2088, bukiko_jurei: 2088,
-  cast: 4540,
-  wrong_1: 1120, wrong_2: 3984, wrong_3: 2976,
-};
-
 const TOJI_HOLD_MAX = 8000;         // batas umum (pola Megumi/Sukuna)
 // Jawaban salah: klip kalah bisa 3,98s (敗因？勝負はこれからだろ) — efek salah
 // tidak boleh lebih lama dari itu + margin (mengganggu ritme kuis). Cap 4,6s;

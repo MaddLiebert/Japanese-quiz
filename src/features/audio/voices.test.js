@@ -124,25 +124,24 @@ test('voice nanami: 3 klip kalah (wrong) + 5 klip jurus (clips) — pola Gojo', 
 });
 
 
-test('voice yuta: 3 correct + 3 wrong + 3 streak, path unik & valid', () => {
+test('voice yuta: SENYAP total (klip dihapus 30/09) — files kosong + silent', () => {
   const v = VOICES.yuta;
   assert.ok(v, 'VOICES.yuta harus ada');
-  assert.equal(v.files.correct.length, 3);
-  assert.equal(v.files.wrong.length, 3);
-  assert.equal(v.files.streak.length, 3);
-  const all = [...v.files.correct, ...v.files.wrong, ...v.files.streak];
-  assert.equal(new Set(all).size, 9, 'tidak boleh ada path duplikat');
-  for (const p of all) assert.match(p, /^\/voices\/yuta\/[a-z0-9_]+\.mp3$/);
+  assert.equal(v.silent, true, 'yuta = pack senyap (tanpa fallback synth)');
+  assert.deepEqual(v.files, { correct: [], wrong: [], streak: [] });
+  assert.equal(v.clips, undefined, 'tidak ada klip jalur khusus');
+  assert.equal(getVoice('yuta'), VOICES.yuta);
 });
 
 
-test('voice toji: 3 klip kalah (wrong) + 5 klip jurus (clips) — pola Gojo/Nanami', () => {
+test('voice toji: 2 klip kalah (wrong) + 6 klip jurus/state (clips) — pola Gojo/Nanami', () => {
   const v = VOICES.toji;
   assert.ok(v, 'VOICES.toji harus ada');
+  assert.equal(v.silent, undefined, 'toji bersuara lagi (klip baru)');
   assert.deepEqual(v.files.correct, [], 'jurus diputar deterministik, bukan random');
-  assert.equal(v.files.wrong.length, 3, '3 klip kalah: bakemono/haiin/tadabataraki');
+  assert.equal(v.files.wrong.length, 2, '2 klip kalah: bakemono/gomendane');
   assert.deepEqual(v.files.streak, [], 'jurus = klip deterministik (clips), bukan streak acak');
-  assert.equal(v.clips.length, 5, 'shakkontou, banri_no_kusari, amanosakahoko, yuuyun, bukiko_jurei');
+  assert.equal(v.clips.length, 6, '5 jurus + bukiko_ichigeki (武器庫・一撃離脱)');
   for (const p of [...v.files.wrong, ...v.clips]) assert.match(p, /^\/voices\/toji\/[a-z0-9_]+\.mp3$/);
   assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 8, 'tidak boleh duplikat');
   assert.equal(getVoice('toji'), VOICES.toji);
