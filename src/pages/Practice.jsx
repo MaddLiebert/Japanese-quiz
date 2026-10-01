@@ -111,7 +111,7 @@ export function Practice() {
   const timerRef = useRef(null);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, tojiStateOn, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, tojiStateOn, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, yutaCopyFreezes, yutaCutIds, yutaCutForId, setYutaQuizOptions } = useEffectLayer();
 
   // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
   // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
@@ -156,7 +156,7 @@ export function Practice() {
     wrongAnswers,
     currentIndex,
     timeLeft
-  } = useQuizSession({ frozen: domainOn });   // domain Gojo → waktu kuis BEKU
+  } = useQuizSession({ frozen: domainOn || yutaCopyFreezes });   // Gojo/domain copy = waktu BEKU
 
   // 開 (finisher Yuji) → 2 opsi salah soal ini disembunyikan (50/50).
   // options stabil per soal → recompute hanya saat soal berganti / finisher berubah.
@@ -268,6 +268,17 @@ export function Practice() {
     return () => clearTimeout(t);
   }, [tojiKillForId, tojiKillCutIds.length, currentQuestion?.id, advanceQuestion]);
 
+  // ── Yuta 模倣: registrasi opsi + potongan (freeze/sukuna/nobara/ekonomi) ─────
+  useEffect(() => {
+    if (!currentQuestion) return;
+    setYutaQuizOptions(options, currentQuestion.id);
+  }, [currentQuestion?.id, options, setYutaQuizOptions]);
+
+  const yutaCutIdsNow = useMemo(
+    () => ((yutaCutForId === currentQuestion?.id) ? yutaCutIds : []),
+    [yutaCutForId, currentQuestion?.id, yutaCutIds],
+  );
+
   // Kana mode: auto-advance after 800ms (legacy)
   const handleKanaOptionClick = (option, e) => {
     if (isAnswered) return;
@@ -277,6 +288,7 @@ export function Practice() {
     if (nobaraCutIdsNow.includes(option.id)) return; // diledakkan 全弾爆発 → tidak bisa dipilih
     if (nanamiCutIdsNow.includes(option.id)) return; // dihancurkan puing 瓦落瓦落 → tidak bisa dipilih
     if (tojiKillIdsNow.includes(option.id)) return; // tertebas 術師殺し → soal dibunuh, tidak bisa dipilih
+    if (yutaCutIdsNow.includes(option.id)) return; // terpotong oleh copy Yuta → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
 
     const correct = option.id === currentQuestion.id;
@@ -307,6 +319,7 @@ export function Practice() {
     if (nobaraCutIdsNow.includes(option.id)) return; // diledakkan 全弾爆発 → tidak bisa dipilih
     if (nanamiCutIdsNow.includes(option.id)) return; // dihancurkan puing 瓦落瓦落 → tidak bisa dipilih
     if (tojiKillIdsNow.includes(option.id)) return; // tertebas 術師殺し → soal dibunuh, tidak bisa dipilih
+    if (yutaCutIdsNow.includes(option.id)) return; // terpotong oleh copy Yuta → tidak bisa dipilih
     markYujiPicked(e?.currentTarget);            // efek "kena nonjok" di tombol
     const correct = option.id === currentQuestion.id;
 
@@ -553,6 +566,7 @@ export function Practice() {
                   const isNobaraCut = nobaraCutIdsNow.includes(option.id);
                   const isNanamiCut = nanamiCutIdsNow.includes(option.id);
                   const isTojiKill = tojiKillIdsNow.includes(option.id);
+                  const isYutaCut = yutaCutIdsNow.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -566,7 +580,7 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
-                  if (isBurned || isCut || isMegumiCut || isNobaraCut || isTojiKill) btnClass += " pointer-events-none";
+                  if (isBurned || isCut || isMegumiCut || isNobaraCut || isTojiKill || isYutaCut) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
@@ -580,6 +594,7 @@ export function Practice() {
                       data-nobara-cut={isNobaraCut || undefined}
                       data-nanami-cut={isNanamiCut || undefined}
                       data-toji-kill={isTojiKill || undefined}
+                      data-yuta-cut={isYutaCut || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -587,7 +602,7 @@ export function Practice() {
                       }
                       transition={{ duration: 0.35 }}
                       className={btnClass}
-                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNanamiCut || isTojiKill}
+                      disabled={isAnswered || isBurned || isCut || isMegumiCut || isNanamiCut || isTojiKill || isYutaCut}
                     >
                       <span className="text-center font-serif">
                         {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
@@ -726,6 +741,7 @@ export function Practice() {
                   const isNobaraCut = nobaraCutIdsNow.includes(option.id);
                   const isNanamiCut = nanamiCutIdsNow.includes(option.id);
                   const isTojiKill = tojiKillIdsNow.includes(option.id);
+                  const isYutaCut = yutaCutIdsNow.includes(option.id);
                   const showGreen = isAnswered && isThisCorrect;
                   const showRed = isThisClicked && !isThisCorrect;
 
@@ -740,7 +756,7 @@ export function Practice() {
                   } else {
                     btnClass += "bg-kinari opacity-40 cursor-not-allowed";
                   }
-                  if (isBurned || isCut || isMegumiCut || isNobaraCut || isTojiKill) btnClass += " pointer-events-none";
+                  if (isBurned || isCut || isMegumiCut || isNobaraCut || isTojiKill || isYutaCut) btnClass += " pointer-events-none";
 
                   return (
                     <motion.button
@@ -754,6 +770,7 @@ export function Practice() {
                       data-nobara-cut={isNobaraCut || undefined}
                       data-nanami-cut={isNanamiCut || undefined}
                       data-toji-kill={isTojiKill || undefined}
+                      data-yuta-cut={isYutaCut || undefined}
                       animate={
                         showGreen && isThisClicked ? { scale: [1, 1.04, 1] }
                           : showRed ? { x: [0, -8, 8, -8, 8, 0] }
@@ -819,13 +836,14 @@ export function Practice() {
           onOptionClick={handleKanaOptionClick}
           onBack={() => { endQuizSession(); setQuizStarted(false); }}
           isGrammarMode={isGrammarMode}
-          frozen={domainOn}
+          frozen={domainOn || yutaCopyFreezes}
           burnedIds={burnedIds}
           sukunaCutIds={sukunaCutAll}
           megumiCutIds={megumiCutAll}
           nobaraCutIds={nobaraCutIdsNow}
           nanamiCutIds={nanamiCutIdsNow}
           tojiKillIds={tojiKillIdsNow}
+          yutaCutIds={yutaCutIdsNow}
         />
       );
     }
