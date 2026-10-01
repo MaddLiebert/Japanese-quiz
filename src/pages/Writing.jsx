@@ -87,7 +87,7 @@ export function Writing() {
   const handleComplete = () => {
     setFinished(true);
     if (!item) return;
-    recordAnswer(item.id, true, writeXpFor(item, level));
+    recordAnswer(item.id, true, writeXpFor(item, level), 'writing');
     triggerEffect('correct');
 
     // Lulus level → buka level berikutnya + achievement.

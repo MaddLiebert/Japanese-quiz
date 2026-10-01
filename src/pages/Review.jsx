@@ -109,7 +109,7 @@ export function Review() {
     if (isAnswered) return;
 
     const correct = option.id === currentWeakChar.id;
-    recordAnswer(currentWeakChar.id, correct);
+    recordAnswer(currentWeakChar.id, correct, 10, 'review');
     setSelectedOption(option.id);
     setIsCorrect(correct);
     setIsAnswered(true);
