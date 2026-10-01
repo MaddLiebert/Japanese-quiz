@@ -1,0 +1,102 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Misi Harian 日課 — logika MURNI (tanpa React, tanpa localStorage).
+// 3 misi reset tiap tengah malam WAKTU LOKAL. Progres dihitung dari aktivitas
+// nyata (jawaban benar + sesi kuis selesai) — TIDAK ada timer.
+// Reward: EXP (dihitung ProgressContext) + Medaru 🪙. Dites via `node --test`.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const SIDE_SOURCES = ['writing', 'speaking', 'review'];
+
+export const QUEST_DEFS = [
+  {
+    id: 'rajin_menjawab', emblem: '勤',
+    name: 'Rajin Menjawab', name_en: 'Answer Grinder',
+    desc: '20 jawaban benar hari ini', desc_en: '20 correct answers today',
+    event: 'correct', target: 20, xp: 80, medaru: 40,
+  },
+  {
+    id: 'tuntas_sesi', emblem: '了',
+    name: 'Tuntas Sesi', name_en: 'Session Cleared',
+    desc: 'Selesaikan 2 sesi kuis', desc_en: 'Finish 2 quiz sessions',
+    event: 'session', target: 2, xp: 120, medaru: 60,
+  },
+  {
+    id: 'jalan_samping', emblem: '道',
+    name: 'Jalan Samping', name_en: 'Side Path',
+    desc: '1 sesi mode sampingan (Menulis/Bicara/Ulang)',
+    desc_en: '1 side-mode session (Writing/Speaking/Review)',
+    event: 'side', target: 1, xp: 150, medaru: 80,
+  },
+];
+
+export const questDef = (id) => QUEST_DEFS.find((q) => q.id === id) || null;
+
+// Tanggal lokal YYYY-MM-DD (sama semantik dengan getLocalDateString di ProgressContext).
+export const dateKey = (date = new Date()) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
+// Bentuk awal state misi untuk satu hari.
+export const emptyQuests = (today = dateKey()) => ({
+  date: today,
+  counters: { correct: 0, session: 0, side: 0 },
+  claimed: [],
+});
+
+// Tanggal beda / state rusak → reset penuh. Tanggal sama → apa adanya (dinormalkan).
+export const ensureToday = (quests, today = dateKey()) => {
+  if (!quests || typeof quests !== 'object') return emptyQuests(today);
+  if (quests.date !== today) return emptyQuests(today);
+  const c = quests.counters || {};
+  return {
+    date: today,
+    counters: {
+      correct: Number(c.correct) || 0,
+      session: Number(c.session) || 0,
+      side: Number(c.side) || 0,
+    },
+    claimed: Array.isArray(quests.claimed) ? quests.claimed : [],
+  };
+};
+
+// Satu event → naikkan counter relevan. Return objek BARU (immutable).
+// kind: 'correct' | 'session' | 'side'.
+export const bumpEvent = (quests, kind, today = dateKey()) => {
+  const base = ensureToday(quests, today);
+  if (!(kind in base.counters)) return base;
+  return { ...base, counters: { ...base.counters, [kind]: base.counters[kind] + 1 } };
+};
+
+// Progres satu misi: { current (clamp target), target, done, claimed }.
+export const questProgress = (quests, def, today = dateKey()) => {
+  const base = ensureToday(quests, today);
+  const raw = base.counters[def.event] || 0;
+  return {
+    current: Math.min(raw, def.target),
+    target: def.target,
+    done: raw >= def.target,
+    claimed: base.claimed.includes(def.id),
+  };
+};
+
+// Semua misi + status (untuk UI).
+export const questBoard = (quests, today = dateKey()) =>
+  QUEST_DEFS.map((def) => ({ ...def, ...questProgress(quests, def, today) }));
+
+// Boleh diklaim? Selesai DAN belum pernah diklaim.
+export const canClaim = (quests, id, today = dateKey()) => {
+  const def = questDef(id);
+  if (!def) return false;
+  const p = questProgress(quests, def, today);
+  return p.done && !p.claimed;
+};
+
+// Tandai sudah diklaim. Return objek BARU; id ganda diabaikan.
+export const markClaimed = (quests, id, today = dateKey()) => {
+  const base = ensureToday(quests, today);
+  if (base.claimed.includes(id)) return base;
+  return { ...base, claimed: [...base.claimed, id] };
+};
