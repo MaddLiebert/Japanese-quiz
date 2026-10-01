@@ -2234,3 +2234,69 @@ export const playTojiCast = () => playFile('/voices/toji/cast.mp3', TOJI_LEAD_S.
 // 武器庫・一撃離脱 — klip mekanik state, diputar saat STATE 30 dtk mulai
 // (bukan jurus). Suara seruan Toji saat armory rail aktif.
 export const playTojiStateStart = () => playFile('/voices/toji/bukiko_ichigeki.mp3', TOJI_LEAD_S.state);
+
+// ── Klip voice Yuta Okkotsu (pack_12) — ⚠️ 100% ASET USER, BUKAN TTS ─────────
+// 真贋相愛 · 模倣: 4 jurus ladder + cast domain + callout 7 ultimate pack sumber.
+// ATURAN KERAS USER: jangan generate TTS generik. Semua klip di bawah = file
+// user di public/voices/yuta/ (di-copy dari ~/Downloads/yuta/, audio TIDAK diubah).
+export const YUTA_TECHNIQUE_FILES = {
+  katana:   '/voices/yuta/katana.mp3',    // 太刀
+  ripples:  '/voices/yuta/ripples.mp3',   // 呪力
+  reversal: '/voices/yuta/reversal.mp3',  // 反転術式
+  mimic:    '/voices/yuta/mimic.mp3',     // 模倣
+};
+
+// Callout 7 copy = KLIP ASLI pack sumber (0 TTS baru, suara kanon tiap karakter).
+export const YUTA_COPY_FILES = {
+  gojo:   '/voices/gojo/ryoiki tenkai.mp3',
+  sukuna: '/voices/sukuna/ryouiki_tenkai.mp3',
+  nobara: '/voices/nobara/ult.mp3',
+  yuji:   '/voices/yuji/fuga.mp3',
+  megumi: '/voices/megumi/mahoraga.mp3',
+  nanami: '/voices/nanami/jikangai.mp3',
+  toji:   '/voices/toji/cast.mp3',
+};
+
+// Lead-silence TERUKUR (PyAV RMS onset, aset user) — dipakai untuk skip senyap
+// depan supaya suara tidak telat. Semua <= 0.6s (tidak perlu skip agresif).
+export const YUTA_LEAD_S = {
+  katana: 0.37, ripples: 0.39, reversal: 0.39, mimic: 0.18, cast: 0.5,
+};
+
+export const playYutaTechnique = (technique) => {
+  const path = YUTA_TECHNIQUE_FILES[technique];
+  if (!path) return 0;
+  return playFile(path, YUTA_LEAD_S[technique] || 0);
+};
+
+// Cast 真贋相愛: klip 「領域展開・真贋相愛」(4,86s TERUKUR) — cinematic T3
+// (YutaDomainCine) sudah menyesuaikan durasi ini.
+export const playYutaCast = () => playFile('/voices/yuta/cast.mp3', YUTA_LEAD_S.cast);
+
+// Callout saat 1 katana dipilih: putar klip ultimate karakter yang ditiru.
+export const playYutaCopy = (copyId) => {
+  const path = YUTA_COPY_FILES[copyId];
+  return path ? playFile(path, 0.1) : 0;
+};
+
+// ── Lapis SFX jurus Yuta (>= 1 lapis; reuse yang sudah ada — DRY) ───────────
+export const YUTA_TECHNIQUE_SFX_LAYERS = {
+  katana:   ['playSlash'],       // tebasan bilah
+  ripples:  ['playCurseTick'],   // gelombang 呪力
+  reversal: ['playBlackSpark'],  // 反転術式 = percikan terbalik
+  mimic:    ['playDomainBoom'],  // 模倣 = dentuman ambil alih
+  ult:      ['playDomainBoom'],  // 真贋相愛 = dentuman domain
+};
+
+const YUTA_SFX_FNS = { playSlash, playCurseTick, playBlackSpark, playDomainBoom };
+
+// Putar SEMUA lapis SFX satu jurus Yuta; node/test = no-op (semua player return 0).
+export const playYutaTechniqueLayers = (technique) => {
+  const names = Array.isArray(YUTA_TECHNIQUE_SFX_LAYERS[technique]) ? YUTA_TECHNIQUE_SFX_LAYERS[technique] : [];
+  let n = 0;
+  for (const name of names) {
+    const fn = YUTA_SFX_FNS[name];
+    if (typeof fn === 'function') { fn(); n += 1; }
+  }
+  return n;
+};
