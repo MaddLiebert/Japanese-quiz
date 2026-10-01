@@ -261,3 +261,58 @@ export const yutaSwordField = (seed = 1, count = 24) =>
       scale: r2(0.6 + row * 0.14),                 // perspektif baris bawah lebih besar
     };
   });
+
+// ── T8: perkaya jurus (setara Nobara) — percikan / retakan / partikel ─────────
+// Percikan radial: 8 arah KONSISTEN dari titik tancap (bukan acak) — pola nobaraSparks.
+export const yutaSparks = (seed = 1, count = 8, baseLen = 26) =>
+  Array.from({ length: Math.max(1, count) }, (_, i) => {
+    const ang = (360 / Math.max(1, count)) * i;                 // merata
+    const len = r2(baseLen * (0.72 + ((i * 17) % 7) / 10));      // variasi deterministik
+    const rad = (ang * Math.PI) / 180;
+    return {
+      id: `${seed}-sp${i}`,
+      ang: r2(ang),
+      len,
+      dx: r2(Math.cos(rad) * len),
+      dy: r2(Math.sin(rad) * len),
+      size: r2(2 + (i % 3) * 0.8),
+      dur: r2(0.34 + (i % 4) * 0.05),
+      delay: r2((i % 3) * 0.02),
+    };
+  });
+
+// Retakan: bercabang, menirus (w0>w1), punya akhir (dur terbatas) — pola nobaraCracks.
+export const yutaCracks = (seed = 1, count = 3) =>
+  Array.from({ length: Math.max(1, count) }, (_, i) => {
+    const ang = r2(-90 + i * (360 / Math.max(1, count)) + (i * 11) % 20);
+    const len = r2(24 + (i * 13) % 22);
+    const branchCount = 1 + (i % 2);
+    return {
+      id: `${seed}-ck${i}`,
+      ang,
+      len,
+      w0: r2(1.8 - i * 0.25),
+      w1: r2(0.4),
+      dur: r2(0.26 + i * 0.04),
+      delay: r2(i * 0.03),
+      branch: Array.from({ length: branchCount }, (_, j) => ({
+        ang: r2(ang + (j === 0 ? 34 : -38) + (i * 7) % 12),
+        len: r2(len * (0.4 + j * 0.12)),
+      })),
+    };
+  });
+
+// Partikel 呪力 naik bergelombang (bukan glow statis) — pola NanamiOvertimeAura motes.
+export const yutaMotes = (seed = 1, count = 10) => {
+  const rand = lcg(seed + 99);
+  return Array.from({ length: Math.max(1, count) }, (_, i) => ({
+    id: `${seed}-mo${i}`,
+    x: r2(rand() * 100),
+    rise: r2(80 + rand() * 160),
+    size: r2(2 + rand() * 3),
+    dur: r2(2.4 + rand() * 2),
+    delay: r2(rand() * 1.6),
+    phase: r2(rand() * Math.PI * 2),
+    sway: r2(10 + rand() * 26),
+  }));
+};
