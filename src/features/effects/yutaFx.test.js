@@ -10,10 +10,15 @@ import {
   yutaCopyFreezes, yutaCopyPerQuestionCut, yutaCopyCut, yutaCopyCutDelayMs,
   yutaCopyMechanic, yutaCopyInit, yutaCopyOutcome, YUTA_COPY_LIMITS,
   YUTA_STYLE, yutaKatana, yutaRipples, yutaCopyRings, yutaSwordField,
+  YUTA_COPY_EMBLEM, yutaCopyEmblem, yutaCopyTint, YUTA_DOMAIN,
 } from './yutaFx.js';
-import { SUKUNA_HITSUME_DELAY_MS } from './sukunaFx.js';
-import { NOBARA_ULT_TIMELINE } from './nobaraFx.js';
-import { TOJI_AMMO_MAX } from './tojiFx.js';
+import { SUKUNA_HITSUME_DELAY_MS, SUKUNA_BLOOD } from './sukunaFx.js';
+import { NOBARA_ULT_TIMELINE, NOBARA_STRAW } from './nobaraFx.js';
+import { TOJI_AMMO_MAX, TOJI_STEEL } from './tojiFx.js';
+import { GOJO_RIM } from './gojoFx.js';
+import { YUJI_FIRE_COLORS } from './yujiFx.js';
+import { MEGUMI_INDIGO } from './megumiFx.js';
+import { NANAMI_GOLD } from './nanamiFx.js';
 
 test('milestone Yuta = sama persis pack JJK lain (konsisten)', () => {
   assert.deepEqual(YUTA_MILESTONES, [3, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
@@ -194,5 +199,50 @@ test('generator partikel & lautan pedang: deterministik, tanpa NaN', () => {
   for (const s of field) {
     assert.ok(Number.isFinite(s.x) && Number.isFinite(s.y) && Number.isFinite(s.rot), JSON.stringify(s));
     assert.ok(s.h > 0);
+  }
+});
+
+// ── T7: identitas visual copy (opsi 2) — emblem ikonik + tint domain ──────────
+test('YUTA_COPY_EMBLEM: 7 emblem lengkap, kanji + glyph valid', () => {
+  assert.deepEqual(Object.keys(YUTA_COPY_EMBLEM).sort(), YUTA_COPY_POOL.slice().sort());
+  for (const id of YUTA_COPY_POOL) {
+    const e = YUTA_COPY_EMBLEM[id];
+    assert.ok(e.kanji && typeof e.kanji === 'string', id);
+    assert.ok(['void', 'shrine', 'straw', 'fire', 'wheel', 'watch', 'reticle'].includes(e.glyph), id);
+  }
+  assert.equal(YUTA_COPY_EMBLEM.gojo.kanji, '無');
+  assert.equal(YUTA_COPY_EMBLEM.nanami.kanji, '時');
+  assert.equal(YUTA_COPY_EMBLEM.toji.kanji, '天');
+});
+
+test('yutaCopyEmblem: validasi id; null untuk id tak dikenal', () => {
+  assert.equal(yutaCopyEmblem('sukuna').glyph, 'shrine');
+  assert.equal(yutaCopyEmblem('zzz'), null);
+  assert.equal(yutaCopyEmblem(null), null);
+});
+
+test('emblem pakai token warna pack sumber (DRY — bukan hex duplikat)', () => {
+  assert.equal(YUTA_COPY_EMBLEM.gojo.color, GOJO_RIM);
+  assert.equal(YUTA_COPY_EMBLEM.sukuna.color, SUKUNA_BLOOD);
+  assert.equal(YUTA_COPY_EMBLEM.nobara.color, NOBARA_STRAW);
+  assert.equal(YUTA_COPY_EMBLEM.yuji.color, YUJI_FIRE_COLORS[2]);
+  assert.equal(YUTA_COPY_EMBLEM.megumi.color, MEGUMI_INDIGO);
+  assert.equal(YUTA_COPY_EMBLEM.nanami.color, NANAMI_GOLD);
+  assert.equal(YUTA_COPY_EMBLEM.toji.color, TOJI_STEEL);
+});
+
+test('yutaCopyTint: copyId dikenal → hex alpha; default = darah Yuta', () => {
+  assert.equal(yutaCopyTint('nanami', 0.3), `${NANAMI_GOLD}4d`); // 0.3*255≈77=0x4d
+  assert.equal(yutaCopyTint('zzz', 0.3), `${YUTA_DOMAIN.blood}4d`);
+  assert.equal(yutaCopyTint(null), YUTA_DOMAIN.blood);
+  // clamp alpha 0..1
+  assert.equal(yutaCopyTint('gojo', 5), `${GOJO_RIM}ff`);
+  assert.equal(yutaCopyTint('gojo', -1), `${GOJO_RIM}00`);
+});
+
+test('emblem deterministik & tanpa NaN saat dirender (sebaran) — pure data', () => {
+  for (const id of YUTA_COPY_POOL) {
+    const e = yutaCopyEmblem(id);
+    assert.ok(e.color.startsWith('#') && e.color.length === 7, id);
   }
 });

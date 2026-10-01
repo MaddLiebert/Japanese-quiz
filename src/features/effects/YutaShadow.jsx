@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   YUTA_STYLE, YUTA_DOMAIN, YUTA_ULT_THRESHOLD, YUTA_DOMAIN_DURATION_S,
-  yutaCopyMeta, yutaSwordField,
+  yutaCopyMeta, yutaSwordField, yutaCopyEmblem, yutaCopyTint,
 } from './yutaFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -346,8 +346,7 @@ export function YutaDomainCine({ copyId = null }) {
 // ── Domain hidup 30 dtk: lautan pedang redup + mizuhiki + tint copy ─────────
 export function YutaDomainField({ seed = 1, copyId = null }) {
   const [reduced] = useState(prefersReduced);
-  const meta = copyId ? yutaCopyMeta(copyId) : null;
-  const tint = meta?.color || YUTA_DOMAIN.blood;
+  const emblem = copyId ? yutaCopyEmblem(copyId) : null;
   const field = yutaSwordField(seed, 24);
 
   return (
@@ -357,11 +356,19 @@ export function YutaDomainField({ seed = 1, copyId = null }) {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: reduced ? 0 : 0.6 }}
     >
-      {/* langit merah darah → hitam */}
+      {/* langit merah darah → hitam (tint diperkuat sesuai copy — T7 opsi 2) */}
       <div
         className="absolute inset-0"
-        style={{ background: `radial-gradient(130% 90% at 50% 78%, ${tint}22 0%, rgba(26,5,5,0.35) 42%, rgba(11,5,8,0.66) 100%)` }}
+        style={{ background: `radial-gradient(130% 90% at 50% 78%, ${yutaCopyTint(copyId, 0.34)} 0%, rgba(26,5,5,0.4) 44%, rgba(11,5,8,0.7) 100%)` }}
       />
+      {/* wash aksen copy (identitas warna pack sumber) */}
+      {emblem && (
+        <div
+          data-yuta-copy-wash={copyId}
+          className="absolute inset-0"
+          style={{ background: `radial-gradient(96% 72% at 50% 100%, ${yutaCopyTint(copyId, 0.18)}, transparent 72%)` }}
+        />
+      )}
 
       {/* mizuhiki 紅白 di langit */}
       {!reduced && (
@@ -393,6 +400,77 @@ export function YutaDomainField({ seed = 1, copyId = null }) {
 
       {/* tanah retak (garis gelap di dasar) */}
       <div className="absolute inset-x-0 bottom-0 h-[16vh]" style={{ background: `linear-gradient(180deg, transparent, ${YUTA_DOMAIN.ground} 70%)` }} />
+
+      {/* emblem copy (T7 opsi 2): 1 elemen ikonik pack sumber, ringan di pinggir */}
+      {emblem && <YutaCopyEmblem id={copyId} emblem={emblem} reduced={reduced} />}
+    </motion.div>
+  );
+}
+
+// ── Emblem copy: glyph ikonik pack sumber (void/shrine/straw/fire/wheel/watch/reticle).
+// Ringan, di kanan-atas, tidak menimpa lautan pedang Yuta. Warna = token pack sumber.
+function YutaCopyEmblem({ id, emblem, reduced = false }) {
+  const c = emblem.color;
+  return (
+    <motion.div
+      data-yuta-copy-emblem={id}
+      className="absolute left-[4%] top-[13%] flex flex-col items-center gap-1.5"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : 0.25, ease: 'easeOut' }}
+    >
+      <svg width="58" height="58" viewBox="0 0 48 48" aria-hidden="true" style={{ filter: `drop-shadow(0 0 8px ${c}88)` }}>
+        {emblem.glyph === 'void' && (
+          <>
+            <circle cx="24" cy="24" r="17" fill="none" stroke={c} strokeWidth="1.4" opacity="0.85" />
+            <circle cx="24" cy="24" r="11" fill="none" stroke={c} strokeWidth="0.9" opacity="0.5" />
+            <circle cx="24" cy="24" r="4" fill={c} opacity="0.9" />
+          </>
+        )}
+        {emblem.glyph === 'shrine' && (
+          <>
+            <path d="M8 14 H40 M12 14 V38 M36 14 V38 M6 20 H42 M6 27 H42" stroke={c} strokeWidth="1.6" fill="none" />
+            <path d="M4 14 L24 6 L44 14" stroke={c} strokeWidth="1.6" fill="none" />
+          </>
+        )}
+        {emblem.glyph === 'straw' && (
+          <>
+            <circle cx="24" cy="15" r="6" fill="none" stroke={c} strokeWidth="1.5" />
+            <path d="M18 20 L14 40 M30 20 L34 40 M24 21 V41" stroke={c} strokeWidth="1.3" fill="none" />
+            <path d="M20 12 L24 15 L28 12" stroke={c} strokeWidth="1.2" fill="none" />
+          </>
+        )}
+        {emblem.glyph === 'fire' && (
+          <>
+            <path d="M24 6 C30 16 34 20 34 28 A10 10 0 0 1 14 28 C14 20 18 16 24 6 Z" fill="none" stroke={c} strokeWidth="1.5" />
+            <path d="M24 20 C27 25 28 27 28 30 A4 4 0 0 1 20 30 C20 27 21 25 24 20 Z" fill={c} opacity="0.85" />
+          </>
+        )}
+        {emblem.glyph === 'wheel' && (
+          <>
+            <circle cx="24" cy="24" r="16" fill="none" stroke={c} strokeWidth="1.4" />
+            {Array.from({ length: 8 }).map((_, i) => {
+              const a = (i * Math.PI) / 4;
+              return <line key={i} x1={24 + Math.cos(a) * 6} y1={24 + Math.sin(a) * 6} x2={24 + Math.cos(a) * 16} y2={24 + Math.sin(a) * 16} stroke={c} strokeWidth="1.3" />;
+            })}
+            <circle cx="24" cy="24" r="3" fill={c} opacity="0.9" />
+          </>
+        )}
+        {emblem.glyph === 'watch' && (
+          <>
+            <circle cx="24" cy="24" r="16" fill="none" stroke={c} strokeWidth="1.5" />
+            <path d="M24 14 V24 L31 29" stroke={c} strokeWidth="1.6" fill="none" strokeLinecap="round" />
+          </>
+        )}
+        {emblem.glyph === 'reticle' && (
+          <>
+            <circle cx="24" cy="24" r="15" fill="none" stroke={c} strokeWidth="1.4" />
+            <path d="M24 6 V16 M24 32 V42 M6 24 H16 M32 24 H42" stroke={c} strokeWidth="1.4" />
+            <circle cx="24" cy="24" r="2" fill={c} />
+          </>
+        )}
+      </svg>
+      <span className="font-serif font-black text-[13px] leading-none tracking-widest" style={{ color: c, textShadow: `0 0 10px ${c}66` }}>{emblem.kanji}</span>
     </motion.div>
   );
 }
