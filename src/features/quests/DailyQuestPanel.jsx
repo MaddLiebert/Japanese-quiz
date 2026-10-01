@@ -1,4 +1,5 @@
-import { motion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { questBoard, weekBoard, dateKey, weekKey } from './quests';
@@ -53,6 +54,42 @@ function QuestCard({ q, id, accent, onClaim }) {
   );
 }
 
+// Toast "Klaim Berhasil" — muncul sebentar lalu hilang sendiri (2.8 dtk).
+// Neo-brutalis: border tebal + hard shadow, strip warna sesuai tier.
+function ClaimToast({ toast, id }) {
+  return (
+    <div className="fixed inset-x-0 bottom-6 z-[60] flex justify-center px-4 pointer-events-none">
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key={toast.seq}
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0, y: 28, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 14, scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+            className={`border-[3px] border-sumi bg-kinari-light shadow-[6px_6px_0_0_#1a1a1a] pl-3 pr-5 py-3 flex items-center gap-3 border-l-[10px] ${
+              toast.accent === 'shu' ? 'border-l-shu' : 'border-l-ai'
+            }`}
+          >
+            <span className="text-2xl" aria-hidden="true">🎉</span>
+            <div>
+              <p className="text-[9px] uppercase tracking-[0.25em] font-black text-sumi/45">
+                {id ? 'Klaim Berhasil' : 'Claimed'}
+              </p>
+              <p className="text-sm font-serif font-black text-sumi leading-tight">
+                {toast.emblem} {toast.name}
+              </p>
+              <p className="text-xs font-black text-sumi/70">+{toast.xp} EXP · +{toast.medaru} 🪙</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // Panel Misi Harian 日課 + Mingguan 週課 — tampil di Home. Gaya neo-brutalis.
 export function DailyQuestPanel() {
   const { progress, claimQuest, claimWeeklyQuest } = useUserStats();
@@ -60,6 +97,23 @@ export function DailyQuestPanel() {
   const id = language === 'id';
   const daily = questBoard(progress.quests, dateKey());
   const weekly = weekBoard(progress.weekly, weekKey());
+
+  // Toast state + auto-dismiss timer (dibersihkan saat unmount).
+  const [toast, setToast] = useState(null);
+  const timerRef = useRef(null);
+  const seqRef = useRef(0);
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
+
+  // Bungkus fungsi klaim: tampilkan toast HANYA kalau klaim sukses.
+  const makeClaim = (claimFn, accent) => (qid) => {
+    const q = [...daily, ...weekly].find((x) => x.id === qid);
+    const res = claimFn(qid);
+    if (!res?.ok || !q) return;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    seqRef.current += 1;
+    setToast({ seq: seqRef.current, accent, emblem: q.emblem, name: id ? q.name : q.name_en, xp: res.xp, medaru: res.medaru });
+    timerRef.current = setTimeout(() => setToast(null), 2800);
+  };
 
   return (
     <>
@@ -74,7 +128,7 @@ export function DailyQuestPanel() {
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           {daily.map((q) => (
-            <QuestCard key={q.id} q={q} id={id} accent="ai" onClaim={claimQuest} />
+            <QuestCard key={q.id} q={q} id={id} accent="ai" onClaim={makeClaim(claimQuest, 'ai')} />
           ))}
         </div>
       </div>
@@ -93,13 +147,16 @@ export function DailyQuestPanel() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {weekly.map((q) => (
-            <QuestCard key={q.id} q={q} id={id} accent="shu" onClaim={claimWeeklyQuest} />
+            <QuestCard key={q.id} q={q} id={id} accent="shu" onClaim={makeClaim(claimWeeklyQuest, 'shu')} />
           ))}
         </div>
         <p className="mt-4 text-[10px] uppercase tracking-[0.2em] font-bold text-sumi/40 relative z-10">
           {id ? 'Reset tiap Senin' : 'Resets every Monday'}
         </p>
       </div>
+
+      {/* Toast klaim (fixed di bawah layar) */}
+      <ClaimToast toast={toast} id={id} />
     </>
   );
 }
