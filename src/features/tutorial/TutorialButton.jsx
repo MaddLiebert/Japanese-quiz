@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { tutorialFor, hasSeen, unseenCount } from './tutorials';
+import { tutorialFor, unseenCount } from './tutorials';
 
 // Avatar Saku chann — kotak neo-brutalis dengan kanji 咲 (saku) + wajah kaomoji.
 // Gak ada file gambar maskot, jadi ini "muka" Saku yang konsisten dengan app.
@@ -29,7 +29,6 @@ export function TutorialButton() {
   const id = language === 'id';
 
   const topic = tutorialFor(pathname);
-  const seen = hasSeen(progress.tutorialSeen, pathname);
   const unseen = unseenCount(progress.tutorialSeen);
 
   const [open, setOpen] = useState(false);
@@ -120,8 +119,8 @@ export function TutorialButton() {
         <span className="text-[11px] font-black uppercase tracking-[0.15em]">
           {id ? 'Tutorial' : 'Tutorial'}
         </span>
-        {/* Badge titik merah kalau masih ada topik yang belum dibaca */}
-        {unseen > 0 && !seen && (
+        {/* Badge titik merah: jumlah topik yang belum dibaca (hilang kalau semua sudah) */}
+        {unseen > 0 && (
           <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 border-[2px] border-sumi bg-shu text-kinari-light text-[9px] font-black flex items-center justify-center rounded-full">
             {unseen}
           </span>
