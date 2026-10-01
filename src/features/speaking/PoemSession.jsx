@@ -44,7 +44,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
     triggerEffect('correct');
     if (selfAssess) return;   // mode mandiri: tanpa penilaian, tanpa XP, tanpa SRS
     unlockAchievement?.('first_voice');
-    recordAnswer(poem.id, true, speakXpFor({ kind: 'poem' }, level));
+    recordAnswer(poem.id, true, speakXpFor({ kind: 'poem' }, level), 'poem');
   }, [allPassed, selfAssess, poem?.id, level, recordAnswer, triggerEffect, unlockAchievement]);
 
   // Badge pembaca puisi: 3 puisi berbeda dengan correctCount >= 1.

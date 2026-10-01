@@ -4,7 +4,7 @@ import { getItem, addItem, removeItem } from '../items/items';
 import { applyStreakBonus } from './streak';
 import { WRITE_GATE_KEY } from '../writing/writeGate';
 import { emptyExamRecord, mergeExamRecord, n5BadgesFor } from '../n5exam/certificate';
-import { dateKey, emptyQuests, ensureToday, bumpEvent, canClaim, markClaimed, questDef, SIDE_SOURCES } from '../quests/quests';
+import { dateKey, emptyQuests, ensureToday, bumpEvent, canClaim, markClaimed, questDef, SIDE_SOURCES, emptyWeekly, ensureWeek, weekBump, weekKey, canClaimWeek, markWeekClaimed, weeklyQuestDef } from '../quests/quests';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -56,7 +56,8 @@ const DEFAULT_PROGRESS = {
   ownedItems: {},
   n5Exam: emptyExamRecord(),
   lastActiveDate: getLocalDateString(),
-  quests: emptyQuests()
+  quests: emptyQuests(),
+  weekly: emptyWeekly()
 };
 
 const DIFFICULTY_MAP = { easy: 0.8, medium: 1.0, hard: 1.2 };
@@ -170,6 +171,7 @@ export const ProgressProvider = ({ children }) => {
       // Merge dengan default (backfill field hilang) + migrasi state pack.
       const merged = migratePacks({ ...DEFAULT_PROGRESS, ...(parsed || {}) });
       merged.quests = ensureToday(merged.quests);
+      merged.weekly = ensureWeek(merged.weekly);
       return merged;
     } catch {
       return DEFAULT_PROGRESS;
@@ -331,16 +333,19 @@ export const ProgressProvider = ({ children }) => {
 
   const recordAnswer = useCallback((itemId, isCorrect, xpReward = 10, source = 'quiz') => {
     const today = dateKey();
+    const week = weekKey();
 
-    // 1. Update Global Stats (+ progres Misi Harian dari aktivitas nyata)
+    // 1. Update Global Stats (+ progres Misi Harian/Mingguan dari aktivitas nyata)
     setProgress(prev => {
       const newTotalAnswered = (prev.totalAnswered || 0) + 1;
       const newTotalCorrect = isCorrect ? (prev.totalCorrect || 0) + 1 : (prev.totalCorrect || 0);
       const newAccuracy = Math.round((newTotalCorrect / newTotalAnswered) * 100);
 
       let q = ensureToday(prev.quests, today);
+      let w = ensureWeek(prev.weekly, week);
       if (isCorrect) {
         q = bumpEvent(q, 'correct', today);
+        w = weekBump(w, 'correct', week);
         if (SIDE_SOURCES.includes(source)) q = bumpEvent(q, 'side', today);
       }
 
@@ -349,7 +354,8 @@ export const ProgressProvider = ({ children }) => {
         totalAnswered: newTotalAnswered,
         totalCorrect: newTotalCorrect,
         accuracy: newAccuracy,
-        quests: q
+        quests: q,
+        weekly: w
       };
     });
 
@@ -433,6 +439,7 @@ export const ProgressProvider = ({ children }) => {
 
   const completeQuiz = useCallback((isWin, difficulty, chapter, wrongCount = 0, totalQuestions = 0) => {
     const today = dateKey();
+    const week = weekKey();
     setProgress(prev => {
       const newMatchesPlayed = (prev.matchesPlayed || 0) + 1;
       const oldWR = prev.weightedWinRate || 0;
@@ -469,7 +476,8 @@ export const ProgressProvider = ({ children }) => {
         matchesPlayed: newMatchesPlayed,
         weightedWinRate: finalWR,
         medaru: (prev.medaru || 0) + medaruGained,
-        quests: bumpEvent(ensureToday(prev.quests, today), 'session', today)
+        quests: bumpEvent(ensureToday(prev.quests, today), 'session', today),
+        weekly: weekBump(ensureWeek(prev.weekly, week), 'session', week)
       };
     });
   }, []);
@@ -524,6 +532,29 @@ export const ProgressProvider = ({ children }) => {
       return {
         ...prev,
         quests: markClaimed(base, id, today),
+        xp: newXp,
+        level: Math.min(Math.floor(newXp / 100) + 1, 1000),
+        medaru: (prev.medaru || 0) + def.medaru,
+      };
+    });
+    return { ok: true, xp: def.xp, medaru: def.medaru };
+  }, []);
+
+  // Klaim reward Misi Mingguan 週課. Atomic, sama seperti claimQuest.
+  const claimWeeklyQuest = useCallback((id) => {
+    const def = weeklyQuestDef(id);
+    if (!def) return { ok: false, reason: 'invalid' };
+    const week = weekKey();
+    if (!canClaimWeek(progressRef.current?.weekly, id, week)) return { ok: false, reason: 'locked' };
+
+    setProgress(prev => {
+      const base = ensureWeek(prev.weekly, week);
+      if (!canClaimWeek(base, id, week)) return prev;
+      const xpGain = applyStreakBonus(def.xp, { streak: prev.streak || 0 });
+      const newXp = (prev.xp || 0) + xpGain;
+      return {
+        ...prev,
+        weekly: markWeekClaimed(base, id, week),
         xp: newXp,
         level: Math.min(Math.floor(newXp / 100) + 1, 1000),
         medaru: (prev.medaru || 0) + def.medaru,
@@ -634,7 +665,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}
