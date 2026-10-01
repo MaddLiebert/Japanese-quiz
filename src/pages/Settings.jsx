@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { useUserStats } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
+import { tutorialButtonVisible } from "../features/tutorial/tutorials";
 import { DevPanel } from "../features/dev/DevPanel"; // DEV-ONLY — hapus baris ini untuk membuang panel cheat
 
 export function Settings() {
-  const { resetProgress } = useUserStats();
+  const { resetProgress, progress, setTutorialHidden } = useUserStats();
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
+  const tutorialOn = tutorialButtonVisible(progress.tutorialHidden);
 
   const handleReset = () => {
     const message = language === 'id'
@@ -139,6 +141,44 @@ export function Settings() {
                     }`}
                   >
                     <Glyph name="languages" /> English
+                  </button>
+                </div>
+              </div>
+
+              {/* Tutorial Button Toggle */}
+              <div className="border-[3px] border-sumi/20 bg-kinari p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-1">
+                    {language === 'id' ? 'Tombol Tutorial' : 'Tutorial Button'}
+                  </label>
+                  <p className="text-xs text-sumi/70 font-semibold">
+                    {language === 'id'
+                      ? 'Tombol panduan mengapung di kanan-bawah. Matikan kalau sudah hafal biar tidak mengganggu.'
+                      : 'The floating guide button (bottom-right). Turn it off once you know your way around.'}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 min-w-[240px]">
+                  <button
+                    type="button"
+                    onClick={() => setTutorialHidden(false)}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      tutorialOn
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    {language === 'id' ? 'Tampil' : 'Show'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTutorialHidden(true)}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      !tutorialOn
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    {language === 'id' ? 'Sembunyi' : 'Hide'}
                   </button>
                 </div>
               </div>

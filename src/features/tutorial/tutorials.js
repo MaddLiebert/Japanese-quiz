@@ -204,3 +204,13 @@ export const unseenCount = (seen) => {
   const base = ensureSeen(seen);
   return TUTORIALS.reduce((n, t) => (base[t.key] === true ? n : n + 1), 0);
 };
+
+// ── Preferensi tampil/tidak tombol Tutorial ─────────────────────────────────
+// User yang sudah hafal merasa tombol mengapung mengganggu → boleh disembunyikan.
+// Disimpan di progress.tutorialHidden (persist). Default: TAMPIL (false).
+
+// Hanya boolean true yang dianggap "sembunyikan" — data kotor → tampil (aman).
+export const ensureTutorialHidden = (hidden) => hidden === true;
+
+// Kebalikan hidden, untuk dipakai UI (tombol render kalau visible).
+export const tutorialButtonVisible = (hidden) => !ensureTutorialHidden(hidden);

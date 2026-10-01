@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   TUTORIALS, DEFAULT_TUTORIAL_KEY, tutorialFor, tutorialKey,
   emptySeen, ensureSeen, hasSeen, markSeen, unseenCount,
+  ensureTutorialHidden, tutorialButtonVisible,
 } from './tutorials.js';
 
 test('tutorialFor: path dikenal → topik yang tepat', () => {
@@ -83,4 +84,21 @@ test('unseenCount: hitung topik yang belum dibaca', () => {
 test('tutorialKey: sama dengan key tutorialFor', () => {
   assert.equal(tutorialKey('/speaking'), 'speaking');
   assert.equal(tutorialKey('/xyz'), DEFAULT_TUTORIAL_KEY);
+});
+
+// ── Preferensi tombol Tutorial (sembunyikan setelah hafal) ───────────────────
+test('ensureTutorialHidden: hanya true yang dianggap true (anti data kotor)', () => {
+  assert.equal(ensureTutorialHidden(true), true);
+  assert.equal(ensureTutorialHidden(false), false);
+  assert.equal(ensureTutorialHidden(undefined), false);
+  assert.equal(ensureTutorialHidden(null), false);
+  assert.equal(ensureTutorialHidden('true'), false);   // string bukan true
+  assert.equal(ensureTutorialHidden(1), false);
+});
+
+test('tutorialButtonVisible: kebalikan dari hidden (default tampil)', () => {
+  assert.equal(tutorialButtonVisible(true), false);    // hidden → tak tampil
+  assert.equal(tutorialButtonVisible(false), true);
+  assert.equal(tutorialButtonVisible(undefined), true); // default: tampil
+  assert.equal(tutorialButtonVisible('x'), true);
 });
