@@ -13,13 +13,13 @@
 // SEMUA mekanik DELEGASI ke modul pack aslinya (DRY) — tidak ada yang ditulis ulang.
 // Tanpa DOM/React → dites `node --test` (pola gojoFx/sukunaFx/tojiFx).
 // ─────────────────────────────────────────────────────────────────────────────
-import { GOJO_DOMAIN_DURATION_S } from './gojoFx.js';
-import { SUKUNA_HITSUME_DELAY_MS, sukunaHitsumeCut } from './sukunaFx.js';
-import { nobaraUltCut, NOBARA_ULT_TIMELINE } from './nobaraFx.js';
-import { yujiBurnedIds, yujiComboNext } from './yujiFx.js';
-import { megumiAdaptCut, megumiSwordCut, megumiWrongOutcome, MEGUMI_WHEEL_NOTCHES } from './megumiFx.js';
-import { nanamiRubbleCut, nanamiOvertimeOutcome, NANAMI_RUBBLE_MAX } from './nanamiFx.js';
-import { tojiCutOptions, tojiUltOutcome, tojiStateStartAmmo, TOJI_AMMO_MAX } from './tojiFx.js';
+import { GOJO_DOMAIN_DURATION_S, GOJO_RIM } from './gojoFx.js';
+import { SUKUNA_HITSUME_DELAY_MS, sukunaHitsumeCut, SUKUNA_BLOOD } from './sukunaFx.js';
+import { nobaraUltCut, NOBARA_ULT_TIMELINE, NOBARA_STRAW } from './nobaraFx.js';
+import { yujiBurnedIds, yujiComboNext, YUJI_FIRE_COLORS } from './yujiFx.js';
+import { megumiAdaptCut, megumiSwordCut, megumiWrongOutcome, MEGUMI_WHEEL_NOTCHES, MEGUMI_INDIGO } from './megumiFx.js';
+import { nanamiRubbleCut, nanamiOvertimeOutcome, NANAMI_RUBBLE_MAX, NANAMI_GOLD } from './nanamiFx.js';
+import { tojiCutOptions, tojiUltOutcome, tojiStateStartAmmo, TOJI_AMMO_MAX, TOJI_STEEL } from './tojiFx.js';
 
 // Milestone = sama persis pack JJK lain (konsisten).
 export const YUTA_MILESTONES = [3, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
@@ -85,6 +85,31 @@ export const YUTA_DOMAIN = {
   mizuhiki: '#f8fafc',   // tali putih (紅白の水引 — sisi putih)
   mizuhikiRed: '#b91c1c',// sisi merah
   eye: '#ef4444',        // mata merah Yuta
+};
+
+// ── T7 (opsi 2): identitas visual copy — emblem ikonik + tint domain ─────────
+//   Tiap copy meminjam 1 elemen khas pack sumber (glyph) + warna token pack-nya
+//   (DRY: impor konstanta pack, bukan hex duplikat) supaya "copy terasa".
+//   Ditempatkan di YutaDomainField (ringan, tidak menimpa lautan pedang Yuta).
+export const YUTA_COPY_EMBLEM = {
+  gojo:   { glyph: 'void',    kanji: '無', color: GOJO_RIM,        label: '無下限 · Infinity' },
+  sukuna: { glyph: 'shrine',  kanji: '伏', color: SUKUNA_BLOOD,    label: '伏魔御廚子 · Shrine' },
+  nobara: { glyph: 'straw',   kanji: '共', color: NOBARA_STRAW,    label: '藁人形 · Straw Doll' },
+  yuji:   { glyph: 'fire',    kanji: '開', color: YUJI_FIRE_COLORS[2], label: '開 · Fuga' },
+  megumi: { glyph: 'wheel',   kanji: '魔', color: MEGUMI_INDIGO,   label: '八握剣 · Wheel' },
+  nanami: { glyph: 'watch',   kanji: '時', color: NANAMI_GOLD,     label: '時間外 · Watch' },
+  toji:   { glyph: 'reticle', kanji: '天', color: TOJI_STEEL,      label: '天与呪縛 · Reticle' },
+};
+export const yutaCopyEmblem = (id) => (isValidYutaCopy(id) ? YUTA_COPY_EMBLEM[id] : null);
+
+// Warna tint domain per copy (dipakai YutaDomainField). alpha opsional 0..1.
+const YUTA_TINT_ALPHA = 0.30;
+const clamp01 = (v) => (Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : YUTA_TINT_ALPHA);
+export const yutaCopyTint = (id, alpha) => {
+  const base = yutaCopyEmblem(id)?.color || YUTA_DOMAIN.blood;
+  if (alpha === undefined) return base;
+  const a = Math.round(clamp01(alpha) * 255).toString(16).padStart(2, '0');
+  return `${base}${a}`;
 };
 
 // ── Ladder jurus Yuta (non-streak = rotasi deterministik; bukan acak) ─────────
