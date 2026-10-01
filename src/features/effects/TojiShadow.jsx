@@ -15,11 +15,11 @@ import {
 //   • TojiCurseBar → 20 slot (pola JJK konsisten, tapi material baja); tap saat
 //                    penuh = 天与呪縛・全開; saat state hidup → label 一撃離脱 +
 //                    slot jadi TIMER 30 dtk + rail amunisi (cap 3) + counter.
-//   • TojiUltCine  → sync TOJI_TIMELINE (4,54 dtk = durasi cast.mp3 TERUKUR):
+//   • TojiUltCine  → sync TOJI_TIMELINE (2,78 dtk = durasi cast.mp3 TERUKUR):
 //                    veil 黒 → 武器庫呪霊 masuk → 釈魂刀 dicabut (jeda dramatis
-//                    1,86–3,04s) → quote per-frasa 「禪院じゃねぇのか」(0,06s) ·
-//                    「よかったな」(3,04s) → tebasan silang X + shake + debu
-//                    (4,1s) → settle (4,54s) → state 30 dtk.
+//                    1,10–2,14s) → quote per-frasa 「天与呪縛」(0,16s) ·
+//                    「全開」(2,14s) → tebasan silang X + shake + debu
+//                    (2,40s) → settle (2,78s) → state 30 dtk.
 // Semua elemen di lapisan BELAKANG konten (z ≤ 124) kecuali quote & slash di
 // tepi. reduced-motion: bentuk & kanji akhir tetap tampil (informasi kanon),
 // gerakan/flash/shake disembunyikan.
@@ -198,11 +198,11 @@ export function TojiCurseBar({
   );
 }
 
-// ── Cinematic 天与呪縛・全開 — sync TOJI_TIMELINE (4,54 dtk = klip TERUKUR) ───
-// 0 veil (siluet 黒 + hening 呪力ゼロ) · 1,2 武器庫呪霊 masuk (mulut menganga)
-// · 2,4 釈魂刀 dicabut di jeda dramatis · 0,06/3,04 quote per-frasa (merah darah,
-// TANPA glow — hard text) · 4,1 tebasan silang X seluruh layar + shake + debu
-// · 4,54 settle → state. reduced-motion → tanpa veil/gerak/flash, quote & X tetap.
+// ── Cinematic 天与呪縛・全開 — sync TOJI_TIMELINE (2,78 dtk = klip TERUKUR) ───
+// 0 veil (siluet 黒 + hening 呪力ゼロ) · 0,7 武器庫呪霊 masuk (mulut menganga)
+// · 1,5 釈魂刀 dicabut di jeda dramatis · 0,16/2,14 quote per-frasa (merah darah,
+// TANPA glow — hard text) · 2,4 tebasan silang X seluruh layar + shake + debu
+// · 2,78 settle → state. reduced-motion → tanpa veil/gerak/flash, quote & X tetap.
 export function TojiUltCine({ seed = 1 }) {
   const [reduced] = useState(prefersReduced);
   const t = TOJI_TIMELINE;

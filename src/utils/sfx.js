@@ -421,7 +421,9 @@ export const playMegumiTechnique = (technique) => {
 export const playCorrectSound = () => {
   // Tanpa pack aktif → suara dasar (chime).
   if (!activeVoiceKey) { synthChime(); return 0; }
-  const paths = feedbackFiles(getVoice(activeVoiceKey), 'correct');
+  const voice = getVoice(activeVoiceKey);
+  if (voice?.silent) return 0;   // pack senyap (klip dihapus) — TANPA fallback synth
+  const paths = feedbackFiles(voice, 'correct');
   // Putar SEMUA (overlay + klip voice) bersamaan.
   if (paths.length) return playFiles(paths);
   synthChime();
@@ -430,7 +432,9 @@ export const playCorrectSound = () => {
 
 export const playWrongSound = () => {
   if (!activeVoiceKey) { synthThud(); return 0; }
-  const paths = feedbackFiles(getVoice(activeVoiceKey), 'wrong');
+  const voice = getVoice(activeVoiceKey);
+  if (voice?.silent) return 0;   // pack senyap — TANPA fallback synth
+  const paths = feedbackFiles(voice, 'wrong');
   if (paths.length) return playFiles(paths);
   synthThud();
   return 0;
@@ -2208,11 +2212,12 @@ export const TOJI_TECHNIQUE_FILES = {
   bukiko_jurei: '/voices/toji/bukiko_jurei.mp3',
 };
 
-// Lead-silence TERUKUR (PyAV RMS onset) — semua <= 0.24s (pola Nanami; hanya
-// > 0.24 yang perlu skip agresif, jadi nilai ini murni informasional + test).
+// Lead-silence TERUKUR (PyAV RMS onset) — semua <= 0.32s (pola Nanami; hanya
+// > 0.32 yang perlu skip agresif, jadi nilai ini murni informasional + test).
+// `state` = klip 武器庫・一撃離脱 (bukiko_ichigeki) saat state 全開 mulai.
 export const TOJI_LEAD_S = {
-  shakkontou: 0.21, banri_no_kusari: 0.19, amanosakahoko: 0.20,
-  yuuyun: 0.21, bukiko_jurei: 0.19, cast: 0.06,
+  shakkontou: 0.12, banri_no_kusari: 0.14, amanosakahoko: 0.18,
+  yuuyun: 0.16, bukiko_jurei: 0.16, cast: 0.16, state: 0.20,
 };
 
 export const playTojiTechnique = (technique) => {
@@ -2222,6 +2227,10 @@ export const playTojiTechnique = (technique) => {
   return playFile(path, lead);
 };
 
-// Cast 天与呪縛・全開: klip penuh 「禪院じゃねぇのか、よかったな」(4,54s TERUKUR) —
-// cinematic TojiShadow tersinkron per-frasa ke TOJI_CAST_VOICE (bukan ditebak).
+// Cast 天与呪縛・全開: klip 「天与呪縛・全開」(2,78s TERUKUR) — cinematic
+// TojiShadow tersinkron per-frasa ke TOJI_CAST_VOICE (bukan ditebak).
 export const playTojiCast = () => playFile('/voices/toji/cast.mp3', TOJI_LEAD_S.cast);
+
+// 武器庫・一撃離脱 — klip mekanik state, diputar saat STATE 30 dtk mulai
+// (bukan jurus). Suara seruan Toji saat armory rail aktif.
+export const playTojiStateStart = () => playFile('/voices/toji/bukiko_ichigeki.mp3', TOJI_LEAD_S.state);

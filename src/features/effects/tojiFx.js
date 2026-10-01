@@ -91,30 +91,30 @@ export const tojiCurseCharge = (streak) =>
 export const tojiUltReady = (streak) =>
   Number.isFinite(streak) && streak >= TOJI_ULT_THRESHOLD;
 
-// ── Ultimate 天与呪縛・全開 — cinematic 4,54 dtk lalu STATE 30 dtk ──────────
-// Timeline (detik) — sync ke klip cast.mp3 TERUKUR (PyAV, 4,539s ≈ 4,54s):
-//   lead 0,06 · frasa 1 「禪院じゃねぇのか」 0,06–1,86 · JEDA DRAMATIS 1,86–3,04
-//   (di sinilah bilah dicabut) · frasa 2 「よかったな」 3,04–3,92 · tail 4,5.
+// ── Ultimate 天与呪縛・全開 — cinematic 2,78 dtk lalu STATE 30 dtk ──────────
+// Timeline (detik) — sync ke klip cast.mp3 TERUKUR (PyAV, 2,782s ≈ 2,78s):
+//   lead 0,16 · frasa 1 「天与呪縛」 0,16–1,10 · JEDA DRAMATIS 1,10–2,14
+//   (di sinilah bilah dicabut) · frasa 2 「全開」 2,14–2,62 · tail 2,62.
 // JANGAN ditebak — angka dari pengukuran RMS; kalau klip cast diganti, ukur ulang.
-export const TOJI_ULT_DURATION_S = 4.54;
-export const TOJI_QUOTE = ['禪院じゃねぇのか', 'よかったな']; // 「禪院じゃねぇのか　よかったな」 (ch.113)
+export const TOJI_ULT_DURATION_S = 2.78;
+export const TOJI_QUOTE = ['天与呪縛', '全開']; // 「天与呪縛・全開」 — nama ultimate (bukan quote ch.113)
 export const TOJI_CAST_VOICE = {
-  dur: 4.54,
-  lead: 0.06,
-  phrase1: { start: 0.06, end: 1.86 },
-  pause: { start: 1.86, end: 3.04 },   // jeda dramatis — bilah dicabut di sini
-  phrase2: { start: 3.04, end: 3.92 },
-  tail: 4.5,
+  dur: 2.78,
+  lead: 0.16,
+  phrase1: { start: 0.16, end: 1.10 },
+  pause: { start: 1.10, end: 2.14 },   // jeda dramatis — bilah dicabut di sini
+  phrase2: { start: 2.14, end: 2.62 },
+  tail: 2.62,
 };
 export const TOJI_TIMELINE = {
   veilAt: 0,        // veil: layar meredup ke siluet 黒 (くろ)
-  hushAt: 0.35,     // angin berhenti — hening (呪力ゼロ)
-  wormAt: 1.2,      // 武器庫呪霊 masuk dari tepi, mulut menganga
-  drawAt: 2.4,      // tangan masuk & mencabut 釈魂刀 (kilau baja) — di jeda dramatis
-  quote1At: 0.06,   // kanji 「禪院じゃねぇのか」 per-frasa (merah darah, TANPA glow)
-  quote2At: 3.04,   // kanji 「よかったな」 per-frasa
-  slashAt: 4.1,     // tebasan silang X seluruh layar + shake + debu
-  settleAt: 4.54,   // settle → masuk state 30 dtk + rail amunisi + counter
+  hushAt: 0.20,     // angin berhenti — hening (呪力ゼロ)
+  wormAt: 0.70,     // 武器庫呪霊 masuk dari tepi, mulut menganga
+  drawAt: 1.50,     // tangan masuk & mencabut 釈魂刀 (kilau baja) — di jeda dramatis
+  quote1At: 0.16,   // kanji 「天与呪縛」 per-frasa (merah darah, TANPA glow)
+  quote2At: 2.14,   // kanji 「全開」 per-frasa
+  slashAt: 2.40,    // tebasan silang X seluruh layar + shake + debu (saat 全開)
+  settleAt: 2.78,   // settle → masuk state 30 dtk + rail amunisi + counter
 };
 
 // State 30 dtk (pola `legendary` — timer JALAN; TANPA Domain Expansion).
@@ -192,7 +192,7 @@ export const TOJI_MOTION = {
   reveal: 'cubic-bezier(0.16, 1, 0.3, 1)',     // expo.out — stagger reveal
   durFast: 160,     // ms — feedback jawaban (responsif)
   durMid: 320,      // ms — tebasan/seretan rantai
-  durCine: 4540,    // ms — ultimate = durasi klip cast terukur (4,54s)
+  durCine: 2780,    // ms — ultimate = durasi klip cast terukur (2,78s)
 };
 
 // ── Stagger (anti-slop #4: bilah 0 → flash 100 → belah 180 → percikan 260
@@ -213,7 +213,7 @@ export const tojiAnswerHoldMs = (clipMs = 0, baseHoldMs = 0) => {
   return Math.max(baseHoldMs || 0, clip > 0 ? clip + 400 : 0, TOJI_MIN_HOLD_MS);
 };
 
-// Hold ultimate: timeline penuh (4,54s) + settle 300ms.
+// Hold ultimate: timeline penuh (2,78s) + settle 300ms.
 export const tojiUltHoldMs = () => Math.round(TOJI_ULT_DURATION_S * 1000) + 300;
 
 // ── Generator murni (DETERMINISTIK — pola redesign Megumi v2.1: tanpa rng) ──

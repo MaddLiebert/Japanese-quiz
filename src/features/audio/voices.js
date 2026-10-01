@@ -151,32 +151,30 @@ export const VOICES = {
     ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
-  // VP Yuta Okkotsu (pack_12) — TTS generik, setelan di docs/voice-pack-2-jujutsu.md.
+  // VP Yuta Okkotsu (pack_12) — SENYAP TOTAL (30/09): klip TTS generik dihapus
+  // atas permintaan user ("hapus karna generik"). Visual masih 'dummy'; TIDAK
+  // ada fallback synth (silent: true) — benar-benar tanpa suara.
   yuta: {
-    files: {
-      correct: ['/voices/yuta/correct_1.mp3', '/voices/yuta/correct_2.mp3', '/voices/yuta/correct_3.mp3'],
-      wrong:   ['/voices/yuta/wrong_1.mp3',   '/voices/yuta/wrong_2.mp3',   '/voices/yuta/wrong_3.mp3'],
-      streak:  ['/voices/yuta/streak_1.mp3',  '/voices/yuta/streak_2.mp3',  '/voices/yuta/streak_3.mp3'],
-    },
-    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+    files: { correct: [], wrong: [], streak: [] },
+    silent: true,
   },
   // VP Toji Fushiguro (pack_13) — aset user di public/voices/toji/ (天与呪縛).
-  //   wrong : 3 klip kalah (化け物が / 敗因？勝負はこれからだろ / タダ働きなんて
-  //          ゴメンだね) — acak tiap salah (Set A pilihan Nacht).
-  //   clips : klip jalur khusus — 5 jurus (釈魂刀/万里ノ鎖/天逆鉾/遊雲/武器庫呪霊),
-  //           diputar DETERMINISTIK oleh playTojiTechnique.
+  //   wrong : 2 klip kalah (化け物が / タダ働きなんてゴメンだね) — acak tiap salah.
+  //   clips : klip jalur khusus — 5 jurus (釈魂刀/万里ノ鎖/天逆鉾/遊雲/武器庫呪霊)
+  //           + bukiko_ichigeki (武器庫・一撃離脱, diputar saat state 全開 mulai);
+  //           jurus diputar DETERMINISTIK oleh playTojiTechnique.
   //   correct/streak: KOSONG (benar = jurus deterministik, pola Gojo/Nanami).
-  //   cast.mp3 (禪院じゃねぇのか、よかったな 4,54s) diputar oleh playTojiCast.
+  //   cast.mp3 (天与呪縛・全開 2,78s) diputar oleh playTojiCast.
   toji: {
     files: {
       correct: [],
-      wrong: ['/voices/toji/wrong_1.mp3', '/voices/toji/wrong_2.mp3', '/voices/toji/wrong_3.mp3'],
+      wrong: ['/voices/toji/wrong_1.mp3', '/voices/toji/wrong_2.mp3'],
       streak: [],
     },
     clips: [
       '/voices/toji/shakkontou.mp3', '/voices/toji/banri_no_kusari.mp3',
       '/voices/toji/amanosakahoko.mp3', '/voices/toji/yuuyun.mp3',
-      '/voices/toji/bukiko_jurei.mp3',
+      '/voices/toji/bukiko_jurei.mp3', '/voices/toji/bukiko_ichigeki.mp3',
     ],
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },

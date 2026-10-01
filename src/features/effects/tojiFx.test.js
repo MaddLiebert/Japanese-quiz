@@ -100,9 +100,9 @@ test('tojiUltReady: penuh di 20', () => {
   assert.ok(!tojiUltReady(NaN));
 });
 
-test('TOJI_ULT_DURATION_S = 4.54s = durasi cast.mp3 TERUKUR (PyAV — jangan ditebak)', () => {
-  assert.equal(TOJI_ULT_DURATION_S, 4.54);
-  assert.equal(TOJI_CAST_VOICE.dur, 4.54);
+test('TOJI_ULT_DURATION_S = 2.78s = durasi cast.mp3 TERUKUR (PyAV — jangan ditebak)', () => {
+  assert.equal(TOJI_ULT_DURATION_S, 2.78);
+  assert.equal(TOJI_CAST_VOICE.dur, 2.78);
   // timeline urut & settle = durasi klip
   const t = TOJI_TIMELINE;
   assert.equal(t.veilAt, 0);
@@ -113,15 +113,15 @@ test('TOJI_ULT_DURATION_S = 4.54s = durasi cast.mp3 TERUKUR (PyAV — jangan dit
   assert.equal(TOJI_STATE_S, 30);
 });
 
-test('TOJI_TIMELINE: quote per-frasa SYNC ke segmen klip terukur (0.06s & 3.04s)', () => {
+test('TOJI_TIMELINE: quote per-frasa SYNC ke segmen klip terukur (0.16s & 2.14s)', () => {
   const t = TOJI_TIMELINE;
   const v = TOJI_CAST_VOICE;
   assert.equal(t.quote1At, v.phrase1.start, 'frasa 1 = lead klip terukur');
   assert.equal(t.quote2At, v.phrase2.start, 'frasa 2 = awal ucapan kedua terukur');
   // gambar bilah dicabut terjadi DI jeda dramatis klip (pause terukur)
   assert.ok(t.drawAt > v.pause.start && t.drawAt < v.pause.end, 'cabut bilah di jeda');
-  // tebasan X setelah frasa terakhir selesai
-  assert.ok(t.slashAt > v.phrase2.end, 'tebasan setelah frasa 2');
+  // tebasan X menyertai frasa terakhir (全開) — tidak menunggu klip habis
+  assert.ok(t.slashAt >= v.phrase2.start && t.slashAt < t.settleAt, 'tebasan saat frasa 2 → settle');
   // segmen klip konsisten & di dalam durasi
   assert.ok(v.lead === v.phrase1.start);
   assert.ok(v.phrase1.start < v.phrase1.end);
@@ -129,9 +129,9 @@ test('TOJI_TIMELINE: quote per-frasa SYNC ke segmen klip terukur (0.06s & 3.04s)
   assert.ok(v.phrase2.start < v.phrase2.end && v.phrase2.end < v.dur);
 });
 
-test('TOJI_QUOTE: 2 frasa kanon (join = kalimat penuh ch.113)', () => {
+test('TOJI_QUOTE: 2 frasa = nama ultimate 天与呪縛・全開 (bukan quote Megumi)', () => {
   assert.equal(TOJI_QUOTE.length, 2);
-  assert.equal(TOJI_QUOTE.join(''), '禪院じゃねぇのかよかったな');
+  assert.equal(TOJI_QUOTE.join(''), '天与呪縛全開');
 });
 
 test('tojiAmmoGain: +1 senjata per benar, cap TOJI_AMMO_MAX = 3', () => {
@@ -216,7 +216,7 @@ test('TOJI_MOTION: easing beda per peran (anti-slop) + durasi bertingkat + durCi
   assert.notEqual(TOJI_MOTION.exit, TOJI_MOTION.reveal);
   assert.ok(TOJI_MOTION.durFast < TOJI_MOTION.durMid);
   assert.ok(TOJI_MOTION.durMid < TOJI_MOTION.durCine);
-  assert.equal(TOJI_MOTION.durCine, 4540, 'cinematic = durasi klip cast terukur');
+  assert.equal(TOJI_MOTION.durCine, 2780, 'cinematic = durasi klip cast terukur');
 });
 
 test('TOJI_STAGGER: bilah 0 → flash 100 → belah 180 → percikan 260 → debu 340 (anti-slop #4)', () => {
@@ -236,7 +236,7 @@ test('tojiAnswerHoldMs: min hold 1.4s; clipMs eksplisit menang', () => {
 });
 
 test('tojiUltHoldMs: cinematic penuh + settle buffer', () => {
-  assert.equal(tojiUltHoldMs(), 4840, '4540ms klip + 300ms buffer');
+  assert.equal(tojiUltHoldMs(), 3080, '2780ms klip + 300ms buffer');
 });
 
 test('tojiStateLeft: hitung mundur 0..30 (clamp, input kotor aman)', () => {
@@ -352,8 +352,8 @@ test('TOJI_STYLE.kill: 術師殺し utk soal yang dibunuh (mekanik 一撃離脱)
   assert.ok(TOJI_STYLE.kill.label.includes('Jutsushi'), 'label kana romaji');
 });
 
-test('tojiStateStartDelayMs: 30 dtk mulai SETELAH cinematic settle (4,54 dtk)', () => {
-  assert.equal(tojiStateStartDelayMs(), 4540);
+test('tojiStateStartDelayMs: 30 dtk mulai SETELAH cinematic settle (2,78 dtk)', () => {
+  assert.equal(tojiStateStartDelayMs(), 2780);
   assert.equal(tojiUltHoldMs(), tojiStateStartDelayMs() + 300, 'settle = cinematic + buffer');
 });
 
