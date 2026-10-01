@@ -11,7 +11,7 @@ import {
   yutaCopyMechanic, yutaCopyInit, yutaCopyOutcome, YUTA_COPY_LIMITS,
   YUTA_STYLE, yutaKatana, yutaRipples, yutaCopyRings, yutaSwordField,
   YUTA_COPY_EMBLEM, yutaCopyEmblem, yutaCopyTint, YUTA_DOMAIN,
-  yutaSparks, yutaCracks, yutaMotes, yutaRingDiameters,
+  yutaSparks, yutaCracks, yutaMotes, yutaRingDiameters, yutaDomainRings,
 } from './yutaFx.js';
 import { SUKUNA_HITSUME_DELAY_MS, SUKUNA_BLOOD } from './sukunaFx.js';
 import { NOBARA_ULT_TIMELINE, NOBARA_STRAW } from './nobaraFx.js';
@@ -304,4 +304,19 @@ test('yutaRingDiameters: ukuran px relatif kartu, membesar, tanpa vmin', () => {
   assert.ok(d[0] < 120, `cincin pertama (${d[0]}px) harus < lebar kartu tipikal`);
   // membesar berurutan
   for (let i = 1; i < d.length; i++) assert.ok(d[i] > d[i - 1], `cincin #${i} harus lebih besar`);
+});
+
+// ── T10: momen PICK — cincin domain meluas full-screen (merah kanon) ─────────
+test('yutaDomainRings: 3 cincin meluas, deterministik, delay berurutan', () => {
+  const d = yutaDomainRings(7, 3);
+  assert.deepEqual(d, yutaDomainRings(7, 3));
+  assert.equal(d.length, 3);
+  for (const r of d) {
+    assert.ok(r.dur > 0 && r.width > 0 && r.w > 0);
+    assert.ok(r.delay >= 0);
+  }
+  // delay menaik → gelombang beruntun (bukan tumpuk bersamaan)
+  assert.ok(d[1].delay > d[0].delay && d[2].delay > d[1].delay);
+  // menipis & melambat ke luar
+  assert.ok(d[0].w > d[2].w);
 });
