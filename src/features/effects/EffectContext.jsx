@@ -339,6 +339,7 @@ export function EffectProvider({ children }) {
   const yutaDomainRef = useRef(false);
   const yutaDomainEndsAtRef = useRef(null);
   const yutaEndedRef = useRef(false);
+  const yutaPreCastStreakRef = useRef(0);
   const yutaCopyIdRef = useRef(null);
   const yutaAmmoRef = useRef(0);
   const yutaPilesRef = useRef(0);
@@ -1802,6 +1803,7 @@ export function EffectProvider({ children }) {
   // ── Cast 真贋相愛 (tap bar Yuta): cinematic → gacha 3 katana → buka picker ──
   const castYutaUlt = useCallback(() => {
     if (activeVisual !== 'yuta') return;
+    yutaPreCastStreakRef.current = streakRef.current;   // simpan buat refund kalau batal
     streakRef.current = 0;
     yutaEndedRef.current = false;
     setYutaCharge(0);
@@ -1818,6 +1820,17 @@ export function EffectProvider({ children }) {
     // Setelah cinematic settle → buka picker 3 katana.
     const t = setTimeout(() => { setYutaCasting(false); setYutaPickOpen(true); }, YUTA_CAST_SETTLE_MS);
     timersRef.current.push(t);
+  }, [activeVisual]);
+
+  // ── Batal di picker 3 katana: tutup tanpa memakai domain. Charge direfund
+  // penuh (cast tidak jadi) supaya bar langsung siap dipakai lagi.
+  const cancelYutaPick = useCallback(() => {
+    if (activeVisual !== 'yuta') return;
+    setYutaPickOpen(false);
+    setYutaKatanas([]);
+    const prev = yutaPreCastStreakRef.current;
+    streakRef.current = prev;
+    setYutaCharge(yutaCurseCharge(prev));
   }, [activeVisual]);
 
   // ── Pilih 1 katana → domain 30 dtk + init ekonomi copy (delegasi) ──────────
@@ -2311,7 +2324,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt, tojiCharge, tojiCasting, tojiStateOn, tojiStateLeft, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, castTojiUlt, yutaCharge, yutaCasting, yutaPickOpen, yutaKatanas, yutaDomainOn: yutaDomain, yutaDomainLeft, yutaCopyId, yutaCutIds, yutaCutForId, yutaAmmo, yutaPiles, yutaWheel, yutaCombo, yutaCopyFreezes: yutaDomain && yutaCopyId === 'gojo', setYutaQuizOptions, castYutaUlt, pickYutaKatana }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt, tojiCharge, tojiCasting, tojiStateOn, tojiStateLeft, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, castTojiUlt, yutaCharge, yutaCasting, yutaPickOpen, yutaKatanas, yutaDomainOn: yutaDomain, yutaDomainLeft, yutaCopyId, yutaCutIds, yutaCutForId, yutaAmmo, yutaPiles, yutaWheel, yutaCombo, yutaCopyFreezes: yutaDomain && yutaCopyId === 'gojo', setYutaQuizOptions, castYutaUlt, pickYutaKatana, cancelYutaPick }}>
       {children}
       <EffectLayer
         fx={fx} drops={drops} visual={activeVisual}
@@ -2346,13 +2359,14 @@ export function EffectProvider({ children }) {
         yutaKatanas={yutaKatanas} yutaCopyId={yutaCopyId}
         yutaDomainOn={yutaDomain} yutaDomainLeft={yutaDomainLeft}
         onCastYuta={castYutaUlt} onPickYuta={pickYutaKatana}
+        onCancelYuta={cancelYutaPick}
       />
     </EffectContext.Provider>
   );
 }
 
 // ── Overlay layer ────────────────────────────────────────────────────────────
-function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, nanamiUltSeed = 0, nanamiOvertimeOn = false, nanamiOvertimeLeft = 0, nanamiPiles = 0, nanamiRubbleCutIds = [], onCastNanami = null, tojiCharge = 0, tojiCasting = false, tojiUltSeed = 0, tojiStateOn = false, tojiStateLeft = 0, tojiAmmo = 0, onCastToji = null, yutaCharge = 0, yutaCasting = false, yutaUltSeed = 0, yutaPickOpen = false, yutaKatanas = [], yutaCopyId = null, yutaDomainOn = false, yutaDomainLeft = 0, onCastYuta = null, onPickYuta = null }) {
+function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, domainSeed, domainLeft, charge, quizActive, onCast, yujiCharge, yujiCombo, takeoverOn, takeoverSeed, takeoverLeft, onCastYuji, sukunaCharge, sukunaDomainOn, sukunaDomainSeed, sukunaDomainLeft, onCastSukuna, sukunaCutSkill = null, onCastSukunaSkill = null, megumiCharge = 0, megumiSummonOn = false, megumiSummonSeed = 0, megumiSummonLeft = 0, onCastMegumi = null, megumiWheel = 0, megumiSwordReady = false, nobaraCharge = 0, nobaraCasting = false, nobaraUltSeed = 0, nobaraCutIds = [], onCastNobara = null, nanamiCharge = 0, nanamiCasting = false, nanamiUltSeed = 0, nanamiOvertimeOn = false, nanamiOvertimeLeft = 0, nanamiPiles = 0, nanamiRubbleCutIds = [], onCastNanami = null, tojiCharge = 0, tojiCasting = false, tojiUltSeed = 0, tojiStateOn = false, tojiStateLeft = 0, tojiAmmo = 0, onCastToji = null, yutaCharge = 0, yutaCasting = false, yutaUltSeed = 0, yutaPickOpen = false, yutaKatanas = [], yutaCopyId = null, yutaDomainOn = false, yutaDomainLeft = 0, onCastYuta = null, onPickYuta = null, onCancelYuta = null }) {
   const rawId = useId();
   const fid = 'ink' + rawId.replace(/[^a-zA-Z0-9]/g, '');
   const kind = fx?.kind || null;
@@ -2679,7 +2693,7 @@ function EffectLayer({ fx, drops, visual, gojoBalls, gojoExplode, domainOn, doma
                 key={`yuta-pick-${yutaUltSeed}`}
                 katanas={yutaKatanas}
                 onPick={onPickYuta}
-                onCancel={onPickYuta}
+                onCancel={onCancelYuta}
               />
             )}
           </AnimatePresence>
