@@ -5,8 +5,8 @@ import {
   TOJI_LADDER, TOJI_TOP, TOJI_NON_STREAK_CYCLE, tojiNonStreakIndex,
   TOJI_ULT_THRESHOLD, tojiCurseCharge, tojiUltReady,
   TOJI_ULT_DURATION_S, TOJI_TIMELINE, TOJI_QUOTE, TOJI_CAST_VOICE,
-  TOJI_STATE_S, TOJI_AMMO_MAX,
-  tojiAmmoGain, tojiAmmoSpend, tojiUltOutcome, tojiCutOptions,
+  TOJI_STATE_S, TOJI_AMMO_MAX, TOJI_STATE_START_AMMO,
+  tojiAmmoGain, tojiAmmoSpend, tojiUltOutcome, tojiCutOptions, tojiStateStartAmmo,
   TOJI_STYLE, TOJI_MOTION, TOJI_STAGGER, TOJI_COLORS,
   TOJI_FLASH, TOJI_STEEL, TOJI_GUNMETAL, TOJI_VOID, TOJI_BLOOD, TOJI_WORM,
   TOJI_MIN_HOLD_MS, tojiAnswerHoldMs, tojiUltHoldMs, tojiStateLeft,
@@ -167,6 +167,28 @@ test('tojiUltOutcome: benar → load (+1 cap), salah → spend (soal dibunuh), a
   // input kotor aman
   assert.deepEqual(tojiUltOutcome('wrong', NaN), { ammo: 0, outcome: 'break' });
   assert.deepEqual(tojiUltOutcome('correct', NaN), { ammo: 1, outcome: 'load' });
+});
+
+// ── Opsi A: 全開 mulai dengan amunisi SIAP (ult langsung bergigi) ────────────
+test('TOJI_STATE_START_AMMO: state 全開 mulai dengan amunisi > 0 (bukan kerja dari nol)', () => {
+  assert.equal(TOJI_STATE_START_AMMO, 2, 'mulai 2 senjata — langsung bisa 術師殺し');
+  assert.ok(TOJI_STATE_START_AMMO > 0, 'ult harus bergigi sejak detik pertama');
+  assert.ok(TOJI_STATE_START_AMMO <= TOJI_AMMO_MAX, 'tidak melebihi cap rail');
+});
+
+test('tojiStateStartAmmo: clamp 0..TOJI_AMMO_MAX, input kotor → start ammo', () => {
+  assert.equal(tojiStateStartAmmo(), TOJI_STATE_START_AMMO);
+  assert.equal(tojiStateStartAmmo(5), TOJI_AMMO_MAX, 'cap di rail');
+  assert.equal(tojiStateStartAmmo(1), 1);
+  for (const bad of [NaN, null, undefined, 'x']) assert.equal(tojiStateStartAmmo(bad), TOJI_STATE_START_AMMO, String(bad));
+});
+
+test('state 全開: salah PERTAMA (amunisi awal 2) langsung membunuh soal, bukan bubar', () => {
+  const start = tojiStateStartAmmo();
+  const out = tojiUltOutcome('wrong', start);
+  assert.deepEqual(out, { ammo: 1, outcome: 'spend' }, 'salah pertama = kill soal, streak AMAN');
+  const opts = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
+  assert.deepEqual(tojiCutOptions(opts, 'a', out.ammo), ['a', 'b', 'c', 'd']);
 });
 
 test('tojiCutOptions: soal dibunuh → SELURUH opsi tertebas (術師殺し); amunisi 0 → tidak ada', () => {

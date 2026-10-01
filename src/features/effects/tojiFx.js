@@ -159,6 +159,19 @@ export const tojiAmmoSpend = (ammo) => {
   return Math.max(0, n - 1);
 };
 
+// Opsi A (keputusan user): 全開 MULAI dengan amunisi siap, bukan 0. Tanpa ini
+// ult terasa "gak ngefek" — pemain harus benar dulu baru punya daya, dan efek
+// hanya muncul saat salah. 2 senjata = langsung bisa 術師殺し sejak detik 1,
+// tapi tetap bukan 3 (cap rail) supaya tetap ada ruang menabung.
+export const TOJI_STATE_START_AMMO = 2;
+
+// Amunisi awal state: clamp 0..cap; input kotor → nilai start (state selalu
+// dimulai "bergigi", bukan 0 karena argumen cacat).
+export const tojiStateStartAmmo = (n = TOJI_STATE_START_AMMO) => {
+  const v = Number.isFinite(n) && n >= 0 ? Math.floor(n) : TOJI_STATE_START_AMMO;
+  return Math.max(0, Math.min(TOJI_AMMO_MAX, v));
+};
+
 // Hasil jawaban selama state:
 //   correct → load (+1, cap) · wrong/timeout → spend (bayar 1, soal dibunuh;
 //   streak AMAN) · amunisi 0 saat salah → break (salah biasa + state bubar).
