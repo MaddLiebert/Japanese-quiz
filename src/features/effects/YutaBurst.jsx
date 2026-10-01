@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import {
   YUTA_STYLE, YUTA_DOMAIN, yutaKatana, yutaRipples, yutaCopyRings,
-  yutaSparks, yutaCracks, yutaMotes,
+  yutaSparks, yutaCracks, yutaMotes, yutaRingDiameters,
 } from './yutaFx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -236,51 +236,62 @@ function KatanaSlash({ seed, reduced, rect }) {
 }
 
 // ── 呪力 / 反転術式 / 模倣 / 真贋相愛: cincin gelombang + percikan + retakan ───
-function RippleRings({ color, rings, dur = 0.9, reduced }) {
+// ⚠️ Diameter dalam px RELATIF kartu (bukan `vmin`): kalau pakai vmin, cincin jauh
+// lebih besar dari kartu yang meng-clip-nya → lingkaran di luar area → TAK terlihat.
+function RippleRings({ color, rings, dur = 0.9, reduced, rect }) {
+  const base = Math.max(64, Math.min(rect.w, rect.h));
+  const diams = yutaRingDiameters(base, rings.length);
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
-      {rings.map((r, i) => (
-        <motion.span
-          key={r.id}
-          className="absolute rounded-full"
-          style={{
-            width: `${r.r * 2}vmin`, height: `${r.r * 2}vmin`,
-            border: `${Math.max(1, r.width)}px solid ${color}`,
-            boxShadow: `0 0 14px ${color}66, inset 0 0 10px ${color}33`,
-          }}
-          initial={{ opacity: 0, scale: 0.2 }}
-          animate={reduced
-            ? { opacity: 0.5, scale: 1 }
-            : { opacity: [0, 0.85, 0], scale: [0.2, 1, 1.15] }}
-          transition={{ duration: reduced ? 0 : dur + i * 0.12, delay: reduced ? 0 : i * 0.08, ease: EASE_REVEAL }}
-        />
-      ))}
+      {rings.map((r, i) => {
+        const d = diams[i];
+        return (
+          <motion.span
+            key={r.id}
+            className="absolute rounded-full"
+            style={{
+              width: d, height: d,
+              border: `${Math.max(1.4, r.width * 1.6)}px solid ${color}`,
+              boxShadow: `0 0 16px ${color}77, inset 0 0 12px ${color}44`,
+            }}
+            initial={{ opacity: 0, scale: 0.25 }}
+            animate={reduced
+              ? { opacity: 0.7, scale: 1 }
+              : { opacity: [0, 0.95, 0], scale: [0.25, 1, 1.2] }}
+            transition={{ duration: reduced ? 0 : dur + i * 0.12, delay: reduced ? 0 : i * 0.07, ease: EASE_REVEAL }}
+          />
+        );
+      })}
     </div>
   );
 }
 
 // ── 真贋相愛 / 模倣: dua cincin berlawanan arah (asli ↔ palsu saling mengunci) ─
-function CopyRings({ seed, reduced }) {
+function CopyRings({ seed, reduced, rect }) {
   const [rings] = useState(() => yutaCopyRings(seed));
+  const base = Math.max(72, Math.min(rect.w, rect.h) * 1.25);
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
-      {rings.map((c) => (
-        <motion.span
-          key={c.id}
-          className="absolute rounded-full"
-          style={{
-            width: `${c.r * 2}vmin`, height: `${c.r * 2}vmin`,
-            border: `${Math.max(1, c.width)}px solid ${YUTA_DOMAIN.blood}`,
-            borderTopColor: YUTA_DOMAIN.steel,
-            boxShadow: `0 0 18px ${YUTA_DOMAIN.blood}55`,
-          }}
-          initial={{ opacity: 0, rotate: 0, scale: 0.3 }}
-          animate={reduced
-            ? { opacity: 0.6, rotate: c.dir * 20, scale: 1 }
-            : { opacity: [0, 0.9, 0.7], rotate: c.dir * 220, scale: [0.3, 1.02, 1] }}
-          transition={{ duration: reduced ? 0 : c.dur, ease: 'linear' }}
-        />
-      ))}
+      {rings.map((c) => {
+        const d = base * (0.72 + c.r / 60);
+        return (
+          <motion.span
+            key={c.id}
+            className="absolute rounded-full"
+            style={{
+              width: d, height: d,
+              border: `${Math.max(1.4, c.width * 1.4)}px solid ${YUTA_DOMAIN.blood}`,
+              borderTopColor: YUTA_DOMAIN.steel,
+              boxShadow: `0 0 18px ${YUTA_DOMAIN.blood}55`,
+            }}
+            initial={{ opacity: 0, rotate: 0, scale: 0.3 }}
+            animate={reduced
+              ? { opacity: 0.7, rotate: c.dir * 20, scale: 1 }
+              : { opacity: [0, 0.95, 0.72], rotate: c.dir * 220, scale: [0.3, 1.02, 1] }}
+            transition={{ duration: reduced ? 0 : c.dur, ease: 'linear' }}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -410,11 +421,16 @@ export function YutaBurst({ fx, kind }) {
           className="fixed z-[130] pointer-events-none overflow-hidden"
           style={{ left: rect.x, top: rect.y, width: rect.w, height: rect.h, borderRadius: 2 }}
         >
-          {tech === 'katana' && <KatanaSlash seed={seed} reduced={reduced} rect={rect} />}
+          {tech === 'katana' && (
+            <>
+              <KatanaSlash seed={seed} reduced={reduced} rect={rect} />
+              <RippleRings color={YUTA_DOMAIN.steel} rings={yutaRipples(seed, 3)} dur={0.7} reduced={reduced} rect={rect} />
+            </>
+          )}
 
           {tech === 'ripples' && (
             <>
-              <RippleRings color={style?.color || YUTA_DOMAIN.blood} rings={yutaRipples(seed)} dur={0.9} reduced={reduced} />
+              <RippleRings color={style?.color || YUTA_DOMAIN.blood} rings={yutaRipples(seed)} dur={0.9} reduced={reduced} rect={rect} />
               <Sparks seed={seed + 11} reduced={reduced} delay={0.14} scale={Math.min(rect.w, rect.h) / 70} color={style?.color} />
             </>
           )}
@@ -422,7 +438,7 @@ export function YutaBurst({ fx, kind }) {
           {tech === 'reversal' && (
             <>
               <ReversalCross reduced={reduced} rect={rect} />
-              <RippleRings color={style?.color || YUTA_DOMAIN.blood} rings={yutaRipples(seed, 3)} dur={0.8} reduced={reduced} />
+              <RippleRings color={style?.color || YUTA_DOMAIN.blood} rings={yutaRipples(seed, 3)} dur={0.8} reduced={reduced} rect={rect} />
               <Sparks seed={seed + 12} reduced={reduced} delay={0.12} scale={Math.min(rect.w, rect.h) / 72} color={style?.color} />
             </>
           )}
@@ -430,7 +446,7 @@ export function YutaBurst({ fx, kind }) {
           {tech === 'mimic' && (
             <>
               <MimicEcho reduced={reduced} rect={rect} />
-              <CopyRings seed={seed} reduced={reduced} />
+              <CopyRings seed={seed} reduced={reduced} rect={rect} />
               <Sparks seed={seed + 13} reduced={reduced} delay={0.18} scale={Math.min(rect.w, rect.h) / 68} color={style?.color} />
               <CrackLines seed={seed + 14} count={2} reduced={reduced} w={rect.w} h={rect.h} delay={0.22} />
             </>
@@ -444,8 +460,8 @@ export function YutaBurst({ fx, kind }) {
                   initial={{ opacity: 0 }} animate={{ opacity: [0, 0.5, 0] }}
                   transition={{ duration: 0.26, ease: 'linear' }} />
               )}
-              <RippleRings color={style?.color || YUTA_DOMAIN.blood} rings={yutaRipples(seed)} dur={1.2} reduced={reduced} />
-              <CopyRings seed={seed} reduced={reduced} />
+              <RippleRings color={style?.color || YUTA_DOMAIN.blood} rings={yutaRipples(seed)} dur={1.2} reduced={reduced} rect={rect} />
+              <CopyRings seed={seed} reduced={reduced} rect={rect} />
               <Sparks seed={seed + 15} reduced={reduced} delay={0.2} scale={Math.min(rect.w, rect.h) / 56} color={YUTA_DOMAIN.steel} />
               <Sparks seed={seed + 16} reduced={reduced} delay={0.26} scale={Math.min(rect.w, rect.h) / 70} color={YUTA_DOMAIN.blood} />
               <CrackLines seed={seed + 17} count={4} reduced={reduced} w={rect.w} h={rect.h} delay={0.24} />

@@ -316,3 +316,10 @@ export const yutaMotes = (seed = 1, count = 10) => {
     sway: r2(10 + rand() * 26),
   }));
 };
+
+// Diameter cincin (px) RELATIF ke kartu — bukan `vmin`.
+// ⚠️ Bug lama: cincin diukur `vmin` (skala layar) tapi dirender di dalam kotak kartu
+// yang di-clip → cincin lebih besar dari kartu → lingkarannya di luar area → TAK terlihat
+// (keluhan user "cincin ilang, gak ada yang juryoku"). Ukur relatif kartu supaya tampil.
+export const yutaRingDiameters = (base = 120, count = 4, startFrac = 0.6, stepFrac = 0.5) =>
+  Array.from({ length: Math.max(1, count) }, (_, i) => r2(base * (startFrac + i * stepFrac)));
