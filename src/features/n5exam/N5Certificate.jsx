@@ -135,8 +135,8 @@ export function N5Certificate({ record, username = '' }) {
       {/* Disclaimer kejujuran: ini fiktif, bukan sertifikat resmi JLPT */}
       <p className="text-[10px] text-sumi/40 font-bold uppercase tracking-widest text-center px-4">
         {id
-          ? '⚠ Sertifikat ini fiktif untuk dalam aplikasi — BUKAN sertifikat JLPT resmi.'
-          : '⚠ In-app fictional certificate — NOT an official JLPT certificate.'}
+          ? 'Catatan: Sertifikat ini fiktif untuk dalam aplikasi — BUKAN sertifikat JLPT resmi.'
+          : 'Note: In-app fictional certificate — NOT an official JLPT certificate.'}
       </p>
 
       <div className="flex justify-center">
@@ -144,7 +144,7 @@ export function N5Certificate({ record, username = '' }) {
           onClick={() => window.print()}
           className="px-6 py-3 border-[4px] border-sumi bg-ai text-kinari-light font-black uppercase tracking-[0.25em] text-xs shadow-[5px_5px_0_0_#1a1a1a] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[2px_2px_0_0_#1a1a1a] transition-all cursor-pointer"
         >
-          🖨 {id ? 'Cetak / Simpan PDF' : 'Print / Save PDF'}
+          {id ? 'Cetak / Simpan PDF' : 'Print / Save PDF'}
         </button>
       </div>
 

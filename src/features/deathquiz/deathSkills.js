@@ -24,7 +24,7 @@ export const DEATH_SKILLS = [
   {
     id: 'rikugan',
     kind: 'eliminate',
-    icon: '👁',
+    icon: 'eye',
     name: '六眼',
     name_en: 'Six Eyes',
     desc: 'Buang 2 opsi salah di soal ini',
@@ -33,7 +33,7 @@ export const DEATH_SKILLS = [
   {
     id: 'mugen',
     kind: 'time',
-    icon: '∞',
+    icon: 'infinity',
     name: '無下限',
     name_en: 'Infinity',
     desc: `Tambah ${DEATH_MUGEN_BONUS_S} detik waktu`,
@@ -42,7 +42,7 @@ export const DEATH_SKILLS = [
   {
     id: 'hanten',
     kind: 'life',
-    icon: '✚',
+    icon: 'heartPulse',
     name: '反転術式',
     name_en: 'Reverse Cursed Technique',
     desc: 'Pulihkan 1 nyawa (命)',

@@ -2,26 +2,26 @@
 // Misi Harian 日課 — logika MURNI (tanpa React, tanpa localStorage).
 // 3 misi reset tiap tengah malam WAKTU LOKAL. Progres dihitung dari aktivitas
 // nyata (jawaban benar + sesi kuis selesai) — TIDAK ada timer.
-// Reward: EXP (dihitung ProgressContext) + Medaru 🪙. Dites via `node --test`.
+// Reward: EXP (dihitung ProgressContext) + Medaru. Dites via `node --test`.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const SIDE_SOURCES = ['writing', 'speaking', 'review', 'poem'];
 
 export const QUEST_DEFS = [
   {
-    id: 'rajin_menjawab', emblem: '勤',
+    id: 'rajin_menjawab', emblem: 'target',
     name: 'Rajin Menjawab', name_en: 'Answer Grinder',
     desc: '20 jawaban benar hari ini', desc_en: '20 correct answers today',
     event: 'correct', target: 20, xp: 80, medaru: 40,
   },
   {
-    id: 'tuntas_sesi', emblem: '了',
+    id: 'tuntas_sesi', emblem: 'trophy',
     name: 'Tuntas Sesi', name_en: 'Session Cleared',
     desc: 'Selesaikan 2 sesi kuis', desc_en: 'Finish 2 quiz sessions',
     event: 'session', target: 2, xp: 120, medaru: 60,
   },
   {
-    id: 'jalan_samping', emblem: '道',
+    id: 'jalan_samping', emblem: 'compass',
     name: 'Jalan Samping', name_en: 'Side Path',
     desc: '1 sesi mode sampingan (Menulis/Bicara/Ulang/Puisi)',
     desc_en: '1 side-mode session (Writing/Speaking/Review/Poem)',
@@ -107,13 +107,13 @@ export const markClaimed = (quests, id, today = dateKey()) => {
 
 export const WEEKLY_QUEST_DEFS = [
   {
-    id: 'mingguan_tekun', emblem: '週',
+    id: 'mingguan_tekun', emblem: 'calendar',
     name: 'Tekun Seminggu', name_en: 'Weekly Grind',
     desc: '100 jawaban benar minggu ini', desc_en: '100 correct answers this week',
     event: 'correct', target: 100, xp: 400, medaru: 250,
   },
   {
-    id: 'mingguan_konsisten', emblem: '継',
+    id: 'mingguan_konsisten', emblem: 'refresh',
     name: 'Konsisten', name_en: 'Consistent',
     desc: '10 sesi kuis minggu ini', desc_en: '10 quiz sessions this week',
     event: 'session', target: 10, xp: 500, medaru: 300,

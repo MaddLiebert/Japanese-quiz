@@ -209,6 +209,12 @@ export function Review() {
   if (!isReviewing && globalWeakCharacters.length > 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen">
+        <button
+          onClick={() => navigate('/')}
+          className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group"
+        >
+          <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
+        </button>
         <header className="mb-8 sm:mb-12 border-b-[4px] border-sumi pb-6 sm:pb-8 relative">
           <div className="absolute top-0 right-0 w-32 h-32 bg-asanoha opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
           <h1 className="text-4xl sm:text-7xl font-serif font-black text-sumi tracking-tighter relative z-10 flex flex-wrap items-center gap-3 sm:gap-4">
@@ -267,17 +273,25 @@ export function Review() {
           <div className="text-xs sm:text-sm uppercase tracking-[0.3em] font-bold text-sumi/60">
             Reviewing <span className="text-shu text-lg sm:text-xl">{currentIndex + 1}</span> {language === 'id' ? 'dari' : 'of'} {sessionQueue.length}
           </div>
-          <button
-            onClick={() => {
-              endQuizSession();   // Keluar di tengah sesi → domain & bar padam
-              setIsReviewing(false);
-              setCurrentIndex(0);
-              setSessionQueue([]);
-            }}
-            className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40 hover:text-shu transition-colors"
-          >
-            {language === 'id' ? 'Akhiri Review' : 'End Review'}
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => {
+                endQuizSession();   // Keluar di tengah sesi → domain & bar padam
+                setIsReviewing(false);
+                setCurrentIndex(0);
+                setSessionQueue([]);
+              }}
+              className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40 hover:text-shu transition-colors"
+            >
+              {language === 'id' ? 'Akhiri Review' : 'End Review'}
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40 hover:text-shu transition-colors"
+            >
+              {language === 'id' ? 'Beranda' : 'Home'}
+            </button>
+          </div>
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-center relative z-10 pb-16">

@@ -163,6 +163,83 @@ html, body, div, header, main, section, footer, article, nav, aside, button, inp
   .badge-legendary::after { display: none; }
 }
 
+/* ── Popup mic: bar spektrum idle (belum ada sinyal) naik-turun, bukan cuma
+   kedip opacity — supaya panel tidak terlihat "mati" (tinggi bar yang bergerak). */
+@keyframes mic-idle {
+  0%, 100% { height: 18%; }
+  50%      { height: 72%; }
+}
+.mic-idle {
+  animation: mic-idle 900ms ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mic-idle { animation: none !important; }
+}
+
+/* ── Pangkat PUNCAK 将軍 (Shogun): perlakuan hero — aura emas 金 + kilau ──────
+   menyapu + cincin berputar + percikan ✦. Kelas `.rank-top` dipakai chip & seal
+   rank tertinggi (lihat features/progress/RankBadge.jsx). Rank bawah tetap
+   chip datar biasa → kontras "biasa vs puncak" makin terasa. */
+@keyframes rank-aura {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(169, 130, 28, 0); }
+  50%      { box-shadow: 0 0 22px 4px rgba(169, 130, 28, 0.55); }
+}
+@keyframes rank-rise {
+  0%   { transform: translateY(10px) scale(0.9); opacity: 0; }
+  60%  { transform: translateY(-2px) scale(1.03); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.rank-top {
+  position: relative;
+  border-color: var(--kin-val) !important;
+  color: var(--kin-val);
+  animation: rank-aura 2.6s ease-in-out infinite;
+}
+.rank-top::after {              /* kilau menyapu (reuse keyframe kin-shimmer) */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 244, 200, 0.85) 50%, transparent 65%);
+  background-size: 220% 100%;
+  animation: kin-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.rank-top .rank-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  border: 2px dashed var(--kin-val);
+  opacity: 0.55;
+  animation: kin-spin 8s linear infinite;
+  pointer-events: none;
+}
+.rank-spark {
+  position: absolute;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--kin-val);
+  animation: kin-spark 1.6s ease-in-out infinite;
+  pointer-events: none;
+  text-shadow: 0 0 6px rgba(232, 200, 96, 0.8);
+}
+.rank-seal-top { animation: rank-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+/* Seal puncak: gabungkan "muncul" (rank-rise) + aura emas berdenyut (rank-aura).
+   Tanpa ini, aturan .rank-seal-top menimpa .rank-top → aura puncak hilang. */
+.rank-top.rank-seal-top {
+  animation:
+    rank-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both,
+    rank-aura 2.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rank-top, .rank-top::after, .rank-top .rank-ring, .rank-spark, .rank-seal-top {
+    animation: none !important;
+  }
+  .rank-top.rank-seal-top { animation: none !important; }
+  .rank-top::after { display: none; }
+}
+
 /* Cetak sertifikat N5: hanya kartu sertifikat yang tercetak, rapi di A4. */
 @media print {
   body * { visibility: hidden !important; }

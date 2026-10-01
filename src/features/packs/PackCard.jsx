@@ -1,6 +1,7 @@
 import React from "react";
 import { PACK_RARITY } from "../packs/packs";
 import { packCardStyle, packCssVars, tierRank, accentInk } from "../packs/rarityStyle";
+import { Glyph } from "../../components/icons/Glyph";
 
 // Posisi 6 kilau (special) — deterministik, biar gak "random" tiap render.
 const SPARKS = [
@@ -16,7 +17,7 @@ export function PackCard({ pack, isActive, onToggle, isId }) {
   const desc = isId ? pack.desc : (pack.desc_en || pack.desc);
 
   // Emblem & judul makin besar makin tinggi tier (escalating).
-  const emblemCls = rank >= 4 ? 'text-6xl' : rank >= 3 ? 'text-5xl' : 'text-4xl';
+  const emblemSize = rank >= 4 ? 56 : rank >= 3 ? 44 : 36;
   const titleCls = rank >= 4 ? 'text-3xl' : rank >= 3 ? 'text-2xl' : 'text-xl';
 
   return (
@@ -51,8 +52,8 @@ export function PackCard({ pack, isActive, onToggle, isId }) {
 
       <div className="packcard-body flex flex-col flex-grow">
         <div className="flex items-start justify-between mb-4 gap-3">
-          <span className={`packcard-emblem font-serif font-black ${emblemCls}`} aria-hidden="true">
-            {palette.emblem}
+          <span className="packcard-emblem" aria-hidden="true">
+            <Glyph name={palette.emblem} size={emblemSize} strokeWidth={2} />
           </span>
           <span
             className="packcard-badge text-[10px] font-black uppercase tracking-[0.2em] px-2 py-1"
@@ -69,7 +70,7 @@ export function PackCard({ pack, isActive, onToggle, isId }) {
         <div className="h-[3px] w-12 mb-3" style={{ background: 'var(--accent)' }} aria-hidden="true" />
         <p className="text-sm font-bold mb-3 flex-grow opacity-90">{desc}</p>
         <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-4 opacity-60">
-          🎨 {pack.visual} · 🎙️ {pack.voice}
+          {pack.visual} · {pack.voice}
         </p>
 
         <button

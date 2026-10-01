@@ -154,8 +154,8 @@ export function Speaking() {
       {!supported && (
         <div className="mb-8 px-5 py-4 border-[3px] border-dashed border-shu/50 text-shu text-xs font-bold">
           {id
-            ? '⚠️ Browser ini tidak mendukung pengenalan suara (coba Chrome/Edge). Mode latihan mandiri aktif: tombol "Sudah Baca" — tanpa penilaian & XP.'
-            : '⚠️ This browser does not support speech recognition (try Chrome/Edge). Self-assess mode is active: "Read ✓" — no scoring & XP.'}
+            ? 'Browser ini tidak mendukung pengenalan suara (coba Chrome/Edge). Mode latihan mandiri aktif: tombol "Sudah Baca" — tanpa penilaian & XP.'
+            : 'This browser does not support speech recognition (try Chrome/Edge). Self-assess mode is active: "Read ✓" — no scoring & XP.'}
         </div>
       )}
 

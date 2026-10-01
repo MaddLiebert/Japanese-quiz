@@ -6,6 +6,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { useDeathQuizSession } from "./useDeathQuizSession";
 import { isDeathQuizUnlocked, DEATH_UNLOCK_XP, DEATH_XP_PENALTY, DEATH_START_LIVES, deathMedaruReward } from "./deathQuiz";
 import { DEATH_SKILLS, DEATH_METER_PER_CHARGE } from "./deathSkills";
+import { Glyph } from "../../components/icons/Glyph";
 
 // Kartu statistik kecil (nyawa/skor/waktu) — gaya neo-brutalist repo.
 function StatChip({ label, value, accent }) {
@@ -123,7 +124,7 @@ export function DeathQuizScreen() {
             Death Quiz
           </h1>
           <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/50 mb-8">
-            🔒 {id ? 'Rank Shogun' : 'Shogun Rank'}
+            {id ? 'Rank Shogun' : 'Shogun Rank'}
           </p>
 
           <p className="text-sm font-bold text-sumi/70 mb-8 leading-relaxed">
@@ -195,7 +196,7 @@ export function DeathQuizScreen() {
           </p>
           <p className="text-sm font-black text-sumi mb-8 leading-relaxed">
             {(runResult?.medaruGained ?? 0) > 0
-              ? (id ? `🪙 Kompensasi: +${runResult.medaruGained} Medaru` : `🪙 Compensation: +${runResult.medaruGained} Medaru`)
+              ? (id ? `Kompensasi: +${runResult.medaruGained} Medaru` : `Compensation: +${runResult.medaruGained} Medaru`)
               : (id ? 'Skor belum cukup untuk kompensasi Medaru (min. 5).' : 'Score too low for Medaru compensation (min. 5).')}
           </p>
 
@@ -227,7 +228,7 @@ export function DeathQuizScreen() {
           animate={{ scale: 1, opacity: 1 }}
           className="w-full max-w-lg border-[4px] border-shu bg-kinari-light shadow-[12px_12px_0_0_rgba(211,56,47,0.25)] p-8 sm:p-12 flex flex-col items-center text-center"
         >
-          <span className="text-6xl sm:text-7xl mb-4 select-none">🔌</span>
+          <span className="mb-4 text-shu"><Glyph name="plug" size={64} strokeWidth={1.8} /></span>
           <h1 className="text-2xl sm:text-3xl font-serif font-black text-shu mb-4">
             {id ? 'Nyawa Habis!' : 'No Lives Left!'}
           </h1>
@@ -242,7 +243,7 @@ export function DeathQuizScreen() {
               onClick={session.useJumper}
               className="flex-1 py-4 border-[4px] border-sumi font-black uppercase tracking-[0.15em] text-sm bg-ai text-kinari-light shadow-[6px_6px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_0_#1a1a1a] transition-all cursor-pointer"
             >
-              🔌 {id ? 'Pakai Kabel Jumper' : 'Use Jumper Cable'}
+              {id ? 'Pakai Kabel Jumper' : 'Use Jumper Cable'}
             </button>
             <button
               onClick={session.giveUp}
@@ -344,7 +345,7 @@ export function DeathQuizScreen() {
           {skillState?.combo > 1 && (
             <StatChip label={id ? '連撃' : 'Combo'} value={`×${skillState.combo}`} accent="!bg-shu/10 !border-shu" />
           )}
-          <StatChip label="🪙" value={`+${deathMedaruReward(score)}`} />
+          <StatChip label={<Glyph name="coin" size={12} />} value={`+${deathMedaruReward(score)}`} />
         </div>
         <div className="flex items-center gap-3">
           <CurseMeter meter={skillState?.meter || 0} charges={skillState?.charges || 0} id={id} />
@@ -374,7 +375,7 @@ export function DeathQuizScreen() {
                   : 'border-sumi bg-kinari text-sumi/30 opacity-50 cursor-not-allowed'
               }`}
             >
-              <span className="text-base leading-none">{sk.icon}</span>
+              <span className="leading-none"><Glyph name={sk.icon} size={16} /></span>
               <span>{id ? sk.name : sk.name_en}</span>
             </button>
           );

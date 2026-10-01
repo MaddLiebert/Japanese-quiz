@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useUserStats } from '../progress/ProgressContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { questBoard, weekBoard, dateKey, weekKey } from './quests';
+import { Glyph } from "../../components/icons/Glyph";
 
 // Satu kartu misi — dipakai bersama oleh tier Harian & Mingguan.
 // accent: 'ai' (biru, harian) | 'shu' (merah, mingguan).
@@ -16,8 +17,8 @@ function QuestCard({ q, id, accent, onClaim }) {
   return (
     <div className="border-[3px] border-sumi bg-kinari p-4 shadow-[4px_4px_0_0_#1a1a1a] flex flex-col gap-3">
       <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 border-[3px] border-sumi flex items-center justify-center font-serif text-lg font-black shrink-0 ${accent === 'shu' ? 'bg-shu/10 text-shu' : 'text-sumi'}`}>
-          {q.emblem}
+        <div className={`w-10 h-10 border-[3px] border-sumi flex items-center justify-center shrink-0 ${accent === 'shu' ? 'bg-shu/10 text-shu' : 'text-sumi'}`}>
+          <Glyph name={q.emblem} size={20} />
         </div>
         <div className="min-w-0">
           <h4 className="text-sm font-serif font-black text-sumi truncate">{id ? q.name : q.name_en}</h4>
@@ -31,7 +32,7 @@ function QuestCard({ q, id, accent, onClaim }) {
 
       <div className="flex items-center justify-between">
         <span className="text-[11px] font-black text-sumi/60">{q.current}/{q.target}</span>
-        <span className="text-[10px] font-black text-sumi/60">+{q.xp} EXP · +{q.medaru} 🪙</span>
+        <span className="text-[10px] font-black text-sumi/60">+{q.xp} EXP · +{q.medaru} <Glyph name="coin" className="ml-0.5" /></span>
       </div>
 
       {q.claimed ? (
@@ -73,15 +74,15 @@ function ClaimToast({ toast, id }) {
               toast.accent === 'shu' ? 'border-l-shu' : 'border-l-ai'
             }`}
           >
-            <span className="text-2xl" aria-hidden="true">🎉</span>
+            <Glyph name="celebrate" className="text-2xl" />
             <div>
               <p className="text-[9px] uppercase tracking-[0.25em] font-black text-sumi/45">
                 {id ? 'Klaim Berhasil' : 'Claimed'}
               </p>
               <p className="text-sm font-serif font-black text-sumi leading-tight">
-                {toast.emblem} {toast.name}
+                <Glyph name={toast.emblem} className="mr-1" />{toast.name}
               </p>
-              <p className="text-xs font-black text-sumi/70">+{toast.xp} EXP · +{toast.medaru} 🪙</p>
+              <p className="text-xs font-black text-sumi/70">+{toast.xp} EXP · +{toast.medaru} <Glyph name="coin" className="ml-0.5" /></p>
             </div>
           </motion.div>
         )}

@@ -24,6 +24,7 @@ import { getVoice } from "./features/audio/voices";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { TutorialButton } from "./features/tutorial/TutorialButton";
+import { Glyph } from "./components/icons/Glyph";
 
 // Floating top controls (Shop + Backpack + Profile + Theme) — shown on every page.
 // Digabung jadi SATU bar menyatu (border & shadow tunggal) supaya hemat tempat,
@@ -48,7 +49,7 @@ function TopControls() {
         title={language === 'id' ? 'Warung Kakek' : "Grandpa's Shop"}
         aria-label={language === 'id' ? 'Warung Kakek' : "Grandpa's Shop"}
       >
-        <span className="text-xs">🏪</span>
+        <Glyph name="shop" className="text-sm" />
         <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()}</span>
       </button>
 
@@ -61,7 +62,7 @@ function TopControls() {
         title={language === 'id' ? 'Tas Punggung' : 'Backpack'}
         aria-label={language === 'id' ? 'Tas Punggung' : 'Backpack'}
       >
-        <span className="text-xs">🎒</span>
+        <Glyph name="backpack" className="text-sm" />
       </button>
 
       {divider}
@@ -73,7 +74,7 @@ function TopControls() {
         title={language === 'id' ? 'Profil Pemain' : 'Player Profile'}
         aria-label={language === 'id' ? 'Profil Pemain' : 'Player Profile'}
       >
-        <span className="text-xs">👺</span>
+        <Glyph name="mask" className="text-sm" />
       </button>
 
       {divider}
@@ -85,7 +86,7 @@ function TopControls() {
         title={theme === 'dark' ? 'Ganti ke Mode Terang / Light Mode' : 'Ganti ke Mode Gelap / Dark Mode'}
         aria-label={theme === 'dark' ? 'Light mode' : 'Dark mode'}
       >
-        <span className="text-xs">{theme === 'dark' ? '☀️' : '🌙'}</span>
+        <Glyph name={theme === 'dark' ? 'sun' : 'moon'} className="text-sm" />
       </button>
     </div>
   );

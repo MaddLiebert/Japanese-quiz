@@ -1,3 +1,4 @@
+import { Glyph } from "../components/icons/Glyph";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { useUserStats } from "../features/progress/ProgressContext";
@@ -88,7 +89,7 @@ export function Settings() {
                         : 'bg-kinari-light text-sumi/70 hover:text-sumi'
                     }`}
                   >
-                    <span>☀️</span> {language === 'id' ? 'Terang' : 'Light'}
+                    <Glyph name="sun" /> {language === 'id' ? 'Terang' : 'Light'}
                   </button>
                   <button
                     type="button"
@@ -99,7 +100,7 @@ export function Settings() {
                         : 'bg-kinari-light text-sumi/70 hover:text-sumi'
                     }`}
                   >
-                    <span>🌙</span> {language === 'id' ? 'Gelap' : 'Dark'}
+                    <Glyph name="moon" /> {language === 'id' ? 'Gelap' : 'Dark'}
                   </button>
                 </div>
               </div>
@@ -126,7 +127,7 @@ export function Settings() {
                         : 'bg-kinari-light text-sumi/70 hover:text-sumi'
                     }`}
                   >
-                    <span>🇮🇩</span> Indonesia
+                    <Glyph name="languages" /> Indonesia
                   </button>
                   <button
                     type="button"
@@ -137,7 +138,7 @@ export function Settings() {
                         : 'bg-kinari-light text-sumi/70 hover:text-sumi'
                     }`}
                   >
-                    <span>🇬🇧</span> English
+                    <Glyph name="languages" /> English
                   </button>
                 </div>
               </div>

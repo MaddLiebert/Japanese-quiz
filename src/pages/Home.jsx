@@ -9,6 +9,8 @@ import { countMasteredKanji, isN5ExamUnlocked, N5_EXAM_MIN_MASTERED_KANJI } from
 import { DailyQuestPanel } from "../features/quests/DailyQuestPanel";
 
 import { StreakIndicator } from "../components/StreakIndicator";
+import { RankBadge } from "../features/progress/RankBadge";
+import { Glyph } from "../components/icons/Glyph";
 import { isLegendary, badgeCircleClass } from "../features/progress/badgeSeal";
 import { LegendaryDecor } from "../features/progress/BadgeDecor";
 // Hanko Stamp component — reused for level and achievements
@@ -128,7 +130,7 @@ export function Home() {
       {/* Greeting */}
       {username && (
         <div className="text-xs uppercase tracking-widest font-bold text-sumi/60 mb-4">
-          Okaeri, {username} 🎌
+          Okaeri, {username}
         </div>
       )}
 
@@ -204,14 +206,12 @@ export function Home() {
               </div>
             </div>
 
-            <div className="mt-4 text-center">
-              <div className="text-sm uppercase tracking-[0.3em] font-bold text-sumi border-b-[2px] border-sumi pb-1 mb-2 inline-block">
-                {getRank(progress.xp)}
-              </div>
-              <p className="text-xs text-sumi/60 uppercase tracking-widest font-bold">
-                {progress.xp.toLocaleString()} {language === 'id' ? 'Total XP' : 'Total XP'}
-              </p>
+            <div className="mt-5">
+              <RankBadge xp={progress.xp} variant="hero" showProgress />
             </div>
+            <p className="text-xs text-sumi/60 uppercase tracking-widest font-bold mt-3">
+              {progress.xp.toLocaleString()} {language === 'id' ? 'Total XP' : 'Total XP'}
+            </p>
           </div>
         </header>
 
@@ -379,12 +379,12 @@ export function Home() {
                 <div className="flex flex-col gap-2 relative z-10">
                   <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${deathUnlocked ? 'text-sumi group-hover:text-shu' : 'text-sumi/60'}`}>
                     Death Quiz
-                    {!deathUnlocked && <span className="text-xs font-sans">🔒</span>}
+                    {!deathUnlocked && <Glyph name="lock" className="text-xs" />}
                   </h4>
                   <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
                     {deathUnlocked
                       ? (language === 'id' ? 'Endless · Pertaruhan XP' : 'Endless · XP at Stake')
-                      : (language === 'id' ? '🔒 Rank Shogun' : '🔒 Shogun Rank')}
+                      : (language === 'id' ? 'Rank Shogun' : 'Shogun Rank')}
                   </p>
                 </div>
                 <div className={`w-14 h-14 rounded-full border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${deathUnlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
@@ -398,14 +398,14 @@ export function Home() {
                 <div className="flex flex-col gap-2 relative z-10">
                   <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${n5Unlocked ? 'text-sumi group-hover:text-shu' : 'text-sumi/60'}`}>
                     {language === 'id' ? 'Ujian N5' : 'N5 Exam'} 模擬試験
-                    {!n5Unlocked && <span className="text-xs font-sans">🔒</span>}
+                    {!n5Unlocked && <Glyph name="lock" className="text-xs" />}
                   </h4>
                   <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
                     {n5Unlocked
                       ? (language === 'id' ? 'Tiruan JLPT N5 · 3 Seksi · 90 Menit' : 'JLPT N5 Mock · 3 Sections · 90 Min')
                       : (language === 'id'
-                        ? `🔒 Shogun + ${N5_EXAM_MIN_MASTERED_KANJI} Kanji (${masteredKanji}/${N5_EXAM_MIN_MASTERED_KANJI})`
-                        : `🔒 Shogun + ${N5_EXAM_MIN_MASTERED_KANJI} Kanji (${masteredKanji}/${N5_EXAM_MIN_MASTERED_KANJI})`)}
+                        ? `Shogun + ${N5_EXAM_MIN_MASTERED_KANJI} Kanji (${masteredKanji}/${N5_EXAM_MIN_MASTERED_KANJI})`
+                        : `Shogun + ${N5_EXAM_MIN_MASTERED_KANJI} Kanji (${masteredKanji}/${N5_EXAM_MIN_MASTERED_KANJI})`)}
                   </p>
                 </div>
                 <div className={`w-14 h-14 rounded-full border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${n5Unlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>

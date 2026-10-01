@@ -1,3 +1,4 @@
+import { Glyph } from "../../components/icons/Glyph";
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
@@ -71,7 +72,7 @@ export function TutorialButton() {
                     {id ? 'Saku chann · Panduan' : 'Saku chann · Guide'}
                   </p>
                   <h3 className="text-sm font-serif font-black text-sumi truncate">
-                    {topic.emblem} {id ? topic.title : topic.title_en}
+                    <Glyph name={topic.emblem} className="mr-1.5" />{id ? topic.title : topic.title_en}
                   </h3>
                 </div>
                 <button

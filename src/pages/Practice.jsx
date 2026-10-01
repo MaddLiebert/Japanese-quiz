@@ -1,3 +1,4 @@
+import { Glyph } from "../components/icons/Glyph";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
@@ -467,7 +468,7 @@ export function Practice() {
               <div className="flex items-center gap-4">
                 {difficulty === 'Hard' && timeLeft !== null && (
                   <span className={`text-xs font-bold tracking-widest uppercase ${domainOn ? 'text-ai' : 'text-shu'}`}>
-                    {domainOn ? '❄ ' : ''}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+                    {domainOn && <Glyph name="snowflake" className="mr-1 text-ai" />}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
                   </span>
                 )}
                 <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">
@@ -664,7 +665,7 @@ export function Practice() {
               <div className="flex items-center gap-4">
                 {difficulty === 'Hard' && timeLeft !== null && (
                   <span className={`text-xs font-bold tracking-widest uppercase ${domainOn ? 'text-ai' : 'text-shu'}`}>
-                    {domainOn ? '❄ ' : ''}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+                    {domainOn && <Glyph name="snowflake" className="mr-1 text-ai" />}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
                   </span>
                 )}
                 <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">

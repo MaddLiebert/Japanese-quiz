@@ -1,3 +1,4 @@
+import { Glyph } from "../../components/icons/Glyph";
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { Volume2, Mic, SkipForward, Check } from 'lucide-react';
@@ -96,7 +97,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
   if (!item) {
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-8 py-16 min-h-screen flex flex-col items-center justify-center text-center">
-        <div className="text-6xl mb-6">🎉</div>
+        <div className="mb-6 flex justify-center text-shu"><Glyph name="celebrate" size={64} strokeWidth={1.8} /></div>
         <h2 className="text-3xl sm:text-4xl font-serif font-black text-sumi mb-3">
           {id ? 'Sesi selesai!' : 'Session complete!'}
         </h2>
@@ -141,7 +142,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
         {/* Ukuran font dihitung dari teks yang BENAR-BENAR tampil: mode Buta hanya
             menampilkan 🎧/？, jadi jangan pakai ukuran teks panjang yang tersembunyi. */}
         <div className={`font-serif font-black text-sumi leading-none mb-6 select-none text-center break-words ${SPEAK_TEXT_CLASS[speakTextSize(lv.showText ? item.display : '？')]}`}>
-          {lv.showText ? item.display : (audioPrompt ? '🎧' : '？')}
+          {lv.showText ? item.display : (audioPrompt ? <Glyph name="headphones" size={48} /> : '？')}
         </div>
         {lv.showReading && readingText && (
           <p className="text-sm font-bold text-sumi/60 mb-2">{readingText}</p>

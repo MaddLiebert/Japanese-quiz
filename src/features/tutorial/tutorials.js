@@ -11,19 +11,19 @@
 export const TUTORIALS = [
   {
     key: 'home',
-    emblem: '🏠',
+    emblem: 'house',
     title: 'Mulai dari Mana?',
     title_en: 'Where to Start?',
     paths: ['/'],
     lines: [
       { text: 'Halo! Aku Saku, teman belajar bahasa Jepang kamu. Di sini kamu bisa mulai dari nol, pelan-pelan aja.', text_en: "Hi! I'm Saku, your Japanese study buddy. You can start from zero here — no rush." },
       { text: 'Baru pertama kali? Mulai dari "Kuis Latihan" dulu, lalu "Latihan Menulis" biar hafal hurufnya.', text_en: 'Brand new? Start with "Practice Quiz", then "Writing Practice" to memorize the characters.' },
-      { text: 'Jangan lupa cek Misi Harian di bawah — selesaikan misinya, dapat EXP sama medaru 🪙.', text_en: "Check the Daily Quests below — complete them to earn EXP and coins 🪙." },
+      { text: 'Jangan lupa cek Misi Harian di bawah — selesaikan misinya, dapat EXP sama medaru.', text_en: "Check the Daily Quests below — complete them to earn EXP and coins." },
     ],
   },
   {
     key: 'learn',
-    emblem: '📖',
+    emblem: 'book',
     title: 'Belajar Huruf & Kata',
     title_en: 'Learn Characters & Words',
     paths: ['/learn'],
@@ -34,7 +34,7 @@ export const TUTORIALS = [
   },
   {
     key: 'practice',
-    emblem: '✏️',
+    emblem: 'pencil',
     title: 'Kuis Latihan',
     title_en: 'Practice Quiz',
     paths: ['/practice'],
@@ -45,7 +45,7 @@ export const TUTORIALS = [
   },
   {
     key: 'writing',
-    emblem: '🖌️',
+    emblem: 'brush',
     title: 'Latihan Menulis',
     title_en: 'Writing Practice',
     paths: ['/writing'],
@@ -56,7 +56,7 @@ export const TUTORIALS = [
   },
   {
     key: 'speaking',
-    emblem: '🎤',
+    emblem: 'mic',
     title: 'Latihan Bicara',
     title_en: 'Speaking Practice',
     paths: ['/speaking'],
@@ -68,7 +68,7 @@ export const TUTORIALS = [
   },
   {
     key: 'mondai',
-    emblem: '🎧',
+    emblem: 'headphones',
     title: 'Mondai (Listening)',
     title_en: 'Mondai (Listening)',
     paths: ['/mondai'],
@@ -79,7 +79,7 @@ export const TUTORIALS = [
   },
   {
     key: 'review',
-    emblem: '🔁',
+    emblem: 'refresh',
     title: 'Ulang Soal Lemah',
     title_en: 'Review Weak Items',
     paths: ['/review'],
@@ -90,19 +90,19 @@ export const TUTORIALS = [
   },
   {
     key: 'shop',
-    emblem: '🏪',
+    emblem: 'shop',
     title: 'Warung & Gacha',
     title_en: 'Shop & Gacha',
     paths: ['/shop'],
     lines: [
-      { text: 'Ini tempat belanja pakai medaru 🪙. Ada barang konsumsi dan gacha pack suara karakter.', text_en: 'This is where you spend coins 🪙. There are consumable items and gacha voice packs.' },
+      { text: 'Ini tempat belanja pakai medaru. Ada barang konsumsi dan gacha pack suara karakter.', text_en: 'This is where you spend coins. There are consumable items and gacha voice packs.' },
       { text: 'Gacha buat dapetin pack suara. Kalau dapet yang udah punya, kamu balik 50 medaru.', text_en: 'Gacha gets you voice packs. Get a duplicate and you get 50 coins back.' },
       { text: 'Kumpulin medaru dari jawaban bener, misi harian, dan Death Quiz ya!', text_en: 'Earn coins from correct answers, daily quests, and Death Quiz!' },
     ],
   },
   {
     key: 'inventory',
-    emblem: '🎒',
+    emblem: 'backpack',
     title: 'Tas Punggung',
     title_en: 'Backpack',
     paths: ['/inventory'],
@@ -113,7 +113,7 @@ export const TUTORIALS = [
   },
   {
     key: 'death-quiz',
-    emblem: '💀',
+    emblem: 'skull',
     title: 'Death Quiz 死闘',
     title_en: 'Death Quiz',
     paths: ['/death-quiz'],
@@ -126,7 +126,7 @@ export const TUTORIALS = [
   },
   {
     key: 'n5-exam',
-    emblem: '📜',
+    emblem: 'scroll',
     title: 'Ujian N5 模擬試験',
     title_en: 'N5 Exam',
     paths: ['/n5-exam'],
@@ -138,7 +138,7 @@ export const TUTORIALS = [
   },
   {
     key: 'settings',
-    emblem: '⚙️',
+    emblem: 'settings',
     title: 'Pengaturan',
     title_en: 'Settings',
     paths: ['/settings'],
@@ -149,7 +149,7 @@ export const TUTORIALS = [
   },
   {
     key: 'profile',
-    emblem: '👺',
+    emblem: 'mask',
     title: 'Profil & Cap',
     title_en: 'Profile & Stamps',
     paths: ['/profile'],

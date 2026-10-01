@@ -7,35 +7,30 @@
 // parent (motion.div di session).
 //
 // SPECTRUM (penting): tinggi bar HARUS mengikuti suara, bukan sekadar kedip
-// opacity. Dua jalur aman:
-//   1) Desktop  → meter REAL (getUserMedia + AnalyserNode) lewat useMicLevel.
-//      Chrome desktop aman membuka stream kedua paralel SpeechRecognition.
-//   2) HP       → JANGAN buka stream kedua (Android/iOS: rebutan mic → ucapan
-//      tak terdeteksi, bug lama). Pakai `level` dari event onlevel VAD
-//      SpeechRecognition sendiri → bar sintetis (synthBars) yang tetap naik-turun.
-// Kalau keduanya belum ada sinyal (izin ditolak / engine bisu), bar jatuh ke
-// animasi CSS kecil supaya panel tidak terlihat mati.
+// opacity. Satu jalur aman untuk SEMUA perangkat: `level` dari event onlevel VAD
+// SpeechRecognition sendiri (+ lonjakan tiap hasil interim) → bar sintetis
+// (synthBars) yang naik-turun. TIDAK PERNAH membuka stream getUserMedia kedua —
+// stream kedua pernah merebut mikrofon dari SpeechRecognition → ucapan tak
+// terdeteksi (bug lama, juga di HP mode desktop / laptop sentuh).
+// Kalau belum ada sinyal (izin ditolak / engine bisu), bar jatuh ke animasi CSS
+// `mic-idle` (tinggi naik-turun, bukan cuma opacity) supaya panel tidak mati.
 import { Mic } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { MIC_BAR_COUNT, displayHeights, synthBars } from './micSpectrum';
-import { isMobileDevice } from './useSpeechRecognition';
-import { useMicLevel } from './useMicLevel';
 import { useLanguage } from '../../context/LanguageContext';
 
 export function MicOverlay({ open = false, interim = '', level = 0, onCancel }) {
   const { language } = useLanguage();
   const id = language === 'id';
 
-  // Hook harus dipanggil tanpa syarat (aturan React) — `active` yang digerbangi.
-  const meterAllowed = !isMobileDevice();
-  const realBars = useMicLevel({ active: open && meterAllowed });
-
   if (!open) return null;
 
-  // Bar aktif: meter real (desktop) atau bar sintetis dari level VAD (HP).
-  const live = Array.isArray(realBars);
+  // Bar aktivitas dari level VAD SpeechRecognition sendiri (TANPA getUserMedia).
+  // Stream mikrofon KEDUA pernah merebut mic dari SpeechRecognition → ucapan
+  // tidak terdeteksi; jalur meter real dihapus TOTAL supaya bug itu tak kembali
+  // di perangkat apa pun (termasuk HP mode desktop / laptop sentuh).
   const lvl = Math.max(0, Math.min(1, Number(level) || 0));
-  const source = live ? realBars : (lvl > 0.01 ? synthBars(lvl) : null);
+  const source = lvl > 0.01 ? synthBars(lvl) : null;
   const heights = source ? displayHeights(source, 8) : null;
   const pulsing = !heights;                      // belum ada sinyal → animasi idle
 
@@ -75,7 +70,7 @@ export function MicOverlay({ open = false, interim = '', level = 0, onCancel }) 
           {(heights || new Array(MIC_BAR_COUNT).fill(28)).map((h, i) => (
             <span
               key={i}
-              className={`w-1.5 bg-shu ${pulsing ? 'animate-pulse' : ''}`}
+              className={`w-1.5 bg-shu ${pulsing ? 'mic-idle' : ''}`}
               style={{
                 height: `${h}%`,
                 ...(pulsing ? { animationDelay: `${i * 90}ms` } : { transition: 'height 90ms linear' }),
