@@ -85,7 +85,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
       return;
     }
     const xp = speakXpFor(item, level);
-    recordAnswer(item.id, true, xp);
+    recordAnswer(item.id, true, xp, 'speaking');
     triggerEffect('correct');
     unlockAchievement?.('first_voice');
     setTotalXp((t) => t + xp);
