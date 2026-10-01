@@ -120,6 +120,8 @@ export const TUTORIALS = [
     lines: [
       { text: 'Hati-hati! Di Death Quiz, XP kamu bisa berkurang kalau salah. Tapi hadiah medarunya gede.', text_en: 'Careful! In Death Quiz you can lose XP. But the coin rewards are big.' },
       { text: 'Kamu punya beberapa nyawa. Kalau habis, sesinya berakhir dan XP kamu kepotong.', text_en: 'You have several lives. Run out and the run ends and you lose some XP.' },
+      { text: 'Jawab bener beruntun buat ngisi meter 呪力. Penuh = 1 charge buat pakai skill (六眼/無下限/反転術式).', text_en: 'Answer correctly in a row to fill the 呪力 meter. Full = 1 charge to cast a skill (Six Eyes/Infinity/Reverse Cursed Technique).' },
+      { text: 'Charge gak hangus walau kamu salah — jadi santai, simpan buat saat kritis!', text_en: 'Charges are NOT lost when you answer wrong — save them for a critical moment!' },
     ],
   },
   {
