@@ -159,7 +159,7 @@ export function YutaKatanaPicker({ katanas = [], onPick, onCancel }) {
   return (
     <motion.div
       data-yuta-picker
-      className="fixed inset-0 z-[140] flex flex-col items-center justify-center gap-4 bg-[rgba(11,5,8,0.72)] px-4"
+      className="pointer-events-auto fixed inset-0 z-[140] flex flex-col items-center justify-center gap-4 bg-[rgba(11,5,8,0.72)] px-4"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: reduced ? 0 : 0.24 }}
     >
