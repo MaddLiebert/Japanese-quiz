@@ -23,6 +23,7 @@ import { preloadYujiGifs } from "./features/effects/yujiGifs";
 import { getVoice } from "./features/audio/voices";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import { TutorialButton } from "./features/tutorial/TutorialButton";
 
 // Floating top controls (Shop + Backpack + Profile + Theme) — shown on every page.
 // Digabung jadi SATU bar menyatu (border & shadow tunggal) supaya hemat tempat,
@@ -137,6 +138,9 @@ function App() {
 
               {/* Global Top Controls */}
               <TopControls />
+
+              {/* Tombol Tutorial 指南 (mengapung kanan-bawah, context-aware) */}
+              <TutorialButton />
 
               <main className="relative z-10 w-full h-full">
                 <Routes>
