@@ -49,7 +49,7 @@ import {
   tojiTechniqueFor, tojiCurseCharge, TOJI_ULT_THRESHOLD,
   tojiAnswerHoldMs, tojiUltHoldMs,
   tojiUltOutcome, tojiCutOptions, tojiStateLeft as tojiStateLeftMs,
-  TOJI_STATE_S, TOJI_KILL_HOLD_MS,
+  TOJI_STATE_S, TOJI_KILL_HOLD_MS, tojiStateStartAmmo,
 } from './tojiFx';
 import {
   playMegumiTechnique, playMegumiTechniqueLayers, playShadowSwallow,
@@ -1543,10 +1543,11 @@ export function EffectProvider({ children }) {
     return undefined;
   }, [activeVisual]);
 
-  // ── Cast 天与呪縛・全開 (tap bar Toji) — cinematic 4,54 dtk (sinkron cast.mp3
+  // ── Cast 天与呪縛・全開 (tap bar Toji) — cinematic 2,78 dtk (sinkron cast.mp3
   // TERUKUR) → state 30 dtk. Timer JALAN mulai SETELAH cinematic settle supaya
-  // waktu main penuh (pola Nanami/Megumi). Amunisi mulai 0 (kerja dari nol);
-  // mekanik 武器庫・一撃離脱 jalan di triggerToji.
+  // waktu main penuh (pola Nanami/Megumi). Opsi A: state mulai dengan amunisi
+  // SIAP (tojiStateStartAmmo) — ult langsung bergigi; mekanik 武器庫・一撃離脱
+  // jalan di triggerToji.
   const castTojiUlt = useCallback(() => {
     if (activeVisual !== 'toji') return;
     streakRef.current = 0;
@@ -1554,6 +1555,10 @@ export function EffectProvider({ children }) {
     setTojiCharge(0);
     setTojiCasting(true);
     setTojiUltSeed((n) => n + 1);
+    // Opsi A: state 全開 mulai dengan amunisi SIAP (tojiStateStartAmmo) —
+    // ult langsung bergigi, bukan kerja dari nol. Di-set saat state hidup
+    // (di bawah), bukan di sini, supaya rail tidak menampilkan amunisi
+    // selama cinematic.
     tojiAmmoRef.current = 0;
     setTojiAmmo(0);
     setTojiKillCutIds([]); setTojiKillForId(null);
@@ -1569,6 +1574,10 @@ export function EffectProvider({ children }) {
       setTojiCasting(false);
       tojiStateRef.current = true;
       setTojiStateOn(true);
+      // Opsi A: amunisi awal — 術師殺し langsung bisa dipakai sejak detik 1.
+      const startAmmo = tojiStateStartAmmo();
+      tojiAmmoRef.current = startAmmo;
+      setTojiAmmo(startAmmo);
       playTojiStateStart();
       playDomainBoom('cast');
     }, tojiUltHoldMs());

@@ -648,8 +648,8 @@ export function DevPanel() {
           </p>
           <p className="text-[11px] text-sumi/50 font-semibold mb-4 leading-relaxed">
             {id
-              ? "Satu klik = satu jawaban benar di streak target. Pack Toji otomatis diaktifkan bila perlu. Non-momen = ROTASI 釈魂刀 #1 / 万里ノ鎖 #2 … Momen: 天逆鉾 #10 / 遊雲 #20 / 武器庫呪霊 #30+. Cast 天与呪縛・全開 = cinematic 2,78 dtk (sync cast.mp3) lalu state 30 dtk (T3)."
-              : "One click = one correct answer at the target streak. Toji pack is equipped automatically if needed. Non-moments ROTATE Shakkontou #1 / Banri no Kusari #2 … Moments: Amanosakahoko #10 / Yuuyun #20 / Bukiko Jurei #30+. Cast Heavenly Restriction: Full Release = 2.78s cinematic (cast.mp3-synced) then 30s state (T3)."}
+              ? "Satu klik = satu jawaban benar di streak target. Pack Toji otomatis diaktifkan bila perlu. Non-momen = ROTASI 釈魂刀 #1 / 万里ノ鎖 #2 … Momen: 天逆鉾 #10 / 遊雲 #20 / 武器庫呪霊 #30+. Cast 天与呪縛・全開 = cinematic 2,78 dtk (sync cast.mp3) lalu state 30 dtk (T3) — mulai dengan 武器 ×2 (Opsi A): salah saat state membunuh soal (術師殺し)."
+              : "One click = one correct answer at the target streak. Toji pack is equipped automatically if needed. Non-moments ROTATE Shakkontou #1 / Banri no Kusari #2 … Moments: Amanosakahoko #10 / Yuuyun #20 / Bukiko Jurei #30+. Cast Heavenly Restriction: Full Release = 2.78s cinematic (cast.mp3-synced) then 30s state (T3) — starts with 武器 ×2 (Option A): a wrong answer during the state kills the question (術師殺し)."}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             <button type="button" onClick={() => previewToji(1)} className={`${btn} bg-[#cbd5e1] text-sumi`}>
