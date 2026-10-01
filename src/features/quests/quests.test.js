@@ -57,7 +57,6 @@ test('questProgress + canClaim: selesai tapi belum diklaim → boleh klaim', () 
 });
 
 test('markClaimed: sekali saja; id ganda diabaikan; sudah klaim → tak bisa klaim lagi', () => {
-  const def = questDef('tuntas_sesi');
   let q = emptyQuests('2026-10-01');
   q = bumpEvent(bumpEvent(q, 'session', '2026-10-01'), 'session', '2026-10-01');
   const q1 = markClaimed(q, 'tuntas_sesi', '2026-10-01');
