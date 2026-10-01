@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { Volume2, Mic, SkipForward, Check } from 'lucide-react';
 import { useSpeechRecognition } from './useSpeechRecognition';
+import { appendSpeechEvent } from './speechLog';
 import { MicOverlay } from './MicOverlay';
 import { matchSpeech, verdictOf } from './speechMatch';
 import { speakXpFor, speakLevel, speakPromptKind, speakTextSize, DEFAULT_SPEAK_LEVEL } from './speaking';
@@ -37,7 +38,7 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
   const { recordAnswer } = useItemProgress();
   const { unlockAchievement } = useAchievements();
   const { triggerEffect } = useEffectLayer();
-  const { listenOnce, listening, interim, level: micLevel, error, clearError, cancel, supported } = useSpeechRecognition();
+  const { listenOnce, listening, interim, level: micLevel, error, clearError, cancel, supported } = useSpeechRecognition({ onEvent: appendSpeechEvent });
   const lv = speakLevel(level);
   const selfAssess = !supported;   // mode mandiri: tanpa penilaian, tanpa XP
 

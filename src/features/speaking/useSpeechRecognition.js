@@ -34,7 +34,7 @@ export const resolveUtterances = (finals, interim) => {
   return interim ? [interim] : [];
 };
 
-export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
+export function useSpeechRecognition({ lang = 'ja-JP', onEvent } = {}) {
   const [listening, setListening] = useState(false);
   const [interim, setInterim] = useState('');
   const [error, setError] = useState(null);
@@ -45,6 +45,13 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
   const [level, setLevel] = useState(0);
   const recRef = useRef(null);
   const settleRef = useRef(null);   // finish() sesi aktif (untuk tombol Batal)
+  // Callback observasi event ASR (untuk panel diagnosa). Disimpan di ref supaya
+  // tak memicu re-render / mengubah dependency listenOnce.
+  const onEventRef = useRef(onEvent);
+  useEffect(() => { onEventRef.current = onEvent; }, [onEvent]);
+  const emit = useCallback((ev) => {
+    try { onEventRef.current?.(ev); } catch { /* noop */ }
+  }, []);
 
   // Peluruhan level: turun ~18% tiap 120ms → bar jatuh mulus saat user berhenti.
   useEffect(() => {
@@ -128,12 +135,13 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
           }
         }
       } catch { /* noop */ }
-      if (finals.length) { finish(finals); return; }
-      if (partial) { lastInterim = partial; setInterim(partial); setLevel((v) => Math.max(v, 0.85)); }
+      if (finals.length) { emit({ type: 'result', transcript: finals.join('') }); finish(finals); return; }
+      if (partial) { lastInterim = partial; emit({ type: 'result', transcript: partial }); setInterim(partial); setLevel((v) => Math.max(v, 0.85)); }
     };
     rec.onerror = (e) => {
       if (settled) return;   // sesi sudah selesai/dibatalkan: abaikan event telat
       const code = e?.error || 'unknown';
+      emit({ type: 'error', error: code });
       if (code === 'aborted') { finish([]); return; }   // tombol Batal: bukan error
       // Engine sempat mendengar sesuatu (interim) lalu error/berhenti:
       // selamatkan teksnya daripada melaporkan gagal total.
@@ -144,6 +152,7 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
     };
     rec.onend = () => {
       if (settled) return;
+      emit({ type: 'end' });
       const salvaged = resolveUtterances([], lastInterim);
       // Berhenti tanpa hasil & tanpa error (mis. mikrofon direbut proses lain):
       // tampilkan pesan supaya user tahu, bukan diam tanpa reaksi.
@@ -155,8 +164,16 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
     rec.onlevel = (e) => {
       if (settled) return;
       const lvl = Number(e?.value);
-      if (Number.isFinite(lvl)) setLevel((v) => Math.max(v, Math.max(0, Math.min(1, lvl))));
+      if (Number.isFinite(lvl)) {
+        emit({ type: 'level', value: lvl });
+        setLevel((v) => Math.max(v, Math.max(0, Math.min(1, lvl))));
+      }
     };
+    // Event lifecycle (tak semua engine mendukung — sekadar tidak dipanggil).
+    // Berguna untuk diagnosa: membedakan "engine tak nyala" vs "nyala tapi bisu".
+    rec.onstart = () => { if (!settled) emit({ type: 'start' }); };
+    rec.onsoundstart = () => { if (!settled) emit({ type: 'soundstart' }); };
+    rec.onspeechstart = () => { if (!settled) emit({ type: 'speechstart' }); };
 
     setError(null);
     setInterim('');
@@ -167,8 +184,8 @@ export function useSpeechRecognition({ lang = 'ja-JP' } = {}) {
       if (!salvaged.length) setError('no-speech');
       finish(salvaged);
     }, MAX_LISTEN_MS);
-    try { rec.start(); } catch { setError('unknown'); finish([]); }
-  }), [lang]);
+    try { rec.start(); emit({ type: 'starting', lang }); } catch { setError('unknown'); finish([]); }
+  }), [lang, emit]);
 
   return { listenOnce, listening, interim, level, error, clearError, cancel, supported: isSpeechRecognitionSupported() };
 }

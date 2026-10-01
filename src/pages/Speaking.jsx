@@ -10,6 +10,7 @@ import {
   POEM_THEMES, filterPoemsByTheme, gridTextSize,
 } from '../features/speaking/speaking';
 import { isSpeechRecognitionSupported } from '../features/speaking/useSpeechRecognition';
+import { SpeechDiagnosticsPanel } from '../features/speaking/SpeechDiagnosticsPanel';
 import { useItemProgress } from '../features/progress/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
 import hiraganaData from '../data/hiragana.json';
@@ -158,6 +159,8 @@ export function Speaking() {
             : 'This browser does not support speech recognition (try Chrome/Edge). Self-assess mode is active: "Read ✓" — no scoring & XP.'}
         </div>
       )}
+
+      <SpeechDiagnosticsPanel />
 
       {/* Level kesulitan — bebas dipilih, tanpa gating */}
       <div className="flex flex-wrap items-center gap-2 mb-8">

@@ -34,6 +34,15 @@ export default defineConfig({
       }
     })
   ],
+  define: {
+    // ID build tampil di panel diagnosa Speaking → memastikan HP tidak
+    // menyajikan bundle lama dari service worker. Pakai SHA commit Vercel
+    // kalau ada, kalau tidak timestamp build.
+    __BUILD_ID__: JSON.stringify(
+      (typeof process !== 'undefined' && process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7)) ||
+      new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14)
+    ),
+  },
   // Dev server buat akses dari HP (mis. via cloudflared tunnel).
   // - host:true → bind 0.0.0.0 (bukan cuma localhost)
   // - allowedHosts → izinkan hostname tunnel (kalau tidak: "Blocked request")
