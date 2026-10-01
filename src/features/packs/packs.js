@@ -136,6 +136,7 @@ export const gachaPoolInfo = (ownedIds = []) => {
     kanji: p.kanji,
     icon: p.icon,
     rarity: p.rarity,
+    visual: p.visual,
     desc: p.desc,
     desc_en: p.desc_en,
     chance: rounded[i],

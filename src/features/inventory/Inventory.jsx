@@ -3,15 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { PACKS, PACK_RARITY, isPackReady } from "../packs/packs";
+import { PACKS, isPackReady } from "../packs/packs";
+import { PackCard } from "../packs/PackCard";
 import { inventoryList, countItems, itemName, itemDesc } from "../items/items";
-
-const RARITY_STYLE = {
-  common:    { bg: 'bg-kinari-light', text: 'text-sumi',         border: 'border-sumi' },
-  rare:      { bg: 'bg-ai',           text: 'text-kinari-light', border: 'border-sumi' },
-  legendary: { bg: 'bg-shu',          text: 'text-kinari-light', border: 'border-sumi' },
-  special:   { bg: 'bg-[#9c27b0]',    text: 'text-kinari-light', border: 'border-sumi' },
-};
 
 export function Inventory() {
   const { progress, togglePack, consumeItem } = useUserStats();
@@ -116,40 +110,15 @@ export function Inventory() {
               </p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {packs.map((pack) => {
-                  const isActive = activePack === pack.id;
-                  const rarity = PACK_RARITY[pack.rarity] || PACK_RARITY.common;
-                  const st = RARITY_STYLE[pack.rarity] || RARITY_STYLE.common;
-                  return (
-                    <div
-                      key={pack.id}
-                      className={`${st.bg} border-[4px] ${st.border} shadow-[6px_6px_0_0_#1a1a1a] flex flex-col p-6 relative overflow-hidden ${st.text}`}
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="text-5xl">{pack.icon}</div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] px-2 py-1 border-[2px] border-current">
-                          {rarity.label}
-                        </span>
-                      </div>
-                      <h3 className="text-xl font-serif font-black border-b-4 border-current pb-2 mb-2">
-                        {pack.name}
-                      </h3>
-                      <p className="text-sm font-bold mb-2 flex-grow opacity-90">{id ? pack.desc : (pack.desc_en || pack.desc)}</p>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-4 opacity-70">
-                        🎨 {pack.visual} · 🎙️ {pack.voice}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => togglePack(pack.id)}
-                        className={`py-3 font-black text-sm w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all ${
-                          isActive ? 'bg-matcha text-kinari-light' : 'bg-ai text-kinari-light'
-                        }`}
-                      >
-                        {isActive ? 'AKTIF ✓' : (id ? 'PAKAI' : 'USE')}
-                      </button>
-                    </div>
-                  );
-                })}
+                {packs.map((pack) => (
+                  <PackCard
+                    key={pack.id}
+                    pack={pack}
+                    isActive={activePack === pack.id}
+                    onToggle={togglePack}
+                    isId={id}
+                  />
+                ))}
               </div>
             )}
           </section>
