@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Volume2, Mic, Check } from 'lucide-react';
 import { Furigana } from './Furigana';
 import { useSpeechRecognition } from './useSpeechRecognition';
+import { appendSpeechEvent } from './speechLog';
 import { MicOverlay } from './MicOverlay';
 import { matchSpeech, verdictOf } from './speechMatch';
 import { lineReading, poemLineItems, speakXpFor, lineXpFor, speakLevel, DEFAULT_SPEAK_LEVEL } from './speaking';
@@ -19,7 +20,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   const { unlockAchievement } = useAchievements();
   const { addXp } = useUserStats();
   const { triggerEffect } = useEffectLayer();
-  const { listenOnce, listening, interim, level: micLevel, error, clearError, cancel, supported } = useSpeechRecognition();
+  const { listenOnce, listening, interim, level: micLevel, error, clearError, cancel, supported } = useSpeechRecognition({ onEvent: appendSpeechEvent });
   const selfAssess = !supported;   // mode mandiri: tanpa penilaian, tanpa XP, tanpa SRS
 
   const lines = poem?.lines || [];
