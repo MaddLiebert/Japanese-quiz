@@ -4,6 +4,7 @@ import { getItem, addItem, removeItem } from '../items/items';
 import { applyStreakBonus } from './streak';
 import { WRITE_GATE_KEY } from '../writing/writeGate';
 import { emptyExamRecord, mergeExamRecord, n5BadgesFor } from '../n5exam/certificate';
+import { dateKey, emptyQuests, ensureToday, bumpEvent, canClaim, markClaimed, questDef, SIDE_SOURCES } from '../quests/quests';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -54,7 +55,8 @@ const DEFAULT_PROGRESS = {
   activePack: null,
   ownedItems: {},
   n5Exam: emptyExamRecord(),
-  lastActiveDate: getLocalDateString()
+  lastActiveDate: getLocalDateString(),
+  quests: emptyQuests()
 };
 
 const DIFFICULTY_MAP = { easy: 0.8, medium: 1.0, hard: 1.2 };
@@ -166,7 +168,9 @@ export const ProgressProvider = ({ children }) => {
     try {
       const parsed = JSON.parse(saved);
       // Merge dengan default (backfill field hilang) + migrasi state pack.
-      return migratePacks({ ...DEFAULT_PROGRESS, ...(parsed || {}) });
+      const merged = migratePacks({ ...DEFAULT_PROGRESS, ...(parsed || {}) });
+      merged.quests = ensureToday(merged.quests);
+      return merged;
     } catch {
       return DEFAULT_PROGRESS;
     }
@@ -325,20 +329,27 @@ export const ProgressProvider = ({ children }) => {
     });
   }, []);
 
-  const recordAnswer = useCallback((itemId, isCorrect, xpReward = 10) => {
-    const today = getLocalDateString();
-    
-    // 1. Update Global Stats
+  const recordAnswer = useCallback((itemId, isCorrect, xpReward = 10, source = 'quiz') => {
+    const today = dateKey();
+
+    // 1. Update Global Stats (+ progres Misi Harian dari aktivitas nyata)
     setProgress(prev => {
       const newTotalAnswered = (prev.totalAnswered || 0) + 1;
       const newTotalCorrect = isCorrect ? (prev.totalCorrect || 0) + 1 : (prev.totalCorrect || 0);
       const newAccuracy = Math.round((newTotalCorrect / newTotalAnswered) * 100);
 
+      let q = ensureToday(prev.quests, today);
+      if (isCorrect) {
+        q = bumpEvent(q, 'correct', today);
+        if (SIDE_SOURCES.includes(source)) q = bumpEvent(q, 'side', today);
+      }
+
       return {
         ...prev,
         totalAnswered: newTotalAnswered,
         totalCorrect: newTotalCorrect,
-        accuracy: newAccuracy
+        accuracy: newAccuracy,
+        quests: q
       };
     });
 
@@ -421,6 +432,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   const completeQuiz = useCallback((isWin, difficulty, chapter, wrongCount = 0, totalQuestions = 0) => {
+    const today = dateKey();
     setProgress(prev => {
       const newMatchesPlayed = (prev.matchesPlayed || 0) + 1;
       const oldWR = prev.weightedWinRate || 0;
@@ -456,7 +468,8 @@ export const ProgressProvider = ({ children }) => {
         ...prev,
         matchesPlayed: newMatchesPlayed,
         weightedWinRate: finalWR,
-        medaru: (prev.medaru || 0) + medaruGained
+        medaru: (prev.medaru || 0) + medaruGained,
+        quests: bumpEvent(ensureToday(prev.quests, today), 'session', today)
       };
     });
   }, []);
@@ -491,6 +504,32 @@ export const ProgressProvider = ({ children }) => {
     if (gain <= 0) return 0;
     setProgress(prev => ({ ...prev, medaru: (prev.medaru || 0) + gain }));
     return gain;
+  }, []);
+
+  // Klaim reward Misi Harian. Atomic: tandai claimed + kasih XP/medaru dalam satu
+  // update, jadi klik dobel tidak mungkin dobel-bayar. Return { ok, xp, medaru }.
+  // XP dihitung pakai applyStreakBonus (konsisten dengan addXp) tapi TIDAK
+  // menyentuh streak harian — klaim bukan "aktivitas belajar".
+  const claimQuest = useCallback((id) => {
+    const def = questDef(id);
+    if (!def) return { ok: false, reason: 'invalid' };
+    const today = dateKey();
+    if (!canClaim(progressRef.current?.quests, id, today)) return { ok: false, reason: 'locked' };
+
+    setProgress(prev => {
+      const base = ensureToday(prev.quests, today);
+      if (!canClaim(base, id, today)) return prev; // guard di dalam updater
+      const xpGain = applyStreakBonus(def.xp, { streak: prev.streak || 0 });
+      const newXp = (prev.xp || 0) + xpGain;
+      return {
+        ...prev,
+        quests: markClaimed(base, id, today),
+        xp: newXp,
+        level: Math.min(Math.floor(newXp / 100) + 1, 1000),
+        medaru: (prev.medaru || 0) + def.medaru,
+      };
+    });
+    return { ok: true, xp: def.xp, medaru: def.medaru };
   }, []);
 
   // Belanja medaru. Return true kalau cukup & berhasil, false kalau saldo kurang.
@@ -595,7 +634,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}
