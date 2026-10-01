@@ -16,6 +16,16 @@ import {
   drawNextDeathItem,
   deathMedaruReward,
 } from './deathQuiz';
+import {
+  DEATH_MUGEN_BONUS_S,
+  deathSkillById,
+  deathInitialSkillState,
+  deathSkillOnCorrect,
+  deathSkillOnWrong,
+  deathSkillCanCast,
+  deathSkillSpend,
+  deathComboBonus,
+} from './deathSkills';
 
 const DATASETS = {
   hiragana: hiraganaData,
@@ -42,6 +52,9 @@ export function useDeathQuizSession() {
   const [isAnswered, setIsAnswered] = useState(false);
   const [lastResult, setLastResult] = useState(null); // { correct, itemId }
   const [runResult, setRunResult] = useState(null);   // { score, penaltyApplied, usedJumpers }
+  const [skillState, setSkillState] = useState(deathInitialSkillState); // { combo, meter, charges }
+  const [eliminatedIds, setEliminatedIds] = useState([]); // opsi yang dibuang 六眼 (soal aktif)
+  const [lastCast, setLastCast] = useState(null);         // { id, label } feedback cast terakhir
 
   const { recordAnswer } = useItemProgress();
   const { consumeItem, loseXp, gainMedaru, progress } = useUserStats();
@@ -56,6 +69,8 @@ export function useDeathQuizSession() {
   const usedJumpersRef = useRef(0);
   const itemsRef = useRef({});
   const timersRef = useRef([]);
+  const bestComboRef = useRef(0);      // combo tertinggi satu run (untuk bonus Medaru)
+  const skillStateRef = useRef(deathInitialSkillState());
 
   // Mirror ownedItems ke ref — dibaca di callback timer (butuh nilai fresh).
   useEffect(() => {
@@ -80,6 +95,13 @@ export function useDeathQuizSession() {
     setPhase(p);
   }, []);
 
+  // Setter skill state: sinkron ke ref (dibaca di callback timer) + state (UI).
+  const applySkillState = useCallback((next) => {
+    skillStateRef.current = next;
+    if (next.combo > bestComboRef.current) bestComboRef.current = next.combo;
+    setSkillState(next);
+  }, []);
+
   // Soal berikutnya dari queue endless.
   const nextQuestion = useCallback(() => {
     const draw = drawNextDeathItem(queueRef.current, ALL_ITEMS);
@@ -90,6 +112,8 @@ export function useDeathQuizSession() {
     setAnsweredId(null);
     setIsAnswered(false);
     setLastResult(null);
+    setEliminatedIds([]);   // opsi buangan 六眼 hanya berlaku per-soal
+    setLastCast(null);
     setTimeLeft(DEATH_TIMER_S);
   }, []);
 
@@ -100,9 +124,13 @@ export function useDeathQuizSession() {
     livesRef.current = DEATH_START_LIVES;
     scoreRef.current = 0;
     usedJumpersRef.current = 0;
+    bestComboRef.current = 0;
     setLives(DEATH_START_LIVES);
     setScore(0);
     setRunResult(null);
+    setSkillState(deathInitialSkillState());
+    setEliminatedIds([]);
+    setLastCast(null);
     setPhaseBoth('playing');
     nextQuestion();
   }, [clearTimers, nextQuestion, resetEffectStreak, setPhaseBoth]);
@@ -114,9 +142,15 @@ export function useDeathQuizSession() {
   const finishRun = useCallback(() => {
     clearTimers();
     const applied = loseXp(DEATH_XP_PENALTY);
-    const medaru = deathMedaruReward(scoreRef.current);
+    const medaru = deathMedaruReward(scoreRef.current) + deathComboBonus(bestComboRef.current);
     if (medaru > 0) gainMedaru(medaru);
-    setRunResult({ score: scoreRef.current, penaltyApplied: applied, usedJumpers: usedJumpersRef.current, medaruGained: medaru });
+    setRunResult({
+      score: scoreRef.current,
+      penaltyApplied: applied,
+      usedJumpers: usedJumpersRef.current,
+      medaruGained: medaru,
+      bestCombo: bestComboRef.current,
+    });
     setPhaseBoth('gameover');
   }, [clearTimers, loseXp, gainMedaru, setPhaseBoth]);
 
@@ -125,9 +159,11 @@ export function useDeathQuizSession() {
     if (correct) {
       scoreRef.current += 1;
       setScore(scoreRef.current);
+      applySkillState(deathSkillOnCorrect(skillStateRef.current));
     } else {
       livesRef.current -= 1;
       setLives(livesRef.current);
+      applySkillState(deathSkillOnWrong(skillStateRef.current));
     }
 
     pushTimer(() => {
@@ -199,6 +235,52 @@ export function useDeathQuizSession() {
     finishRun();
   }, [finishRun]);
 
+  // ── SKILL 呪術 ───────────────────────────────────────────────────────────
+  // Cast 1 skill aktif (butuh ≥1 charge). Efek per `kind`:
+  //   eliminate → buang 2 opsi salah di soal aktif (六眼)
+  //   time      → tambah waktu soal aktif (無下限)
+  //   life      → pulihkan 1 nyawa (反転術式)
+  const useSkill = useCallback((skillId) => {
+    const skill = deathSkillById(skillId);
+    if (!skill) return 'unknown';
+    if (phaseRef.current !== 'playing') return 'not-playing';
+    if (isAnsweredRef.current) return 'already-answered';
+    if (!deathSkillCanCast(skillStateRef.current, skillId)) return 'no-charge';
+
+    if (skill.kind === 'eliminate') {
+      // Butuh soal aktif + tahu jawaban benar → buang 2 opsi salah yang belum dibuang.
+      const q = current;
+      if (!q) return 'no-question';
+      const wrongIds = q.options
+        .map((o) => o.id)
+        .filter((id) => id !== q.target.id && !eliminatedIds.includes(id));
+      if (wrongIds.length === 0) return 'nothing-to-eliminate';
+      // Acak ringan biar tidak selalu buang yang sama.
+      const pick = wrongIds.slice(0, 2);
+      applySkillState(deathSkillSpend(skillStateRef.current));
+      setEliminatedIds((prev) => [...prev, ...pick]);
+      setLastCast({ id: skillId, label: skill.name });
+      return 'used';
+    }
+
+    if (skill.kind === 'time') {
+      applySkillState(deathSkillSpend(skillStateRef.current));
+      setTimeLeft((s) => (s === null ? null : s + DEATH_MUGEN_BONUS_S));
+      setLastCast({ id: skillId, label: skill.name });
+      return 'used';
+    }
+
+    if (skill.kind === 'life') {
+      applySkillState(deathSkillSpend(skillStateRef.current));
+      livesRef.current += 1;
+      setLives(livesRef.current);
+      setLastCast({ id: skillId, label: skill.name });
+      return 'used';
+    }
+
+    return 'unknown';
+  }, [current, eliminatedIds, applySkillState]);
+
   // Keluar sukarela (dari intro/gameover) — TANPA penalti.
   const quit = useCallback(() => {
     clearTimers();
@@ -218,9 +300,13 @@ export function useDeathQuizSession() {
     isAnswered,
     lastResult,
     runResult,
+    skillState,
+    eliminatedIds,
+    lastCast,
     start,
     selectAnswer,
     useJumper,
+    useSkill,
     giveUp,
     quit,
   };
