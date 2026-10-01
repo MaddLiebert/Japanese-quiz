@@ -11,7 +11,7 @@ import {
   yutaCopyMechanic, yutaCopyInit, yutaCopyOutcome, YUTA_COPY_LIMITS,
   YUTA_STYLE, yutaKatana, yutaRipples, yutaCopyRings, yutaSwordField,
   YUTA_COPY_EMBLEM, yutaCopyEmblem, yutaCopyTint, YUTA_DOMAIN,
-  yutaSparks, yutaCracks, yutaMotes,
+  yutaSparks, yutaCracks, yutaMotes, yutaRingDiameters,
 } from './yutaFx.js';
 import { SUKUNA_HITSUME_DELAY_MS, SUKUNA_BLOOD } from './sukunaFx.js';
 import { NOBARA_ULT_TIMELINE, NOBARA_STRAW } from './nobaraFx.js';
@@ -291,4 +291,17 @@ test('yutaMotes: naik bergelombang (deterministik, tanpa NaN)', () => {
     assert.ok(p.rise > 0 && p.size > 0 && p.dur > 0);
     assert.ok(Number.isFinite(p.phase) && Number.isFinite(p.sway));
   }
+});
+
+// ── T9: fix cincin 呪力 tak terlihat (vmin → relatif kartu) ───────────────────
+test('yutaRingDiameters: ukuran px relatif kartu, membesar, tanpa vmin', () => {
+  const d = yutaRingDiameters(120, 4);
+  assert.deepEqual(d, yutaRingDiameters(120, 4));
+  assert.equal(d.length, 4);
+  for (const v of d) assert.ok(Number.isFinite(v) && v > 0);
+  // cincin pertama harus lebih kecil dari lebar kartu (mis. 120px) supaya lingkarannya
+  // masih di dalam area kartu → terlihat (regresi: dulu 2*r vmin > kartu → hilang)
+  assert.ok(d[0] < 120, `cincin pertama (${d[0]}px) harus < lebar kartu tipikal`);
+  // membesar berurutan
+  for (let i = 1; i < d.length; i++) assert.ok(d[i] > d[i - 1], `cincin #${i} harus lebih besar`);
 });
