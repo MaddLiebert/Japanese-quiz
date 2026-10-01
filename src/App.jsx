@@ -121,8 +121,8 @@ function App() {
       <LanguageProvider>
         <ProgressProvider>
           <VoiceSync />
-          <EffectProvider>
-            <BrowserRouter>
+          <BrowserRouter>
+            <EffectProvider>
             <div className="min-h-screen relative font-sans selection:bg-ai/20 overflow-x-hidden bg-[var(--backdrop-val)]">
           
               {/* 1. Global Washi Texture overlay */}
@@ -160,8 +160,8 @@ function App() {
                 </Routes>
               </main>
             </div>
+            </EffectProvider>
           </BrowserRouter>
-          </EffectProvider>
         </ProgressProvider>
       </LanguageProvider>
     </ThemeProvider>
