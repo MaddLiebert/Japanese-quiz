@@ -1,6 +1,11 @@
 // speechMatch.js — pencocokan ucapan Jepang. Murni: tanpa DOM, tanpa React,
 // tanpa import JSON. Dipakai fitur Speaking untuk menilai hasil
 // SpeechRecognition terhadap target (bacaan kana / permukaan teks).
+//
+// Hasil ASR Jepang sering berupa KANJI (か → 蚊, て → 手). Sebelum dicocokkan,
+// hasil diperluas jadi kandidat bacaan kana lewat kanaReadings.js — kalau tidak,
+// skor vs target kana selalu 0 ("Belum pas" walau suara jelas).
+import { readingCandidates } from './kanaReadings.js';
 
 export const SPEAK_PASS = 0.7;   // similarity minimal dianggap lulus
 export const SPEAK_GREAT = 0.9;  // skor "hampir sempurna"
@@ -75,14 +80,29 @@ export const scoreUtterance = (heard, target) => {
 
 // Skor terbaik dari beberapa alternatif ucapan × beberapa target.
 // heardList: array transcript dari SpeechRecognition; targetList: bacaan + permukaan.
+//
+// Hasil ASR Jepang sering KANJI (か → 蚊, て → 手), jadi tiap ucapan DIPERLUAS
+// jadi kandidat bacaan kana lebih dulu — kalau tidak, skor vs target kana selalu
+// 0 → "Belum pas" walau suara jelas & keras.
+//
+// PENTING: kandidat HASIL PERLUASAN dinilai COCOK-PERSIS saja (bukan fuzzy).
+// Ekspansi hanyalah dugaan, jadi jangan sampai leniency (startsWith/includes)
+// membuat kanji berbilang bacaan salah lolos (mis. 花 dibaca か padahal はな).
+// Teks ASLI tetap dinilai fuzzy seperti sebelumnya.
 export const matchSpeech = (heardList, targetList) => {
-  const heard = (Array.isArray(heardList) ? heardList : [heardList]).filter(Boolean);
+  const rawHeard = (Array.isArray(heardList) ? heardList : [heardList]).filter(Boolean);
   const targets = (Array.isArray(targetList) ? targetList : [targetList]).filter(Boolean);
+  const rawNorm = new Set(rawHeard.map((h) => normalizeJa(h)));
   let best = { score: 0, heard: '', target: '' };
-  for (const h of heard) {
-    for (const t of targets) {
-      const score = scoreUtterance(h, t);
-      if (score > best.score) best = { score, heard: h, target: t };
+  for (const raw of rawHeard) {
+    for (const h of readingCandidates(raw)) {
+      const isExpansion = !rawNorm.has(normalizeJa(h));
+      for (const t of targets) {
+        const score = isExpansion
+          ? (normalizeJa(h) === normalizeJa(t) ? 1 : 0)
+          : scoreUtterance(h, t);
+        if (score > best.score) best = { score, heard: raw, target: t };
+      }
     }
   }
   return best;
