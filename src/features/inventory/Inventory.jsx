@@ -1,7 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { useUserStats, getRank } from "../progress/ProgressContext";
+import { useUserStats } from "../progress/ProgressContext";
+import { Glyph } from "../../components/icons/Glyph";
+import { RankBadge } from '../progress/RankBadge';
 import { useLanguage } from "../../context/LanguageContext";
 import { PACKS, isPackReady } from "../packs/packs";
 import { PackCard } from "../packs/PackCard";
@@ -65,11 +67,9 @@ export function Inventory() {
             </div>
 
             <div className="relative z-10 flex items-center gap-3 flex-wrap">
-              <span className="bg-shu text-kinari-light text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
-                {getRank(progress.xp)}
-              </span>
+              <RankBadge xp={progress.xp} variant="chip" />
               <span className="bg-[#ffd700] text-sumi text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
-                🪙 {medaru.toLocaleString()} MEDARU
+                <Glyph name="coin" className="mr-1" />{medaru.toLocaleString()} MEDARU
               </span>
             </div>
           </div>
@@ -149,7 +149,7 @@ export function Inventory() {
                     <span className="absolute top-3 right-3 bg-matcha text-kinari-light text-[10px] font-black px-2 py-1 border-[2px] border-sumi">
                       ×{item.qty}
                     </span>
-                    <div className="text-6xl mb-4">{item.icon}</div>
+                    <div className="mb-4 flex justify-center text-sumi"><Glyph name={item.icon} size={56} /></div>
                     <h3 className="text-xl font-serif font-black border-b-4 border-sumi pb-2 mb-2 text-sumi">
                       {itemName(item, language)}
                     </h3>
@@ -158,7 +158,7 @@ export function Inventory() {
                       // Kabel jumper dipakai OTOMATIS di Death Quiz (bukan tombol PAKAI)
                       // — jangan sampai terbuang sia-sia di luar mode.
                       <div className="py-3 font-black text-sm w-full border-4 border-dashed border-sumi/30 text-sumi/50 uppercase tracking-widest">
-                        🔌 {id ? 'Dipakai otomatis di Death Quiz' : 'Auto-used in Death Quiz'}
+                        <Glyph name="plug" className="mr-1" />{id ? 'Dipakai otomatis di Death Quiz' : 'Auto-used in Death Quiz'}
                       </div>
                     ) : (
                       <button

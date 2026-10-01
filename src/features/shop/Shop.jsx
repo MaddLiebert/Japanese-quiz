@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { useUserStats, getRank } from "../progress/ProgressContext";
+import { useUserStats } from "../progress/ProgressContext";
+import { Glyph } from "../../components/icons/Glyph";
+import { RankBadge } from '../progress/RankBadge';
 import { useLanguage } from "../../context/LanguageContext";
 import { SHOP_ITEMS, itemName, itemDesc } from "../items/items";
 import { gachaPoolInfo, PACK_RARITY, rarityOdds } from "../packs/packs";
@@ -85,11 +87,9 @@ export function Shop() {
             </div>
 
             <div className="relative z-10 flex items-center gap-3 flex-wrap">
-              <span className="bg-shu text-kinari-light text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
-                {getRank(progress.xp)}
-              </span>
+              <RankBadge xp={progress.xp} variant="chip" />
               <span className="bg-[#ffd700] text-sumi text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
-                🪙 {medaru.toLocaleString()} MEDARU
+                <Glyph name="coin" className="mr-1" />{medaru.toLocaleString()} MEDARU
               </span>
             </div>
           </div>
@@ -122,7 +122,7 @@ export function Shop() {
                 {language === 'id' ? 'Mesin Keberuntungan' : 'Fortune Machine'}
               </span>
               <h2 className="text-3xl sm:text-4xl font-serif font-black mt-1 mb-3">
-                🎰 {language === 'id' ? 'Gashapon Berkarat' : 'Rusty Gashapon'}
+                <Glyph name="gacha" className="mr-2" />{language === 'id' ? 'Gashapon Berkarat' : 'Rusty Gashapon'}
               </h2>
               <p className="text-sm font-bold mb-8 text-kinari-light/90">
                 {language === 'id' ? 'Tarik tuasnya. Ampas atau Jackpot?' : 'Pull the lever. Scrap or Jackpot?'}
@@ -134,25 +134,25 @@ export function Shop() {
                   onClick={() => handleRoll(1)}
                   className="flex-1 bg-ai text-kinari-light border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] font-black text-lg py-4 active:translate-y-1 active:shadow-[2px_2px_0_0_#1a1a1a] transition-all"
                 >
-                  TARIK 1X - {GACHA_PRICE_1X} 🪙
+                  TARIK 1X - {GACHA_PRICE_1X} <Glyph name="coin" className="ml-1" />
                 </button>
                 <button
                   type="button"
                   onClick={() => handleRoll(10)}
                   className="flex-1 bg-ai text-kinari-light border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] font-black text-lg py-4 active:translate-y-1 active:shadow-[2px_2px_0_0_#1a1a1a] transition-all"
                 >
-                  TARIK 10X - {GACHA_PRICE_10X} 🪙
+                  TARIK 10X - {GACHA_PRICE_10X} <Glyph name="coin" className="ml-1" />
                 </button>
               </div>
               <p className="text-[11px] font-bold mt-4 text-kinari-light/80">
                 {language === 'id'
-                  ? `Duplikat di-refund 50 🪙. Peluang: ${oddsText}.`
-                  : `Duplicates refund 50 🪙. Odds: ${oddsText}.`}
+                  ? `Duplikat di-refund 50. Peluang: ${oddsText}.`
+                  : `Duplicates refund 50. Odds: ${oddsText}.`}
               </p>
               <p className="text-[11px] font-bold mt-1 text-kinari-light/70">
                 {language === 'id'
-                  ? '📦 Hasil tarikan langsung masuk Tas Punggung 🎒'
-                  : '📦 Pulls go straight to your Backpack 🎒'}
+                  ? 'Hasil tarikan langsung masuk Tas Punggung'
+                  : 'Pulls go straight to your Backpack'}
               </p>
 
               {/* Isi gacha — daftar pack yang bisa keluar + peluangnya */}
@@ -163,7 +163,7 @@ export function Shop() {
                   className="w-full flex items-center justify-between gap-3 text-left cursor-pointer group"
                 >
                   <span className="text-[11px] font-black uppercase tracking-[0.2em] text-kinari-light">
-                    🎁 {language === 'id' ? 'Isi Gashapon' : 'Gashapon Contents'}
+                    <Glyph name="gift" className="mr-2" />{language === 'id' ? 'Isi Gashapon' : 'Gashapon Contents'}
                     <span className="ml-2 font-bold normal-case tracking-normal text-kinari-light/70">
                       ({pool.filter((p) => p.owned).length}/{pool.length} {language === 'id' ? 'dimiliki' : 'owned'})
                     </span>
@@ -180,7 +180,7 @@ export function Shop() {
                         key={p.id}
                         className={`border-[2px] border-sumi/40 bg-kinari-light/10 px-3 py-2 flex items-center gap-3 ${p.owned ? 'opacity-70' : ''}`}
                       >
-                        <span className="text-2xl shrink-0">{p.icon}</span>
+                        <span className="shrink-0 text-sumi"><Glyph name={p.icon} size={24} /></span>
                         <div className="min-w-0 flex-grow">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-[11px] font-black text-kinari-light truncate">{p.name}</span>
@@ -230,7 +230,7 @@ export function Shop() {
                     key={item.id}
                     className="bg-kinari border-[3px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] flex items-center gap-3 sm:gap-4 p-3 sm:p-4 relative"
                   >
-                    <div className="text-3xl sm:text-4xl shrink-0 w-12 text-center">{item.icon}</div>
+                    <div className="shrink-0 w-12 flex justify-center text-sumi"><Glyph name={item.icon} size={34} /></div>
                     <div className="flex-grow min-w-0">
                       <h3 className="text-sm sm:text-base font-serif font-black text-sumi truncate">
                         {itemName(item, language)}
@@ -249,7 +249,7 @@ export function Shop() {
                         affordable ? "bg-ai text-kinari-light" : "bg-kinari-light text-sumi/50"
                       }`}
                     >
-                      {item.price} 🪙
+                      {item.price} <Glyph name="coin" className="ml-1" />
                     </button>
                   </div>
                 );
@@ -258,8 +258,8 @@ export function Shop() {
 
             <p className="text-[11px] font-bold text-sumi/50 mt-4">
               {language === 'id'
-                ? '🎁 Theme Pack (visual + suara) didapat dari Gashapon di atas, bukan dibeli.'
-                : '🎁 Theme Packs (visual + voice) come from the Gashapon above, not sold here.'}
+                ? 'Theme Pack (visual + suara) didapat dari Gashapon di atas, bukan dibeli.'
+                : 'Theme Packs (visual + voice) come from the Gashapon above, not sold here.'}
             </p>
           </section>
 

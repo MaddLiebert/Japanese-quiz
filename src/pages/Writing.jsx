@@ -1,3 +1,4 @@
+import { Glyph } from "../components/icons/Glyph";
 import { useMemo, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
@@ -256,7 +257,7 @@ export function Writing() {
                 }`}
               >
                 <div className="text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5">
-                  {!open && <span aria-hidden>🔒</span>}
+                  {!open && <Glyph name="lock" size={13} />}
                   {l.text}
                 </div>
                 <div className={`text-[9px] font-bold uppercase tracking-wider ${!open ? 'text-sumi/25' : level === l.key ? 'text-kinari-light/70' : 'text-sumi/40'}`}>

@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { useUserStats, useItemProgress, getRank, useAchievements, ACHIEVEMENT_META } from '../progress/ProgressContext';
+import { useUserStats, useItemProgress, useAchievements, ACHIEVEMENT_META } from '../progress/ProgressContext';
+import { Glyph } from "../../components/icons/Glyph";
+import { RankBadge } from '../progress/RankBadge';
 import { useLanguage } from '../../context/LanguageContext';
 import { N5Certificate } from '../n5exam/N5Certificate';
 import { localized } from '../../utils/localize';
@@ -68,7 +70,7 @@ export function Profile() {
   const winRate = Number((progress.weightedWinRate || 0).toFixed(1));
 
   const [bio, setBio] = useState(() => {
-    return localStorage.getItem('user_bio') || "Masih pemula, lagi nge-grind bab 5 nih! 🔥";
+    return localStorage.getItem('user_bio') || "Masih pemula, lagi nge-grind bab 5 nih!";
   });
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [tempBio, setTempBio] = useState(bio);
@@ -91,13 +93,11 @@ export function Profile() {
 
   const realProfileData = {
     name: username || playerName,
-    avatar: "👺",
-    title: getRank(progress.xp),
     bio: bio,
     badges: [
-      { icon: "🗡️", name: "Kanji Slayer", desc: `Total Jawab ${progress.totalAnswered}` },
-      { icon: "🛡️", name: "Undefeated", desc: `Max Streak ${progress.maxStreak}` },
-      { icon: "⚡", name: "Speed Demon", desc: `Level ${progress.level}` }
+      { icon: "sword", name: "Kanji Slayer", desc: `Total Jawab ${progress.totalAnswered}` },
+      { icon: "shield", name: "Undefeated", desc: `Max Streak ${progress.maxStreak}` },
+      { icon: "bolt", name: "Speed Demon", desc: `Level ${progress.level}` }
     ],
     stats: { 
       winRate: winRate, 
@@ -149,9 +149,7 @@ export function Profile() {
             </div>
 
             <div className="relative z-10 flex items-center gap-3 flex-wrap">
-              <span className="bg-shu text-kinari-light text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
-                {realProfileData.title}
-              </span>
+              <RankBadge xp={progress.xp} variant="chip" />
               <span className="bg-ai text-kinari-light text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
                 {realProfileData.stats.winRate}% WIN RATE
               </span>
@@ -163,8 +161,8 @@ export function Profile() {
               STATUS
             </div>
             <HankoStamp label="LV" text={progress.level} />
-            <div className="mt-3 text-xs uppercase tracking-[0.2em] font-bold text-sumi/75">
-              {getRank(progress.xp)}
+            <div className="mt-4">
+              <RankBadge xp={progress.xp} variant="hero" showProgress />
             </div>
           </div>
         </header>
@@ -177,7 +175,7 @@ export function Profile() {
               activeTab === 'card' ? 'bg-shu text-kinari-light shadow-inner' : 'bg-kinari-light text-sumi hover:bg-kinari'
             }`}
           >
-            📇 ID Card
+            <Glyph name="idcard" className="mr-1" />ID Card
           </button>
           <button
             onClick={() => setActiveTab('stats')}
@@ -185,7 +183,7 @@ export function Profile() {
               activeTab === 'stats' ? 'bg-shu text-kinari-light shadow-inner' : 'bg-kinari-light text-sumi hover:bg-kinari'
             }`}
           >
-            📊 Statistik
+            <Glyph name="chart" className="mr-1" />Statistik
           </button>
           <button
             onClick={() => setActiveTab('cert')}
@@ -193,7 +191,7 @@ export function Profile() {
               activeTab === 'cert' ? 'bg-shu text-kinari-light shadow-inner' : 'bg-kinari-light text-sumi hover:bg-kinari'
             }`}
           >
-            🏆 Sertifikat
+            <Glyph name="trophy" className="mr-1" />Sertifikat
           </button>
         </div>
 
@@ -204,8 +202,8 @@ export function Profile() {
               {/* Name & Avatar card */}
               <div className="border-[4px] border-sumi bg-kinari p-6 shadow-[6px_6px_0_0_#1a1a1a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 bg-ai text-kinari-light border-[4px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] flex items-center justify-center text-4xl">
-                    {realProfileData.avatar}
+                  <div className="w-20 h-20 bg-ai text-kinari-light border-[4px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] flex items-center justify-center">
+                    <Glyph name="mask" size={40} />
                   </div>
                   <div>
                     <span className="text-[10px] uppercase font-bold tracking-widest text-sumi/60">Nickname</span>
@@ -217,7 +215,7 @@ export function Profile() {
                             onClick={() => { setTempName(realProfileData.name); setIsEditingName(true); }}
                             className="text-[10px] font-black uppercase px-2 py-1 bg-kinari-light border-[2px] border-sumi shadow-[2px_2px_0_0_#1a1a1a] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all cursor-pointer"
                           >
-                            ✏️ Edit Nama
+                            <Glyph name="pen" className="mr-1" />Edit Nama
                           </button>
                         </>
                       ) : (
@@ -263,7 +261,7 @@ export function Profile() {
                       onClick={() => { setTempBio(bio); setIsEditingBio(true); }}
                       className="text-xs font-black uppercase px-3 py-1 bg-kinari-light border-[2px] border-sumi shadow-[2px_2px_0_0_#1a1a1a] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all cursor-pointer"
                     >
-                      ✏️ Edit Bio
+                      <Glyph name="pen" className="mr-1" />Edit Bio
                     </button>
                   ) : (
                     <div className="flex gap-2">
@@ -271,7 +269,7 @@ export function Profile() {
                         onClick={handleSaveBio}
                         className="text-xs font-black uppercase px-3 py-1 bg-ai text-kinari-light border-[2px] border-sumi shadow-[2px_2px_0_0_#1a1a1a] cursor-pointer"
                       >
-                        💾 Simpan
+                        <Glyph name="save" className="mr-1" />Simpan
                       </button>
                       <button
                         onClick={() => setIsEditingBio(false)}
@@ -306,7 +304,7 @@ export function Profile() {
                       onClick={() => setIsEditingBadges(true)}
                       className="text-xs font-black uppercase px-3 py-1 bg-kinari-light border-[2px] border-sumi shadow-[2px_2px_0_0_#1a1a1a] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all cursor-pointer"
                     >
-                      ✏️ Edit Badges
+                      <Glyph name="pen" className="mr-1" />Edit Badges
                     </button>
                   ) : (
                     <button
@@ -384,7 +382,7 @@ export function Profile() {
                 </div>
                 <div className="border-[4px] border-sumi bg-kinari p-6 shadow-[6px_6px_0_0_#1a1a1a] text-center">
                   <div className="text-xs font-black uppercase text-sumi/60 mb-1">{language === 'id' ? 'Streak Maks' : 'Max Streak'}</div>
-                  <div className="text-4xl font-serif font-black text-ai">{realProfileData.stats.maxStreak} {language === 'id' ? 'hari' : 'days'} 🔥</div>
+                  <div className="text-4xl font-serif font-black text-ai">{realProfileData.stats.maxStreak} {language === 'id' ? 'hari' : 'days'}</div>
                 </div>
               </div>
 
@@ -402,9 +400,11 @@ export function Profile() {
                         <span>{r.score}%</span>
                       </div>
                       <div className="w-full h-5 bg-kinari-light border-[3px] border-sumi shadow-[2px_2px_0_0_#1a1a1a] overflow-hidden">
-                        <div
+                        <motion.div
                           className="h-full bg-shu border-r-[2px] border-sumi"
-                          style={{ width: `${r.score}%` }}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${r.score}%` }}
+                          transition={{ duration: 0.7, ease: 'easeOut' }}
                         />
                       </div>
                     </div>

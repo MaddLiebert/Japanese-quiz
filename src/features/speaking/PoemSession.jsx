@@ -202,7 +202,7 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
       {allPassed && (
         <div className="mt-auto text-center border-[3px] border-sumi bg-matcha/15 p-6">
           <p className="text-lg font-serif font-black text-sumi mb-1">
-            {id ? 'Puisi selesai! 🎉' : 'Poem complete! 🎉'}
+            {id ? 'Puisi selesai!' : 'Poem complete!'}
           </p>
           <p className="text-xs font-bold text-sumi/60 mb-4">
             {selfAssess

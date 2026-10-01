@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { PACK_RARITY, getPack } from "../packs/packs";
 import { packPalette, accentInk } from "../packs/rarityStyle";
 import { useLanguage } from "../../context/LanguageContext";
+import { Glyph } from "../../components/icons/Glyph";
 import { playReelTick, playFanfare } from "../../utils/sfx";
 import {
   REEL_COUNT,
@@ -18,7 +19,7 @@ import {
 
 const ITEM_H = 120; // px — tinggi satu sel reel
 
-const iconOf = (r) => getPack(r?.id)?.icon || '📦';
+const iconOf = (r) => getPack(r?.id)?.icon || 'coin';
 const rarityOf = (r) => getPack(r?.id)?.rarity || 'common';
 
 // Cek sekali: user minta animasi dikurangi?
@@ -103,10 +104,10 @@ export function GachaSlotOverlay({ result, onClose }) {
             {id ? 'Mesin Keberuntungan' : 'Fortune Machine'}
           </span>
           <h2 className="text-2xl sm:text-4xl font-serif font-black mt-1">
-            🎰 {id ? 'Gashapon Berkarat' : 'Rusty Gashapon'}
+            <Glyph name="gacha" className="mr-2" />{id ? 'Gashapon Berkarat' : 'Rusty Gashapon'}
           </h2>
           <p className="text-xs font-bold mt-1 opacity-90">
-            {results.length}x · refund {result?.refunded ?? 0} 🪙
+            {results.length}x · refund {result?.refunded ?? 0} <Glyph name="coin" className="ml-1" />
           </p>
         </div>
 
@@ -133,10 +134,10 @@ export function GachaSlotOverlay({ result, onClose }) {
                   {strip.map((sym, j) => (
                     <div
                       key={j}
-                      className="flex items-center justify-center text-5xl sm:text-6xl select-none"
+                      className="flex items-center justify-center select-none text-sumi"
                       style={{ height: ITEM_H }}
                     >
-                      {sym}
+                      <Glyph name={sym} size={44} />
                     </div>
                   ))}
                 </motion.div>
@@ -162,7 +163,7 @@ export function GachaSlotOverlay({ result, onClose }) {
                 onClick={skip}
                 className="px-5 py-2 border-[3px] border-sumi bg-kinari-light font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all"
               >
-                {id ? '⏩ Lewati' : '⏩ Skip'}
+                {id ? 'Lewati' : 'Skip'}
               </button>
             </div>
           )}
@@ -191,7 +192,7 @@ export function GachaSlotOverlay({ result, onClose }) {
                     className="border-[3px] border-sumi px-4 py-3 flex items-center gap-3"
                     style={{ background: pal.deep, color: '#fdfcf9' }}
                   >
-                    <span className="text-2xl">{pack?.icon || '📦'}</span>
+                    <span className="text-kinari-light"><Glyph name={pack?.icon || 'coin'} size={24} /></span>
                     <span className="font-black flex-grow">{pack?.name || p.id}</span>
                     <span
                       className="text-[10px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5"

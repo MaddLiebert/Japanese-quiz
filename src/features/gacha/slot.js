@@ -13,7 +13,7 @@ export const REEL_EASE = [0.42, 0, 0.58, 1];
 export const REEL_FADE = 30;
 
 // Simbol acak yang dilewati saat reel muter (bukan ikon pack).
-export const SYMBOL_POOL = ['🍥', '🎴', '🏮', '⚡', '🌊', '🔥', '❄️', '🌸', '🎐', '🪷'];
+export const SYMBOL_POOL = ['flower', 'flower2', 'sprout', 'tree', 'waves', 'fire', 'snowflake', 'moon', 'bell', 'cloudMoon'];
 
 // Deretan simbol satu reel: acak dari pool, ELEMEN TERAKHIR = target.
 export function buildStrip(targetIcon, pool = SYMBOL_POOL, length = STRIP_LEN, rng = Math.random) {

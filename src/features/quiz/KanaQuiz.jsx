@@ -1,3 +1,4 @@
+import { Glyph } from "../../components/icons/Glyph";
 import { motion } from "motion/react";
 import { Volume2 } from "lucide-react";
 import { playDramaticAudio } from "../../utils/audio";
@@ -47,7 +48,7 @@ export function KanaQuiz({
         <div className="flex items-center gap-4">
           {difficulty === 'Hard' && timeLeft !== null && (
             <span className={`text-xs font-bold tracking-widest uppercase ${frozen ? 'text-ai' : 'text-shu'}`}>
-              {frozen ? '❄ ' : ''}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
+              {frozen && <Glyph name="snowflake" className="mr-1 text-ai" />}{language === 'id' ? 'Waktu' : 'Time'}: <span className="text-xl">{timeLeft}s</span>
             </span>
           )}
           <span className="text-xs font-bold tracking-widest uppercase text-sumi/40">

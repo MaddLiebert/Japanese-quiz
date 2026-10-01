@@ -184,7 +184,7 @@ test('pack_07 = Gojo Satoru, rarity special, visual/voice gojo', () => {
   assert.equal(p.voice, 'gojo');
   assert.equal(p.name, 'Gojo Satoru');
   assert.equal(p.kanji, '五条悟');
-  assert.equal(p.icon, '🟣');
+  assert.equal(p.icon, 'infinity');
 });
 
 test('pack_09 = Yuji Itadori, visual yuji (bukan dummy lagi)', () => {

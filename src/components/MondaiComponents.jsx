@@ -1,3 +1,4 @@
+import { Glyph } from "./icons/Glyph";
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
 import { useLanguage } from "../context/LanguageContext";
@@ -114,7 +115,7 @@ export function AudioPlayer({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isPlaying, isControlled]);
 
   return (
     <div className="w-full bg-kinari border-sumi p-6 sm:p-8 shadow-[6px_6px_0_0_rgba(var(--sumi-val),1)] flex flex-col items-center">
@@ -200,8 +201,8 @@ export function AudioPlayer({
           <motion.div
             className="h-full bg-shu transition-all duration-100"
             style={{ width: `${progress}%` }}
-            animate={{ scale: [1, 1.02, 1] }}
-            transition={{ duration: 0.2, repeat: Infinity }}
+            animate={isPlaying ? { scale: [1, 1.02, 1] } : { scale: 1 }}
+            transition={isPlaying ? { duration: 0.2, repeat: Infinity } : { duration: 0.2 }}
           />
         </div>
         <div className="flex justify-between font-mono text-[10px] text-sumi font-bold">
@@ -266,7 +267,7 @@ export function QuizHeader({
         {/* User Stats (Streak & Total XP) */}
         <div className="flex items-center gap-2 font-mono">
           <div className="flex items-center gap-1.5 border-2 border-sumi bg-kinari-light px-3 py-1 shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)]">
-            <span className="text-shu">🔥</span>
+            <span className="text-shu"><Glyph name="fire" size={16} /></span>
             <div className="text-left leading-none">
               <span className="block text-[8px] uppercase tracking-wider text-sumi/60">STREAK</span>
               <span className="text-xs font-bold">{streak} {language === 'id' ? 'HARI' : 'DAYS'}</span>
@@ -274,7 +275,7 @@ export function QuizHeader({
           </div>
 
           <div className="flex items-center gap-1.5 border-2 border-sumi bg-kinari-light px-3 py-1 shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)]">
-            <span className="text-ai">⚡</span>
+            <span className="text-ai"><Glyph name="bolt" size={16} /></span>
             <div className="text-left leading-none">
               <span className="block text-[8px] uppercase tracking-wider text-sumi/60">TOTAL XP</span>
               <span className="text-xs font-bold">{xp.toLocaleString()}</span>
@@ -287,7 +288,7 @@ export function QuizHeader({
       <div className="flex flex-wrap items-center justify-between gap-2 border-[3px] border-sumi bg-kinari p-3 shadow-[4px_4px_0_0_rgba(var(--sumi-val),1)]">
         <div className="flex items-center gap-2">
           <span className="bg-sumi text-kinari-light font-mono font-bold text-[11px] uppercase tracking-wider px-2.5 py-1 flex items-center gap-1.5">
-            <span>🎧</span> MONDAI LISTENING
+            <Glyph name="headphones" size={14} /> MONDAI LISTENING
           </span>
         </div>
 
@@ -352,10 +353,10 @@ export function ExplanationBox({
         {isCorrect && (
           <div className="flex items-center gap-2 font-mono text-xs font-bold">
             <span className="border-2 border-sumi bg-kinari-light px-2.5 py-1 shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)]">
-              ⚡ +15 XP
+              <Glyph name="bolt" size={13} /> +15 XP
             </span>
             <span className="border-2 border-sumi bg-kinari-light px-2.5 py-1 shadow-[2px_2px_0_0_rgba(var(--sumi-val),1)] text-shu">
-              🔥 +1 STREAK
+              <Glyph name="fire" size={13} /> +1 STREAK
             </span>
           </div>
         )}

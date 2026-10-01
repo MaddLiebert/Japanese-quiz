@@ -15,7 +15,7 @@ export const PACKS = [
     id: 'kotodama_burst',
     name: 'Hina Chono',
     kanji: '蝶野雛',
-    icon: '🈳',
+    icon: 'flower',
     desc: 'Suara & reaksi Hina: GIF ceria tiap jawaban',
     desc_en: 'Hina voice & reactions: cheerful GIF every answer',
     price: 2500,
@@ -24,27 +24,27 @@ export const PACKS = [
     voice: 'hina',      // → src/features/audio/voices.js
   },
   {
-    id: 'pack_02', name: 'Dummy A', kanji: '仮', icon: '🎭',
+    id: 'pack_02', name: 'Dummy A', kanji: '仮', icon: 'mask',
     desc: 'Interaksi Dummy', desc_en: 'Dummy interaction',
     price: 2500, rarity: 'common', visual: 'dummy', voice: 'dummy',
   },
   {
-    id: 'pack_03', name: 'Dummy B', kanji: '仮', icon: '🎭',
+    id: 'pack_03', name: 'Dummy B', kanji: '仮', icon: 'mask',
     desc: 'Interaksi Dummy', desc_en: 'Dummy interaction',
     price: 2500, rarity: 'common', visual: 'dummy', voice: 'dummy',
   },
   {
-    id: 'pack_04', name: 'Dummy C', kanji: '仮', icon: '🎭',
+    id: 'pack_04', name: 'Dummy C', kanji: '仮', icon: 'mask',
     desc: 'Interaksi Dummy', desc_en: 'Dummy interaction',
     price: 2500, rarity: 'rare', visual: 'dummy', voice: 'dummy',
   },
   {
-    id: 'pack_05', name: 'Dummy D', kanji: '仮', icon: '🎭',
+    id: 'pack_05', name: 'Dummy D', kanji: '仮', icon: 'mask',
     desc: 'Interaksi Dummy', desc_en: 'Dummy interaction',
     price: 2500, rarity: 'rare', visual: 'dummy', voice: 'dummy',
   },
   {
-    id: 'pack_06', name: 'Sumi Taiko', kanji: '墨太鼓', icon: '🪘',
+    id: 'pack_06', name: 'Sumi Taiko', kanji: '墨太鼓', icon: 'drum',
     desc: 'Tinta sumi: cap hanko & ensō, dentum taiko',
     desc_en: 'Sumi ink: hanko seal & ensō, taiko drum',
     price: 2500, rarity: 'legendary', visual: 'ink', voice: 'taiko',
@@ -52,7 +52,7 @@ export const PACKS = [
   {
     // Pack #7 — Gojo Satoru (SPECIAL 特別). Efek berlapis 蒼→赫→茈→無量空処
     // + aset suara user (public/voices/gojo/) + ambience BGM — sudah live.
-    id: 'pack_07', name: 'Gojo Satoru', kanji: '五条悟', icon: '🟣',
+    id: 'pack_07', name: 'Gojo Satoru', kanji: '五条悟', icon: 'infinity',
     desc: 'Domain & Infinity: 蒼→赫→茈→無量空処',
     desc_en: 'Domain & Infinity: Ao→Aka→Murasaki→Domain',
     price: 2500, rarity: 'special', visual: 'gojo', voice: 'gojo',
@@ -64,43 +64,43 @@ export const PACKS = [
   // bertahap (task VP). Rarity: common Nobara · rare Yuji/Megumi/Nanami ·
   // legendary Yuta/Toji · special Sukuna.
   {
-    id: 'pack_08', name: 'Nobara Kugisaki', kanji: '釘崎野薔薇', icon: '🔨',
+    id: 'pack_08', name: 'Nobara Kugisaki', kanji: '釘崎野薔薇', icon: 'hammer',
     desc: '芻霊呪法: 簪→簪・連→簪・時限→共鳴り→黒閃 + ultimate 全弾爆発',
     desc_en: 'Straw Doll Technique: Hairpin→Barrage→Delayed→Resonance→Black Flash + All-Out Detonation',
     price: 2500, rarity: 'common', visual: 'nobara', voice: 'nobara',
   },
   {
-    id: 'pack_09', name: 'Yuji Itadori', kanji: '虎杖悠仁', icon: '👊',
+    id: 'pack_09', name: 'Yuji Itadori', kanji: '虎杖悠仁', icon: 'hand',
     desc: 'Wadah Sukuna: 逕庭拳→黒閃→穿血→宿儺の器',
     desc_en: "Sukuna's Vessel: Keiteiken→Kokusen→Senketsu→Takeover",
     price: 2500, rarity: 'rare', visual: 'yuji', voice: 'yuji',
   },
   {
-    id: 'pack_10', name: 'Megumi Fushiguro', kanji: '伏黒恵', icon: '🐺',
+    id: 'pack_10', name: 'Megumi Fushiguro', kanji: '伏黒恵', icon: 'paw',
     desc: '十種影法術: 玉犬→鵺→大蛇→満象→虎葬 + ultimate 魔虚羅·適応',
     desc_en: 'Ten Shadows: Dogs→Nue→Serpent→Elephant→Tiger + Mahoraga·Adaptation',
     price: 2500, rarity: 'rare', visual: 'megumi', voice: 'megumi',
   },
   {
-    id: 'pack_11', name: 'Nanami Kento', kanji: '七海建人', icon: '👔',
+    id: 'pack_11', name: 'Nanami Kento', kanji: '七海建人', icon: 'shirt',
     desc: '十劃呪法: 七三↔大鉈→瓦落瓦落(10)→黒閃(20)→時間外労働(30) + ultimate 時間外労働・全開 (puing 瓦落瓦落・連鎖)',
     desc_en: 'Ratio Technique: 7:3↔Oonata→Garagara(10)→Black Flash(20)→Overtime(30) + ultimate Overtime: All-Out (rubble chain)',
     price: 2500, rarity: 'rare', visual: 'nanami', voice: 'nanami',
   },
   {
-    id: 'pack_12', name: 'Yuta Okkotsu', kanji: '乙骨憂太', icon: '💍',
+    id: 'pack_12', name: 'Yuta Okkotsu', kanji: '乙骨憂太', icon: 'gem',
     desc: '模倣・真贋相愛: 3 katana muncul — pilih 1, pakai ultimate siapa pun (Gojo/Sukuna/Nobara/Yuji/Megumi/Nanami/Toji) 30 dtk',
     desc_en: 'Copy: 真贋相愛 — 3 katanas appear, pick 1, wield any ultimate (Gojo/Sukuna/Nobara/Yuji/Megumi/Nanami/Toji) for 30s',
     price: 2500, rarity: 'legendary', visual: 'yuta', voice: 'yuta',
   },
   {
-    id: 'pack_13', name: 'Toji Fushiguro', kanji: '伏黒甚爾', icon: '🗡️',
+    id: 'pack_13', name: 'Toji Fushiguro', kanji: '伏黒甚爾', icon: 'sword',
     desc: '天与呪縛: 釈魂刀↔万里ノ鎖→天逆鉾(10)→遊雲(20)→武器庫呪霊(30) + ultimate 天与呪縛・全開 (mekanik 武器庫・一撃離脱 — amunisi bayar salah)',
     desc_en: 'Heavenly Restriction: Shakkontou↔Banri no Kusari→Amanosakahoko(10)→Yuuyun(20)→Bukiko Jurei(30) + ultimate Tenyo Jubaku: Zenkai (armory mechanic — ammo pays for mistakes)',
     price: 2500, rarity: 'legendary', visual: 'toji', voice: 'toji',
   },
   {
-    id: 'pack_14', name: 'Ryomen Sukuna', kanji: '両面宿儺', icon: '👹',
+    id: 'pack_14', name: 'Ryomen Sukuna', kanji: '両面宿儺', icon: 'skull',
     desc: 'Voice pack Sukuna + efek 領域展開・伏魔御廚子', desc_en: 'Sukuna voice pack + Malevolent Shrine effect',
     price: 2500, rarity: 'special', visual: 'sukuna', voice: 'sukuna',
   },

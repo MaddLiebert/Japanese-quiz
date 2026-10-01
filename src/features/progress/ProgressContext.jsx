@@ -6,6 +6,7 @@ import { WRITE_GATE_KEY } from '../writing/writeGate';
 import { emptyExamRecord, mergeExamRecord, n5BadgesFor } from '../n5exam/certificate';
 import { dateKey, emptyQuests, ensureToday, bumpEvent, canClaim, markClaimed, questDef, SIDE_SOURCES, emptyWeekly, ensureWeek, weekBump, weekKey, canClaimWeek, markWeekClaimed, weeklyQuestDef } from '../quests/quests';
 import { emptySeen, ensureSeen, markSeen } from '../tutorial/tutorials';
+import { getRankName } from './rank';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -34,12 +35,10 @@ export const useUserStats = () => {
   return context;
 };
 
-export const getRank = (xp) => {
-  if (xp < 5000) return "Kouhai 🐣";
-  if (xp < 10000) return "Senpai 🗡️";
-  if (xp < 20000) return "Sensei 📜";
-  return "Shogun 👹";
-};
+// Rank pangkat 位階 — SATU sumber kebenaran di features/progress/rank.js.
+// Tetap mengembalikan STRING nama rank (kontrak lama: gate fitur memakai
+// `rank.startsWith('Shogun')`, lihat deathQuiz.js & n5exam.js).
+export const getRank = (xp) => getRankName(xp);
 
 const DEFAULT_PROGRESS = {
   xp: 0,

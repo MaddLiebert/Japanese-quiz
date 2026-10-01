@@ -21,28 +21,28 @@ export const RARITY_TIER = ['common', 'rare', 'legendary', 'special'];
 // emblem  = kanji identitas pack (jadi hero di kartu)
 export const PACK_PALETTES = {
   // Hina Chono (Blue Box) — pink rambut. Sumber: hinaFx.js HINA_TEXT_COLOR.
-  hina:   { accent: '#ff4d94', accent2: '#ff8fb1', deep: '#5c1236', ink: '#0a0a0a', emblem: '蝶' },
+  hina:   { accent: '#ff4d94', accent2: '#ff8fb1', deep: '#5c1236', ink: '#0a0a0a', emblem: 'flower' },
   // Sumi Taiko — tinta sumi + emas kin. Sumber: packs.js (visual 'ink') + token --kin.
-  ink:    { accent: '#a9821c', accent2: '#e8c860', deep: '#2b2519', ink: '#0a0a0a', emblem: '墨' },
+  ink:    { accent: '#a9821c', accent2: '#e8c860', deep: '#2b2519', ink: '#0a0a0a', emblem: 'drum' },
   // Gojo Satoru — 無量空処 ungu. Sumber: gojoFx.js GOJO_STYLE.domain.
-  gojo:   { accent: '#7c4dff', accent2: '#00b0ff', deep: '#2a1259', ink: '#0a0a0a', emblem: '五' },
+  gojo:   { accent: '#7c4dff', accent2: '#00b0ff', deep: '#2a1259', ink: '#0a0a0a', emblem: 'infinity' },
   // Nobara — oranye/merah paku. Sumber: nobaraFx.js NOBARA_ORANGE/RED.
-  nobara: { accent: '#f97316', accent2: '#dc2626', deep: '#6b2410', ink: '#0a0a0a', emblem: '釘' },
+  nobara: { accent: '#f97316', accent2: '#dc2626', deep: '#6b2410', ink: '#0a0a0a', emblem: 'hammer' },
   // Yuji — api 黒閃/宿儺 (oranye api, beda dari Sukuna yang merah darah).
   // Sumber: yujiFx.js YUJI_FIRE_COLORS ['#ffd166','#ff8c1a','#e0241a','#7a0b06'].
-  yuji:   { accent: '#ff8c1a', accent2: '#e0241a', deep: '#5c0d08', ink: '#0a0a0a', emblem: '虎' },
+  yuji:   { accent: '#ff8c1a', accent2: '#e0241a', deep: '#5c0d08', ink: '#0a0a0a', emblem: 'hand' },
   // Megumi — bayangan 影 indigo/perak. Sumber: megumiFx.js MEGUMI_INDIGO/SILVER.
-  megumi: { accent: '#4338ca', accent2: '#cbd5e1', deep: '#1b1740', ink: '#0a0a0a', emblem: '影' },
+  megumi: { accent: '#4338ca', accent2: '#cbd5e1', deep: '#1b1740', ink: '#0a0a0a', emblem: 'paw' },
   // Nanami — navy suit + emas lembur. Sumber: nanamiFx.js NANAMI_NAVY/GOLD.
-  nanami: { accent: '#F59E0B', accent2: '#1E3A8A', deep: '#0f2547', ink: '#0a0a0a', emblem: '七' },
+  nanami: { accent: '#F59E0B', accent2: '#1E3A8A', deep: '#0f2547', ink: '#0a0a0a', emblem: 'shirt' },
   // Yuta — merah darah 真贋相愛 + ungu 模倣. Sumber: yutaFx.js YUTA_DOMAIN.
-  yuta:   { accent: '#dc2626', accent2: '#c084fc', deep: '#5c1414', ink: '#0a0a0a', emblem: '刀' },
+  yuta:   { accent: '#dc2626', accent2: '#c084fc', deep: '#5c1414', ink: '#0a0a0a', emblem: 'gem' },
   // Toji — baja dingin, TANPA glow 呪力. Sumber: tojiFx.js TOJI_STEEL/GUNMETAL.
-  toji:   { accent: '#CBD5E1', accent2: '#5B21B6', deep: '#16181c', ink: '#0a0a0a', emblem: '刃' },
+  toji:   { accent: '#CBD5E1', accent2: '#5B21B6', deep: '#16181c', ink: '#0a0a0a', emblem: 'sword' },
   // Sukuna — 伏魔御廚子 merah darah. Sumber: sukunaFx.js SUKUNA_BLOOD.
-  sukuna: { accent: '#e0241a', accent2: '#ff8c1a', deep: '#2b0705', ink: '#0a0a0a', emblem: '儺' },
+  sukuna: { accent: '#e0241a', accent2: '#ff8c1a', deep: '#2b0705', ink: '#0a0a0a', emblem: 'skull' },
   // Dummy (pack_02..pack_05) — netral matcha/kin, sengaja kalem (bukan karakter).
-  dummy:  { accent: '#7d8f69', accent2: '#a9821c', deep: '#2f3a2b', ink: '#0a0a0a', emblem: '仮' },
+  dummy:  { accent: '#7d8f69', accent2: '#a9821c', deep: '#2f3a2b', ink: '#0a0a0a', emblem: 'mask' },
 };
 
 export const FALLBACK_PALETTE = PACK_PALETTES.dummy;
