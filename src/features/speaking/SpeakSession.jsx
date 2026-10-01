@@ -78,12 +78,17 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
     setResult(null);
     const heard = await listenOnce();
     setBusy(false);
-    if (!heard.length) return; // pesan error tampil dari hook
+    // Selalu tampilkan apa yang didengar engine (termasuk KOSONG) — supaya user
+    // tahu bedanya "engine tak dengar" vs "engine dengar tapi skor kurang".
+    if (!heard.length) {
+      setResult({ verdict: 'retry', heard: '', empty: true, xp: 0 });
+      return; // pesan error (kalau ada) tampil dari hook
+    }
 
     const best = matchSpeech(heard, [item.surface, ...(item.readings || [])]);
     const verdict = verdictOf(best.score);
     if (verdict === 'retry') {
-      setResult({ verdict, heard: best.heard, xp: 0 });
+      setResult({ verdict, heard: best.heard, empty: false, xp: 0 });
       return;
     }
     const xp = speakXpFor(item, level);
@@ -213,10 +218,18 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
           >
             {result.verdict === 'great' && (id ? `Sempurna! +${result.xp} XP` : `Perfect! +${result.xp} XP`)}
             {result.verdict === 'pass' && (id ? `Bagus! +${result.xp} XP` : `Nice! +${result.xp} XP`)}
-            {result.verdict === 'retry' && (id ? 'Belum pas — coba lagi.' : 'Not quite — try again.')}
+            {result.verdict === 'retry' && !result.empty && (id ? 'Belum pas — coba lagi.' : 'Not quite — try again.')}
+            {result.verdict === 'retry' && result.empty && (id
+              ? 'Engine TIDAK mendengar apa pun — coba dekatkan mic & ucap lebih panjang/keras.'
+              : 'Engine heard NOTHING — move closer to the mic and speak longer/louder.')}
+            {result.empty && (
+              <span className="block text-[11px] font-bold opacity-70 mt-1">
+                {id ? 'Terdengar: (kosong) · target: ' : 'Heard: (empty) · target: '}{item.surface}
+              </span>
+            )}
             {result.heard && (
               <span className="block text-[11px] font-bold opacity-70 mt-1">
-                {id ? 'Terdengar: ' : 'Heard: '}{result.heard}
+                {id ? 'Terdengar: ' : 'Heard: '}{result.heard} · {id ? 'target: ' : 'target: '}{item.surface}
               </span>
             )}
           </div>
