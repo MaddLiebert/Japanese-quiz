@@ -237,6 +237,10 @@ export function Home() {
           <div className="sm:col-span-7 border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi p-6 sm:p-12 bg-kinari-light relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-asanoha opacity-30 transform translate-x-1/2 -translate-y-1/4 pointer-events-none"></div>
 
+            {/* Lukisan sumi-e 墨絵 (buatan sendiri) — mengisi pita kosong
+                tengah kartu supaya tidak lowong. Heian saja. */}
+            <EraPainting className="hidden sm:block absolute left-1/2 top-[32%] -translate-x-1/2 w-[68%] max-w-[430px] z-0 opacity-80" />
+
             <div className="flex items-start justify-between mb-12 sm:mb-20">
               <div className="writing-vertical-rl text-xs uppercase tracking-[0.5em] font-black text-sumi/50">
                 {language === 'id' ? 'Pelajaran Berikutnya' : 'Next Lesson'}
