@@ -1572,3 +1572,66 @@ button[data-toji-kill]::after {
 /* Hanya tampil di era Heian (era lain: sembunyi, agar tak mengganggu). */
 .era-tategaki-only { display: none; }
 [data-era="heian"] .era-tategaki-only { display: block; }
+
+/* ── 8. Lembar kertas berserakan (loose washi sheets) ────────────────────────
+   Latar halaman Practice: beberapa lembar kertas tua berserakan di belakang
+   konten — supaya halaman pengaturan kuis juga terasa "meja tulis manuskrip",
+   bukan cuma Home. Hanya era Heian. z-index:-1 → di belakang konten Practice,
+   TETAP di atas latar global App (karena <main> = stacking context z-10).
+   Dekoratif: pointer-events:none, aria-hidden. Disembunyikan di layar sempit
+   supaya tidak mengganggu keterbacaan (konten ponsel penuh lebar). */
+.era-paper-layer {
+  position: fixed; inset: 0; overflow: hidden;
+  pointer-events: none; z-index: -1; display: none;
+}
+[data-era="heian"] .era-paper-layer { display: block; }
+@media (max-width: 767px) {
+  .era-paper-layer { display: none !important; }
+}
+
+.era-paper {
+  position: absolute;
+  background-color: var(--kinari-light-val);
+  /* Serat kertas (sama seperti kartu ber-border lain) + rona tua di tepi. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)' opacity='0.06'/%3E%3C/svg%3E");
+  border: 1px solid var(--era-edge-color);
+  box-shadow:
+    0 16px 36px -16px rgba(58, 51, 43, 0.55),
+    0 3px 8px -2px rgba(58, 51, 43, 0.16);
+  opacity: 0.82;
+}
+/* Noda tinta & rona emas/vermilion samar tiap lembar (kertas menua). */
+.era-paper::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    radial-gradient(circle at 24% 16%, rgba(196, 164, 90, 0.22) 0%, transparent 44%),
+    radial-gradient(circle at 80% 84%, rgba(184, 58, 46, 0.10) 0%, transparent 46%),
+    radial-gradient(circle at 62% 40%, rgba(154, 124, 56, 0.10) 0%, transparent 52%);
+}
+/* Tepi robek (deckle) tiap lembar — filter kasar yang sama seperti .paper-deckle. */
+.era-paper::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  border: 2px solid var(--era-edge-color);
+  filter: url(#heian-rough);
+  opacity: 0.55;
+}
+/* Empat lembar berserakan, menyembul dari tepi (mayoritas di luar layar). */
+.era-paper:nth-child(1) { top: 4%;    left: -5rem;  width: 17rem; height: 24rem; transform: rotate(-8deg); }
+.era-paper:nth-child(2) { bottom: 6%; left: -3rem;  width: 14rem; height: 18rem; transform: rotate(6deg);  }
+.era-paper:nth-child(3) { top: 10%;   right: -5rem; width: 18rem; height: 26rem; transform: rotate(7deg);  }
+.era-paper:nth-child(4) { bottom: 8%; right: -4rem; width: 15rem; height: 20rem; transform: rotate(-6deg); }
+
+/* Heian malam — kertas jadi gelap, bayangan lebih pekat. */
+.dark[data-era="heian"] .era-paper,
+[data-theme="dark"][data-era="heian"] .era-paper {
+  box-shadow:
+    0 16px 36px -16px rgba(0, 0, 0, 0.7),
+    0 3px 8px -2px rgba(0, 0, 0, 0.45);
+  opacity: 0.72;
+}
+.dark[data-era="heian"] .era-paper::before,
+[data-theme="dark"][data-era="heian"] .era-paper::before {
+  background-image:
+    radial-gradient(circle at 24% 16%, rgba(232, 200, 96, 0.14) 0%, transparent 44%),
+    radial-gradient(circle at 80% 84%, rgba(224, 96, 111, 0.10) 0%, transparent 46%);
+}

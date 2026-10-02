@@ -852,6 +852,15 @@ export function Practice() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen">
+      {/* Lembar kertas berserakan di belakang halaman (era Heian saja).
+          z-index:-1 → di belakang konten Practice tapi tetap di atas latar App.
+          Dekoratif: aria-hidden. Disembunyikan di layar sempit (lihat CSS). */}
+      <div className="era-paper-layer" aria-hidden="true">
+        <div className="era-paper" />
+        <div className="era-paper" />
+        <div className="era-paper" />
+        <div className="era-paper" />
+      </div>
       <button
         onClick={() => navigate(-1)}
         className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20"
