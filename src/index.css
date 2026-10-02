@@ -1362,3 +1362,111 @@ button[data-toji-kill]::after {
   [data-era="heian"] .era-pattern,
   [data-era="heian"] .heian-enter { animation: none !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BAHASA BENTUK HEIAN — tekstur & ornamen
+   Rujukan: docs/tema/_stitch-heian.html (desain eksternal) + docs/tema/heian.md.
+   Tiga lapis yang membuat Heian terasa "manuskrip", bukan "Shōwa ganti warna":
+     1. .era-divider   — awan suyari-gasumi 霞 sebagai PEMISAH antar-seksi
+     2. .era-watermark — kaligrafi raksasa samar (noda tinta di latar)
+     3. .era-brocade   — kinran 金襴, brokat emas pada nav/header
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Pemisah awan suyari-gasumi 霞 ─────────────────────────────────────── */
+.era-divider { width: 100%; padding: 8px 0; }
+.era-divider__band {
+  position: relative; width: 100%; height: 1px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--era-edge-color, rgba(26, 26, 26, 0.15));
+}
+.era-divider__label {
+  padding: 0 14px;
+  background: var(--backdrop-val, var(--kinari-val, #f3f0e8));
+  font-size: 10px; font-weight: 700; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--sumi-val, #1a1a1a);
+  opacity: 0.55; white-space: nowrap;
+}
+/* Heian: band awan bergerigi (scallop) + kabut emas, bukan garis lurus. */
+[data-era="heian"] .era-divider { padding: 22px 0; }
+[data-era="heian"] .era-divider__band {
+  height: 30px; background: transparent;
+  background-image: linear-gradient(180deg,
+    rgba(201, 162, 39, 0.04) 0%,
+    rgba(201, 162, 39, 0.14) 38%,
+    rgba(201, 162, 39, 0.20) 50%,
+    rgba(201, 162, 39, 0.14) 62%,
+    rgba(201, 162, 39, 0.04) 100%);
+}
+[data-era="heian"] .era-divider__band::before,
+[data-era="heian"] .era-divider__band::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 12px;
+  background-image: radial-gradient(circle at 50% 100%, rgba(201, 162, 39, 0.55) 58%, transparent 60%);
+  background-size: 48px 12px; background-repeat: repeat-x;
+}
+[data-era="heian"] .era-divider__band::before {
+  top: -11px; animation: heian-cloud 70s linear infinite;
+}
+[data-era="heian"] .era-divider__band::after {
+  bottom: -11px; transform: scaleY(-1); animation: heian-cloud 70s linear infinite reverse;
+}
+[data-era="heian"] .era-divider__label {
+  background: transparent; opacity: 1;
+  font-family: var(--font-display);
+  font-size: 11px; letter-spacing: 0.42em; color: var(--sumi-val);
+  display: inline-flex; align-items: center; gap: 16px; padding: 0 10px;
+}
+[data-era="heian"] .era-divider__label::before,
+[data-era="heian"] .era-divider__label::after {
+  content: ""; width: 44px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--kin-val), transparent);
+}
+.dark[data-era="heian"] .era-divider__band::before,
+.dark[data-era="heian"] .era-divider__band::after,
+[data-theme="dark"][data-era="heian"] .era-divider__band::before,
+[data-theme="dark"][data-era="heian"] .era-divider__band::after {
+  background-image: radial-gradient(circle at 50% 100%, rgba(232, 200, 96, 0.5) 58%, transparent 60%);
+}
+@keyframes heian-cloud {
+  from { background-position: 0 0; }
+  to   { background-position: 480px 0; }
+}
+
+/* ── 2. Watermark kaligrafi raksasa (noda tinta samar) ────────────────────── */
+.era-watermark-layer {
+  position: fixed; inset: 0; overflow: hidden;
+  pointer-events: none; z-index: 0; display: none;
+}
+[data-era="heian"] .era-watermark-layer { display: block; }
+.era-watermark {
+  position: absolute; font-family: var(--font-display); font-weight: 900;
+  line-height: 1; user-select: none; white-space: nowrap;
+  color: var(--ai-val); opacity: 0.05;
+}
+.dark .era-watermark,
+[data-theme="dark"] .era-watermark { opacity: 0.07; }
+
+/* ── 3. Kinran 金襴 — brokat emas pada nav/header ────────────────────────── */
+[data-era="heian"] .era-brocade {
+  background-color: #efe4c9 !important;
+  background-image:
+    repeating-linear-gradient(60deg,  rgba(154, 124, 56, 0.34) 0 2.5px, transparent 2.5px 10px),
+    repeating-linear-gradient(-60deg, rgba(154, 124, 56, 0.34) 0 2.5px, transparent 2.5px 10px),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.30) 0%, transparent 80%) !important;
+  border: 2px double var(--kin-val) !important;
+  box-shadow: 0 4px 18px rgba(58, 51, 43, 0.16) !important;
+}
+.dark[data-era="heian"] .era-brocade,
+[data-theme="dark"][data-era="heian"] .era-brocade {
+  background-color: #2c2338 !important;
+  background-image:
+    repeating-linear-gradient(60deg,  rgba(232, 200, 96, 0.30) 0 2.5px, transparent 2.5px 10px),
+    repeating-linear-gradient(-60deg, rgba(232, 200, 96, 0.30) 0 2.5px, transparent 2.5px 10px),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.10) 0%, transparent 80%) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Hormati prefers-reduced-motion untuk ornamen baru. */
+@media (prefers-reduced-motion: reduce) {
+  [data-era="heian"] .era-divider__band::before,
+  [data-era="heian"] .era-divider__band::after { animation: none !important; }
+}

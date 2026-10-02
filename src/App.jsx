@@ -44,7 +44,7 @@ function TopControls() {
   const divider = <span className="w-[2px] self-stretch bg-sumi/15" aria-hidden="true" />;
 
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-stretch border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] overflow-hidden">
+    <div className="fixed top-4 right-4 z-50 flex items-stretch border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] overflow-hidden era-brocade">
       {/* Shop / Medaru chip */}
       <button
         onClick={() => navigate('/shop')}
@@ -142,6 +142,14 @@ function App() {
               
               {/* 2. Abstract background motif (Seigaiha radiating from center) */}
               <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-10 dark:opacity-5 bg-seigaiha era-pattern mask-image:radial-gradient(circle_at_center,black,transparent_70%)"></div>
+
+              {/* 2b. Watermark kaligrafi raksasa 平安 (hanya era Heian) — noda tinta
+                  samar di latar, meniru under-drawing emakimono. Dekoratif. */}
+              <div className="era-watermark-layer" aria-hidden="true">
+                <span className="era-watermark" style={{ top: '-4rem', right: '2rem', fontSize: '30rem' }}>雅</span>
+                <span className="era-watermark" style={{ top: '42%', left: '1.5rem', fontSize: '26rem', color: 'var(--matcha-val)' }}>詠</span>
+                <span className="era-watermark" style={{ bottom: '-6rem', right: '4rem', fontSize: '24rem' }}>雲</span>
+              </div>
 
               {/* Global Top Controls */}
               <TopControls />

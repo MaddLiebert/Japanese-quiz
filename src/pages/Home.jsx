@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { countMasteredKanji, isN5ExamUnlocked, N5_EXAM_MIN_MASTERED_KANJI } from "../features/n5exam/n5exam";
 import { DailyQuestPanel } from "../features/quests/DailyQuestPanel";
+import { EraDivider } from "../components/EraDivider";
 
 import { StreakIndicator } from "../components/StreakIndicator";
 import { RankBadge } from "../features/progress/RankBadge";
@@ -215,6 +216,9 @@ export function Home() {
           </div>
         </header>
 
+        {/* Pemisah awan suyari-gasumi 霞 — bahasa bentuk era Heian (era lain: garis tipis) */}
+        <EraDivider />
+
         {/* --- MAIN CONTENT GRID --- */}
         <div className="grid grid-cols-1 sm:grid-cols-12 relative z-10">
 
@@ -419,6 +423,9 @@ export function Home() {
 
         {/* --- MISI HARIAN 日課 --- */}
         <DailyQuestPanel />
+
+        {/* Pemisah awan 霞 sebelum cap pencapaian */}
+        <EraDivider label="印譜 · HANKO REGISTER" />
 
         {/* --- ACHIEVEMENTS SECTION --- */}
         <div className="border-t-[4px] border-sumi relative z-10 p-6 sm:p-12 bg-kinari">
