@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useUserStats } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
+import { useEra } from "../features/theme/EraContext";
+import { ERAS } from "../features/theme/eras";
 import { tutorialButtonVisible } from "../features/tutorial/tutorials";
 import { DevPanel } from "../features/dev/DevPanel"; // DEV-ONLY — hapus baris ini untuk membuang panel cheat
 
@@ -11,6 +13,7 @@ export function Settings() {
   const { resetProgress, progress, setTutorialHidden } = useUserStats();
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const { era, setEra, unlocked } = useEra();
   const navigate = useNavigate();
   const tutorialOn = tutorialButtonVisible(progress.tutorialHidden);
 
@@ -104,6 +107,48 @@ export function Settings() {
                   >
                     <Glyph name="moon" /> {language === 'id' ? 'Gelap' : 'Dark'}
                   </button>
+                </div>
+              </div>
+
+              {/* Era Selector */}
+              <div className="border-[3px] border-sumi/20 bg-kinari p-6">
+                <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-1">
+                  {language === 'id' ? 'Era Tema' : 'Theme Era'}
+                </label>
+                <p className="text-xs text-sumi/70 font-semibold">
+                  {language === 'id'
+                    ? 'Pilih era visual. Era baru terbuka seiring naiknya level.'
+                    : 'Choose the visual era. New eras unlock as you level up.'}
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
+                  {ERAS.map((e) => {
+                    const open = unlocked.some((u) => u.id === e.id);
+                    const active = era === e.id;
+                    return (
+                      <button
+                        key={e.id}
+                        type="button"
+                        disabled={!open}
+                        onClick={() => setEra(e.id)}
+                        title={open ? e.name : `${language === 'id' ? 'Buka di Lv' : 'Unlock at Lv'} ${e.minLevel}`}
+                        className={`py-3 px-3 border-[3px] font-bold text-[10px] uppercase tracking-widest flex flex-col items-center justify-center gap-1 transition-all ${
+                          active
+                            ? 'border-sumi bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] cursor-pointer'
+                            : open
+                              ? 'border-sumi bg-kinari-light text-sumi/70 hover:text-sumi cursor-pointer'
+                              : 'border-sumi/20 bg-kinari-light text-sumi/30 cursor-not-allowed'
+                        }`}
+                      >
+                        <span className="text-base font-serif leading-none">{e.kanji}</span>
+                        <span>{e.name}</span>
+                        {!open && (
+                          <span className="text-[9px] normal-case tracking-normal">
+                            {language === 'id' ? 'Buka di Lv' : 'Lv'} {e.minLevel}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
