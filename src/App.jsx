@@ -14,6 +14,7 @@ import Inventory from "./features/inventory/Inventory";
 import { DeathQuizScreen } from "./features/deathquiz/DeathQuizScreen";
 import { N5ExamScreen } from "./features/n5exam/N5ExamScreen";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
+import { EraProvider } from "./features/theme/EraContext";
 import { EffectProvider } from "./features/effects/EffectContext";
 import { getPack } from "./features/packs/packs";
 import { setActiveVoice, preloadVoice, primeVoice } from "./utils/sfx";
@@ -122,6 +123,7 @@ function App() {
       <LanguageProvider>
         <ProgressProvider>
           <VoiceSync />
+          <EraProvider>
           <BrowserRouter>
             <EffectProvider>
             <div className="min-h-screen relative font-sans selection:bg-ai/20 overflow-x-hidden bg-[var(--backdrop-val)]">
@@ -163,6 +165,7 @@ function App() {
             </div>
             </EffectProvider>
           </BrowserRouter>
+          </EraProvider>
         </ProgressProvider>
       </LanguageProvider>
     </ThemeProvider>
