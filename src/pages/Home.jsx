@@ -140,7 +140,7 @@ export function Home() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="border-[4px] border-sumi bg-kinari-light relative overflow-hidden shadow-[12px_12px_0_0_rgba(26,26,26,0.1)]"
+        className="border-[4px] border-sumi bg-kinari-light relative overflow-hidden shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] heian-enter"
       >
 
         {/* Background Decorative Kanji */}
@@ -220,7 +220,7 @@ export function Home() {
         <EraDivider />
 
         {/* --- MAIN CONTENT GRID --- */}
-        <div className="grid grid-cols-1 sm:grid-cols-12 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-12 relative z-10 heian-enter-2">
 
           {/* LEFT COL: Up Next (Focal Point) */}
           <div className="sm:col-span-7 border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi p-6 sm:p-12 bg-kinari-light relative overflow-hidden group">
@@ -428,7 +428,7 @@ export function Home() {
         <EraDivider label="印譜 · HANKO REGISTER" />
 
         {/* --- ACHIEVEMENTS SECTION --- */}
-        <div className="border-t-[4px] border-sumi relative z-10 p-6 sm:p-12 bg-kinari">
+        <div className="border-t-[4px] border-sumi relative z-10 p-6 sm:p-12 bg-kinari heian-enter-3">
           <div className="absolute top-0 right-0 w-48 h-48 bg-asanoha opacity-[0.06] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
           <div className="flex items-center gap-4 mb-8 relative z-10">
             <h3 className="text-2xl sm:text-3xl font-serif font-black text-sumi tracking-tight">

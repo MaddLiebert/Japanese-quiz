@@ -1220,7 +1220,19 @@ button[data-toji-kill]::after {
   --era-ease:         cubic-bezier(0.22, 1, 0.36, 1);
 
   --ink:              rgba(58, 51, 43, 0.42);
+
+  /* ── TIPOGRAFI — fondasi utama vibe Heian ────────────────────────────────
+     Biang kerok "terasa web modern": seluruh UI memakai Inter (sans-serif
+     ala dashboard SaaS) — hasil ukur DOM: Inter 61 elemen, Yuji Syuku cuma 2.
+     Di era Heian semua teks jadi serif Minchō (aksara buku cetak Jepang) dan
+     judul hero jadi Yuji Syuku (gaya kuas). Override variabel @theme → efeknya
+     menjalar ke SELURUH app tanpa menyentuh per-komponen. */
+  --font-sans:  "Shippori Mincho", "Noto Serif JP", serif;
+  --font-serif: "Shippori Mincho", "Noto Serif JP", serif;
 }
+
+/* Judul hero memakai aksara kuas (Yuji Syuku), bukan serif tebal biasa. */
+[data-era="heian"] h1 { font-family: var(--font-display); letter-spacing: 0.01em; }
 
 /* Heian gelap — "istana malam" */
 .dark[data-era="heian"], [data-theme="dark"][data-era="heian"] {
@@ -1353,6 +1365,9 @@ button[data-toji-kill]::after {
 [data-era="heian"] .heian-enter {
   animation: heian-rise var(--era-motion) var(--era-ease) both;
 }
+/* Reveal berjenjang: seksi menyusul pelan seperti tinta meresap ke sutra. */
+[data-era="heian"] .heian-enter-2 { animation-delay: 140ms; }
+[data-era="heian"] .heian-enter-3 { animation-delay: 280ms; }
 /* Transisi tema lebih lambat di era Heian (kabut menyingkir). */
 [data-era="heian"] {
   --theme-transition: 800ms;
