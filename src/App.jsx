@@ -14,7 +14,8 @@ import Inventory from "./features/inventory/Inventory";
 import { DeathQuizScreen } from "./features/deathquiz/DeathQuizScreen";
 import { N5ExamScreen } from "./features/n5exam/N5ExamScreen";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
-import { EraProvider } from "./features/theme/EraContext";
+import { EraProvider, useEra } from "./features/theme/EraContext";
+import { eraName } from "./features/theme/eraNames";
 import { EffectProvider } from "./features/effects/EffectContext";
 import { getPack } from "./features/packs/packs";
 import { setActiveVoice, preloadVoice, primeVoice } from "./utils/sfx";
@@ -32,6 +33,7 @@ import { Glyph } from "./components/icons/Glyph";
 // tiap tombol tetap punya ikon + tooltip yang jelas fungsinya.
 function TopControls() {
   const { language } = useLanguage();
+  const { era } = useEra();
   const { theme, toggleTheme } = useTheme();
   const { progress } = useUserStats();
   const navigate = useNavigate();
@@ -47,11 +49,11 @@ function TopControls() {
       <button
         onClick={() => navigate('/shop')}
         className={itemCls}
-        title={language === 'id' ? 'Warung Kakek' : "Grandpa's Shop"}
-        aria-label={language === 'id' ? 'Warung Kakek' : "Grandpa's Shop"}
+        title={eraName('shop', era, language === 'id' ? 'Warung Kakek' : "Grandpa's Shop")}
+        aria-label={eraName('shop', era, language === 'id' ? 'Warung Kakek' : "Grandpa's Shop")}
       >
         <Glyph name="shop" className="text-sm" />
-        <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()}</span>
+        <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('medaru', era) ? eraName('medaru', era) + ' ' : ''}{(progress.medaru || 0).toLocaleString()}</span>
       </button>
 
       {divider}
@@ -60,10 +62,11 @@ function TopControls() {
       <button
         onClick={() => navigate('/inventory')}
         className={itemCls}
-        title={language === 'id' ? 'Tas Punggung' : 'Backpack'}
-        aria-label={language === 'id' ? 'Tas Punggung' : 'Backpack'}
+        title={eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack')}
+        aria-label={eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack')}
       >
         <Glyph name="backpack" className="text-sm" />
+        <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('inventory', era)}</span>
       </button>
 
       {divider}
@@ -72,10 +75,11 @@ function TopControls() {
       <button
         onClick={() => navigate('/profile')}
         className={itemCls}
-        title={language === 'id' ? 'Profil Pemain' : 'Player Profile'}
-        aria-label={language === 'id' ? 'Profil Pemain' : 'Player Profile'}
+        title={eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile')}
+        aria-label={eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile')}
       >
         <Glyph name="mask" className="text-sm" />
+        <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('profile', era)}</span>
       </button>
 
       {divider}
