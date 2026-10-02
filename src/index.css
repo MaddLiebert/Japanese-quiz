@@ -1362,7 +1362,9 @@ button[data-toji-kill]::after {
   from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
   to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
 }
-[data-era="heian"] .heian-enter {
+[data-era="heian"] .heian-enter,
+[data-era="heian"] .heian-enter-2,
+[data-era="heian"] .heian-enter-3 {
   animation: heian-rise var(--era-motion) var(--era-ease) both;
 }
 /* Reveal berjenjang: seksi menyusul pelan seperti tinta meresap ke sutra. */
