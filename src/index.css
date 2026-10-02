@@ -1197,20 +1197,19 @@ button[data-toji-kill]::after {
   --kin-val:          #c9a227;  /* 金 kin */
   --backdrop-val:     #e9e2d0;  /* 砂 suna */
 
-  /* Bentuk — inti perubahan "berat" (Shōwa kotak keras → Heian sutra mengambang) */
+  /* Bentuk — KERTAS & TINTA (revisi besar): kertas tua bersudut TAJAM, bukan
+     potongan membulat ala kartu modern. Radius 0 = tepi potongan kertas;
+     tepi memakai warna tinta sumi gelap tipis, bukan abu-abu pucat ("sampah"). */
   --era-edge-w:       1px;
-  --era-edge-color:   rgba(58, 51, 43, 0.20);
-  --era-radius:       16px;   /* dulu 10 — dibesarkan supaya sudut terasa membulat */
-  --era-radius-sm:    10px;
-  --era-radius-xs:    6px;
-  /* Shadow BERLAPIS (3 lapis) — bukan satu lapis. Ini yang bikin "mengambang
-     dalam kabut", bukan "ditempel". Lihat board: docs/tema/_board-heian.html */
-  --era-shadow:       0 1px 2px rgba(58, 51, 43, 0.06),
-                      0 12px 28px -12px rgba(58, 51, 43, 0.32),
-                      0 32px 60px -34px rgba(91, 74, 122, 0.30);
-  --era-shadow-hover: 0 2px 4px rgba(58, 51, 43, 0.08),
-                      0 18px 38px -14px rgba(58, 51, 43, 0.38),
-                      0 44px 80px -40px rgba(91, 74, 122, 0.38);
+  --era-edge-color:   rgba(58, 51, 43, 0.62);   /* tinta, bukan abu pucat */
+  --era-radius:       0px;   /* kertas: sudut TAJAM */
+  --era-radius-sm:    0px;
+  --era-radius-xs:    0px;
+  /* Kertas tergeletak: bayangan tipis & dekat, bukan "mengambang" ala web. */
+  --era-shadow:       0 1px 1px rgba(58, 51, 43, 0.10),
+                      0 6px 14px -10px rgba(58, 51, 43, 0.38);
+  --era-shadow-hover: 0 2px 3px rgba(58, 51, 43, 0.12),
+                      0 10px 22px -12px rgba(58, 51, 43, 0.45);
   /* Gradien kasane 襲の色目 — warna berlapis khas Heian (bukan flat) */
   --era-kasane:       linear-gradient(160deg, #fbf8ef 0%, #f6f1e4 55%, #f0e9d6 100%);
   --era-kasane-ai:    linear-gradient(180deg, #6b5a8c 0%, #5b4a7a 100%);
@@ -1244,13 +1243,11 @@ button[data-toji-kill]::after {
   --matcha-val:       #a3b57a;
   --kin-val:          #e8c860;
   --backdrop-val:     #100d16;
-  --era-edge-color:   rgba(236, 227, 210, 0.20);
-  --era-shadow:       0 1px 2px rgba(0, 0, 0, 0.45),
-                      0 12px 28px -12px rgba(0, 0, 0, 0.60),
-                      0 32px 64px -30px rgba(169, 143, 214, 0.22);
-  --era-shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.55),
-                      0 18px 40px -14px rgba(0, 0, 0, 0.70),
-                      0 44px 84px -38px rgba(169, 143, 214, 0.30);
+  --era-edge-color:   rgba(236, 227, 210, 0.55);   /* tinta terang di malam */
+  --era-shadow:       0 1px 1px rgba(0, 0, 0, 0.45),
+                      0 6px 16px -10px rgba(0, 0, 0, 0.65);
+  --era-shadow-hover: 0 2px 3px rgba(0, 0, 0, 0.55),
+                      0 10px 24px -12px rgba(0, 0, 0, 0.75);
   --era-kasane:       linear-gradient(160deg, #221c2a 0%, #1a1620 55%, #141019 100%);
   --era-kasane-ai:    linear-gradient(180deg, #bda6e0 0%, #a98fd6 100%);
   --era-kasane-kin:   linear-gradient(180deg, #f0d888 0%, #e8c860 100%);
@@ -1272,20 +1269,19 @@ button[data-toji-kill]::after {
   border-width: var(--era-edge-w) !important;
   border-color: var(--era-edge-color) !important;
 }
-/* INTI: default radius MEMBULAT untuk semua elemen ber-border. Aturan lama
-   hanya menyasar .rounded-none — padahal mayoritas elemen tak punya kelas
-   radius sama sekali (default 0px), jadi sudut tetap tajam ala Shōwa.
-   :where() = specificity 0 → kelas .rounded-full / .rounded-* tetap menang. */
+/* KERTAS: paksa SEMUA sudut TAJAM (kertas dipotong), kecuali lingkaran asli
+   (avatar/segel .rounded-full) yang memang bulat secara semantik. */
 [data-era="heian"] :where([class*="border"]) {
   border-radius: var(--era-radius);
 }
-[data-era="heian"] .rounded-none { border-radius: var(--era-radius) !important; }
-[data-era="heian"] [class*="rounded-sm"] { border-radius: var(--era-radius-sm) !important; }
+[data-era="heian"] [class*="rounded-"]:not(.rounded-full) { border-radius: 0 !important; }
+[data-era="heian"] .rounded-full { border-radius: 9999px !important; }
 
-/* Kasane 襲の色目 — kartu ber-border TANPA warna latar sendiri diberi gradien
-   sutra berlapis. Kartu yang punya bg-* tidak disentuh (biar tak menimpa). */
+/* Kertas: kartu ber-border TANPA warna latar sendiri diberi SERAT kertas
+   (bukan gradien mengkilap ala kartu modern). Kartu ber-bg-* dibiarkan. */
 [data-era="heian"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]) {
-  background-image: var(--era-kasane);
+  background-color: var(--kinari-light-val);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
 /* Tombol aksen (warna solid) diberi gradien + kilau tepi, bukan flat. */
