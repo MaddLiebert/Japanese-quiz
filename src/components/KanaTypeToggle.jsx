@@ -9,7 +9,7 @@ export function KanaTypeToggle({ active, onChange, extraTabs = [] }) {
     ...extraTabs,
   ];
   return (
-    <div className="flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 pb-0 mb-8 sm:mb-12 overflow-x-auto no-scrollbar flex-nowrap">
+    <div className="era-tabs flex items-end gap-4 sm:gap-8 border-b-[2px] border-sumi/10 pb-0 mb-8 sm:mb-12 overflow-x-auto no-scrollbar flex-nowrap">
       {tabs.map(tab => (
         <button
           key={tab.id}

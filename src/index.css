@@ -1218,6 +1218,11 @@ button[data-toji-kill]::after {
   --era-kasane:       linear-gradient(160deg, #fbf8ef 0%, #f6f1e4 55%, #f0e9d6 100%);
   --era-kasane-ai:    linear-gradient(180deg, #6b5a8c 0%, #5b4a7a 100%);
   --era-kasane-kin:   linear-gradient(180deg, #e0c86a 0%, #c9a227 100%);
+  --era-kasane-shu:   linear-gradient(180deg, #c94a58 0%, #b83b4a 100%);
+  --era-kasane-matcha:linear-gradient(180deg, #9aab6f 0%, #7c8a52 100%);
+  --era-kasane-sumi:  linear-gradient(180deg, #4a4239 0%, #2f2921 100%);
+  /* Tepi emas (kindei 金泥) — aksen "segel/brocade" penyatu semua tombol Heian. */
+  --era-gold:         rgba(138, 111, 46, 0.85);
   --era-glow:         inset 0 1px 0 rgba(255, 255, 255, 0.28);
   --era-motion:       600ms;
   --era-ease:         cubic-bezier(0.22, 1, 0.36, 1);
@@ -1259,6 +1264,10 @@ button[data-toji-kill]::after {
   --era-kasane:       linear-gradient(160deg, #221c2a 0%, #1a1620 55%, #141019 100%);
   --era-kasane-ai:    linear-gradient(180deg, #bda6e0 0%, #a98fd6 100%);
   --era-kasane-kin:   linear-gradient(180deg, #f0d888 0%, #e8c860 100%);
+  --era-kasane-shu:   linear-gradient(180deg, #e0606f 0%, #c94a58 100%);
+  --era-kasane-matcha:linear-gradient(180deg, #b3c488 0%, #8fa35f 100%);
+  --era-kasane-sumi:  linear-gradient(180deg, #3b3444 0%, #221c2a 100%);
+  --era-gold:         rgba(196, 164, 90, 0.75);
   --era-glow:         inset 0 1px 0 rgba(255, 255, 255, 0.10);
   --ink:              rgba(236, 227, 210, 0.30);
 }
@@ -1292,9 +1301,56 @@ button[data-toji-kill]::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
-/* Tombol aksen (warna solid) diberi gradien + kilau tepi, bukan flat. */
-[data-era="heian"] [class*="bg-sumi"]:where(button, a) { background-image: var(--era-kasane-ai); }
-[data-era="heian"] [class*="bg-kin"]:where(button, a)  { background-image: var(--era-kasane-kin); }
+/* ── TOMBOL HEIAN — "segel & brokat", bukan blok warna datar ala web ────────
+   Kritik: "tombol ungu/kuning gak nyatu sama vibe Heian, kek modern."
+   Akar: tombol aksen masih FLAT (bg-ai / bg-kin / bg-shu) + hover lompat 2px
+   (khas Shōwa/web). Bahasa Heian = kertas + tinta + tepi emas (kindei 金泥),
+   sudut tajam, kuas (Yuji), gerak lambat. Aturan ini menyatukan SEMUA tombol
+   ber-aksen (ungu 紫, merah 紅, hijau 萌黄, kuning 金, tinta sumi, kertas). */
+
+/* 1) Aksen berwarna → gradien kasane 襲の色目 (berlapis, bukan flat mengkilap)
+      + tepi emas tipis, seperti papan brokat/segel istana. */
+[data-era="heian"] :where(button, a)[class*="bg-ai"]:not([class*="bg-ai/"])     { background-image: var(--era-kasane-ai); }
+[data-era="heian"] :where(button, a)[class*="bg-shu"]:not([class*="bg-shu/"])   { background-image: var(--era-kasane-shu); }
+[data-era="heian"] :where(button, a)[class*="bg-matcha"]:not([class*="bg-matcha/"]) { background-image: var(--era-kasane-matcha); }
+[data-era="heian"] :where(button, a)[class*="bg-kin"]:not([class*="bg-kinari"]):not([class*="bg-kin/"]) { background-image: var(--era-kasane-kin); }
+[data-era="heian"] :where(button, a)[class*="bg-sumi"]:not([class*="bg-sumi/"]) { background-image: var(--era-kasane-sumi); }
+
+/* 2) Tepi emas + bayangan kertas untuk SEMUA tombol ber-latar (kertas & aksen).
+      Tepi emas inilah "penyatu" yang bikin tombol terasa satu keluarga Heian.
+      `!important` perlu karena jaring lama memaksa border-color ke tinta.
+      PENTING: JANGAN transisikan border-color — `transition-all` bawaan tombol
+      + override !important membuat transisinya MACET di warna tinta lama
+      (bug nyata: tepi tetap #1a1a1a). Transisi hanya box-shadow. */
+[data-era="heian"] :where(button, a)[class*="bg-"] {
+  border-width: var(--era-edge-w) !important;
+  border-style: solid !important;
+  border-color: var(--era-gold) !important;
+  box-shadow: var(--era-shadow), var(--era-glow);
+  transition: box-shadow var(--era-motion) var(--era-ease);
+}
+/* Tombol kertas (kinari) = kertas tua, tepi emas, tanpa kilau. */
+[data-era="heian"] :where(button, a)[class*="bg-kinari"]:not([class*="bg-kinari/"]) {
+  background-image: none;
+  box-shadow: var(--era-shadow);
+}
+
+/* 3) Hover Heian: hanya tepi emas menyala + bayangan menguat. TIDAK melompat
+      (translate) dan TIDAK ada bayangan keras ala Shōwa. */
+[data-era="heian"] :where(button, a)[class*="bg-"]:hover {
+  border-color: var(--kin-val) !important;
+  box-shadow: var(--era-shadow-hover), var(--era-glow);
+}
+[data-era="heian"] :where(button, a)[class*="hover:translate-"]:hover { transform: none !important; }
+
+/* 4) Tab aktif (KanaTypeToggle) memakai ungu modern → diganti vermilion 紅.
+      Transisi dimatikan total: `transition` bawaan + override !important bikin
+      warna/border MACET di nilai lama (bug nyata, lihat catatan di atas). */
+[data-era="heian"] .era-tabs button { transition: none !important; }
+[data-era="heian"] .era-tabs [class*="border-ai"] { border-color: var(--shu-val) !important; }
+[data-era="heian"] .era-tabs [class*="text-ai"]   { color: var(--shu-val) !important; }
+
+/* Kilau tepi bawaan untuk tombol ber-border (jaring pengaman lama). */
 [data-era="heian"] :where(button, a)[class*="border"] { box-shadow: var(--era-shadow), var(--era-glow); }
 
 /* ── Revisi kritik: sisa Shōwa berarah + bayangan bernama ───────────────────
