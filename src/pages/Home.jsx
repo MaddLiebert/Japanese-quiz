@@ -9,6 +9,7 @@ import { countMasteredKanji, isN5ExamUnlocked, N5_EXAM_MIN_MASTERED_KANJI } from
 import { DailyQuestPanel } from "../features/quests/DailyQuestPanel";
 import { EraDivider } from "../components/EraDivider";
 import { EraTategaki } from "../components/EraTategaki";
+import { EraPainting } from "../components/EraPainting";
 
 import { StreakIndicator } from "../components/StreakIndicator";
 import { RankBadge } from "../features/progress/RankBadge";
@@ -189,6 +190,10 @@ export function Home() {
             <EraTategaki className="absolute top-8 right-6 sm:top-12 sm:right-10 text-4xl sm:text-6xl text-sumi/20">
               平安
             </EraTategaki>
+
+            {/* Lukisan sumi-e 墨絵 (buatan sendiri) — mengisi ruang kosong
+                kanan-bawah kolom supaya hero tidak terasa lowong. Heian saja. */}
+            <EraPainting className="hidden sm:block absolute right-0 -bottom-2 w-[62%] max-w-[440px] z-0" />
           </div>
 
           <div className="sm:col-span-4 p-8 flex flex-col items-center justify-center bg-kinari relative">

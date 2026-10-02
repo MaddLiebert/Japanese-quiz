@@ -1458,6 +1458,12 @@ button[data-toji-kill]::after {
   opacity: 0.45; pointer-events: none;
 }
 
+/* ── Lukisan sumi-e 墨絵 — hiasan ruang kosong hero (buatan SENDIRI, SVG lokal).
+   Hanya era Heian. Dekoratif: pointer-events dimatikan di komponennya. */
+.era-painting { display: none; }
+[data-era="heian"] .era-painting { display: block; }
+
+
 /* ── Tipografi Heian ─────────────────────────────────────────────────────── */
 .font-display { font-family: var(--font-display); }
 .font-kana    { font-family: var(--font-kana); }
