@@ -7,6 +7,7 @@ import { useDeathQuizSession } from "./useDeathQuizSession";
 import { isDeathQuizUnlocked, DEATH_UNLOCK_XP, DEATH_XP_PENALTY, DEATH_START_LIVES, deathMedaruReward } from "./deathQuiz";
 import { DEATH_SKILLS, DEATH_METER_PER_CHARGE } from "./deathSkills";
 import { Glyph } from "../../components/icons/Glyph";
+import { EraPaper } from "../../components/EraPaper";
 
 // Kartu statistik kecil (nyawa/skor/waktu) — gaya neo-brutalist repo.
 function StatChip({ label, value, accent }) {
@@ -70,7 +71,8 @@ export function DeathQuizScreen() {
   );
 
   const shell = (children) => (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
+      <EraPaper />
       <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
       {backBtn}
       {children}

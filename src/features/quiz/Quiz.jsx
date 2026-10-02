@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Furigana } from "../../components/Furigana";
 import { AudioPlayer } from "../../components/MondaiComponents";
+import { EraPaper } from "../../components/EraPaper";
 import { useItemProgress, useUserStats } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { useEffectLayer } from "../effects/EffectContext";
@@ -87,7 +88,8 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
   if (!currentQuestion) return null;
 
   return (
-    <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+    <div data-quiz-shell className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
+      <EraPaper />
       <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none"></div>
 
       {onBack && (

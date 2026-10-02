@@ -8,6 +8,7 @@ import { useEra } from "../features/theme/EraContext";
 import { ERAS } from "../features/theme/eras";
 import { tutorialButtonVisible } from "../features/tutorial/tutorials";
 import { DevPanel } from "../features/dev/DevPanel"; // DEV-ONLY — hapus baris ini untuk membuang panel cheat
+import { EraPaper } from "../components/EraPaper";
 
 export function Settings() {
   const { resetProgress, progress, setTutorialHidden } = useUserStats();
@@ -30,7 +31,8 @@ export function Settings() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+      <EraPaper />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

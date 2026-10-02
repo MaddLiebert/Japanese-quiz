@@ -6,6 +6,7 @@ import Quiz from "./Quiz";
 import { useLanguage } from "../../context/LanguageContext";
 
 import { localized, localizedArray } from "../../utils/localize";
+import { EraPaper } from "../../components/EraPaper";
 
 const MondaiChapterFlow = () => {
   const navigate = useNavigate();
@@ -54,7 +55,8 @@ const MondaiChapterFlow = () => {
   // ── Chapter Selector View (Kurikulum MNN Pattern) ───────────────────────────
   if (view === "selector") {
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+        <EraPaper />
         <button 
           onClick={() => navigate(-1)}
           className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20"
@@ -128,7 +130,8 @@ const MondaiChapterFlow = () => {
   // ── Chapter Intro View (Kurikulum MNN Pattern) ──────────────────────────────
   if (view === "intro" && selectedChapter) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
+        <EraPaper />
         <button 
           onClick={() => setView("selector")}
           className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20"
@@ -176,7 +179,7 @@ const MondaiChapterFlow = () => {
   // ── Quiz View ───────────────────────────────────────────────────────────────
   if (view === "quiz" && selectedChapter) {
     return (
-      <div className="min-h-screen bg-kinari-light flex flex-col">
+      <div className="min-h-screen bg-kinari-light flex flex-col isolate">
         <Quiz
           chapter={selectedChapter}
           onComplete={handleQuizComplete}

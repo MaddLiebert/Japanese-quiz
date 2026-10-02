@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { useLanguage } from "../context/LanguageContext";
 import { localized } from "../utils/localize";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
+import { EraPaper } from "./EraPaper";
 
 export function AudioPlayer({
   audioSrc = "/audio/sample.mp3",
@@ -438,7 +439,8 @@ export function MondaiQuizResult({
   else if (percentage >= 60) grade = 'B';
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 min-h-screen flex flex-col items-center justify-center">
+    <div className="relative max-w-4xl mx-auto px-4 py-8 min-h-screen flex flex-col items-center justify-center">
+      <EraPaper />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -9,6 +9,7 @@ import { SHOP_ITEMS, itemName, itemDesc } from "../items/items";
 import { gachaPoolInfo, PACK_RARITY, rarityOdds } from "../packs/packs";
 import { packPalette, accentInk } from "../packs/rarityStyle";
 import { GachaSlotOverlay } from "../gacha/GachaSlotOverlay";
+import { EraPaper } from "../../components/EraPaper";
 
 const GACHA_PRICE_1X = 100;
 const GACHA_PRICE_10X = 900;
@@ -46,7 +47,8 @@ export function Shop() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+      <EraPaper />
       {/* Back button */}
       <button
         onClick={() => navigate('/')}

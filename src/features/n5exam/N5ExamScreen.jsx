@@ -10,6 +10,7 @@ import {
   formatClock, LKR_MAX, LISTENING_MAX, N5_PASS_TOTAL, N5_PASS_LKR, N5_PASS_LISTENING,
 } from "./n5exam";
 import { mondaiLabel, mondaiGloss } from "./mondaiLabels";
+import { EraPaper } from "../../components/EraPaper";
 
 // Kartu statistik kecil (neo-brutalist, sama seperti Death Quiz).
 export function N5ExamScreen() {
@@ -20,7 +21,8 @@ export function N5ExamScreen() {
   const [confirmQuit, setConfirmQuit] = useState(false);
 
   const shell = (children) => (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
+      <EraPaper />
       <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
       {children}
       {confirmQuit && (

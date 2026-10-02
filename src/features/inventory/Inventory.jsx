@@ -8,6 +8,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { PACKS, isPackReady } from "../packs/packs";
 import { PackCard } from "../packs/PackCard";
 import { inventoryList, countItems, itemName, itemDesc } from "../items/items";
+import { EraPaper } from "../../components/EraPaper";
 
 export function Inventory() {
   const { progress, togglePack, consumeItem } = useUserStats();
@@ -26,7 +27,8 @@ export function Inventory() {
   const totalSlots = packs.length + totalItems;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+      <EraPaper />
       {/* Back button */}
       <button
         onClick={() => navigate('/')}

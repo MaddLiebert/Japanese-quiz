@@ -11,6 +11,7 @@ import { useItemProgress, useAchievements } from '../progress/ProgressContext';
 import { useEffectLayer } from '../effects/EffectContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { playDramaticAudio } from '../../utils/audio';
+import { EraPaper } from '../../components/EraPaper';
 
 // Ukuran teks besar sesi: kunci speakTextSize() → kelas Tailwind literal.
 // Batasnya dipilih agar teks terpanjang (10 huruf) maksimal 2 baris di 320px.
@@ -102,7 +103,8 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
 
   if (!item) {
     return (
-      <div className="max-w-2xl mx-auto px-4 sm:px-8 py-16 min-h-screen flex flex-col items-center justify-center text-center">
+      <div className="relative max-w-2xl mx-auto px-4 sm:px-8 py-16 min-h-screen flex flex-col items-center justify-center text-center">
+        <EraPaper />
         <div className="mb-6 flex justify-center text-shu"><Glyph name="celebrate" size={64} strokeWidth={1.8} /></div>
         <h2 className="text-3xl sm:text-4xl font-serif font-black text-sumi mb-3">
           {id ? 'Sesi selesai!' : 'Session complete!'}
@@ -124,7 +126,8 @@ export function SpeakSession({ items = [], startIndex = 0, level = DEFAULT_SPEAK
   const errText = error ? (ERROR_TEXT[error] || { id: 'Gagal merekam. Coba lagi.', en: 'Recording failed. Try again.' })[id ? 'id' : 'en'] : null;
 
   return (
-    <div className={`max-w-2xl mx-auto px-4 sm:px-8 pt-14 sm:pt-16 ${listening ? 'pb-44' : 'pb-8 sm:pb-16'} min-h-screen flex flex-col`}>
+    <div className={`relative max-w-2xl mx-auto px-4 sm:px-8 pt-14 sm:pt-16 ${listening ? 'pb-44' : 'pb-8 sm:pb-16'} min-h-screen flex flex-col`}>
+      <EraPaper />
       <MicOverlay open={listening} interim={interim} level={micLevel} onCancel={cancel} />
       <div className="flex items-center justify-between mb-8">
         <button

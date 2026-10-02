@@ -4,6 +4,7 @@ import { Furigana } from './Furigana';
 import { useSpeechRecognition } from './useSpeechRecognition';
 import { appendSpeechEvent } from './speechLog';
 import { MicOverlay } from './MicOverlay';
+import { EraPaper } from '../../components/EraPaper';
 import { matchSpeech, verdictOf } from './speechMatch';
 import { lineReading, poemLineItems, speakXpFor, lineXpFor, speakLevel, DEFAULT_SPEAK_LEVEL } from './speaking';
 import { useItemProgress, useAchievements, useUserStats } from '../progress/ProgressContext';
@@ -96,7 +97,8 @@ export function PoemSession({ poem, level = DEFAULT_SPEAK_LEVEL, onExit }) {
   if (!poem) return null;
 
   return (
-    <div className={`max-w-2xl mx-auto px-4 sm:px-8 pt-14 sm:pt-16 ${listening ? 'pb-44' : 'pb-8 sm:pb-16'} min-h-screen flex flex-col`}>
+    <div className={`relative max-w-2xl mx-auto px-4 sm:px-8 pt-14 sm:pt-16 ${listening ? 'pb-44' : 'pb-8 sm:pb-16'} min-h-screen flex flex-col`}>
+      <EraPaper />
       <MicOverlay open={listening} interim={interim} level={micLevel} onCancel={cancel} />
       <div className="flex items-center justify-between mb-6">
         <button

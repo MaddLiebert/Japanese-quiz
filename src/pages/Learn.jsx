@@ -15,6 +15,7 @@ import { categoryTranslations } from "../utils/translations";
 import { Search } from "lucide-react";
 import { KanaTypeToggle } from "../components/KanaTypeToggle";
 import { PoemReader } from "../features/learn/PoemReader";
+import { EraPaper } from "../components/EraPaper";
 
 export function Learn() {
   const navigate = useNavigate();
@@ -73,7 +74,8 @@ export function Learn() {
   // ── Row Selection View ────────────────────────────────────────────────────────
   if (!selectedRow) {
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+        <EraPaper />
         <button 
           onClick={() => navigate(-1)}
           className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20"
@@ -258,7 +260,8 @@ export function Learn() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen flex flex-col">
+    <div className="relative max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen flex flex-col">
+      <EraPaper />
       <header className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-6 mb-12 border-b-[4px] border-sumi pb-6 relative">
         <div className="absolute top-0 right-0 w-32 h-32 bg-asanoha opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
         <div className="relative z-10">

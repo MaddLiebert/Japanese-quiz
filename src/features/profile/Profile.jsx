@@ -18,6 +18,7 @@ import mondaiData from '../../data/mondai.json';
 import poemsData from '../../data/poems.json';
 import n5ExamData from '../../data/n5-exam.json';
 import { buildSubjectMastery, flattenExamData, SUBJECT_LABEL_ID } from './subjectMastery';
+import { EraPaper } from '../../components/EraPaper';
 
 // Hanko Stamp component matching Home.jsx
 const HankoStamp = ({ text, label, delay = 0.2 }) => (
@@ -108,7 +109,8 @@ export function Profile() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+      <EraPaper />
       {/* Back button */}
       <button
         onClick={() => navigate('/')}

@@ -1574,10 +1574,10 @@ button[data-toji-kill]::after {
 [data-era="heian"] .era-tategaki-only { display: block; }
 
 /* ── 8. Lembar kertas (washi) di BELAKANG konten halaman ─────────────────────
-   Latar halaman Practice: SATU lembar kertas tua besar persis di belakang
+   Latar halaman era Heian: SATU lembar kertas tua besar persis di belakang
    judul/tab/tombol — sama seperti panel Home — supaya konten tidak "ngambang"
-   di latar kosong. Hanya era Heian.
-   Pembungkus di Practice WAJIB `position: relative`; lapisan ini absolute
+   di latar kosong. Dipakai lewat komponen <EraPaper /> (src/components/EraPaper.jsx).
+   Pembungkus halaman WAJIB `position: relative`; lapisan ini absolute
    (sedikit melebar keluar) + z-index:-1 → di belakang konten dalam, tapi tetap
    di atas latar global app. Dekoratif: pointer-events:none. */
 .era-paper-sheet {
@@ -1610,4 +1610,8 @@ button[data-toji-kill]::after {
   box-shadow:
     0 12px 38px -16px rgba(0, 0, 0, 0.65),
     0 2px 6px -2px rgba(0, 0, 0, 0.4);
+}
+/* Layar kecil: sembunyikan supaya tidak mengganggu keterbacaan di ponsel. */
+@media (max-width: 767px) {
+  .era-paper-sheet { display: none !important; }
 }

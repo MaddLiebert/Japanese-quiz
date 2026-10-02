@@ -15,6 +15,7 @@ import kanjiData from "../data/kanji.json";
 import poemsData from "../data/poems.json";
 
 import { Button } from "../components/ui/Button";
+import { EraPaper } from "../components/EraPaper";
 
 const allData = [
   ...hiraganaData,
@@ -182,7 +183,8 @@ export function Review() {
   // View 1: Empty State
   if (!isReviewing && globalWeakCharacters.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col items-center justify-center relative">
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col items-center justify-center">
+        <EraPaper />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none rounded-full blur-xl"></div>
         <div className="text-center relative z-10">
           <div className="w-16 h-16 sm:w-20 sm:h-20 border-[4px] border-sumi/20 rounded-full flex items-center justify-center mx-auto mb-8">
@@ -208,7 +210,8 @@ export function Review() {
   // View 2: Pre-Review List
   if (!isReviewing && globalWeakCharacters.length > 0) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen">
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen">
+        <EraPaper />
         <button
           onClick={() => navigate('/')}
           className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group"
@@ -266,7 +269,8 @@ export function Review() {
     const isKana = !isKotoba && !isKanji && !isGrammar && !isPoem;
 
     return (
-      <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+      <div data-quiz-shell className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
+        <EraPaper />
         <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
         <header className="flex justify-between items-end mb-12 border-b-[4px] border-sumi pb-6 relative z-10">

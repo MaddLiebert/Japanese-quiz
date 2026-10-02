@@ -1,4 +1,5 @@
 import { Glyph } from "../components/icons/Glyph";
+import { EraPaper } from "../components/EraPaper";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +36,8 @@ function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome
   const wrongItems = wrongAnswers.map(id => allData.find(item => item.id === id)).filter(Boolean);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col items-center justify-center">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col items-center justify-center">
+      <EraPaper />
       <h2 className="text-4xl sm:text-5xl font-serif text-sumi mb-12 font-black tracking-tight">
         {language === 'id' ? 'Hasil Kuis' : 'Quiz Results'}
       </h2>
@@ -452,7 +454,8 @@ export function Practice() {
       // ── Kanji Quiz UI ────────────────────────────────────────────────────────
       if (isKanjiMode) {
         return (
-          <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+          <div data-quiz-shell className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
+            <EraPaper />
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
             <button
@@ -649,7 +652,8 @@ export function Practice() {
       if (isKotobaMode) {
 
         return (
-          <div data-quiz-shell className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+          <div data-quiz-shell className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
+            <EraPaper />
             <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
             <button
@@ -854,9 +858,8 @@ export function Practice() {
     <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen">
       {/* Lembar kertas (washi) di BELAKANG konten — era Heian saja. Sama seperti
           panel Home, supaya teks/tab/tombol tidak "ngambang" di latar kosong.
-          z-index:-1 → di belakang konten dalam, tetap di atas latar global app.
           Dekoratif: aria-hidden. */}
-      <div className="era-paper-sheet" aria-hidden="true" />
+      <EraPaper />
       <button
         onClick={() => navigate(-1)}
         className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20"

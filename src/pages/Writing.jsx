@@ -15,6 +15,7 @@ import { playDramaticAudio } from '../utils/audio';
 import { categoryTranslations } from '../utils/translations';
 import { useLanguage } from '../context/LanguageContext';
 import { Button } from '../components/ui/Button';
+import { EraPaper } from '../components/EraPaper';
 import hiraganaData from '../data/hiragana.json';
 import katakanaData from '../data/katakana.json';
 import kanjiData from '../data/kanji.json';
@@ -105,7 +106,8 @@ export function Writing() {
   // ── View 1: pilih grup ─────────────────────────────────────────────────────
   if (!group) {
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
+        <EraPaper />
         <button
           onClick={() => navigate(-1)}
           className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group"
@@ -181,7 +183,8 @@ export function Writing() {
   const writable = isWritable(item);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen flex flex-col">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen flex flex-col">
+      <EraPaper />
       <button
         onClick={() => setActiveGroupKey(null)}
         className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group w-fit"

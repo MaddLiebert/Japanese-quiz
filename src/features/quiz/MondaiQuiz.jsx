@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Furigana } from "../../components/Furigana";
 import { QuizHeader, AudioPlayer, ExplanationBox, MondaiQuizResult } from "../../components/MondaiComponents";
+import { EraPaper } from "../../components/EraPaper";
 import { useUserStats, useItemProgress } from "../progress/ProgressContext";
 import mondaiData from "../../data/mondai.json";
 import { useNavigate } from "react-router-dom";
@@ -115,7 +116,8 @@ export function MondaiQuiz() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col relative">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
+      <EraPaper />
       <div className="absolute top-0 right-0 w-64 h-64 bg-seigaiha opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
 
       <button
