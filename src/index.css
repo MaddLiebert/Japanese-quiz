@@ -1224,17 +1224,18 @@ button[data-toji-kill]::after {
 
   --ink:              rgba(58, 51, 43, 0.42);
 
-  /* ── TIPOGRAFI — fondasi utama vibe Heian ────────────────────────────────
-     Biang kerok "terasa web modern": seluruh UI memakai Inter (sans-serif
-     ala dashboard SaaS) — hasil ukur DOM: Inter 61 elemen, Yuji Syuku cuma 2.
-     Di era Heian semua teks jadi serif Minchō (aksara buku cetak Jepang) dan
-     judul hero jadi Yuji Syuku (gaya kuas). Override variabel @theme → efeknya
-     menjalar ke SELURUH app tanpa menyentuh per-komponen. */
-  --font-sans:  "Shippori Mincho", "Noto Serif JP", serif;
-  --font-serif: "Shippori Mincho", "Noto Serif JP", serif;
-  /* Mono = huruf teknis ala dashboard → diganti serif. Label kecil bergaya
-     "CHAPTER TOPIC" berhenti terasa modern. (kritik: "font sebagian modern") */
-  --font-mono:  "Shippori Mincho", "Noto Serif JP", serif;
+  /* ── TIPOGRAFI — SEMUA teks = aksara KUAS (kritik: "semua font kaya tinta
+     sumi, gak serif, pure kek zaman Heian tulisannya"). Sebelumnya body masih
+     Minchō (huruf buku cetak) — itu masih terasa "cetak", bukan "tulis".
+     Zaman Heian tulisannya = kuas tinta (筆 sumi), jadi sans/serif/mono/display
+     semuanya jadi Yuji Syuku. Hasil uji font: Yuji Syuku satu-satunya yang
+     kuas-nya kuat TAPI teks kecil & angka tetap kebaca (Yuji Boku/Mai terlalu
+     liar, huruf saling menempel). Override variabel → menjalar ke SELURUH app. */
+  --font-sans:    "Yuji Syuku", "Shippori Mincho", serif;
+  --font-serif:   "Yuji Syuku", "Shippori Mincho", serif;
+  --font-mono:    "Yuji Syuku", "Shippori Mincho", serif;
+  --font-kana:    "Yuji Syuku", "Shippori Mincho", serif;
+  --font-display: "Yuji Syuku", "Shippori Mincho", serif;
 }
 
 /* Judul hero memakai aksara kuas (Yuji Syuku), bukan serif tebal biasa. */
