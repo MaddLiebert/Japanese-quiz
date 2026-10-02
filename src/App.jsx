@@ -151,6 +151,33 @@ function App() {
                 <span className="era-watermark" style={{ bottom: '-6rem', right: '4rem', fontSize: '24rem' }}>雲</span>
               </div>
 
+              {/* 2c. Filter SVG: tepi tinta kuas 筆致 — feDisplacementMap membuat
+                  garis tepi bergoyang (tidak rata mesin). Dipakai CSS via
+                  url(#heian-ink). */}
+              <svg aria-hidden="true" focusable="false" width="0" height="0"
+                   style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+                <defs>
+                  <filter id="heian-ink" x="-10%" y="-10%" width="120%" height="120%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.014 0.022" numOctaves="2" seed="9" result="n" />
+                    <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G" />
+                  </filter>
+                  <filter id="heian-rough" x="-12%" y="-12%" width="124%" height="124%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.05 0.06" numOctaves="3" seed="3" result="r" />
+                    <feDisplacementMap in="SourceGraphic" in2="r" scale="6" xChannelSelector="R" yChannelSelector="G" />
+                  </filter>
+                </defs>
+              </svg>
+
+              {/* 2d. Noda tinta 染み (shimi) — bercak samar seperti kertas tua. */}
+              <div className="era-stain-layer" aria-hidden="true">
+                <svg className="era-stain" viewBox="0 0 200 180" style={{ top: '10%', left: '5%', width: 360, height: 320 }}>
+                  <path d="M40 92 C28 52 70 18 112 30 C152 42 176 72 168 112 C160 152 118 172 78 160 C44 150 50 128 40 92 Z" />
+                </svg>
+                <svg className="era-stain" viewBox="0 0 200 180" style={{ bottom: '7%', right: '9%', width: 300, height: 270 }}>
+                  <path d="M52 96 C40 60 78 30 116 40 C154 50 172 84 160 118 C148 150 108 164 74 150 C48 140 60 124 52 96 Z" />
+                </svg>
+              </div>
+
               {/* Global Top Controls */}
               <TopControls />
 

@@ -76,7 +76,7 @@ export function Home() {
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="w-full max-w-md border-[4px] border-sumi bg-kinari-light p-8 shadow-[8px_8px_0_0_#1a1a1a] relative"
+            className="w-full max-w-md border-[4px] border-sumi bg-kinari-light p-8 shadow-[8px_8px_0_0_#1a1a1a] relative ink-edge"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-sumi text-kinari-light flex items-center justify-center font-serif text-xl font-black">
@@ -140,7 +140,7 @@ export function Home() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="border-[4px] border-sumi bg-kinari-light relative overflow-hidden shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] heian-enter"
+        className="border-[4px] border-sumi bg-kinari-light relative overflow-hidden shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] heian-enter paper-deckle"
       >
 
         {/* Background Decorative Kanji */}

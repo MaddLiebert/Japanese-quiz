@@ -1483,3 +1483,35 @@ button[data-toji-kill]::after {
   [data-era="heian"] .era-divider__band::before,
   [data-era="heian"] .era-divider__band::after { animation: none !important; }
 }
+
+/* ── 4. Tepi tinta kuas 筆致 — garis tepi bergoyang, bukan garis mesin ─────
+   CATATAN: elemen target WAJIB sudah ber-position (relative/absolute/fixed);
+   jangan pasang di elemen statis. */
+[data-era="heian"] .ink-edge { border-color: transparent !important; }
+[data-era="heian"] .ink-edge::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  border: 1.7px solid var(--era-edge-color);
+  filter: url(#heian-ink);
+}
+
+/* ── 5. Tepi kertas robek (deckle edge) — tepi lembar bergerigi, tidak lurus
+   mesin. CATATAN: border-image ditolak Lightning CSS (border shorthand
+   me-reset-nya), jadi dipakai pseudo-element + filter displacement kasar —
+   cara yang sama seperti .ink-edge, terbukti jalan. Elemen wajib ber-position. */
+[data-era="heian"] .paper-deckle { border-color: transparent !important; }
+[data-era="heian"] .paper-deckle::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  border: 2.4px solid var(--era-edge-color);
+  filter: url(#heian-rough);
+}
+
+/* ── 6. Noda tinta 染み (shimi) — bercak samar seperti kertas tua ────────── */
+.era-stain-layer {
+  position: fixed; inset: 0; overflow: hidden;
+  pointer-events: none; z-index: 0; display: none;
+}
+[data-era="heian"] .era-stain-layer { display: block; }
+.era-stain { position: absolute; opacity: 0.05; }
+.era-stain path { fill: var(--sumi-val); }
+.dark .era-stain,
+[data-theme="dark"] .era-stain { opacity: 0.075; }
