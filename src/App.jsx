@@ -171,7 +171,7 @@ function App() {
                       :where(button,a)[class*=bg-] (lihat index.css "TOMBOL HEIAN"). */}
                   <filter id="heian-torn" x="-18%" y="-18%" width="136%" height="136%">
                     <feTurbulence type="fractalNoise" baseFrequency="0.026 0.032" numOctaves="2" seed="7" result="t" />
-                    <feDisplacementMap in="SourceGraphic" in2="t" scale="12" xChannelSelector="R" yChannelSelector="G" />
+                    <feDisplacementMap in="SourceGraphic" in2="t" scale="9" xChannelSelector="R" yChannelSelector="G" />
                   </filter>
                 </defs>
               </svg>

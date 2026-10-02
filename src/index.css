@@ -1322,19 +1322,30 @@ button[data-toji-kill]::after {
 [data-era="heian"] :where(button, a)[class*="bg-kin"]:not([class*="bg-kinari"]):not([class*="bg-kin/"]) { background-image: var(--era-kasane-kin); }
 [data-era="heian"] :where(button, a)[class*="bg-sumi"]:not([class*="bg-sumi/"]) { background-image: var(--era-kasane-sumi); }
 
-/* 2) Tepi emas + bayangan kertas + tepi SOBEK untuk SEMUA tombol ber-latar.
-      Tepi emas = "penyatu" keluarga Heian. Filter #heian-torn mengubah tepi
-      lurus mesin → koyak kertas (deckle), jadi tombol tidak lagi "ngotak".
-      `!important` perlu karena jaring lama memaksa border-color ke tinta.
-      PENTING: JANGAN transisikan border-color — `transition-all` bawaan tombol
-      + override !important membuat transisinya MACET di warna tinta lama
-      (bug nyata: tepi tetap #1a1a1a). Transisi hanya box-shadow. */
+/* 2) Tepi emas + tepi SOBEK untuk SEMUA tombol ber-latar.
+      PENTING (kritik: "kebanyakan, teks jadi berantakan"): filter `#heian-torn`
+      TIDAK boleh dipasang di tombolnya langsung — filter mengena SELURUH isi,
+      termasuk TEKS, sehingga huruf ikut terdistorsi (makin parah di tombol
+      kecil). Solusi: kertas sobek dipindah ke lapisan belakang `::before`
+      (background: inherit → warna/gradien sama dengan tombol), teks tetap di
+      tombol → HURUF SELALU TAJAM, hanya tepi kertas yang koyak.
+      `!important` pada border-color perlu karena jaring lama memaksa ke tinta. */
 [data-era="heian"] :where(button, a)[class*="bg-"] {
-  border-width: var(--era-edge-w) !important;
-  border-style: solid !important;
-  border-color: var(--era-gold) !important;
+  position: relative;
+  isolation: isolate;              /* agar ::before (z-index:-1) tetap di dalam */
+  border-color: transparent !important;  /* tepi persegi disembunyikan; ::before yg gambar */
+  filter: none !important;         /* jangan ada distorsi sisa pada teks */
+}
+[data-era="heian"] :where(button, a)[class*="bg-"]::before {
+  content: "";
+  position: absolute;
+  inset: -6px;                     /* lebih besar dari pergeseran sobek → sudut persegi tombol tertutup */
+  z-index: -1;                     /* di belakang teks, di atas bg tombol */
+  background: inherit;             /* warna/gradien sama seperti tombol */
+  border: var(--era-edge-w) solid var(--era-gold);
   filter: url(#heian-torn) var(--era-drop);
   transition: filter var(--era-motion) var(--era-ease);
+  pointer-events: none;
 }
 /* Tombol kertas (kinari) = kertas tua, tepi emas, tanpa gradien. */
 [data-era="heian"] :where(button, a)[class*="bg-kinari"]:not([class*="bg-kinari/"]) {
@@ -1343,8 +1354,8 @@ button[data-toji-kill]::after {
 
 /* 3) Hover Heian: hanya tepi emas menyala + bayangan menguat. TIDAK melompat
       (translate) dan TIDAK ada bayangan keras ala Shōwa. */
-[data-era="heian"] :where(button, a)[class*="bg-"]:hover {
-  border-color: var(--kin-val) !important;
+[data-era="heian"] :where(button, a)[class*="bg-"]:hover::before {
+  border-color: var(--kin-val);
   filter: url(#heian-torn) var(--era-drop-hover);
 }
 [data-era="heian"] :where(button, a)[class*="hover:translate-"]:hover { transform: none !important; }
