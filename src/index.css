@@ -1197,13 +1197,25 @@ button[data-toji-kill]::after {
   --kin-val:          #c9a227;  /* 金 kin */
   --backdrop-val:     #e9e2d0;  /* 砂 suna */
 
-  /* Bentuk — inti perubahan "berat" (Shōwa tebal → Heian tipis) */
+  /* Bentuk — inti perubahan "berat" (Shōwa kotak keras → Heian sutra mengambang) */
   --era-edge-w:       1px;
-  --era-edge-color:   rgba(58, 51, 43, 0.42);
-  --era-radius:       10px;
-  --era-radius-sm:    6px;
-  --era-shadow:       0 6px 28px -6px rgba(58, 51, 43, 0.28);
-  --era-shadow-hover: 0 12px 40px -8px rgba(58, 51, 43, 0.38);
+  --era-edge-color:   rgba(58, 51, 43, 0.20);
+  --era-radius:       16px;   /* dulu 10 — dibesarkan supaya sudut terasa membulat */
+  --era-radius-sm:    10px;
+  --era-radius-xs:    6px;
+  /* Shadow BERLAPIS (3 lapis) — bukan satu lapis. Ini yang bikin "mengambang
+     dalam kabut", bukan "ditempel". Lihat board: docs/tema/_board-heian.html */
+  --era-shadow:       0 1px 2px rgba(58, 51, 43, 0.06),
+                      0 12px 28px -12px rgba(58, 51, 43, 0.32),
+                      0 32px 60px -34px rgba(91, 74, 122, 0.30);
+  --era-shadow-hover: 0 2px 4px rgba(58, 51, 43, 0.08),
+                      0 18px 38px -14px rgba(58, 51, 43, 0.38),
+                      0 44px 80px -40px rgba(91, 74, 122, 0.38);
+  /* Gradien kasane 襲の色目 — warna berlapis khas Heian (bukan flat) */
+  --era-kasane:       linear-gradient(160deg, #fbf8ef 0%, #f6f1e4 55%, #f0e9d6 100%);
+  --era-kasane-ai:    linear-gradient(180deg, #6b5a8c 0%, #5b4a7a 100%);
+  --era-kasane-kin:   linear-gradient(180deg, #e0c86a 0%, #c9a227 100%);
+  --era-glow:         inset 0 1px 0 rgba(255, 255, 255, 0.28);
   --era-motion:       600ms;
   --era-ease:         cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -1220,28 +1232,59 @@ button[data-toji-kill]::after {
   --matcha-val:       #a3b57a;
   --kin-val:          #e8c860;
   --backdrop-val:     #100d16;
-  --era-edge-color:   rgba(236, 227, 210, 0.30);
-  --era-shadow:       0 6px 28px -6px rgba(0, 0, 0, 0.55);
-  --era-shadow-hover: 0 12px 40px -8px rgba(0, 0, 0, 0.65);
+  --era-edge-color:   rgba(236, 227, 210, 0.20);
+  --era-shadow:       0 1px 2px rgba(0, 0, 0, 0.45),
+                      0 12px 28px -12px rgba(0, 0, 0, 0.60),
+                      0 32px 64px -30px rgba(169, 143, 214, 0.22);
+  --era-shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.55),
+                      0 18px 40px -14px rgba(0, 0, 0, 0.70),
+                      0 44px 84px -38px rgba(169, 143, 214, 0.30);
+  --era-kasane:       linear-gradient(160deg, #221c2a 0%, #1a1620 55%, #141019 100%);
+  --era-kasane-ai:    linear-gradient(180deg, #bda6e0 0%, #a98fd6 100%);
+  --era-kasane-kin:   linear-gradient(180deg, #f0d888 0%, #e8c860 100%);
+  --era-glow:         inset 0 1px 0 rgba(255, 255, 255, 0.10);
   --ink:              rgba(236, 227, 210, 0.30);
 }
 
 /* ── Jaring pengaman: 277 kelas shadow keras + border tebal hardcoded di
-   komponen → dipaksa jadi "lembut & tipis" saat era Heian. Ini bikin Heian
-   langsung benar di SELURUH app tanpa harus migrasi 277 kelas dulu.
+   komponen → dipaksa jadi "lembut & tipis & membulat" saat era Heian. Ini
+   bikin Heian langsung benar di SELURUH app tanpa migrasi per-komponen.
    Migrasi bersih ke .card-edge menyusul per-layar. ────────────────────────── */
 [data-era="heian"] [class*="shadow-["] {
   box-shadow: var(--era-shadow) !important;
 }
 [data-era="heian"] [class*="border-4"],
 [data-era="heian"] [class*="border-2"],
+[data-era="heian"] [class*="border-3"],
 [data-era="heian"] [class*="border-["] {
   border-width: var(--era-edge-w) !important;
   border-color: var(--era-edge-color) !important;
 }
-[data-era="heian"] .rounded-none {
-  border-radius: var(--era-radius) !important;
+/* INTI: default radius MEMBULAT untuk semua elemen ber-border. Aturan lama
+   hanya menyasar .rounded-none — padahal mayoritas elemen tak punya kelas
+   radius sama sekali (default 0px), jadi sudut tetap tajam ala Shōwa.
+   :where() = specificity 0 → kelas .rounded-full / .rounded-* tetap menang. */
+[data-era="heian"] :where([class*="border"]) {
+  border-radius: var(--era-radius);
 }
+[data-era="heian"] .rounded-none { border-radius: var(--era-radius) !important; }
+[data-era="heian"] [class*="rounded-sm"] { border-radius: var(--era-radius-sm) !important; }
+
+/* Kasane 襲の色目 — kartu ber-border TANPA warna latar sendiri diberi gradien
+   sutra berlapis. Kartu yang punya bg-* tidak disentuh (biar tak menimpa). */
+[data-era="heian"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]) {
+  background-image: var(--era-kasane);
+}
+
+/* Tombol aksen (warna solid) diberi gradien + kilau tepi, bukan flat. */
+[data-era="heian"] [class*="bg-sumi"]:where(button, a) { background-image: var(--era-kasane-ai); }
+[data-era="heian"] [class*="bg-kin"]:where(button, a)  { background-image: var(--era-kasane-kin); }
+[data-era="heian"] :where(button, a)[class*="border"] { box-shadow: var(--era-shadow), var(--era-glow); }
+
+/* Motif seigaiha (gelombang = Edo/Shōwa) dipensiunkan di era Heian → awan.
+   Kecualikan .era-pattern (elemen latar) supaya awan Heian tidak ikut dimatikan. */
+[data-era="heian"] .bg-seigaiha:not(.era-pattern),
+[data-era="heian"] .bg-asanoha:not(.era-pattern) { background-image: none !important; }
 
 /* ── Utilitas era: pengganti kelas shadow keras. Dipakai bertahap. ────────── */
 .card-edge {
@@ -1257,12 +1300,26 @@ button[data-toji-kill]::after {
 
 /* ── Motif Heian: awan 雲 (latar) + maple 紅葉 (aksen) + bulan 月 ──────────── */
 [data-era="heian"] .era-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120'%3E%3Cg fill='none' stroke='%233a332b' stroke-width='1.2' opacity='0.16'%3E%3Cpath d='M10 80 Q40 55 70 80 T130 80'/%3E%3Cpath d='M120 40 Q150 15 180 40 T240 40'/%3E%3Cpath d='M0 110 Q30 90 60 110 T120 110'/%3E%3C/g%3E%3C/svg%3E");
-  animation: heian-drift 90s linear infinite;
+  /* Awan bergaya kumo (garis berlapis) — dulu opacity 0.16 terlalu samar. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Cg fill='none' stroke='%235b4a7a' stroke-width='1.4' opacity='0.30'%3E%3Cpath d='M8 96 Q48 64 88 96 T168 96'/%3E%3Cpath d='M150 46 Q190 14 230 46 T310 46'/%3E%3Cpath d='M-6 132 Q34 106 74 132 T154 132'/%3E%3Cpath d='M96 20 Q126 2 156 20 T216 20'/%3E%3C/g%3E%3Cg fill='none' stroke='%23c9a227' stroke-width='1' opacity='0.16'%3E%3Cpath d='M40 60 Q70 42 100 60 T160 60'/%3E%3Cpath d='M190 108 Q220 90 250 108 T310 108'/%3E%3C/g%3E%3C/svg%3E");
+  /* kontainer di App.jsx pakai opacity-10/5 → terlalu samar. Naikkan supaya
+     awan benar-benar terlihat (tetap halus, tidak mengganggu). */
+  opacity: 0.55 !important;
+  animation: heian-drift 120s linear infinite;
 }
 .dark[data-era="heian"] .era-pattern,
 [data-theme="dark"][data-era="heian"] .era-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120'%3E%3Cg fill='none' stroke='%23ece3d2' stroke-width='1.2' opacity='0.10'%3E%3Cpath d='M10 80 Q40 55 70 80 T130 80'/%3E%3Cpath d='M120 40 Q150 15 180 40 T240 40'/%3E%3Cpath d='M0 110 Q30 90 60 110 T120 110'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.6 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Cg fill='none' stroke='%23a98fd6' stroke-width='1.4' opacity='0.34'%3E%3Cpath d='M8 96 Q48 64 88 96 T168 96'/%3E%3Cpath d='M150 46 Q190 14 230 46 T310 46'/%3E%3Cpath d='M-6 132 Q34 106 74 132 T154 132'/%3E%3Cpath d='M96 20 Q126 2 156 20 T216 20'/%3E%3C/g%3E%3Cg fill='none' stroke='%23e8c860' stroke-width='1' opacity='0.20'%3E%3Cpath d='M40 60 Q70 42 100 60 T160 60'/%3E%3Cpath d='M190 108 Q220 90 250 108 T310 108'/%3E%3C/g%3E%3C/svg%3E");
+}
+/* Kabut 霞 — gradien tipis vertikal biar latar "bernafas" (bukan rata). */
+[data-era="heian"] body {
+  background-image: linear-gradient(180deg, rgba(91, 74, 122, 0.05) 0%, rgba(201, 162, 39, 0.04) 45%, rgba(91, 74, 122, 0.05) 100%);
+  background-attachment: fixed;
+}
+.dark[data-era="heian"] body,
+[data-theme="dark"][data-era="heian"] body {
+  background-image: linear-gradient(180deg, rgba(169, 143, 214, 0.07) 0%, rgba(232, 200, 96, 0.04) 50%, rgba(169, 143, 214, 0.07) 100%);
 }
 [data-era="heian"] .ornament-momiji::after {
   content: "紅葉";
