@@ -9,6 +9,7 @@
   --matcha-val: #7d8f69;
   --backdrop-val: #e8e4d9;
   --kin-val: #a9821c;
+  --ink: #1a1a1a;   /* dipakai .packcard — sebelumnya TAK terdefinisi (bug) */
 }
 
 .dark, [data-theme="dark"] {
@@ -33,6 +34,8 @@
   
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-serif: "Noto Serif JP", "Shippori Mincho", "Yu Mincho", serif;
+  --font-display: "Yuji Syuku", "Shippori Mincho", serif;   /* judul hero Heian */
+  --font-kana:    "Klee One", "Noto Serif JP", serif;        /* hiragana/katakana */
 }
 
 body {
@@ -1176,4 +1179,129 @@ button[data-toji-kill]::after {
   .packcard-aura { opacity: 0.3; }
   .packcard[data-foil="shimmer"]::after { opacity: 0.55; }
   .packcard[data-foil="holo"]::after { opacity: 0.35; }
+}
+
+/* ══ TEMA ERA — HEIAN 平安 ═══════════════════════════════════════════════════
+   PRD: docs/tema/heian.md. Heian = "istana dalam kabut": garis tipis, shadow
+   lembut, sudut membulat, ungu murasaki (warna pangkat tertinggi istana).
+   Arsitektur: data-theme (terang/gelap) × data-era (heian/edo/…) berkomposisi. */
+
+[data-era="heian"] {
+  /* Warna — terang */
+  --kinari-val:       #f6f1e4;  /* 白練 shironeri — sutra mentah */
+  --kinari-light-val: #fbf8ef;
+  --sumi-val:         #3a332b;  /* 墨 sumi — tinta kecoklatan, bukan hitam pekat */
+  --ai-val:           #5b4a7a;  /* 紫 murasaki — warna pangkat tertinggi */
+  --shu-val:          #b83b4a;  /* 紅 kurenai */
+  --matcha-val:       #8a9a5b;  /* 萌黄 moegi */
+  --kin-val:          #c9a227;  /* 金 kin */
+  --backdrop-val:     #e9e2d0;  /* 砂 suna */
+
+  /* Bentuk — inti perubahan "berat" (Shōwa tebal → Heian tipis) */
+  --era-edge-w:       1px;
+  --era-edge-color:   rgba(58, 51, 43, 0.42);
+  --era-radius:       10px;
+  --era-radius-sm:    6px;
+  --era-shadow:       0 6px 28px -6px rgba(58, 51, 43, 0.28);
+  --era-shadow-hover: 0 12px 40px -8px rgba(58, 51, 43, 0.38);
+  --era-motion:       600ms;
+  --era-ease:         cubic-bezier(0.22, 1, 0.36, 1);
+
+  --ink:              rgba(58, 51, 43, 0.42);
+}
+
+/* Heian gelap — "istana malam" */
+.dark[data-era="heian"], [data-theme="dark"][data-era="heian"] {
+  --kinari-val:       #1a1620;
+  --kinari-light-val: #221c2a;
+  --sumi-val:         #ece3d2;
+  --ai-val:           #a98fd6;
+  --shu-val:          #e0606f;
+  --matcha-val:       #a3b57a;
+  --kin-val:          #e8c860;
+  --backdrop-val:     #100d16;
+  --era-edge-color:   rgba(236, 227, 210, 0.30);
+  --era-shadow:       0 6px 28px -6px rgba(0, 0, 0, 0.55);
+  --era-shadow-hover: 0 12px 40px -8px rgba(0, 0, 0, 0.65);
+  --ink:              rgba(236, 227, 210, 0.30);
+}
+
+/* ── Jaring pengaman: 277 kelas shadow keras + border tebal hardcoded di
+   komponen → dipaksa jadi "lembut & tipis" saat era Heian. Ini bikin Heian
+   langsung benar di SELURUH app tanpa harus migrasi 277 kelas dulu.
+   Migrasi bersih ke .card-edge menyusul per-layar. ────────────────────────── */
+[data-era="heian"] [class*="shadow-["] {
+  box-shadow: var(--era-shadow) !important;
+}
+[data-era="heian"] [class*="border-4"],
+[data-era="heian"] [class*="border-2"],
+[data-era="heian"] [class*="border-["] {
+  border-width: var(--era-edge-w) !important;
+  border-color: var(--era-edge-color) !important;
+}
+[data-era="heian"] .rounded-none {
+  border-radius: var(--era-radius) !important;
+}
+
+/* ── Utilitas era: pengganti kelas shadow keras. Dipakai bertahap. ────────── */
+.card-edge {
+  border: var(--era-edge-w, 4px) solid var(--era-edge-color, var(--ink, #1a1a1a));
+  border-radius: var(--era-radius, 0);
+  box-shadow: var(--era-shadow, 6px 6px 0 0 var(--ink, #1a1a1a));
+  transition: box-shadow var(--era-motion, 200ms) var(--era-ease, ease),
+              transform var(--era-motion, 200ms) var(--era-ease, ease);
+}
+.card-edge:hover {
+  box-shadow: var(--era-shadow-hover, 8px 8px 0 0 var(--ink, #1a1a1a));
+}
+
+/* ── Motif Heian: awan 雲 (latar) + maple 紅葉 (aksen) + bulan 月 ──────────── */
+[data-era="heian"] .era-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120'%3E%3Cg fill='none' stroke='%233a332b' stroke-width='1.2' opacity='0.16'%3E%3Cpath d='M10 80 Q40 55 70 80 T130 80'/%3E%3Cpath d='M120 40 Q150 15 180 40 T240 40'/%3E%3Cpath d='M0 110 Q30 90 60 110 T120 110'/%3E%3C/g%3E%3C/svg%3E");
+  animation: heian-drift 90s linear infinite;
+}
+.dark[data-era="heian"] .era-pattern,
+[data-theme="dark"][data-era="heian"] .era-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120'%3E%3Cg fill='none' stroke='%23ece3d2' stroke-width='1.2' opacity='0.10'%3E%3Cpath d='M10 80 Q40 55 70 80 T130 80'/%3E%3Cpath d='M120 40 Q150 15 180 40 T240 40'/%3E%3Cpath d='M0 110 Q30 90 60 110 T120 110'/%3E%3C/g%3E%3C/svg%3E");
+}
+[data-era="heian"] .ornament-momiji::after {
+  content: "紅葉";
+  position: absolute; top: 4px; right: 8px;
+  font-family: var(--font-display);
+  font-size: 13px; letter-spacing: 1px;
+  color: var(--shu-val); opacity: 0.45;
+  pointer-events: none;
+}
+[data-era="heian"] .ornament-tsuki::before {
+  content: "月";
+  position: absolute; top: 6px; right: 12px;
+  font-family: var(--font-display);
+  font-size: 26px; color: var(--kin-val);
+  opacity: 0.45; pointer-events: none;
+}
+
+/* ── Tipografi Heian ─────────────────────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+.font-kana    { font-family: var(--font-kana); }
+
+/* ── Gerak Heian: lambat & mengambang (Shōwa = snap cepat) ────────────────── */
+@keyframes heian-drift {
+  from { background-position: 0 0; }
+  to   { background-position: 240px 120px; }
+}
+@keyframes heian-rise {
+  from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+}
+[data-era="heian"] .heian-enter {
+  animation: heian-rise var(--era-motion) var(--era-ease) both;
+}
+/* Transisi tema lebih lambat di era Heian (kabut menyingkir). */
+[data-era="heian"] {
+  --theme-transition: 800ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-era="heian"] .era-pattern,
+  [data-era="heian"] .heian-enter { animation: none !important; }
 }
