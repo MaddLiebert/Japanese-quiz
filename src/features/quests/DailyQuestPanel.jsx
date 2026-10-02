@@ -4,6 +4,7 @@ import { useUserStats } from '../progress/ProgressContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { questBoard, weekBoard, dateKey, weekKey } from './quests';
 import { Glyph } from "../../components/icons/Glyph";
+import { EraTategaki } from "../../components/EraTategaki";
 
 // Satu kartu misi — dipakai bersama oleh tier Harian & Mingguan.
 // accent: 'ai' (biru, harian) | 'shu' (merah, mingguan).
@@ -125,7 +126,7 @@ export function DailyQuestPanel() {
             {id ? 'Misi Harian' : 'Daily Quests'}
           </h3>
           <div className="h-[3px] flex-1 bg-sumi/10" />
-          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">日課</span>
+          <EraTategaki className="text-sm text-sumi/40 self-center">日課</EraTategaki>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           {daily.map((q) => (
@@ -144,7 +145,7 @@ export function DailyQuestPanel() {
             {id ? 'Hadiah Besar' : 'Big Reward'}
           </span>
           <div className="h-[3px] flex-1 bg-sumi/10" />
-          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">週課</span>
+          <EraTategaki className="text-sm text-sumi/40 self-center">週課</EraTategaki>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {weekly.map((q) => (

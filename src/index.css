@@ -1555,3 +1555,20 @@ button[data-toji-kill]::after {
 .era-stain path { fill: var(--sumi-val); }
 .dark .era-stain,
 [data-theme="dark"] .era-stain { opacity: 0.075; }
+
+/* ── 7. 縦書き tategaki — tulisan VERTIKAL (kanan→kiri) ──────────────────────
+   Sinyal manuskrip Heian paling kuat: gulungan emakimono & surat era Heian
+   ditulis tegak dari kanan ke kiri. Dipasang pada label KANJI pendek (2–5
+   aksara) saja — teks Latin/panjang tetap horizontal supaya tetap terbaca.
+   Memakai --font-display (Yuji Syuku) agar benar-benar terasa tinta kuas. */
+.era-tategaki {
+  writing-mode: vertical-rl;
+  text-orientation: upright;       /* kanji berdiri tegak, tidak diputar */
+  font-family: var(--font-display);
+  font-feature-settings: "vkr" 1;  /* metrik vertikal bila font mendukung */
+  letter-spacing: 0.18em;
+  line-height: 1;
+}
+/* Hanya tampil di era Heian (era lain: sembunyi, agar tak mengganggu). */
+.era-tategaki-only { display: none; }
+[data-era="heian"] .era-tategaki-only { display: block; }

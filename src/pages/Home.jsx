@@ -8,6 +8,7 @@ import { useLanguage } from "../context/LanguageContext";
 import { countMasteredKanji, isN5ExamUnlocked, N5_EXAM_MIN_MASTERED_KANJI } from "../features/n5exam/n5exam";
 import { DailyQuestPanel } from "../features/quests/DailyQuestPanel";
 import { EraDivider } from "../components/EraDivider";
+import { EraTategaki } from "../components/EraTategaki";
 
 import { StreakIndicator } from "../components/StreakIndicator";
 import { RankBadge } from "../features/progress/RankBadge";
@@ -183,6 +184,11 @@ export function Home() {
                 <span className="text-shu">基礎</span>
               </h1>
             </motion.div>
+
+            {/* 縦書き 平安 — label gulungan (kanan→kiri), sinyal manuskrip Heian */}
+            <EraTategaki className="absolute top-8 right-6 sm:top-12 sm:right-10 text-4xl sm:text-6xl text-sumi/20">
+              平安
+            </EraTategaki>
           </div>
 
           <div className="sm:col-span-4 p-8 flex flex-col items-center justify-center bg-kinari relative">
