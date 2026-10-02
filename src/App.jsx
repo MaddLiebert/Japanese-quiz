@@ -165,6 +165,14 @@ function App() {
                     <feTurbulence type="fractalNoise" baseFrequency="0.05 0.06" numOctaves="3" seed="3" result="r" />
                     <feDisplacementMap in="SourceGraphic" in2="r" scale="6" xChannelSelector="R" yChannelSelector="G" />
                   </filter>
+                  {/* Sobekan kertas (torn/deckle) untuk TOMBOL — frekuensi rendah →
+                      robekan besar & lembut (bukan noise pixel), jadi tepi lurus
+                      mesin berubah jadi koyak tangan. Dipakai lewat filter pada
+                      :where(button,a)[class*=bg-] (lihat index.css "TOMBOL HEIAN"). */}
+                  <filter id="heian-torn" x="-18%" y="-18%" width="136%" height="136%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.026 0.032" numOctaves="2" seed="7" result="t" />
+                    <feDisplacementMap in="SourceGraphic" in2="t" scale="12" xChannelSelector="R" yChannelSelector="G" />
+                  </filter>
                 </defs>
               </svg>
 

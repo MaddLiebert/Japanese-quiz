@@ -1223,6 +1223,10 @@ button[data-toji-kill]::after {
   --era-kasane-sumi:  linear-gradient(180deg, #4a4239 0%, #2f2921 100%);
   /* Tepi emas (kindei 金泥) — aksen "segel/brocade" penyatu semua tombol Heian. */
   --era-gold:         rgba(138, 111, 46, 0.85);
+  /* Bayangan TOMBOL pakai drop-shadow (bukan box-shadow) supaya ikut siluet
+     tepi SOBEK — box-shadow selalu persegi, bikin tombol balik "ngotak". */
+  --era-drop:         drop-shadow(0 1px 1px rgba(58, 51, 43, 0.14)) drop-shadow(0 5px 7px rgba(58, 51, 43, 0.22));
+  --era-drop-hover:   drop-shadow(0 1px 2px rgba(58, 51, 43, 0.16)) drop-shadow(0 8px 12px rgba(58, 51, 43, 0.30));
   --era-glow:         inset 0 1px 0 rgba(255, 255, 255, 0.28);
   --era-motion:       600ms;
   --era-ease:         cubic-bezier(0.22, 1, 0.36, 1);
@@ -1268,6 +1272,8 @@ button[data-toji-kill]::after {
   --era-kasane-matcha:linear-gradient(180deg, #b3c488 0%, #8fa35f 100%);
   --era-kasane-sumi:  linear-gradient(180deg, #3b3444 0%, #221c2a 100%);
   --era-gold:         rgba(196, 164, 90, 0.75);
+  --era-drop:         drop-shadow(0 1px 1px rgba(0, 0, 0, 0.50)) drop-shadow(0 5px 8px rgba(0, 0, 0, 0.55));
+  --era-drop-hover:   drop-shadow(0 1px 2px rgba(0, 0, 0, 0.60)) drop-shadow(0 9px 14px rgba(0, 0, 0, 0.70));
   --era-glow:         inset 0 1px 0 rgba(255, 255, 255, 0.10);
   --ink:              rgba(236, 227, 210, 0.30);
 }
@@ -1316,8 +1322,9 @@ button[data-toji-kill]::after {
 [data-era="heian"] :where(button, a)[class*="bg-kin"]:not([class*="bg-kinari"]):not([class*="bg-kin/"]) { background-image: var(--era-kasane-kin); }
 [data-era="heian"] :where(button, a)[class*="bg-sumi"]:not([class*="bg-sumi/"]) { background-image: var(--era-kasane-sumi); }
 
-/* 2) Tepi emas + bayangan kertas untuk SEMUA tombol ber-latar (kertas & aksen).
-      Tepi emas inilah "penyatu" yang bikin tombol terasa satu keluarga Heian.
+/* 2) Tepi emas + bayangan kertas + tepi SOBEK untuk SEMUA tombol ber-latar.
+      Tepi emas = "penyatu" keluarga Heian. Filter #heian-torn mengubah tepi
+      lurus mesin → koyak kertas (deckle), jadi tombol tidak lagi "ngotak".
       `!important` perlu karena jaring lama memaksa border-color ke tinta.
       PENTING: JANGAN transisikan border-color — `transition-all` bawaan tombol
       + override !important membuat transisinya MACET di warna tinta lama
@@ -1326,20 +1333,19 @@ button[data-toji-kill]::after {
   border-width: var(--era-edge-w) !important;
   border-style: solid !important;
   border-color: var(--era-gold) !important;
-  box-shadow: var(--era-shadow), var(--era-glow);
-  transition: box-shadow var(--era-motion) var(--era-ease);
+  filter: url(#heian-torn) var(--era-drop);
+  transition: filter var(--era-motion) var(--era-ease);
 }
-/* Tombol kertas (kinari) = kertas tua, tepi emas, tanpa kilau. */
+/* Tombol kertas (kinari) = kertas tua, tepi emas, tanpa gradien. */
 [data-era="heian"] :where(button, a)[class*="bg-kinari"]:not([class*="bg-kinari/"]) {
   background-image: none;
-  box-shadow: var(--era-shadow);
 }
 
 /* 3) Hover Heian: hanya tepi emas menyala + bayangan menguat. TIDAK melompat
       (translate) dan TIDAK ada bayangan keras ala Shōwa. */
 [data-era="heian"] :where(button, a)[class*="bg-"]:hover {
   border-color: var(--kin-val) !important;
-  box-shadow: var(--era-shadow-hover), var(--era-glow);
+  filter: url(#heian-torn) var(--era-drop-hover);
 }
 [data-era="heian"] :where(button, a)[class*="hover:translate-"]:hover { transform: none !important; }
 
