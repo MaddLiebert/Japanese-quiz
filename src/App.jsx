@@ -137,7 +137,7 @@ function App() {
               />
               
               {/* 2. Abstract background motif (Seigaiha radiating from center) */}
-              <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-10 dark:opacity-5 bg-seigaiha mask-image:radial-gradient(circle_at_center,black,transparent_70%)"></div>
+              <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-10 dark:opacity-5 bg-seigaiha era-pattern mask-image:radial-gradient(circle_at_center,black,transparent_70%)"></div>
 
               {/* Global Top Controls */}
               <TopControls />
