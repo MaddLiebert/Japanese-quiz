@@ -1188,14 +1188,18 @@ button[data-toji-kill]::after {
 
 [data-era="heian"] {
   /* Warna — terang */
-  --kinari-val:       #f6f1e4;  /* 白練 shironeri — sutra mentah */
-  --kinari-light-val: #fbf8ef;
+  /* Kertas & latar DISELARASKAN (kritik: "warna kertas Home sama latar gak
+     masuk"). Dulu panel #fbf8ef (nyaris putih) duduk di atas latar #e9e2d0
+     (kelabu-pasir) → tabrakan "kartu putih di kanvas" khas web modern. Kini
+     ketiganya satu keluarga washi tua yang hangat, jarak antar-lapis kecil. */
+  --kinari-val:       #ece0c4;  /* 白練 shironeri — sutra mentah, dihangatkan */
+  --kinari-light-val: #f4ebd2;  /* panel: kertas tua, bukan putih */
   --sumi-val:         #3a332b;  /* 墨 sumi — tinta kecoklatan, bukan hitam pekat */
   --ai-val:           #5b4a7a;  /* 紫 murasaki — warna pangkat tertinggi */
   --shu-val:          #b83b4a;  /* 紅 kurenai */
   --matcha-val:       #8a9a5b;  /* 萌黄 moegi */
   --kin-val:          #c9a227;  /* 金 kin */
-  --backdrop-val:     #e9e2d0;  /* 砂 suna */
+  --backdrop-val:     #ddd0b0;  /* 砂 suna — pasir tua, dekat dengan panel */
 
   /* Bentuk — KERTAS & TINTA (revisi besar): kertas tua bersudut TAJAM, bukan
      potongan membulat ala kartu modern. Radius 0 = tepi potongan kertas;
@@ -1228,6 +1232,9 @@ button[data-toji-kill]::after {
      menjalar ke SELURUH app tanpa menyentuh per-komponen. */
   --font-sans:  "Shippori Mincho", "Noto Serif JP", serif;
   --font-serif: "Shippori Mincho", "Noto Serif JP", serif;
+  /* Mono = huruf teknis ala dashboard → diganti serif. Label kecil bergaya
+     "CHAPTER TOPIC" berhenti terasa modern. (kritik: "font sebagian modern") */
+  --font-mono:  "Shippori Mincho", "Noto Serif JP", serif;
 }
 
 /* Judul hero memakai aksara kuas (Yuji Syuku), bukan serif tebal biasa. */
@@ -1288,6 +1295,38 @@ button[data-toji-kill]::after {
 [data-era="heian"] [class*="bg-sumi"]:where(button, a) { background-image: var(--era-kasane-ai); }
 [data-era="heian"] [class*="bg-kin"]:where(button, a)  { background-image: var(--era-kasane-kin); }
 [data-era="heian"] :where(button, a)[class*="border"] { box-shadow: var(--era-shadow), var(--era-glow); }
+
+/* ── Revisi kritik: sisa Shōwa berarah + bayangan bernama ───────────────────
+   Jaring di atas HANYA menangkap `border-4` dan `border-[Npx]`. Ia TIDAK
+   menangkap border BERARAH (`border-b-[4px]`, `border-t-[2px]`, `border-r-[4px]`
+   …) — ada 83 kelas semacam itu, dan 15 tampil 4px di Home: inilah "sisa
+   Shōwa" paling kelihatan. Tiap sisi ditimpa terpisah supaya `sm:border-b-0`
+   (reset responsif) tetap 0 — jangan pakai `border-width` (itu kena semua sisi). */
+[data-era="heian"] [class*="border-t-["] { border-top-width:    var(--era-edge-w) !important; }
+[data-era="heian"] [class*="border-b-["] { border-bottom-width: var(--era-edge-w) !important; }
+[data-era="heian"] [class*="border-l-["] { border-left-width:   var(--era-edge-w) !important; }
+[data-era="heian"] [class*="border-r-["] { border-right-width:  var(--era-edge-w) !important; }
+
+/* Kembalikan reset responsif (mis. `sm:border-b-0`) yang tadi ketimpa. Tanpa
+   ini, header grid dapat garis bawah di desktop (harusnya pindah ke kanan). */
+@media (min-width: 640px) {
+  [data-era="heian"] [class*="border-t-0"] { border-top-width:    0 !important; }
+  [data-era="heian"] [class*="border-b-0"] { border-bottom-width: 0 !important; }
+  [data-era="heian"] [class*="border-l-0"] { border-left-width:   0 !important; }
+  [data-era="heian"] [class*="border-r-0"] { border-right-width:  0 !important; }
+}
+
+/* Bayangan BERNAMA (shadow-sm/md/lg/xl/inner) juga lolos jaring `shadow-[`.
+   Semua dipaksa jadi bayangan kertas tipis. (kritik: "tombol masih modern") */
+[data-era="heian"] .shadow-sm,
+[data-era="heian"] .shadow-md,
+[data-era="heian"] .shadow-lg,
+[data-era="heian"] .shadow-xl,
+[data-era="heian"] .shadow-2xl,
+[data-era="heian"] .shadow-inner { box-shadow: var(--era-shadow) !important; }
+
+/* drop-shadow (mis. judul 合格) = bayangan lembut ala web → dibuang. */
+[data-era="heian"] [class*="drop-shadow"] { filter: none !important; }
 
 /* Motif seigaiha (gelombang = Edo/Shōwa) dipensiunkan di era Heian → awan.
    Kecualikan .era-pattern (elemen latar) supaya awan Heian tidak ikut dimatikan. */

@@ -313,7 +313,7 @@ export function Home() {
                 {language === 'id' ? 'Latihan Berulang' : 'Configurable Repetition'}
               </p>
               </div>
-              <div className="w-14 h-14 rounded-full border-[3px] border-sumi flex items-center justify-center group-hover:bg-ai group-hover:border-ai group-hover:text-kinari-light transition-all flex-shrink-0">
+              <div className="w-14 h-14 border-[3px] border-sumi flex items-center justify-center group-hover:bg-ai group-hover:border-ai group-hover:text-kinari-light transition-all flex-shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </div>
               </motion.div>
@@ -327,7 +327,7 @@ export function Home() {
                 {language === 'id' ? 'Kuis Audio Bab 1' : 'Choukai Audio Quiz'}
               </p>
               </div>
-              <div className="w-14 h-14 rounded-full border-[3px] border-sumi flex items-center justify-center group-hover:bg-[#E60012] group-hover:border-[#E60012] group-hover:text-kinari-light transition-all flex-shrink-0">
+              <div className="w-14 h-14 border-[3px] border-sumi flex items-center justify-center group-hover:bg-[#E60012] group-hover:border-[#E60012] group-hover:text-kinari-light transition-all flex-shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
               </div>
               </motion.div>
@@ -345,7 +345,7 @@ export function Home() {
                     {language === 'id' ? 'Fokus Terarah' : 'Targeted Focus'}
                   </p>
                 </div>
-                <div className="w-14 h-14 rounded-full border-[3px] border-shu text-shu flex items-center justify-center group-hover:bg-shu group-hover:text-kinari-light transition-all relative z-10 flex-shrink-0">
+                <div className="w-14 h-14 border-[3px] border-shu text-shu flex items-center justify-center group-hover:bg-shu group-hover:text-kinari-light transition-all relative z-10 flex-shrink-0">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
               </motion.div>
@@ -359,7 +359,7 @@ export function Home() {
                     {language === 'id' ? 'Urutan Goresan & Kuis' : 'Stroke Order & Quiz'}
                   </p>
                 </div>
-                <div className="w-14 h-14 rounded-full border-[3px] border-ai text-ai flex items-center justify-center group-hover:bg-ai group-hover:text-kinari-light transition-all flex-shrink-0">
+                <div className="w-14 h-14 border-[3px] border-ai text-ai flex items-center justify-center group-hover:bg-ai group-hover:text-kinari-light transition-all flex-shrink-0">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path><path d="m15 5 4 4"></path></svg>
                 </div>
               </motion.div>
@@ -372,7 +372,7 @@ export function Home() {
                     {language === 'id' ? 'Ucapkan Kana, Kotoba & Puisi' : 'Speak Kana, Words & Poems'}
                   </p>
                 </div>
-                <div className="w-14 h-14 rounded-full border-[3px] border-ai text-ai flex items-center justify-center group-hover:bg-ai group-hover:text-kinari-light transition-all flex-shrink-0">
+                <div className="w-14 h-14 border-[3px] border-ai text-ai flex items-center justify-center group-hover:bg-ai group-hover:text-kinari-light transition-all flex-shrink-0">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v1a7 7 0 0 1-14 0v-1"></path><line x1="12" y1="18" x2="12" y2="22"></line></svg>
                 </div>
               </motion.div>
@@ -391,7 +391,7 @@ export function Home() {
                       : (language === 'id' ? 'Rank Shogun' : 'Shogun Rank')}
                   </p>
                 </div>
-                <div className={`w-14 h-14 rounded-full border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${deathUnlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${deathUnlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
                   <span className="text-xl font-serif font-black select-none">死</span>
                 </div>
               </motion.div>
@@ -412,7 +412,7 @@ export function Home() {
                         : `Shogun + ${N5_EXAM_MIN_MASTERED_KANJI} Kanji (${masteredKanji}/${N5_EXAM_MIN_MASTERED_KANJI})`)}
                   </p>
                 </div>
-                <div className={`w-14 h-14 rounded-full border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${n5Unlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${n5Unlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
                   <span className="text-lg font-serif font-black select-none">試</span>
                 </div>
               </motion.div>
