@@ -4,6 +4,7 @@ import { useUserStats } from '../progress/ProgressContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { questBoard, weekBoard, dateKey, weekKey } from './quests';
 import { Glyph } from "../../components/icons/Glyph";
+import { MedaruCoin } from "../../components/MedaruCoin";
 import { EraTategaki } from "../../components/EraTategaki";
 
 // Satu kartu misi — dipakai bersama oleh tier Harian & Mingguan.
@@ -33,7 +34,7 @@ function QuestCard({ q, id, accent, onClaim }) {
 
       <div className="flex items-center justify-between">
         <span className="text-[11px] font-black text-sumi/60">{q.current}/{q.target}</span>
-        <span className="text-[10px] font-black text-sumi/60">+{q.xp} EXP · +{q.medaru} <Glyph name="coin" className="ml-0.5" /></span>
+        <span className="text-[10px] font-black text-sumi/60">+{q.xp} EXP · +{q.medaru} <MedaruCoin size={12} className="ml-0.5" /></span>
       </div>
 
       {q.claimed ? (
@@ -83,7 +84,7 @@ function ClaimToast({ toast, id }) {
               <p className="text-sm font-serif font-black text-sumi leading-tight">
                 <Glyph name={toast.emblem} className="mr-1" />{toast.name}
               </p>
-              <p className="text-xs font-black text-sumi/70">+{toast.xp} EXP · +{toast.medaru} <Glyph name="coin" className="ml-0.5" /></p>
+              <p className="text-xs font-black text-sumi/70">+{toast.xp} EXP · +{toast.medaru} <MedaruCoin size={12} className="ml-0.5" /></p>
             </div>
           </motion.div>
         )}

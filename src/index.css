@@ -1301,10 +1301,21 @@ button[data-toji-kill]::after {
 [data-era="heian"] .rounded-full { border-radius: 9999px !important; }
 
 /* Kertas: kartu ber-border TANPA warna latar sendiri diberi SERAT kertas
-   (bukan gradien mengkilap ala kartu modern). Kartu ber-bg-* dibiarkan. */
-[data-era="heian"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]) {
+   (bukan gradien mengkilap ala kartu modern). Kartu ber-bg-* dibiarkan.
+   PENTING: elemen yang hanya punya garis PEMISAH berarah (border-t-/b-/l-/r-)
+   itu bukan kartu — kalau ikut diberi serat kertas, muncul "kotak samar"
+   (mis. blok teks JLPT N5 di Home). Karena itu semua kelas border berarah
+   dikecualikan: hanya border PENUH (border, border-2/3/4, border-[Npx]) yang
+   dianggap kartu dan diberi serat. */
+[data-era="heian"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]):not([class*="border-t-"]):not([class*="border-b-"]):not([class*="border-l-"]):not([class*="border-r-"]) {
   background-color: var(--kinari-light-val);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)' opacity='0.05'/%3E%3C/svg%3E");
+}
+/* Jaring pengaman cadangan: bila ada elemen yang tetap salah diberi serat,
+   tandai .era-flat untuk mematikannya. */
+[data-era="heian"] .era-flat {
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
 /* ── TOMBOL HEIAN — "segel & brokat", bukan blok warna datar ala web ────────
@@ -1426,6 +1437,12 @@ button[data-toji-kill]::after {
   /* kontainer di App.jsx pakai opacity-10/5 → terlalu samar. Naikkan supaya
      awan benar-benar terlihat (tetap halus, tidak mengganggu). */
   opacity: 0.55 !important;
+  /* Diperbesar 200% + digeser dari -50% supaya animasi bisa pakai `transform`
+     (jalan di compositor/GPU) tanpa menyingkap tepi. Menganimasikan
+     `background-position` memaksa REPAINT seluruh viewport tiap frame → scroll
+     terasa berat & patah-patah, terutama di HP. Jangan dikembalikan. */
+  top: -50%; left: -50%; width: 200%; height: 200%;
+  will-change: transform;
   animation: heian-drift 120s linear infinite;
 }
 .dark[data-era="heian"] .era-pattern,
@@ -1463,15 +1480,67 @@ button[data-toji-kill]::after {
 .era-painting { display: none; }
 [data-era="heian"] .era-painting { display: block; }
 
+/* Varian lukisan 里 (desa) & 海 (laut). Keduanya tetap lewat gate .era-painting
+   di atas; kelas di bawah hanya mengatur penempatan/fill agar SVG duduk rapi. */
+.era-art--village { pointer-events: none; }
+.era-art--wave { pointer-events: none; }
+
+/* ── Lukisan agung 名画 (karya domain-publik) — desa 里 & laut 海 ─────────────
+   Dipakai sebagai "lukisan" pengisi ruang, bukan foto ditempel: disatukan ke
+   kertas washi lewat blend + mask gradien supaya tepinya luluh. Dekoratif →
+   pointer-events:none + aria-hidden di komponennya. Hanya era Heian. */
+.era-photo { display: none; }
+[data-era="heian"] .era-photo { display: block; pointer-events: none; }
+
+/* Desa 里 di hero — pita lukisan "langit desa" selebar kartu, hanya tepi ATAS
+   yang luluh ke kertas (tepi kiri/kanan/bawah mentok kartu → tak ada garis
+   kotak yang kelihatan). */
+.era-photo--village {
+  mix-blend-mode: multiply;
+  opacity: 0.4;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 40%, #000 72%);
+          mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 40%, #000 72%);
+}
+.dark[data-era="heian"] .era-photo--village,
+[data-theme="dark"][data-era="heian"] .era-photo--village {
+  mix-blend-mode: screen;
+  opacity: 0.26;
+  filter: saturate(0.7) contrast(1.04);
+}
+
+/* Laut malam 月夜 di kartu N5 — lukisan "bleed" dari sudut KANAN-ATAS (posisi
+   label Module 04), lalu LULUH diagonal ke kertas: padat di sudut, hilang ke
+   arah kiri-bawah sehingga teks di bawahnya tetap di atas kertas bersih.
+   Tanpa bingkai/kotak → tidak terlihat seperti gambar tempelan. */
+.era-photo--night {
+  mix-blend-mode: normal;
+  opacity: 0.9;
+  -webkit-mask-image: radial-gradient(125% 108% at 100% 0%, #000 0%, #000 32%, rgba(0,0,0,0.62) 53%, rgba(0,0,0,0.22) 71%, transparent 87%);
+          mask-image: radial-gradient(125% 108% at 100% 0%, #000 0%, #000 32%, rgba(0,0,0,0.62) 53%, rgba(0,0,0,0.22) 71%, transparent 87%);
+}
+.dark[data-era="heian"] .era-photo--night,
+[data-theme="dark"][data-era="heian"] .era-photo--night {
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  filter: saturate(0.9) contrast(1.02);
+}
+
+/* Hiasan yang hanya boleh tampil dari breakpoint sm ke atas (mis. lukisan desa
+   di hero) — tanpa bertabrakan dengan gate display era di atas. */
+@media (max-width: 639px) {
+  .era-painting--sm-only { display: none !important; }
+}
+
 
 /* ── Tipografi Heian ─────────────────────────────────────────────────────── */
 .font-display { font-family: var(--font-display); }
 .font-kana    { font-family: var(--font-kana); }
 
 /* ── Gerak Heian: lambat & mengambang (Shōwa = snap cepat) ────────────────── */
+/* Digeser lewat transform (compositor), BUKAN background-position (repaint). */
 @keyframes heian-drift {
-  from { background-position: 0 0; }
-  to   { background-position: 240px 120px; }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(240px, 120px, 0); }
 }
 @keyframes heian-rise {
   from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
@@ -1694,3 +1763,149 @@ button[data-toji-kill]::after {
 @media (max-width: 767px) {
   .era-paper-sheet { display: none !important; }
 }
+
+/* ── 9. 貝合わせ kai-awase — "tempat gacha" era Heian 平安 ───────────────────
+   Mesin slot 3-reel = bahasa Shōwa. Di Heian, undian = 貝合わせ: sepasang kerang
+   dicocokkan. Jadi panel gacha jadi "meja kerang": papan kertas, 3 pasang kerang
+   dengan tepi emas 金泥 & pita kain (shitone 茵), bukan mesin. HANYA era Heian. */
+
+/* Panel: kertas tua + bingkai emas, bukan blok warna datar.
+   CATATAN: `section.heian-kai-panel` (spesifisitas lebih tinggi dari jaring
+   generik `[class*="border-4"] !important`) supaya tepi emas benar-benar menang. */
+[data-era="heian"] section.heian-kai-panel {
+  background-color: var(--kinari-light-val);
+  background-image:
+    radial-gradient(120% 90% at 8% 4%, rgba(196, 164, 90, 0.16) 0%, transparent 52%),
+    radial-gradient(110% 80% at 96% 98%, rgba(154, 124, 56, 0.12) 0%, transparent 55%);
+  /* JANGAN pakai `!important` + `var()` untuk border: Lightning CSS (build ini)
+     mengekspansi ke longhand lalu NILAINYA KOSONG (bukti CDP:
+     `border-top-color: " !important"`). Akibatnya jaring generik
+     `[class*="border-4"]` mengunci border ke #1a1a1a dan shorthand border-color
+     di sini TIDAK menang. Solusi: tulis tiap LONGHAND eksplisit + literal. */
+  border-top-width: 1px !important;
+  border-right-width: 1px !important;
+  border-bottom-width: 1px !important;
+  border-left-width: 1px !important;
+  border-top-style: solid !important;
+  border-right-style: solid !important;
+  border-bottom-style: solid !important;
+  border-left-style: solid !important;
+  border-top-color: #8a6f2e !important;
+  border-right-color: #8a6f2e !important;
+  border-bottom-color: #8a6f2e !important;
+  border-left-color: #8a6f2e !important;
+  box-shadow: var(--era-shadow);
+  color: var(--sumi-val);
+}
+.dark[data-era="heian"] section.heian-kai-panel,
+[data-theme="dark"][data-era="heian"] section.heian-kai-panel {
+  border-top-color: #c4a45a !important;
+  border-right-color: #c4a45a !important;
+  border-bottom-color: #c4a45a !important;
+  border-left-color: #c4a45a !important;
+}
+
+/* Kepala (overlay): kertas + kabut emas tipis, bukan merah Shōwa. */
+[data-era="heian"] .heian-kai-head {
+  background-color: var(--kinari-val);
+  background-image:
+    linear-gradient(180deg, rgba(201, 162, 39, 0.10) 0%, rgba(201, 162, 39, 0.03) 60%, transparent 100%),
+    radial-gradient(120% 120% at 100% 0%, rgba(91, 74, 122, 0.10) 0%, transparent 60%);
+  color: var(--sumi-val);
+}
+.dark[data-era="heian"] .heian-kai-head,
+[data-theme="dark"][data-era="heian"] .heian-kai-head {
+  background-color: var(--kinari-val);
+  background-image:
+    linear-gradient(180deg, rgba(232, 200, 96, 0.10) 0%, transparent 100%),
+    radial-gradient(120% 120% at 100% 0%, rgba(169, 143, 214, 0.14) 0%, transparent 60%);
+}
+
+/* Papan: kain/meja gelap tempat kerang diletakkan (shitone 茵), bukan panel ungu. */
+[data-era="heian"] .heian-kai-board {
+  background-color: #e7dcc0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(138, 111, 46, 0.06) 0 3px, transparent 3px 9px),
+    radial-gradient(140% 120% at 50% 0%, rgba(201, 162, 39, 0.10) 0%, transparent 60%);
+}
+.dark[data-era="heian"] .heian-kai-board,
+[data-theme="dark"][data-era="heian"] .heian-kai-board {
+  background-color: #1d1826;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(232, 200, 96, 0.05) 0 3px, transparent 3px 9px),
+    radial-gradient(140% 120% at 50% 0%, rgba(169, 143, 214, 0.10) 0%, transparent 60%);
+}
+
+/* Satu pasang kerang = dua keping bertumpuk (atas & bawah) + segel kana かい. */
+[data-era="heian"] .heian-shell-pair { position: relative; display: flex; flex-direction: column; }
+[data-era="heian"] .heian-shell { position: relative; }
+
+/* Keping kerang: bukaan = jendela strip yang bergulir, tepi emas, bentuk agak
+   membulat (kerang) — tapi sudut tetap terkunci 0 agar satu bahasa dengan kertas. */
+[data-era="heian"] .heian-shell-window {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--kinari-light-val);
+  border: 1.4px solid var(--era-gold);
+  border-radius: 46% 46% 40% 40% / 30% 30% 26% 26% !important;
+  box-shadow: var(--era-shadow);
+}
+/* Keping kedua diturunkan menimpa keping pertama → terlihat seperti kerang
+   bertangkup (hinge di kiri). */
+[data-era="heian"] .heian-shell + .heian-shell { margin-top: -18px; }
+
+/* Pita kain (shitone) di bawah tiap pasangan: penyatu dua keping. */
+[data-era="heian"] .heian-shell-lid {
+  height: 8px; margin: 6px auto 0;
+  width: 84%;
+  background-image: repeating-linear-gradient(90deg, rgba(154, 124, 56, 0.35) 0 5px, transparent 5px 10px);
+  border-bottom: 1.4px solid var(--era-gold);
+  transition: opacity 400ms var(--era-ease);
+  opacity: 0.55;
+}
+[data-era="heian"] .heian-shell-lid.is-settled { opacity: 1; }
+
+/* Segel kana かい di tengah pasangan (lapisan belajar: kana utama, tanpa kanji). */
+[data-era="heian"] .heian-shell-seal {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) rotate(-6deg);
+  font-family: var(--font-display);
+  font-size: 15px; letter-spacing: 0.1em;
+  color: var(--shu-val); opacity: 0.5;
+  pointer-events: none; white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   5. PITA UANG 銭 (zenisashi) — badge medaru/文 era Heian
+   Kritik: chip medaru masih blok KUNING MENYALA (bg-[#ffd700]) + label
+   "MEDARU" — dua-duanya bahasa web modern, tidak ada di zaman Heian.
+   Bahasa Heian = kertas + tinta + emas kindei, sudut tajam, tenang. Jadi
+   badge uang diganti "pita uang": secarik kertas washi bertepi emas, dengan
+   koin 和同開珎 sebagai penanda — bukan plakat kuning.
+   ══════════════════════════════════════════════════════════════════════════ */
+[data-era="heian"] .era-money {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.62rem;
+  background-color: var(--kinari-light-val) !important;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(154, 124, 56, 0.14) 0 3px, transparent 3px 9px),
+    radial-gradient(120% 140% at 12% 0%, rgba(255, 255, 255, 0.35) 0%, transparent 60%);
+  border: 1px solid var(--era-gold) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--era-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  color: var(--sumi-val);
+}
+[data-era="heian"] .era-money--lg { padding: 0.4rem 0.85rem; gap: 0.5rem; }
+/* Angka uang pakai font kuas (ikut --font-*) + tabular agar rapi berjajar. */
+[data-era="heian"] .era-money__num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.dark[data-era="heian"] .era-money,
+[data-theme="dark"][data-era="heian"] .era-money {
+  box-shadow: var(--era-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+

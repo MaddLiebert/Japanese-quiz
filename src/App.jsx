@@ -30,6 +30,8 @@ import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { TutorialButton } from "./features/tutorial/TutorialButton";
 import { Glyph } from "./components/icons/Glyph";
+import { MedaruCoin } from "./components/MedaruCoin";
+import { medaruCopy } from "./features/progress/medaruCopy";
 
 // Floating top controls (Shop + Backpack + Profile + Theme) — shown on every page.
 // Digabung jadi SATU bar menyatu (border & shadow tunggal) supaya hemat tempat,
@@ -40,6 +42,8 @@ function TopControls() {
   const { theme, toggleTheme } = useTheme();
   const { progress } = useUserStats();
   const navigate = useNavigate();
+  // Nama mata uang ikut era (Heian → もん, era lain → MEDARU).
+  const money = medaruCopy(era, language);
 
   // Kelas dasar tiap tombol di dalam bar (tanpa border/shadow sendiri).
   const itemCls =
@@ -56,7 +60,8 @@ function TopControls() {
         aria-label={eraName('shop', era, language === 'id' ? 'Warung Kakek' : "Grandpa's Shop")}
       >
         <Glyph name="shop" className="text-sm" />
-        <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('medaru', era) ? eraName('medaru', era) + ' ' : ''}{(progress.medaru || 0).toLocaleString()}</span>
+        <MedaruCoin size={14} />
+        <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()} {money.nameShort}</span>
       </button>
 
       {divider}

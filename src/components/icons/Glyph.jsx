@@ -8,6 +8,7 @@ import {
   Sparkles, Target, Compass, CalendarDays, Eye, Infinity as InfinityIcon,
   HeartPulse, Leaf, Droplet, Pencil, Award, Medal, Languages, Flower, Flower2,
   Sprout, TreePine, Waves, Snowflake, Bell, Wind, Brush, Ruler, CloudMoon,
+  Shell,
 } from "lucide-react";
 
 // ── Ikon UI — pengganti emoji ──────────────────────────────────────────────
@@ -97,6 +98,8 @@ const ICONS = {
   bell: Bell,
   wind: Wind,
   cloudMoon: CloudMoon,
+  // kerang 貝 — dipakai di tema Heian (reel 貝合わせ = cocokkan kerang)
+  shell: Shell,
 };
 
 // Nama rank (getRank) → ikon.

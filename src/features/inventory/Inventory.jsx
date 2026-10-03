@@ -9,10 +9,13 @@ import { PACKS, isPackReady } from "../packs/packs";
 import { PackCard } from "../packs/PackCard";
 import { inventoryList, countItems, itemName, itemDesc } from "../items/items";
 import { EraPaper } from "../../components/EraPaper";
+import { MedaruBadge } from "../../components/MedaruBadge";
+import { useEra } from "../theme/EraContext";
 
 export function Inventory() {
   const { progress, togglePack, consumeItem } = useUserStats();
   const { language } = useLanguage();
+  const { era } = useEra();
   const navigate = useNavigate();
   const id = language === 'id';
 
@@ -70,9 +73,7 @@ export function Inventory() {
 
             <div className="relative z-10 flex items-center gap-3 flex-wrap">
               <RankBadge xp={progress.xp} variant="chip" />
-              <span className="bg-[#ffd700] text-sumi text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
-                <Glyph name="coin" className="mr-1" />{medaru.toLocaleString()} MEDARU
-              </span>
+              <MedaruBadge amount={medaru} size="lg" />
             </div>
           </div>
 
@@ -153,9 +154,9 @@ export function Inventory() {
                     </span>
                     <div className="mb-4 flex justify-center text-sumi"><Glyph name={item.icon} size={56} /></div>
                     <h3 className="text-xl font-serif font-black border-b-4 border-sumi pb-2 mb-2 text-sumi">
-                      {itemName(item, language)}
+                      {itemName(item, language, era)}
                     </h3>
-                    <p className="text-sm font-bold mb-6 flex-grow text-sumi/80">{itemDesc(item, language)}</p>
+                    <p className="text-sm font-bold mb-6 flex-grow text-sumi/80">{itemDesc(item, language, era)}</p>
                     {item.id === 'kabel_jumper' ? (
                       // Kabel jumper dipakai OTOMATIS di Death Quiz (bukan tombol PAKAI)
                       // — jangan sampai terbuang sia-sia di luar mode.

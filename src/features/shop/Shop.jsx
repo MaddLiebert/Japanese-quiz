@@ -10,6 +10,11 @@ import { gachaPoolInfo, PACK_RARITY, rarityOdds } from "../packs/packs";
 import { packPalette, accentInk } from "../packs/rarityStyle";
 import { GachaSlotOverlay } from "../gacha/GachaSlotOverlay";
 import { EraPaper } from "../../components/EraPaper";
+import { MedaruBadge } from "../../components/MedaruBadge";
+import { MedaruCoin } from "../../components/MedaruCoin";
+import { useEra } from "../theme/EraContext";
+import { medaruCopy } from "../progress/medaruCopy";
+import { gachaCopy, isHeian } from "../gacha/heianCopy";
 
 const GACHA_PRICE_1X = 100;
 const GACHA_PRICE_10X = 900;
@@ -17,11 +22,15 @@ const GACHA_PRICE_10X = 900;
 export function Shop() {
   const { progress, buyItem, rollGacha } = useUserStats();
   const { language } = useLanguage();
+  const { era } = useEra();
+  const heian = isHeian(era);
+  const T = gachaCopy(era, language);
   const navigate = useNavigate();
   const [pullResult, setPullResult] = useState(null);
   const [showPool, setShowPool] = useState(false);
 
   const medaru = progress.medaru || 0;
+  const MT = medaruCopy(era, language);   // nama mata uang ikut era (Heian → もん)
   const ownedItems = progress.ownedItems || {};
   const ownedPacks = progress.ownedPacks || [];
   const pool = gachaPoolInfo(ownedPacks);
@@ -32,7 +41,7 @@ export function Shop() {
   const handlePurchase = (item) => {
     const res = buyItem(item.id);
     if (res === 'poor') {
-      alert(language === 'id' ? `Medaru kurang! Butuh ${item.price}, saldo kamu ${medaru}.` : `Not enough Medaru! Need ${item.price}, you have ${medaru}.`);
+      alert(language === 'id' ? `${MT.name} kurang! Butuh ${item.price}, saldo kamu ${medaru}.` : `Not enough ${MT.name}! Need ${item.price}, you have ${medaru}.`);
     }
   };
 
@@ -40,7 +49,7 @@ export function Shop() {
     const price = count >= 10 ? GACHA_PRICE_10X : GACHA_PRICE_1X;
     const res = rollGacha(count);
     if (!res.ok) {
-      alert(language === 'id' ? `Medaru kurang! Butuh ${price}, saldo kamu ${medaru}.` : `Not enough Medaru! Need ${price}, you have ${medaru}.`);
+      alert(language === 'id' ? `${MT.name} kurang! Butuh ${price}, saldo kamu ${medaru}.` : `Not enough ${MT.name}! Need ${price}, you have ${medaru}.`);
       return;
     }
     setPullResult(res);
@@ -90,44 +99,61 @@ export function Shop() {
 
             <div className="relative z-10 flex items-center gap-3 flex-wrap">
               <RankBadge xp={progress.xp} variant="chip" />
-              <span className="bg-[#ffd700] text-sumi text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
-                <Glyph name="coin" className="mr-1" />{medaru.toLocaleString()} MEDARU
-              </span>
+              <MedaruBadge amount={medaru} size="lg" />
             </div>
           </div>
 
           <div className="sm:col-span-4 p-6 flex flex-col items-center justify-center bg-kinari relative">
             <div className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-[0.3em] text-sumi/40">
-              WALLET
+              {heian ? 'ぜに' : 'WALLET'}
             </div>
-            <div className="relative flex flex-col items-center justify-center w-20 h-20 rounded-full border-[4px] border-shu text-shu overflow-hidden bg-kinari-light shadow-sm">
-              <div className="absolute inset-0 border-[2px] border-shu opacity-60 m-1 rounded-full"></div>
-              <span className="text-[9px] uppercase font-bold tracking-[0.2em] mt-2 mb-0.5">Saldo</span>
-              <span className="text-2xl font-serif font-black leading-none">{medaru}</span>
-            </div>
-            <div className="mt-3 text-xs uppercase tracking-[0.2em] font-bold text-sumi/75">
-              {language === 'id' ? 'Koin Kakek' : 'Grandpa Coins'}
-            </div>
+            {heian ? (
+              // Heian: tampilkan koin 和同開珎 sungguhan (bukan lingkaran merah
+              // ala web) + angka & satuan kana もん.
+              <>
+                <div className="flex items-center gap-2">
+                  <MedaruCoin size={36} />
+                  <span className="text-2xl font-serif font-black leading-none">{medaru}</span>
+                </div>
+                <div className="mt-3 text-xs tracking-[0.2em] font-bold text-sumi/75">
+                  {MT.name}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="relative flex flex-col items-center justify-center w-20 h-20 rounded-full border-[4px] border-shu text-shu overflow-hidden bg-kinari-light shadow-sm">
+                  <div className="absolute inset-0 border-[2px] border-shu opacity-60 m-1 rounded-full"></div>
+                  <span className="text-[9px] uppercase font-bold tracking-[0.2em] mt-2 mb-0.5">Saldo</span>
+                  <span className="text-2xl font-serif font-black leading-none">{medaru}</span>
+                </div>
+                <div className="mt-3 text-xs uppercase tracking-[0.2em] font-bold text-sumi/75">
+                  {language === 'id' ? 'Koin Kakek' : 'Grandpa Coins'}
+                </div>
+              </>
+            )}
           </div>
         </header>
 
         {/* Content Body */}
         <div className="p-6 sm:p-12 relative z-10 bg-kinari-light space-y-10">
 
-          {/* Gacha Section */}
-          <section className="border-[4px] border-sumi bg-shu text-kinari-light p-6 sm:p-8 shadow-[6px_6px_0_0_#1a1a1a] relative overflow-hidden">
-            <div className="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4 text-[10rem] font-serif text-kinari-light opacity-[0.07] pointer-events-none select-none leading-none">
-              玉
+          {/* Gacha Section — era Heian: 貝合わせ (kana); era lain: mesin lama */}
+          <section className={`border-[4px] border-sumi p-6 sm:p-8 shadow-[6px_6px_0_0_#1a1a1a] relative overflow-hidden ${heian ? 'heian-kai-panel' : 'bg-shu text-kinari-light'}`}>
+            <div className="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4 text-[10rem] font-serif opacity-[0.07] pointer-events-none select-none leading-none">
+              {T.watermark}
             </div>
             <div className="relative z-10">
-              <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-kinari-light/70">
-                {language === 'id' ? 'Mesin Keberuntungan' : 'Fortune Machine'}
+              <span className={`text-[10px] uppercase tracking-[0.4em] font-bold ${heian ? 'opacity-70' : 'text-kinari-light/70'}`}>
+                {T.kicker}
               </span>
               <h2 className="text-3xl sm:text-4xl font-serif font-black mt-1 mb-3">
-                <Glyph name="gacha" className="mr-2" />{language === 'id' ? 'Gashapon Berkarat' : 'Rusty Gashapon'}
+                <Glyph name={heian ? 'shell' : 'gacha'} className="mr-2" />{T.title}
               </h2>
-              <p className="text-sm font-bold mb-8 text-kinari-light/90">
-                {language === 'id' ? 'Tarik tuasnya. Ampas atau Jackpot?' : 'Pull the lever. Scrap or Jackpot?'}
+              {T.titleSub && (
+                <p className={`text-[11px] font-bold mb-2 tracking-wider ${heian ? 'opacity-60' : 'text-kinari-light/70'}`}>{T.titleSub}</p>
+              )}
+              <p className={`text-sm font-bold mb-8 ${heian ? 'opacity-80' : 'text-kinari-light/90'}`}>
+                {T.tagline}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -136,41 +162,39 @@ export function Shop() {
                   onClick={() => handleRoll(1)}
                   className="flex-1 bg-ai text-kinari-light border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] font-black text-lg py-4 active:translate-y-1 active:shadow-[2px_2px_0_0_#1a1a1a] transition-all"
                 >
-                  TARIK 1X - {GACHA_PRICE_1X} <Glyph name="coin" className="ml-1" />
+                  {T.pull1} - {GACHA_PRICE_1X} <MedaruCoin className="ml-1" />
                 </button>
                 <button
                   type="button"
                   onClick={() => handleRoll(10)}
                   className="flex-1 bg-ai text-kinari-light border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] font-black text-lg py-4 active:translate-y-1 active:shadow-[2px_2px_0_0_#1a1a1a] transition-all"
                 >
-                  TARIK 10X - {GACHA_PRICE_10X} <Glyph name="coin" className="ml-1" />
+                  {T.pull10} - {GACHA_PRICE_10X} <MedaruCoin className="ml-1" />
                 </button>
               </div>
-              <p className="text-[11px] font-bold mt-4 text-kinari-light/80">
+              <p className={`text-[11px] font-bold mt-4 ${heian ? 'opacity-75' : 'text-kinari-light/80'}`}>
                 {language === 'id'
                   ? `Duplikat di-refund 50. Peluang: ${oddsText}.`
                   : `Duplicates refund 50. Odds: ${oddsText}.`}
               </p>
-              <p className="text-[11px] font-bold mt-1 text-kinari-light/70">
-                {language === 'id'
-                  ? 'Hasil tarikan langsung masuk Tas Punggung'
-                  : 'Pulls go straight to your Backpack'}
+              <p className={`text-[11px] font-bold mt-1 ${heian ? 'opacity-65' : 'text-kinari-light/70'}`}>
+                {T.toBackpack}
               </p>
 
               {/* Isi gacha — daftar pack yang bisa keluar + peluangnya */}
-              <div className="mt-5 border-t-[3px] border-kinari-light/30 pt-4">
+              <div className={`mt-5 border-t pt-4 ${heian ? 'border-sumi/25' : 'border-kinari-light/30'}`}>
                 <button
                   type="button"
                   onClick={() => setShowPool((v) => !v)}
                   className="w-full flex items-center justify-between gap-3 text-left cursor-pointer group"
                 >
-                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-kinari-light">
-                    <Glyph name="gift" className="mr-2" />{language === 'id' ? 'Isi Gashapon' : 'Gashapon Contents'}
-                    <span className="ml-2 font-bold normal-case tracking-normal text-kinari-light/70">
-                      ({pool.filter((p) => p.owned).length}/{pool.length} {language === 'id' ? 'dimiliki' : 'owned'})
+                  <span className={`text-[11px] font-black uppercase tracking-[0.2em] ${heian ? '' : 'text-kinari-light'}`}>
+                    <Glyph name="gift" className="mr-2" />{T.contents}
+                    <span className={`ml-2 font-bold normal-case tracking-normal ${heian ? 'opacity-60' : 'text-kinari-light/70'}`}>
+                      ({pool.filter((p) => p.owned).length}/{pool.length} {T.ownedSuffix})
                     </span>
                   </span>
-                  <span className={`text-kinari-light text-xs font-black transition-transform ${showPool ? 'rotate-180' : ''}`}>
+                  <span className={`text-xs font-black transition-transform ${heian ? '' : 'text-kinari-light'} ${showPool ? 'rotate-180' : ''}`}>
                     ▼
                   </span>
                 </button>
@@ -180,12 +204,12 @@ export function Shop() {
                     {pool.map((p) => (
                       <li
                         key={p.id}
-                        className={`border-[2px] border-sumi/40 bg-kinari-light/10 px-3 py-2 flex items-center gap-3 ${p.owned ? 'opacity-70' : ''}`}
+                        className={`border-[2px] px-3 py-2 flex items-center gap-3 ${heian ? 'border-sumi/25 bg-sumi/5' : 'border-sumi/40 bg-kinari-light/10'} ${p.owned ? 'opacity-70' : ''}`}
                       >
                         <span className="shrink-0 text-sumi"><Glyph name={p.icon} size={24} /></span>
                         <div className="min-w-0 flex-grow">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[11px] font-black text-kinari-light truncate">{p.name}</span>
+                            <span className={`text-[11px] font-black truncate ${heian ? '' : 'text-kinari-light'}`}>{p.name}</span>
                             {/* Badge pakai WARNA KANON karakter (bukan warna rarity) — v1.1 */}
                             <span
                               className="text-[8px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5 border-[1.5px] border-sumi/60"
@@ -199,11 +223,11 @@ export function Shop() {
                               </span>
                             )}
                           </div>
-                          <p className="text-[10px] font-bold text-kinari-light/70 truncate">
+                          <p className={`text-[10px] font-bold truncate ${heian ? 'opacity-60' : 'text-kinari-light/70'}`}>
                             {language === 'id' ? p.desc : (p.desc_en || p.desc)}
                           </p>
                         </div>
-                        <span className="text-sm font-black text-kinari-light shrink-0 tabular-nums">{p.chance}%</span>
+                        <span className={`text-sm font-black shrink-0 tabular-nums ${heian ? '' : 'text-kinari-light'}`}>{p.chance}%</span>
                       </li>
                     ))}
                   </ul>
@@ -235,14 +259,14 @@ export function Shop() {
                     <div className="shrink-0 w-12 flex justify-center text-sumi"><Glyph name={item.icon} size={34} /></div>
                     <div className="flex-grow min-w-0">
                       <h3 className="text-sm sm:text-base font-serif font-black text-sumi truncate">
-                        {itemName(item, language)}
+                        {itemName(item, language, era)}
                         {have > 0 && (
                           <span className="ml-2 align-middle bg-matcha text-kinari-light text-[9px] font-black px-1.5 py-0.5 border-[2px] border-sumi">
                             ×{have}
                           </span>
                         )}
                       </h3>
-                      <p className="text-[11px] sm:text-xs font-bold text-sumi/70 truncate">{itemDesc(item, language)}</p>
+                      <p className="text-[11px] sm:text-xs font-bold text-sumi/70 truncate">{itemDesc(item, language, era)}</p>
                     </div>
                     <button
                       type="button"
@@ -251,7 +275,7 @@ export function Shop() {
                         affordable ? "bg-ai text-kinari-light" : "bg-kinari-light text-sumi/50"
                       }`}
                     >
-                      {item.price} <Glyph name="coin" className="ml-1" />
+                      {item.price} <MedaruCoin className="ml-1" />
                     </button>
                   </div>
                 );

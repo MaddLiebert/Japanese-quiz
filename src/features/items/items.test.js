@@ -84,3 +84,36 @@ test('itemName/itemDesc: fallback ke ID kalau field EN hilang', () => {
   assert.equal(itemName(fake, 'en'), 'Barang ID');
   assert.equal(itemDesc(fake, 'en'), 'Deskripsi ID');
 });
+
+// ── Tema Heian: nama barang pakai KANA (pemain belum bisa kanji) ─────────────
+const KANJI = /[\u4e00-\u9fff]/;
+
+test('tiap barang punya nama & deskripsi versi Heian (kana)', () => {
+  for (const item of SHOP_ITEMS) {
+    assert.ok(item.name_heian && item.name_heian.length > 0, `name_heian kurang di ${item.id}`);
+    assert.ok(item.desc_heian && item.desc_heian.length > 0, `desc_heian kurang di ${item.id}`);
+    assert.ok(!KANJI.test(item.name_heian), `name_heian tidak boleh kanji: ${item.name_heian}`);
+    assert.ok(!KANJI.test(item.desc_heian), `desc_heian tidak boleh kanji: ${item.desc_heian}`);
+    // Heian harus beda dari ID & EN (kalau sama = belum diterjemah)
+    assert.notEqual(item.name_heian, item.name, `name_heian masih sama dgn ID di ${item.id}`);
+    assert.notEqual(item.name_heian, item.name_en, `name_heian masih sama dgn EN di ${item.id}`);
+  }
+});
+
+test('itemName/itemDesc: era heian → kana, abaikan bahasa', () => {
+  const item = getItem('kabel_jumper');
+  assert.equal(itemName(item, 'id', 'heian'), 'いのちのおふだ');
+  assert.equal(itemName(item, 'en', 'heian'), 'いのちのおふだ');
+  assert.equal(itemDesc(item, 'id', 'heian'), 'いちど いきかえる');
+});
+
+test('itemName/itemDesc: era lain → teks lama (Heian tidak bocor)', () => {
+  const item = getItem('kopi_kaleng');
+  assert.equal(itemName(item, 'id', 'edo'), 'Kopi Kaleng Boss');
+  assert.equal(itemName(item, 'en', 'showa'), 'Boss Canned Coffee');
+  assert.equal(itemName(item, 'id'), 'Kopi Kaleng Boss'); // era tak diberi
+});
+
+test('id barang TIDAK berubah (kunci save aman)', () => {
+  assert.deepEqual(SHOP_ITEMS.map((i) => i.id), ['kopi_kaleng', 'selotip_kaset', 'kabel_jumper']);
+});

@@ -4,9 +4,12 @@ import { motion, AnimatePresence } from "motion/react";
 import { useUserStats, getRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { useDeathQuizSession } from "./useDeathQuizSession";
+import { Glyph } from "../../components/icons/Glyph";
+import { MedaruCoin } from "../../components/MedaruCoin";
+import { useEra } from "../theme/EraContext";
+import { medaruCopy } from "../progress/medaruCopy";
 import { isDeathQuizUnlocked, DEATH_UNLOCK_XP, DEATH_XP_PENALTY, DEATH_START_LIVES, deathMedaruReward } from "./deathQuiz";
 import { DEATH_SKILLS, DEATH_METER_PER_CHARGE } from "./deathSkills";
-import { Glyph } from "../../components/icons/Glyph";
 import { EraPaper } from "../../components/EraPaper";
 
 // Kartu statistik kecil (nyawa/skor/waktu) — gaya neo-brutalist repo.
@@ -41,8 +44,10 @@ function CurseMeter({ meter, charges, id }) {
 export function DeathQuizScreen() {
   const { progress } = useUserStats();
   const { language } = useLanguage();
+  const { era } = useEra();
   const navigate = useNavigate();
   const id = language === 'id';
+  const money = medaruCopy(era, language);   // nama mata uang ikut era (Heian → もん)
   const [confirmQuit, setConfirmQuit] = useState(false);
 
   const rank = getRank(progress.xp || 0);
@@ -185,7 +190,7 @@ export function DeathQuizScreen() {
               accent="!bg-shu/10 !border-shu"
             />
             <StatChip
-              label="Medaru"
+              label={money.name}
               value={`+${runResult?.medaruGained ?? 0}`}
               accent="!bg-kinari"
             />
@@ -198,8 +203,8 @@ export function DeathQuizScreen() {
           </p>
           <p className="text-sm font-black text-sumi mb-8 leading-relaxed">
             {(runResult?.medaruGained ?? 0) > 0
-              ? (id ? `Kompensasi: +${runResult.medaruGained} Medaru` : `Compensation: +${runResult.medaruGained} Medaru`)
-              : (id ? 'Skor belum cukup untuk kompensasi Medaru (min. 5).' : 'Score too low for Medaru compensation (min. 5).')}
+              ? (id ? `Kompensasi: +${runResult.medaruGained} ${money.name}` : `Compensation: +${runResult.medaruGained} ${money.name}`)
+              : (id ? `Skor belum cukup untuk kompensasi ${money.name} (min. 5).` : `Score too low for ${money.name} compensation (min. 5).`)}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full">
@@ -290,7 +295,7 @@ export function DeathQuizScreen() {
             </li>
             <li className="flex gap-3">
               <span className="text-shu">▶</span>
-              {id ? 'Kompensasi: dapat Medaru makin banyak tiap jawaban benar (min. skor 5).' : 'Compensation: earn Medaru for every correct answer (min. score 5).'}
+              {id ? `Kompensasi: dapat ${money.name} makin banyak tiap jawaban benar (min. skor 5).` : `Compensation: earn ${money.name} for every correct answer (min. score 5).`}
             </li>
             <li className="flex gap-3">
               <span className="text-shu">▶</span>
@@ -347,7 +352,7 @@ export function DeathQuizScreen() {
           {skillState?.combo > 1 && (
             <StatChip label={id ? '連撃' : 'Combo'} value={`×${skillState.combo}`} accent="!bg-shu/10 !border-shu" />
           )}
-          <StatChip label={<Glyph name="coin" size={12} />} value={`+${deathMedaruReward(score)}`} />
+          <StatChip label={<MedaruCoin size={12} />} value={`+${deathMedaruReward(score)}`} />
         </div>
         <div className="flex items-center gap-3">
           <CurseMeter meter={skillState?.meter || 0} charges={skillState?.charges || 0} id={id} />

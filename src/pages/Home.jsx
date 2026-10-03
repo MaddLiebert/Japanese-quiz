@@ -9,11 +9,13 @@ import { countMasteredKanji, isN5ExamUnlocked, N5_EXAM_MIN_MASTERED_KANJI } from
 import { DailyQuestPanel } from "../features/quests/DailyQuestPanel";
 import { EraDivider } from "../components/EraDivider";
 import { EraTategaki } from "../components/EraTategaki";
-import { EraPainting } from "../components/EraPainting";
+import { EraVillageArt, EraNightArt } from "../components/EraArtwork";
 
 import { StreakIndicator } from "../components/StreakIndicator";
 import { RankBadge } from "../features/progress/RankBadge";
 import { Glyph } from "../components/icons/Glyph";
+import { useEra } from "../features/theme/EraContext";
+import { streakCopy } from "../features/progress/streakCopy";
 import { isLegendary, badgeCircleClass } from "../features/progress/badgeSeal";
 import { LegendaryDecor } from "../features/progress/BadgeDecor";
 // Hanko Stamp component — reused for level and achievements
@@ -54,6 +56,8 @@ export function Home() {
   const [inputName, setInputName] = useState("");
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const { era } = useEra();
+  const ST = streakCopy(era, language);
 
   // Badge yang tampil di Home (maks 4) + sisa yang disembunyikan (untuk link Profil).
   // knownBadges: buang ID tanpa meta supaya angka "+N" selalu = badge yang benar-benar tampil.
@@ -152,24 +156,27 @@ export function Home() {
 
         {/* --- HEADER --- */}
         <header className="grid grid-cols-1 sm:grid-cols-12 border-b-[4px] border-sumi relative z-10">
-          <div className="sm:col-span-8 p-6 sm:p-12 flex flex-col justify-between border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi bg-seigaiha relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-kinari-light/80 to-transparent pointer-events-none"></div>
+          <div className="sm:col-span-8 p-6 sm:p-12 flex flex-col justify-between border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi bg-seigaiha relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-kinari-light/85 via-kinari-light/40 to-transparent pointer-events-none"></div>
 
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="flex items-center gap-4 mb-16 relative z-10"
+              className="flex items-center gap-3 sm:gap-4 mb-12 sm:mb-20 relative z-20"
             >
-              <div className="w-12 h-12 bg-sumi text-kinari-light flex items-center justify-center font-serif text-2xl rotate-3 shadow-[4px_4px_0_0_#d3382f]">
+              <div className="w-12 h-12 shrink-0 bg-sumi text-kinari-light flex items-center justify-center font-serif text-2xl rotate-3 shadow-[4px_4px_0_0_#d3382f]">
                 学
               </div>
-              <div className="flex flex-col">
-                <span className="text-xs uppercase tracking-[0.4em] font-bold text-sumi">
-                  日本語学園 · Nihongo Gakuen
+              <div className="flex flex-col min-w-0">
+                <span className="text-base sm:text-xl font-serif font-black leading-none text-sumi whitespace-nowrap">
+                  日本語学園
                 </span>
-                <span className="text-[10px] text-sumi/60 uppercase tracking-widest mt-0.5">
-                  {language === 'id' ? 'Kuis Bahasa Jepang · Kursus Dasar N5' : 'Japanese Language Quiz · N5 Foundation Course'}
+                <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.32em] font-bold text-sumi/70 mt-1.5 whitespace-nowrap">
+                  Nihongo Gakuen
+                </span>
+                <span className="text-[9px] sm:text-[10px] text-sumi/50 uppercase tracking-[0.16em] mt-1">
+                  {language === 'id' ? 'Kuis Bahasa Jepang · N5' : 'Japanese Language Quiz · N5'}
                 </span>
               </div>
             </motion.div>
@@ -178,7 +185,7 @@ export function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="relative z-10"
+              className="relative z-20"
             >
               <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black text-sumi tracking-tighter leading-[0.9]">
                 日本語<br />
@@ -187,13 +194,13 @@ export function Home() {
             </motion.div>
 
             {/* 縦書き 平安 — label gulungan (kanan→kiri), sinyal manuskrip Heian */}
-            <EraTategaki className="absolute top-8 right-6 sm:top-12 sm:right-10 text-4xl sm:text-6xl text-sumi/20">
+            <EraTategaki className="absolute top-8 right-6 sm:top-12 sm:right-10 text-4xl sm:text-6xl text-sumi/20 z-20">
               平安
             </EraTategaki>
 
-            {/* Lukisan sumi-e 墨絵 (buatan sendiri) — mengisi ruang kosong
-                kanan-bawah kolom supaya hero tidak terasa lowong. Heian saja. */}
-            <EraPainting className="hidden sm:block absolute right-0 -bottom-2 w-[62%] max-w-[440px] z-0" />
+            {/* Lukisan desa 里 (domain publik, Rimpa) — mengisi ruang hero,
+                luluh diagonal ke kertas (tanpa tepi kotak). Heian saja. */}
+            <EraVillageArt className="era-photo--village absolute inset-x-0 bottom-0 w-full h-[82%] object-cover object-bottom z-0" />
           </div>
 
           <div className="sm:col-span-4 p-8 flex flex-col items-center justify-center bg-kinari relative">
@@ -233,46 +240,53 @@ export function Home() {
         {/* --- MAIN CONTENT GRID --- */}
         <div className="grid grid-cols-1 sm:grid-cols-12 relative z-10 heian-enter-2">
 
-          {/* LEFT COL: Up Next (Focal Point) */}
-          <div className="sm:col-span-7 border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi p-6 sm:p-12 bg-kinari-light relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-asanoha opacity-30 transform translate-x-1/2 -translate-y-1/4 pointer-events-none"></div>
+          {/* LEFT COL: Up Next (Focal Point) — lukisan laut malam 月夜 "bleed"
+              dari sudut kanan-atas (tempat Module 04), luluh ke kertas. */}
+          <div className="sm:col-span-7 border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi p-6 sm:p-10 bg-kinari-light relative overflow-hidden group flex flex-col min-h-[540px] sm:min-h-[620px]">
 
-            {/* Lukisan sumi-e 墨絵 (buatan sendiri) — mengisi pita kosong
-                tengah kartu supaya tidak lowong. Heian saja. */}
-            <EraPainting className="hidden sm:block absolute left-1/2 top-[32%] -translate-x-1/2 w-[68%] max-w-[430px] z-0 opacity-80" />
+            {/* Lukisan 月夜 (domain publik) — menempel di sudut kanan-atas lalu
+                luluh diagonal ke kertas (mask radial). Tanpa bingkai → bukan
+                tempelan. Heian saja. */}
+            <EraNightArt className="era-photo--night absolute top-0 right-0 w-[78%] h-[84%] object-cover object-top z-0" />
 
-            <div className="flex items-start justify-between mb-12 sm:mb-20">
+            <div className="flex items-start justify-between relative z-20">
               <div className="writing-vertical-rl text-xs uppercase tracking-[0.5em] font-black text-sumi/50">
                 {language === 'id' ? 'Pelajaran Berikutnya' : 'Next Lesson'}
               </div>
-              <div className="bg-sumi text-kinari-light text-[10px] uppercase tracking-[0.3em] px-4 py-2 font-bold shadow-[4px_4px_0_0_#182b49] transform rotate-2">
+              <div className="bg-sumi text-kinari-light text-[10px] uppercase tracking-[0.3em] px-4 py-2 font-bold shadow-[4px_4px_0_0_#182b49] ring-4 ring-kinari-light/85 transform rotate-2">
                 Module 04
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-8 items-end relative">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="relative z-10"
-              >
-                <h2 className="text-6xl sm:text-8xl md:text-9xl font-serif leading-none text-sumi -ml-2 sm:-ml-4 group-hover:text-ai transition-colors duration-500 drop-shadow-md tracking-tight">合格</h2>
-                <div className="absolute bottom-2 -right-2 sm:bottom-4 sm:-right-4 w-12 h-12 sm:w-16 sm:h-16 rounded-full border-[3px] border-shu text-shu flex items-center justify-center transform rotate-12 bg-kinari-light/90 shadow-sm">
-                  <span className="font-serif font-black text-base sm:text-xl">N5</span>
+            {/* Blok teks turun ke bawah, berdiri di atas kertas bersih (di luar
+                area lukisan) supaya selalu terbaca. */}
+            <div className="relative z-20 mt-auto pt-40 sm:pt-48">
+              <div className="flex items-end justify-between">
+                <motion.h2
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="text-6xl sm:text-7xl font-serif leading-none text-sumi tracking-tight group-hover:text-ai transition-colors duration-500"
+                >
+                  合格
+                </motion.h2>
+                <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-full border-[3px] border-shu text-shu flex items-center justify-center transform rotate-12 bg-kinari-light shadow-sm">
+                  <span className="font-serif font-black text-lg sm:text-xl">N5</span>
                 </div>
-              </motion.div>
+              </div>
 
-              <div className="flex flex-col gap-4 pb-6 sm:pb-8 relative z-10">
+              <div className="mt-5 border-t-[3px] border-sumi/15 pt-5 flex flex-col gap-4">
                 <div>
-                  <h3 className="text-3xl sm:text-4xl font-bold text-sumi font-serif leading-tight">JLPT N5<br />Mastery</h3>
+                  <h3 className="text-3xl sm:text-4xl font-bold text-sumi font-serif leading-tight">
+                    JLPT N5<br />Mastery
+                  </h3>
                   <p className="text-xs text-sumi/70 mt-3 uppercase tracking-[0.2em] font-bold">
                     {language === 'id'
                       ? 'Kuasai 800+ Kosakata, Tata Bahasa, dan Kanji.'
                       : '800+ Vocab, Grammar & Kanji'}
                   </p>
                 </div>
-                <Button onClick={() => navigate('/learn')} className="w-max shadow-[6px_6px_0_0_#1a1a1a] hover:shadow-[2px_2px_0_0_#1a1a1a] hover:translate-x-[4px] hover:translate-y-[4px] transition-all bg-ai text-kinari-light rounded-none border-[3px] border-sumi text-sm px-8 py-4 uppercase font-bold tracking-widest mt-6">
+                <Button onClick={() => navigate('/learn')} className="w-max shadow-[6px_6px_0_0_#1a1a1a] hover:shadow-[2px_2px_0_0_#1a1a1a] hover:translate-x-[4px] hover:translate-y-[4px] transition-all bg-ai text-kinari-light rounded-none border-[3px] border-sumi text-sm px-8 py-4 uppercase font-bold tracking-widest">
                   {language === 'id' ? 'Mulai Latihan' : 'Start Learning'}
                 </Button>
               </div>
@@ -304,15 +318,13 @@ export function Home() {
               <div className="p-6 sm:p-8 flex flex-col justify-center bg-kinari relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-16 h-16 bg-[radial-gradient(circle,currentColor_2px,transparent_2px)] bg-[length:8px_8px] text-sumi/10"></div>
                 <h4 className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold mb-3">
-                  {language === 'id' ? 'Streak Belajar' : 'Study Streak'}
+                  {ST.title}
                 </h4>
                 <StreakIndicator count={progress.streak} isActive={progress.streak > 0} />
                 <div className={`mt-4 text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1 inline-block w-max ${
                   progress.streak > 0 ? 'bg-sumi text-kinari-light' : 'bg-sumi/10 text-sumi/50'
                 }`}>
-                  {progress.streak > 0
-                    ? (language === 'id' ? '+5% Bonus Aktif' : '+5% Bonus Active')
-                    : (language === 'id' ? 'Bonus Nonaktif' : 'Bonus Inactive')}
+                  {progress.streak > 0 ? ST.bonusOn : ST.bonusOff}
                 </div>
               </div>
             </div>

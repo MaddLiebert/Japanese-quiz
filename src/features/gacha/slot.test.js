@@ -12,6 +12,13 @@ import {
   totalSpinMs,
   REEL_EASE,
   REEL_FADE,
+  HEIAN_SHELL_PAIRS,
+  HEIAN_SHELL_SLOTS,
+  HEIAN_SHELL_MS,
+  HEIAN_SHELL_POOL,
+  HEIAN_SHELL_FADE,
+  buildShellStrip,
+  buildShellStrips,
 } from './slot.js';
 
 test('konstanta dasar masuk akal', () => {
@@ -91,4 +98,39 @@ test('maxRarity: pilih tingkat tertinggi', () => {
 
 test('totalSpinMs: durasi total > reel terakhir', () => {
   assert.ok(totalSpinMs() > REEL_MS[REEL_COUNT - 1]);
+});
+
+// ── Era Heian: 貝合わせ (cocokkan kerang) ────────────────────────────────────
+test('Heian: 3 pasang = 6 keping, pasangan berhenti berurutan', () => {
+  assert.equal(HEIAN_SHELL_PAIRS, 3);
+  assert.equal(HEIAN_SHELL_SLOTS, HEIAN_SHELL_PAIRS * 2);
+  assert.equal(HEIAN_SHELL_MS.length, HEIAN_SHELL_PAIRS);
+  for (let i = 1; i < HEIAN_SHELL_MS.length; i++) {
+    assert.ok(HEIAN_SHELL_MS[i] > HEIAN_SHELL_MS[i - 1], 'pasangan berhenti setelah pasangan sebelumnya');
+  }
+  assert.ok(HEIAN_SHELL_POOL.length >= 4, 'pool simbol kerang cukup beragam');
+  assert.ok(HEIAN_SHELL_FADE > 0);
+});
+
+test('buildShellStrips: 6 keping, dua keping sepasang berakhir di target SAMA', () => {
+  const strips = buildShellStrips(['A', 'B', 'C'], ['x'], 5, () => 0);
+  assert.equal(strips.length, HEIAN_SHELL_SLOTS);
+  // pasangan 0 = keping 0 & 1 → keduanya target 'A' (itulah "mencocokkan")
+  assert.equal(strips[0][4], 'A');
+  assert.equal(strips[1][4], 'A');
+  assert.equal(strips[2][4], 'B');
+  assert.equal(strips[3][4], 'B');
+  assert.equal(strips[4][4], 'C');
+  assert.equal(strips[5][4], 'C');
+});
+
+test('buildShellStrips: target lebih sedikit dari pasangan → dipakai berulang', () => {
+  const strips = buildShellStrips(['A'], ['x'], 5, () => 0);
+  assert.deepEqual(strips.map((s) => s[4]), ['A', 'A', 'A', 'A', 'A', 'A']);
+});
+
+test('buildShellStrip: panjang benar & elemen terakhir = target', () => {
+  const strip = buildShellStrip('貝', ['a', 'b'], 6, () => 0);
+  assert.equal(strip.length, 6);
+  assert.equal(strip[5], '貝');
 });

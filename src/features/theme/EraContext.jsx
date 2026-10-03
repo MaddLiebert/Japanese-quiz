@@ -8,6 +8,7 @@ import {
 } from './eras';
 
 const EraContext = createContext(null);
+export { EraContext };
 
 export const EraProvider = ({ children }) => {
   const { progress } = useUserStats();

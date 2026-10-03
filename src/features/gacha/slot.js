@@ -12,6 +12,38 @@ export const REEL_EASE = [0.42, 0, 0.58, 1];
 // TANPA filter blur animasi (blur per-frame pada strip panjang = berat, bikin patah-patah).
 export const REEL_FADE = 30;
 
+// ── Era Heian 平安 — 貝合わせ (cocokkan kerang) ──────────────────────────────
+// Mesin slot 3-reel adalah bahasa Shōwa. Di Heian, "undian" = kai-awase:
+// sepasang kerang 貝 dicocokkan. Jadi tampilan gacha Heian memakai 3 pasang
+// kerang (6 slot), bukan 3 reel — dua kerang sepasang yang berhenti bersamaan.
+// Semua konstanta di bawah HANYA dipakai saat era === 'heian'.
+export const HEIAN_SHELL_PAIRS = 3;              // 3 pasang kerang (meniru 3 reel)
+export const HEIAN_SHELL_SLOTS = 6;              // 3 pasang × 2 keping
+export const HEIAN_SHELL_MS = [2000, 3200, 4600]; // tiap PASANG berhenti berurutan (ms)
+export const HEIAN_SHELL_TICK_MS = 90;           // bunyi kerang beradu (ms)
+export const HEIAN_SHELL_EASE = [0.33, 0, 0.2, 1]; // ease-out lembut (kerang mengambang, bukan snap)
+export const HEIAN_SHELL_FADE = 26;              // fade tepi jendela kerang (px)
+
+// Simbol yang lewat di keping kerang saat masih "mengambang" — motif Heian:
+// bunga 花, kana かな, bulan 月, gerbang 門, tinta 墨.
+export const HEIAN_SHELL_POOL = ['flower', 'flower2', 'cloudMoon', 'bell', 'sprout', 'waves', 'brush'];
+
+// Strip untuk SATU keping kerang Heian (acak dari pool, elemen terakhir = target).
+export function buildShellStrip(targetIcon, pool = HEIAN_SHELL_POOL, length = STRIP_LEN, rng = Math.random) {
+  return buildStrip(targetIcon, pool, length, rng);
+}
+
+// Strip untuk SEMUA keping kerang Heian. targetIcons = satu ikon per PASANG;
+// tiap pasang diulang 2× supaya dua kerang dalam satu pasangan menampilkan
+// hasil yang sama (itulah "mencocokkan"). Pasangan ke-i = keping 2i & 2i+1.
+export function buildShellStrips(targetIcons, pool = HEIAN_SHELL_POOL, length = STRIP_LEN, rng = Math.random) {
+  return Array.from({ length: HEIAN_SHELL_SLOTS }, (_, k) => {
+    const pairIdx = Math.floor(k / 2);
+    const target = targetIcons[pairIdx % targetIcons.length];
+    return buildShellStrip(target, pool, length, rng);
+  });
+}
+
 // Simbol acak yang dilewati saat reel muter (bukan ikon pack).
 export const SYMBOL_POOL = ['flower', 'flower2', 'sprout', 'tree', 'waves', 'fire', 'snowflake', 'moon', 'bell', 'cloudMoon'];
 
