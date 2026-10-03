@@ -41,3 +41,8 @@ dist-ssr
 
 # Folder kerja sementara di root (screenshot, diff, referensi)
 _tmp_*
+tmp/
+
+# Scratch di public/ (mis. _shotboot.html — set localStorage lalu redirect).
+# Prefiks "_" = sekali pakai, tidak untuk deploy.
+public/_*
