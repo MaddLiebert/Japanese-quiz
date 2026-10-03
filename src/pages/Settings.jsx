@@ -1,11 +1,13 @@
 import { Glyph } from "../components/icons/Glyph";
 import { motion } from "motion/react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserStats } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import { useEra } from "../features/theme/EraContext";
 import { ERAS } from "../features/theme/eras";
+import { themeBgmEnabled, setThemeBgmEnabled, themeBgmVolumeStep, setThemeBgmVolume, clampVolumeStep, THEME_BGM_VOL_STEPS } from "../features/theme/themeAudio";
 import { tutorialButtonVisible } from "../features/tutorial/tutorials";
 import { DevPanel } from "../features/dev/DevPanel"; // DEV-ONLY — hapus baris ini untuk membuang panel cheat
 import { EraPaper } from "../components/EraPaper";
@@ -17,6 +19,15 @@ export function Settings() {
   const { era, setEra, unlocked } = useEra();
   const navigate = useNavigate();
   const tutorialOn = tutorialButtonVisible(progress.tutorialHidden);
+  const [bgmOn, setBgmOn] = useState(() => themeBgmEnabled());
+  const [bgmVol, setBgmVol] = useState(() => themeBgmVolumeStep());
+
+  // Terapkan volume (indeks tangga, dijepit) → state + persist + BGM langsung.
+  const applyVolStep = (i) => {
+    const idx = clampVolumeStep(i);
+    setBgmVol(idx);
+    setThemeBgmVolume(THEME_BGM_VOL_STEPS[idx]);
+  };
 
   const handleReset = () => {
     const message = language === 'id'
@@ -227,6 +238,93 @@ export function Settings() {
                   >
                     {language === 'id' ? 'Sembunyi' : 'Hide'}
                   </button>
+                </div>
+              </div>
+
+              {/* BGM Tema Toggle (docs/tema/heian.md §9) */}
+              <div className="border-[3px] border-sumi/20 bg-kinari p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-1">
+                    {language === 'id' ? 'Musik Tema (BGM)' : 'Theme Music (BGM)'}
+                  </label>
+                  <p className="text-xs text-sumi/70 font-semibold">
+                    {language === 'id'
+                      ? 'Musik latar era (gagaku / koto). Default mati agar tidak mengganggu saat kuis.'
+                      : 'Era background music (gagaku / koto). Off by default so it never disturbs a quiz.'}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 min-w-[240px]">
+                  <button
+                    type="button"
+                    onClick={() => { setBgmOn(true); setThemeBgmEnabled(true, era); }}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      bgmOn
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    {language === 'id' ? 'Nyalakan' : 'On'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setBgmOn(false); setThemeBgmEnabled(false, era); }}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      !bgmOn
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    {language === 'id' ? 'Matikan' : 'Off'}
+                  </button>
+                </div>
+
+                {/* Volume BGM — kecil/besar (5 tingkat) */}
+                <div className="w-full sm:w-auto sm:min-w-[240px]">
+                  <div className="flex items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      onClick={() => applyVolStep(bgmVol - 1)}
+                      disabled={bgmVol === 0}
+                      title={language === 'id' ? 'Kecilkan volume' : 'Volume down'}
+                      aria-label={language === 'id' ? 'Kecilkan volume' : 'Volume down'}
+                      className={`py-2 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest transition-all ${
+                        bgmVol === 0 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer bg-kinari-light text-sumi/70 hover:text-sumi'
+                      }`}
+                    >
+                      − {language === 'id' ? 'Kecil' : 'Down'}
+                    </button>
+
+                    {/* Indikator 5 bar — klik langsung ke tingkat itu */}
+                    <div className="flex items-end gap-1 h-6">
+                      {THEME_BGM_VOL_STEPS.map((s, i) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => applyVolStep(i)}
+                          title={`${Math.round(s * 100)}%`}
+                          aria-label={`${language === 'id' ? 'Volume' : 'Volume'} ${Math.round(s * 100)}%`}
+                          className={`w-2 cursor-pointer border-[2px] border-sumi transition-all ${i <= bgmVol ? 'bg-sumi' : 'bg-kinari-light'}`}
+                          style={{ height: `${8 + i * 4}px` }}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => applyVolStep(bgmVol + 1)}
+                      disabled={bgmVol === THEME_BGM_VOL_STEPS.length - 1}
+                      title={language === 'id' ? 'Besarkan volume' : 'Volume up'}
+                      aria-label={language === 'id' ? 'Besarkan volume' : 'Volume up'}
+                      className={`py-2 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest transition-all ${
+                        bgmVol === THEME_BGM_VOL_STEPS.length - 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer bg-kinari-light text-sumi/70 hover:text-sumi'
+                      }`}
+                    >
+                      + {language === 'id' ? 'Besar' : 'Up'}
+                    </button>
+                  </div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-sumi/50 mt-2 text-center sm:text-right">
+                    {language === 'id' ? 'Volume' : 'Volume'} {Math.round(THEME_BGM_VOL_STEPS[bgmVol] * 100)}%
+                  </p>
                 </div>
               </div>
             </div>

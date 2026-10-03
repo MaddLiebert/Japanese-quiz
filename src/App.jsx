@@ -15,6 +15,7 @@ import { DeathQuizScreen } from "./features/deathquiz/DeathQuizScreen";
 import { N5ExamScreen } from "./features/n5exam/N5ExamScreen";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
 import { EraProvider, useEra } from "./features/theme/EraContext";
+import { ThemeAudioHost } from "./features/theme/ThemeAudioHost";
 import { eraName } from "./features/theme/eraNames";
 import { EffectProvider } from "./features/effects/EffectContext";
 import { getPack } from "./features/packs/packs";
@@ -128,6 +129,7 @@ function App() {
         <ProgressProvider>
           <VoiceSync />
           <EraProvider>
+          <ThemeAudioHost />
           <BrowserRouter>
             <EffectProvider>
             <div className="min-h-screen relative font-sans selection:bg-ai/20 overflow-x-hidden bg-[var(--backdrop-val)]">

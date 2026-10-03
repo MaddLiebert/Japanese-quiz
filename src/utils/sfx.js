@@ -898,6 +898,30 @@ export const megumiBgmPlan = () => ({
 
 export const megumiWheelTickParams = () => megumiBgmPlan().wheel;
 
+// ── BGM TEMA per-era (docs/tema/heian.md §9 T12) ────────────────────────────
+// Heian: gagaku istana — drone rendah + pad pentatonik + petikan koto yang
+// berulang. SANTUN & PELAN (level rendah, spec §9: BGM default −18 dB ≈ 0.12).
+// Angka murni & deterministik → dites di themeAudio.test.js. Satu titik tune.
+export const THEME_BGM_STEP_S = 1.2;
+
+const THEME_BGM_PLANS = {
+  heian: {
+    level: 0.12,          // spec §9: BGM default −18 dB (≈ 0.126 amplitude)
+    fadeInMs: 2600,
+    fadeOutMs: 1500,
+    // Drone gagaku: bass 55/110 Hz + 82.4 (E2) → dasar tenang, "istana".
+    drone: { freqs: [55, 110, 82.41], detune: [0, -5, 3], gain: 0.5 },
+    // Pad: triangle mid (kedengaran di speaker HP) lewat lowpass bernapas pelan.
+    pad: { type: 'triangle', freqs: [220, 293.66, 392], filterHz: 820, lfoHz: 0.05, lfoDepth: 210, gain: 0.26 },
+    // Koto: petikan pada tangga hirajoshi (D E G A B♭) → warna Jepang kuno.
+    // Dipetik berurutan (deterministik) tiap `everyMs`, membusuk lembut.
+    koto: { notes: [293.66, 329.63, 392, 440, 466.16], everyMs: 2400, dur: 1.6, gain: 0.16 },
+  },
+};
+
+export const themeBgmPlan = (era = 'heian') => THEME_BGM_PLANS[era] || THEME_BGM_PLANS.heian;
+
+
 // ── SFX one-shot Yuji (pack_09) — TIDAK ada ambience sustained (keputusan desain) ──
 // Semua params murni & deterministik -> dites di sfx.yuji.test.js.
 // Pemutar = no-op di node (guard window), pola sama playBallSound.
