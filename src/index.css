@@ -9,6 +9,9 @@
   --matcha-val: #7d8f69;
   --backdrop-val: #e8e4d9;
   --kin-val: #a9821c;
+  /* 金 sebagai TEKS di atas kertas: emas terang tak terbaca (kontras < 3).
+     Token ini selalu "emas yang kontras dengan KERTAS", ikut terang/gelap tema. */
+  --kin-ink-val: #8a6f2e;
   --ink: #1a1a1a;   /* dipakai .packcard — sebelumnya TAK terdefinisi (bug) */
 }
 
@@ -21,6 +24,7 @@
   --matcha-val: #8fa874;
   --backdrop-val: #0c0d0f;
   --kin-val: #e8c860;
+  --kin-ink-val: #e8c860;   /* kertas gelap → teks emas harus TERANG */
 }
 
 @theme {
@@ -31,6 +35,7 @@
   --color-kinari-light: var(--kinari-light-val);
   --color-matcha: var(--matcha-val);
   --color-kin: var(--kin-val);
+  --color-kin-ink: var(--kin-ink-val);
   
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-serif: "Noto Serif JP", "Shippori Mincho", "Yu Mincho", serif;
@@ -1198,7 +1203,10 @@ button[data-toji-kill]::after {
   --ai-val:           #5b4a7a;  /* 紫 murasaki — warna pangkat tertinggi */
   --shu-val:          #b83b4a;  /* 紅 kurenai */
   --matcha-val:       #8a9a5b;  /* 萌黄 moegi */
-  --kin-val:          #c9a227;  /* 金 kin */
+  --kin-val:          #c9a227;  /* 金 kin — emas TERANG (border, aksen, teks di latar gelap) */
+  /* 金 kin sebagai TEKS di atas kertas: #c9a227 di #f4ebd2 cuma kontras 2.03
+     (label "Sejarah Heian" & label bab TAK terbaca). Dipakai `text-kin-ink`. */
+  --kin-ink-val:      #7d6420;
   --backdrop-val:     #ddd0b0;  /* 砂 suna — pasir tua, dekat dengan panel */
 
   /* Bentuk — KERTAS & TINTA (revisi besar): kertas tua bersudut TAJAM, bukan

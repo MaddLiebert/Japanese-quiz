@@ -364,7 +364,7 @@ export function Settings() {
                   type="button"
                   onClick={() => navigate('/heian-history')}
                   disabled={!unlocked.some((e) => e.id === 'heian')}
-                  className="py-3 px-5 border-[3px] border-kin font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer bg-kinari-light text-kin hover:bg-kin hover:text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="py-3 px-5 border-[3px] border-kin font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer bg-kinari-light text-kin-ink hover:bg-kin hover:text-sumi shadow-[3px_3px_0_0_#1a1a1a] disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {language === 'id' ? 'Sejarah Heian' : 'Heian History'}
                 </button>

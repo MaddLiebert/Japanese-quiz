@@ -86,7 +86,7 @@ export function HeianHistory() {
         >
           平安時代
         </h1>
-        <p className="mt-1 font-sans text-sm font-bold tracking-[0.3em] text-kin">
+        <p className="mt-1 font-sans text-sm font-bold tracking-[0.3em] text-kin-ink">
           794 — 1185 · {id ? 'Sejarah Heian' : 'Heian History'}
         </p>
         <p className="mt-4 max-w-prose font-sans text-sm font-semibold leading-relaxed text-sumi/75">
@@ -99,7 +99,7 @@ export function HeianHistory() {
         <button
           type="button"
           onClick={() => play('heian')}
-          className="mt-6 inline-flex items-center gap-2 border-2 border-kin px-4 py-2.5 font-sans text-xs font-bold uppercase tracking-widest text-kin transition-colors hover:bg-kin hover:text-kinari-light"
+          className="mt-6 inline-flex items-center gap-2 border-2 border-kin px-4 py-2.5 font-sans text-xs font-bold uppercase tracking-widest text-kin-ink transition-colors hover:bg-kin hover:text-sumi"
           style={{ borderRadius: 2 }}
         >
           ▶ {id ? 'Putar Ulang Cinematic' : 'Replay Cinematic'}
@@ -115,7 +115,7 @@ export function HeianHistory() {
             style={{ borderRadius: 2 }}
           >
             <span className="absolute -left-[11px] top-4 h-[18px] w-[18px] rounded-full border-2 border-kin bg-kinari" aria-hidden="true" />
-            <p className="font-sans text-[0.62rem] font-bold uppercase tracking-[0.28em] text-kin">
+            <p className="font-sans text-[0.62rem] font-bold uppercase tracking-[0.28em] text-kin-ink">
               {String(i + 1).padStart(2, '0')} · {ch.romaji}
             </p>
             <h2 className="mt-1 font-serif text-xl font-bold leading-snug text-sumi sm:text-2xl">
