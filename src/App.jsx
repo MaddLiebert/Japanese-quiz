@@ -7,6 +7,7 @@ import { Review } from "./pages/Review";
 import { Settings } from "./pages/Settings";
 import { Writing } from "./pages/Writing";
 import { Speaking } from "./pages/Speaking";
+import { HeianHistory } from "./pages/HeianHistory";
 import Profile from "./features/profile/Profile";
 import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
 import Shop from "./features/shop/Shop";
@@ -18,6 +19,7 @@ import { EraProvider, useEra } from "./features/theme/EraContext";
 import { ThemeAudioHost } from "./features/theme/ThemeAudioHost";
 import { eraName } from "./features/theme/eraNames";
 import { EffectProvider } from "./features/effects/EffectContext";
+import { CinematicProvider } from "./features/cinematic/CinematicContext";
 import { getPack } from "./features/packs/packs";
 import { setActiveVoice, preloadVoice, primeVoice } from "./utils/sfx";
 import { preloadHinaGifs } from "./features/effects/hinaGifs";
@@ -131,6 +133,7 @@ function App() {
           <EraProvider>
           <ThemeAudioHost />
           <BrowserRouter>
+            <CinematicProvider>
             <EffectProvider>
             <div className="min-h-screen relative font-sans selection:bg-ai/20 overflow-x-hidden bg-[var(--backdrop-val)]">
           
@@ -209,10 +212,12 @@ function App() {
                   <Route path="/death-quiz" element={<DeathQuizScreen />} />
                   <Route path="/n5-exam" element={<N5ExamScreen />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/heian-history" element={<HeianHistory />} />
                 </Routes>
               </main>
             </div>
             </EffectProvider>
+            </CinematicProvider>
           </BrowserRouter>
           </EraProvider>
         </ProgressProvider>

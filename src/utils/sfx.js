@@ -76,6 +76,15 @@ export const preloadVoice = (voice) => {
   return paths.length;
 };
 
+// Preload klip suara bebas TANPA memutar (mis. voice narasi cinematic) →
+// elemen <audio> siap & ter-decode, jadi TIDAK telat saat dijadwalkan.
+export const preloadClips = (paths) => {
+  if (typeof window === 'undefined') return 0;
+  const list = Array.isArray(paths) ? paths : [paths];
+  list.forEach((p) => { if (p) getAudio(p); });
+  return list.length;
+};
+
 // Prime = unduh TIAP klip sampai byte lengkap (buffer penuh), bukan cuma
 // metadata. Tanpa ini, klip baru (mis. tier streak) baru mulai fetch saat
 // dipanggil → terdengar telat beberapa ratus ms. `fetcher` bisa di-inject

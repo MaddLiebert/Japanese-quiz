@@ -6,6 +6,7 @@ import { useUserStats } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import { useEra } from "../features/theme/EraContext";
+import { useCinematic } from "../features/cinematic/CinematicContext";
 import { ERAS } from "../features/theme/eras";
 import { themeBgmEnabled, setThemeBgmEnabled, themeBgmVolumeStep, setThemeBgmVolume, clampVolumeStep, THEME_BGM_VOL_STEPS } from "../features/theme/themeAudio";
 import { tutorialButtonVisible } from "../features/tutorial/tutorials";
@@ -17,6 +18,7 @@ export function Settings() {
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { era, setEra, unlocked } = useEra();
+  const { play } = useCinematic();
   const navigate = useNavigate();
   const tutorialOn = tutorialButtonVisible(progress.tutorialHidden);
   const [bgmOn, setBgmOn] = useState(() => themeBgmEnabled());
@@ -326,6 +328,46 @@ export function Settings() {
                     {language === 'id' ? 'Volume' : 'Volume'} {Math.round(THEME_BGM_VOL_STEPS[bgmVol] * 100)}%
                   </p>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Cinematic perkenalan era — putar ulang manual */}
+          <section>
+            <div className="flex items-center gap-4 mb-8">
+              <h2 className="text-2xl font-serif font-bold text-sumi">
+                {language === 'id' ? 'Cinematic' : 'Cinematic'}
+              </h2>
+              <div className="h-[2px] flex-1 bg-sumi/10"></div>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+              <div className="flex-1">
+                <p className="text-sm font-bold text-sumi">
+                  {language === 'id' ? 'Cinematic Sejarah Heian' : 'Heian Historical Cinematic'}
+                </p>
+                <p className="text-xs text-sumi/70 font-semibold">
+                  {language === 'id'
+                    ? 'Cinematic sejarah yang diputar sekali saat era Heian pertama terbuka. Putar ulang kapan saja di sini.'
+                    : 'The historical cinematic that plays once when the Heian era first opens. Replay it any time here.'}
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <button
+                  type="button"
+                  onClick={() => play('heian')}
+                  disabled={!unlocked.some((e) => e.id === 'heian')}
+                  className="py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer bg-kinari-light text-sumi hover:bg-sumi hover:text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {language === 'id' ? 'Putar 平安' : 'Play 平安'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/heian-history')}
+                  disabled={!unlocked.some((e) => e.id === 'heian')}
+                  className="py-3 px-5 border-[3px] border-kin font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer bg-kinari-light text-kin hover:bg-kin hover:text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {language === 'id' ? 'Sejarah Heian' : 'Heian History'}
+                </button>
               </div>
             </div>
           </section>

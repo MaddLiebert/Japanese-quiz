@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Panji Japanese Club - Sesi Latihan Mandiri (Heian Emakimono)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&amp;family=Klee+One:wght@400;600&amp;family=Shippori+Mincho:wght@400;500;600;700;800&amp;family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Yuji+Boku&amp;family=Yuji+Syuku&amp;family=Zen+Old+Mincho:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'washi-gold': '#EFE2C2',
+            'washi-base': '#F5EEDD',
+            'washi-deep': '#E8DCBD',
+            'sumi': '#191816',
+            'sumi-wash': '#3E3A33',
+            'sumi-faint': '#7F786C',
+            'shu': '#B83A2E',
+            'shu-deep': '#962B21',
+            'aizome': '#1F3249',
+            'aizome-deep': '#14202F',
+            'matsuba': '#345842',
+            'kindei': '#9A7C38',
+            'kimpun': '#C4A45A',
+            'kuchiba': '#B2883B',
+            'tatami': '#506D5B'
+          },
+          fontFamily: {
+            court: ['"Yuji Boku"', '"Yuji Syuku"', 'serif'],
+            syuku: ['"Yuji Syuku"', 'serif'],
+            klee: ['"Klee One"', 'sans-serif'],
+            mincho: ['"Shippori Mincho"', '"Zen Old Mincho"', 'serif'],
+            cinzel: ['Cinzel', 'serif'],
+            sans: ['"Work Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #ECE0C4;
+      background-image:
+        radial-gradient(ellipse at 15% 12%, rgba(212, 178, 98, 0.45) 0%, transparent 55%),
+        radial-gradient(ellipse at 88% 80%, rgba(196, 164, 90, 0.4) 0%, transparent 60%),
+        radial-gradient(circle at 50% 40%, rgba(230, 210, 154, 0.3) 0%, transparent 70%),
+        radial-gradient(rgba(154, 124, 56, 0.16) 1px, transparent 1px),
+        radial-gradient(rgba(120, 95, 45, 0.08) 1.5px, #ECE0C4 1.5px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px, 18px 18px;
+      color: #191816;
+      font-family: 'Shippori Mincho', 'Zen Old Mincho', serif;
+    }
+    .kinran-header {
+      background-color: #E2D3B3;
+      background-image:
+        repeating-linear-gradient(60deg, rgba(154, 124, 56, 0.14) 0px, rgba(154, 124, 56, 0.14) 2px, transparent 2px, transparent 10px),
+        repeating-linear-gradient(-60deg, rgba(154, 124, 56, 0.14) 0px, rgba(154, 124, 56, 0.14) 2px, transparent 2px, transparent 10px),
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.25) 0%, transparent 80%);
+      border-top: 3px double #9A7C38;
+      border-bottom: 3px double #9A7C38;
+      box-shadow: 0 4px 20px rgba(40, 32, 20, 0.18);
+    }
+    .emakimono-scroll-sheet {
+      background-color: #F6F0E0;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(212, 178, 98, 0.35) 0%, transparent 40%),
+        radial-gradient(circle at 90% 75%, rgba(196, 164, 90, 0.3) 0%, transparent 45%),
+        radial-gradient(circle at 50% 15%, rgba(240, 226, 185, 0.6) 0%, transparent 60%),
+        repeating-linear-gradient(0deg, rgba(154, 124, 56, 0.02) 0px, rgba(154, 124, 56, 0.02) 1px, transparent 1px, transparent 8px);
+      box-shadow:
+        0 20px 50px -10px rgba(35, 25, 12, 0.22),
+        0 2px 10px rgba(35, 25, 12, 0.08),
+        inset 0 0 120px rgba(185, 150, 75, 0.15),
+        inset 0 0 20px rgba(154, 124, 56, 0.1);
+    }
+    .suyari-band {
+      position: relative;
+      background: linear-gradient(180deg,
+        rgba(224, 198, 132, 0.05) 0%,
+        rgba(235, 214, 153, 0.85) 30%,
+        rgba(226, 201, 134, 0.95) 50%,
+        rgba(235, 214, 153, 0.85) 70%,
+        rgba(224, 198, 132, 0.05) 100%);
+    }
+    .cloud-scallop-top {
+      background-image: radial-gradient(circle at 50% 100%, rgba(226, 201, 134, 0.95) 60%, transparent 62%);
+      background-size: 56px 20px;
+      height: 18px;
+    }
+    .cloud-scallop-bottom {
+      background-image: radial-gradient(circle at 50% 0%, rgba(226, 201, 134, 0.95) 60%, transparent 62%);
+      background-size: 56px 20px;
+      height: 18px;
+    }
+    .sunago-overlay {
+      background-image:
+        radial-gradient(circle at 6% 18%, rgba(196, 164, 90, 0.55) 1px, transparent 2px),
+        radial-gradient(circle at 18% 42%, rgba(212, 178, 98, 0.4) 1.5px, transparent 3px),
+        radial-gradient(circle at 35% 80%, rgba(196, 164, 90, 0.45) 1px, transparent 2px),
+        radial-gradient(circle at 68% 24%, rgba(212, 178, 98, 0.5) 1.5px, transparent 3px),
+        radial-gradient(circle at 84% 68%, rgba(196, 164, 90, 0.4) 1.2px, transparent 2.5px),
+        radial-gradient(circle at 92% 35%, rgba(184, 58, 46, 0.35) 1px, transparent 2px);
+      background-size: 130px 130px;
+    }
+    .imperial-seal {
+      position: relative;
+      border: 2px solid #B83A2E;
+      color: #B83A2E;
+      background: radial-gradient(circle, rgba(184, 58, 46, 0.08) 0%, rgba(246, 240, 224, 0.95) 75%);
+      box-shadow:
+        inset 0 0 12px rgba(184, 58, 46, 0.25),
+        0 1px 4px rgba(184, 58, 46, 0.15);
+    }
+    .imperial-seal::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border: 1px dashed rgba(184, 58, 46, 0.45);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+    .tatami-ribbon {
+      background-color: #345842;
+      background-image:
+        repeating-linear-gradient(90deg, #345842 0px, #345842 6px, #264331 6px, #264331 12px, #C4A45A 12px, #C4A45A 14px);
+    }
+    .court-ink-hero {
+      text-shadow:
+        0 1px 0 rgba(25, 24, 22, 0.25),
+        1px 2px 8px rgba(25, 24, 22, 0.18);
+    }
+    .court-vermilion-glow {
+      text-shadow:
+        0 1px 0 rgba(184, 58, 46, 0.3),
+        1px 2px 10px rgba(184, 58, 46, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-screen py-4 sm:py-8 px-2 sm:px-6 md:px-8 text-sumi selection:bg-shu selection:text-[#FAF6EC]">
+<header class="max-w-6xl mx-auto mb-4">
+<div class="kinran-header px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden rounded-sm">
+<div class="absolute inset-0 sunago-overlay pointer-events-none opacity-75"></div>
+<div class="flex items-center gap-3.5 relative z-10">
+<div class="w-10 h-10 bg-sumi text-[#FAF6EC] flex items-center justify-center font-court text-2xl shadow-[2px_2px_0_0_#9A7C38] border border-kimpun/70">
+          學
+        </div>
+<div>
+<div class="text-[13px] font-cinzel font-bold tracking-[0.3em] uppercase text-sumi">Panji Japanese Club</div>
+<div class="text-[10px] tracking-[0.24em] font-klee text-sumi-wash flex items-center gap-2 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-shu inline-block"></span>
+            Kursus Interaktif • JLPT N5
+          </div>
+</div>
+</div>
+<nav class="flex items-center gap-5 sm:gap-8 text-xs font-mincho tracking-[0.32em] relative z-10">
+<a class="text-sumi-wash hover:text-sumi transition-colors" href="#">Beranda</a>
+<a class="text-sumi font-black border-b-2 border-shu pb-0.5 relative transition-all" href="#">Latihan</a>
+<a class="text-sumi-wash hover:text-sumi transition-colors" href="#">Belajar</a>
+<a class="text-sumi-wash hover:text-sumi transition-colors" href="#">Ulang Soal</a>
+<a class="text-sumi-wash hover:text-sumi transition-colors" href="#">Peringkat</a>
+</nav>
+<div class="flex items-center gap-3.5 relative z-10">
+<div class="text-right hidden sm:block">
+<span class="block text-[11px] font-mincho font-bold tracking-[0.2em] text-sumi">Okaeri, Kenji</span>
+<span class="text-[9px] uppercase tracking-[0.22em] font-bold text-matsuba font-sans">Rank: Hatamoto (旗本)</span>
+</div>
+<div class="w-9 h-9 rounded-full border-2 border-kindei bg-[#EDE2CA] flex items-center justify-center font-court text-lg shadow-[1.5px_1.5px_0_0_#9A7C38] text-sumi">
+          健
+        </div>
+</div>
+</div>
+</header>
+<main class="max-w-6xl mx-auto">
+<div class="flex items-center justify-between mb-2.5 px-3">
+<div class="text-[11px] uppercase tracking-[0.35em] font-klee font-bold text-sumi/80 flex items-center gap-2">
+<span class="inline-block w-1.5 h-1.5 bg-shu rotate-45"></span>
+        Edisi Pembelajaran Musim Gugur • 平安絵巻
+      </div>
+<div class="text-[11px] tracking-[0.38em] font-klee text-sumi-faint">
+        令和六年 葉月 • N5 KANJI &amp; BUNPO
+      </div>
+</div>
+<div class="emakimono-scroll-sheet relative overflow-hidden rounded-sm border-t-2 border-b-2 border-kindei">
+<div class="h-1.5 w-full tatami-ribbon opacity-80"></div>
+<div class="absolute -top-10 right-8 text-[22rem] sm:text-[28rem] font-court text-kindei opacity-[0.04] pointer-events-none select-none leading-none z-0">
+        練
+      </div>
+<div class="absolute top-[42%] left-6 text-[20rem] sm:text-[26rem] font-court text-matsuba opacity-[0.035] pointer-events-none select-none leading-none z-0">
+        試
+      </div>
+<div class="absolute bottom-20 right-10 text-[18rem] sm:text-[24rem] font-court text-kindei opacity-[0.035] pointer-events-none select-none leading-none z-0">
+        極
+      </div>
+<div class="relative z-10 pt-9 sm:pt-12 px-6 sm:px-12 md:px-16 pb-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+<div class="lg:col-span-8 relative">
+<div class="flex items-center gap-3.5 mb-5">
+<div class="w-10 h-10 bg-sumi text-[#FAF6EC] flex items-center justify-center font-court text-2xl rotate-1 shadow-[2px_2px_0_0_#B83A2E] border border-kimpun/60">
+                雅
+              </div>
+<div class="flex flex-col">
+<span class="text-xs uppercase tracking-[0.38em] font-bold text-sumi font-cinzel">
+                  Edisi Latihan Mandiri • 平安絵巻写本
+                </span>
+<span class="text-[11px] text-sumi-wash tracking-[0.24em] font-klee mt-0.5">
+                  Parameter Kuis Terarah • N5 Foundation
+                </span>
+</div>
+</div>
+<div class="relative pl-1 sm:pl-3">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-[#EFE4CB]/70 border-b border-kindei/50 text-shu text-[11px] font-klee font-bold tracking-[0.3em] mb-4">
+<span class="text-[9px]">❖</span> Naskah Latihan Mandiri
+              </div>
+<h1 class="court-ink-hero text-6xl sm:text-7xl md:text-8xl lg:text-[8.5rem] font-court font-black text-sumi tracking-tight leading-[0.9] select-none">
+                練習<span class="court-vermilion-glow text-shu ml-2">基礎</span>
+</h1>
+<p class="mt-6 text-xs sm:text-sm font-klee text-sumi-wash max-w-xl leading-relaxed tracking-wider border-l-2 border-kindei/60 pl-4 py-0.5">
+                Konfigurasikan parameter naskah latihan Anda. Pilih ragam karakter, baris suku kata target, dan intensitas tantangan untuk memperkokoh penguasaan aksara Jepang sesuai tradisi manuskrip Heian.
+              </p>
+</div>
+</div>
+<div class="lg:col-span-4 relative flex flex-col items-center justify-center p-6 sm:p-8 rounded-sm bg-[#EDE3CA]/65 border-t border-b border-kindei/45 shadow-[inset_0_0_30px_rgba(154,124,56,0.08)]">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 w-40 h-[2.5px] bg-gradient-to-r from-transparent via-kimpun to-transparent"></div>
+<div class="text-[10px] font-bold uppercase tracking-[0.42em] text-sumi-faint mb-5 flex items-center gap-2 font-cinzel">
+<span class="w-3 h-px bg-sumi/30"></span>
+              STATUS TERKINI
+              <span class="w-3 h-px bg-sumi/30"></span>
+</div>
+<div class="relative flex flex-col items-center justify-center w-32 h-32 rounded-full imperial-seal transition-transform hover:scale-105 duration-300">
+<span class="text-[10px] uppercase font-bold tracking-[0.3em] mt-2 mb-0.5 text-shu font-cinzel">KUOTA HARIAN</span>
+<span class="text-4xl font-court font-black leading-none text-shu">五段</span>
+<span class="text-[9px] tracking-[0.32em] font-klee font-bold text-shu/85 mt-1">46 KARAKTER</span>
+</div>
+<div class="w-full mt-6 px-1">
+<div class="flex justify-between items-center mb-1.5">
+<span class="text-[10px] uppercase tracking-[0.25em] font-bold text-sumi-wash font-cinzel">Penguasaan Suku Kata</span>
+<span class="text-[11px] font-mincho font-bold text-sumi">28 / 46 (61%)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-[#DDCFAF] overflow-hidden p-0.5 border border-kindei/40">
+<div class="h-full bg-gradient-to-r from-aizome to-[#2D4560] rounded-full" style="width: 61%;"></div>
+</div>
+<div class="flex justify-between mt-1.5 text-[9px] tracking-[0.22em] font-klee text-sumi-wash">
+<span>Tersisa 18 Suku Kata</span>
+<span>Bonus +15% XP</span>
+</div>
+</div>
+<div class="mt-5 text-center">
+<div class="text-sm font-mincho uppercase tracking-[0.3em] font-black text-sumi border-b border-shu/50 pb-0.5 inline-block">
+                Hatamoto • 旗本
+              </div>
+<p class="text-xs text-sumi-wash uppercase tracking-[0.26em] font-sans font-semibold mt-1">
+                3,450 TOTAL XP
+              </p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-full overflow-hidden my-3">
+<div class="cloud-scallop-top w-full"></div>
+<div class="suyari-band py-3 px-6 flex items-center justify-between">
+<div class="h-px flex-1 bg-gradient-to-r from-transparent via-kindei/60 to-transparent"></div>
+<div class="flex items-center gap-3 px-6 text-center">
+<span class="text-[11px] font-court text-sumi font-black tracking-[0.45em] uppercase">霞 • SUYARI GASUMI • 霞</span>
+</div>
+<div class="h-px flex-1 bg-gradient-to-r from-transparent via-kindei/60 to-transparent"></div>
+</div>
+<div class="cloud-scallop-bottom w-full"></div>
+</div>
+<div class="relative z-10 px-6 sm:px-12 md:px-16 py-8">
+<div class="flex items-center justify-between pb-3 mb-6 border-b border-kindei/40">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-sumi text-[#FAF6EC] flex items-center justify-center font-court text-lg shadow-[2px_2px_0_0_#9A7C38] border border-kimpun/60">
+              壱
+            </div>
+<div>
+<h2 class="text-xl sm:text-2xl font-mincho font-black text-sumi tracking-tight">
+                1. PILIH RAGAM AKSARA (SCRIPT TYPE)
+              </h2>
+<p class="text-[10px] tracking-[0.2em] font-klee text-sumi-wash">Format naskah ujian yang dipelajari</p>
+</div>
+</div>
+<span class="text-[10px] uppercase tracking-[0.3em] font-cinzel font-bold text-kindei hidden sm:inline">
+            PILIH SALAH SATU FORMAT
+          </span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4">
+<div class="p-4 bg-[#FAF5E8] border-2 border-shu shadow-[3px_3px_0_0_#B83A2E] relative cursor-pointer group transition-transform hover:-translate-y-0.5">
+<div class="absolute -top-2.5 right-2 px-2 py-0.5 bg-shu text-[#FAF6EC] text-[9px] font-cinzel font-black tracking-widest uppercase">
+              AKTIF
+            </div>
+<div class="text-4xl font-court font-black text-shu mb-2">あ</div>
+<div class="text-[11px] font-cinzel font-bold tracking-[0.2em] text-sumi">HIRAGANA</div>
+<div class="text-[10px] font-klee text-sumi-wash mt-0.5">46 Karakter Dasar</div>
+</div>
+<div class="p-4 bg-[#EDE2CA]/50 hover:bg-[#FAF5E8] border border-kindei/60 hover:border-sumi transition-all cursor-pointer group">
+<div class="text-4xl font-court font-black text-sumi-wash group-hover:text-shu transition-colors mb-2">ア</div>
+<div class="text-[11px] font-cinzel font-bold tracking-[0.2em] text-sumi">KATAKANA</div>
+<div class="text-[10px] font-klee text-sumi-wash mt-0.5">Kata Serapan</div>
+</div>
+<div class="p-4 bg-[#EDE2CA]/50 hover:bg-[#FAF5E8] border border-kindei/60 hover:border-sumi transition-all cursor-pointer group">
+<div class="text-4xl font-court font-black text-sumi-wash group-hover:text-kindei transition-colors mb-2">語</div>
+<div class="text-[11px] font-cinzel font-bold tracking-[0.2em] text-sumi">KOTOBA</div>
+<div class="text-[10px] font-klee text-sumi-wash mt-0.5">Kosakata N5</div>
+</div>
+<div class="p-4 bg-[#EDE2CA]/50 hover:bg-[#FAF5E8] border border-kindei/60 hover:border-sumi transition-all cursor-pointer group">
+<div class="text-4xl font-court font-black text-sumi-wash group-hover:text-shu transition-colors mb-2">漢</div>
+<div class="text-[11px] font-cinzel font-bold tracking-[0.2em] text-sumi">KANJI N5</div>
+<div class="text-[10px] font-klee text-sumi-wash mt-0.5">103 Karakter Resmi</div>
+</div>
+<div class="p-4 bg-[#EDE2CA]/50 hover:bg-[#FAF5E8] border border-kindei/60 hover:border-sumi transition-all cursor-pointer group">
+<div class="text-4xl font-court font-black text-sumi-wash group-hover:text-matsuba transition-colors mb-2">文</div>
+<div class="text-[11px] font-cinzel font-bold tracking-[0.2em] text-sumi">TATABAHASA</div>
+<div class="text-[10px] font-klee text-sumi-wash mt-0.5">Pola Partikel N5</div>
+</div>
+<div class="p-4 bg-[#EDE2CA]/50 hover:bg-[#FAF5E8] border border-kindei/60 hover:border-sumi transition-all cursor-pointer group">
+<div class="text-4xl font-court font-black text-sumi-wash group-hover:text-aizome transition-colors mb-2">本</div>
+<div class="text-[11px] font-cinzel font-bold tracking-[0.2em] text-sumi">KURIKULUM MNN</div>
+<div class="text-[10px] font-klee text-sumi-wash mt-0.5">Bab 01 – Bab 25</div>
+</div>
+</div>
+<div class="mt-5 p-3.5 bg-[#EDE3CA]/60 border border-kindei/40 rounded-sm flex flex-wrap items-center gap-2">
+<span class="text-[10px] font-cinzel font-bold uppercase tracking-[0.25em] text-sumi mr-2 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 bg-shu inline-block"></span> KLASIFIKASI BUNYI:
+          </span>
+<button class="px-3 py-1 bg-sumi text-[#FAF6EC] text-[10px] font-cinzel tracking-[0.18em] font-bold border border-kimpun/60 shadow-sm" type="button">
+            SEMUA RAGAM (ALL)
+          </button>
+<button class="px-3 py-1 bg-[#FAF5E8] hover:bg-[#EDE2CA] text-sumi text-[10px] font-cinzel tracking-[0.18em] border border-kindei/60 transition-colors" type="button">
+            SEION (SUARA MURNI / 清音)
+          </button>
+<button class="px-3 py-1 bg-[#FAF5E8] hover:bg-[#EDE2CA] text-sumi text-[10px] font-cinzel tracking-[0.18em] border border-kindei/60 transition-colors" type="button">
+            DAKUON (TENTEN ゛)
+          </button>
+<button class="px-3 py-1 bg-[#FAF5E8] hover:bg-[#EDE2CA] text-sumi text-[10px] font-cinzel tracking-[0.18em] border border-kindei/60 transition-colors" type="button">
+            HANDAKUON (MARU ゜)
+          </button>
+<button class="px-3 py-1 bg-[#FAF5E8] hover:bg-[#EDE2CA] text-sumi text-[10px] font-cinzel tracking-[0.18em] border border-kindei/60 transition-colors" type="button">
+            YŌON (GABUNGAN ゃゅょ)
+          </button>
+</div>
+</div>
+<div class="relative z-10 px-6 sm:px-12 md:px-16 py-6 border-t border-kindei/30">
+<div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-6 border-b border-kindei/40">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-sumi text-[#FAF6EC] flex items-center justify-center font-court text-lg shadow-[2px_2px_0_0_#9A7C38] border border-kimpun/60">
+              弐
+            </div>
+<div>
+<h2 class="text-xl sm:text-2xl font-mincho font-black text-sumi tracking-tight">
+                2. PILIH BARIS KARAKTER SASARAN (TARGET ROWS)
+              </h2>
+<p class="text-[10px] tracking-[0.2em] font-klee text-sumi-wash">Centang suku kata yang hendak disertakan dalam sesi</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 bg-[#EDE3CA] hover:bg-[#FAF5E8] border border-kindei/60 text-sumi text-[10px] font-cinzel tracking-wider font-bold transition-all shadow-sm" type="button">
+              PILIH SEMUA
+            </button>
+<span class="text-sumi-faint">|</span>
+<button class="px-3 py-1 bg-[#EDE3CA] hover:bg-[#FAF5E8] border border-kindei/60 text-sumi text-[10px] font-cinzel tracking-wider font-bold transition-all shadow-sm" type="button">
+              KOSONGKAN
+            </button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+<div class="p-3.5 bg-[#FAF5E8] border-2 border-shu shadow-[3px_3px_0_0_#B83A2E] relative cursor-pointer select-none">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">あ行</span>
+<div class="w-5 h-5 bg-shu text-[#FAF6EC] flex items-center justify-center rounded-[2px] shadow-sm">
+<span class="material-symbols-outlined text-[13px] font-bold">check</span>
+</div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-kindei tracking-widest mb-1.5 uppercase">Vokal Murni</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30 font-bold">
+<span>あ</span><span>い</span><span>う</span><span>え</span><span>お</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>a</span><span>i</span><span>u</span><span>e</span><span>o</span>
+</div>
+</div>
+<div class="p-3.5 bg-[#FAF5E8] border-2 border-shu shadow-[3px_3px_0_0_#B83A2E] relative cursor-pointer select-none">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">か行</span>
+<div class="w-5 h-5 bg-shu text-[#FAF6EC] flex items-center justify-center rounded-[2px] shadow-sm">
+<span class="material-symbols-outlined text-[13px] font-bold">check</span>
+</div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-kindei tracking-widest mb-1.5 uppercase">K-Row • Velar</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30 font-bold">
+<span>か</span><span>き</span><span>く</span><span>け</span><span>こ</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>ka</span><span>ki</span><span>ku</span><span>ke</span><span>ko</span>
+</div>
+</div>
+<div class="p-3.5 bg-[#FAF5E8] border-2 border-shu shadow-[3px_3px_0_0_#B83A2E] relative cursor-pointer select-none">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">さ行</span>
+<div class="w-5 h-5 bg-shu text-[#FAF6EC] flex items-center justify-center rounded-[2px] shadow-sm">
+<span class="material-symbols-outlined text-[13px] font-bold">check</span>
+</div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-kindei tracking-widest mb-1.5 uppercase">S-Row • Sibilant</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30 font-bold">
+<span>さ</span><span>し</span><span>す</span><span>せ</span><span>そ</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>sa</span><span>shi</span><span>su</span><span>se</span><span>so</span>
+</div>
+</div>
+<div class="p-3.5 bg-[#EDE3CA]/50 hover:bg-[#FAF5E8] border border-kindei/50 relative cursor-pointer select-none transition-all">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">た行</span>
+<div class="w-5 h-5 border border-kindei/70 bg-[#EDE2CA] rounded-[2px]"></div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-sumi-faint tracking-widest mb-1.5 uppercase">T-Row • Alveolar</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30">
+<span>た</span><span>ち</span><span>つ</span><span>て</span><span>と</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>ta</span><span>chi</span><span>tsu</span><span>te</span><span>to</span>
+</div>
+</div>
+<div class="p-3.5 bg-[#EDE3CA]/50 hover:bg-[#FAF5E8] border border-kindei/50 relative cursor-pointer select-none transition-all">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">な行</span>
+<div class="w-5 h-5 border border-kindei/70 bg-[#EDE2CA] rounded-[2px]"></div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-sumi-faint tracking-widest mb-1.5 uppercase">N-Row • Nasal</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30">
+<span>な</span><span>に</span><span>ぬ</span><span>ね</span><span>の</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>na</span><span>ni</span><span>nu</span><span>ne</span><span>no</span>
+</div>
+</div>
+<div class="p-3.5 bg-[#EDE3CA]/50 hover:bg-[#FAF5E8] border border-kindei/50 relative cursor-pointer select-none transition-all">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">は行</span>
+<div class="w-5 h-5 border border-kindei/70 bg-[#EDE2CA] rounded-[2px]"></div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-sumi-faint tracking-widest mb-1.5 uppercase">H-Row • Aspirated</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30">
+<span>は</span><span>ひ</span><span>ふ</span><span>へ</span><span>ほ</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>ha</span><span>hi</span><span>fu</span><span>he</span><span>ho</span>
+</div>
+</div>
+<div class="p-3.5 bg-[#EDE3CA]/50 hover:bg-[#FAF5E8] border border-kindei/50 relative cursor-pointer select-none transition-all">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">ま行</span>
+<div class="w-5 h-5 border border-kindei/70 bg-[#EDE2CA] rounded-[2px]"></div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-sumi-faint tracking-widest mb-1.5 uppercase">M-Row • Bilabial</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30">
+<span>ま</span><span>み</span><span>む</span><span>め</span><span>も</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>ma</span><span>mi</span><span>mu</span><span>me</span><span>mo</span>
+</div>
+</div>
+<div class="p-3.5 bg-[#EDE3CA]/50 hover:bg-[#FAF5E8] border border-kindei/50 relative cursor-pointer select-none transition-all">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">や行</span>
+<div class="w-5 h-5 border border-kindei/70 bg-[#EDE2CA] rounded-[2px]"></div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-sumi-faint tracking-widest mb-1.5 uppercase">Y-Row • Glide</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30">
+<span>や</span><span class="text-sumi-faint/30">•</span><span>ゆ</span><span class="text-sumi-faint/30">•</span><span>よ</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>ya</span><span>—</span><span>yu</span><span>—</span><span>yo</span>
+</div>
+</div>
+<div class="p-3.5 bg-[#EDE3CA]/50 hover:bg-[#FAF5E8] border border-kindei/50 relative cursor-pointer select-none transition-all">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">ら行</span>
+<div class="w-5 h-5 border border-kindei/70 bg-[#EDE2CA] rounded-[2px]"></div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-sumi-faint tracking-widest mb-1.5 uppercase">R-Row • Liquid</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30">
+<span>ら</span><span>り</span><span>る</span><span>れ</span><span>ろ</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>ra</span><span>ri</span><span>ru</span><span>re</span><span>ro</span>
+</div>
+</div>
+<div class="p-3.5 bg-[#EDE3CA]/50 hover:bg-[#FAF5E8] border border-kindei/50 relative cursor-pointer select-none transition-all">
+<div class="flex items-start justify-between mb-1.5">
+<span class="text-2xl font-court font-black text-sumi leading-none">わ行</span>
+<div class="w-5 h-5 border border-kindei/70 bg-[#EDE2CA] rounded-[2px]"></div>
+</div>
+<div class="text-[9px] font-cinzel font-bold text-sumi-faint tracking-widest mb-1.5 uppercase">W-Row • Soda Kana</div>
+<div class="text-base font-court text-sumi flex justify-between pt-1.5 border-t border-kindei/30">
+<span>わ</span><span class="text-sumi-faint/30">•</span><span>を</span><span class="text-sumi-faint/30">•</span><span>ん</span>
+</div>
+<div class="text-[10px] font-sans text-sumi-faint flex justify-between mt-0.5">
+<span>wa</span><span>—</span><span>wo</span><span>—</span><span>n</span>
+</div>
+</div>
+</div>
+</div>
+<div class="relative z-10 px-6 sm:px-12 md:px-16 py-8 border-t border-kindei/30">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+<div class="lg:col-span-6 flex flex-col">
+<div class="flex items-center gap-3 pb-3 mb-4 border-b border-kindei/40">
+<div class="w-8 h-8 bg-sumi text-[#FAF6EC] flex items-center justify-center font-court text-lg shadow-[2px_2px_0_0_#9A7C38] border border-kimpun/60">
+                参
+              </div>
+<h2 class="text-lg sm:text-xl font-mincho font-black text-sumi tracking-tight">
+                3. TINGKAT KESULITAN SESI
+              </h2>
+</div>
+<div class="flex flex-col gap-3">
+<div class="p-3.5 bg-[#EDE3CA]/50 hover:bg-[#FAF5E8] border border-kindei/50 flex items-center justify-between cursor-pointer transition-all">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 bg-[#FAF5E8] border border-kindei/60 flex items-center justify-center font-court text-2xl text-sumi">
+                    易
+                  </div>
+<div>
+<div class="text-sm font-mincho font-bold text-sumi">Gampang (Santai)</div>
+<div class="text-[10px] font-klee text-sumi-wash">Tanpa batas waktu • Sempurna untuk pemula</div>
+</div>
+</div>
+<span class="text-[9px] font-cinzel font-bold px-2 py-0.5 bg-[#EDE2CA] text-sumi-wash border border-kindei/40">
+                  STD XP
+                </span>
+</div>
+<div class="p-3.5 bg-[#FAF5E8] border-2 border-aizome shadow-[3px_3px_0_0_#1F3249] flex items-center justify-between cursor-pointer">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 bg-aizome text-[#FAF6EC] flex items-center justify-center font-court text-2xl font-bold">
+                    中
+                  </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-mincho font-bold text-aizome">Lumayan (Taktis)</span>
+<span class="text-[8px] font-cinzel font-bold bg-shu text-[#FAF6EC] px-1.5 py-0.2 tracking-wider">
+                        DISARANKAN
+                      </span>
+</div>
+<div class="text-[10px] font-klee text-sumi-wash">15 Detik per soal • Ritme ujian standar JLPT</div>
+</div>
+</div>
+<span class="text-[9px] font-cinzel font-bold px-2 py-0.5 bg-aizome/10 text-aizome border border-aizome/40">
+                  +15% XP
+                </span>
+</div>
+<div class="p-3.5 bg-[#EDE3CA]/50 hover:bg-[#FAF5E8] border border-kindei/50 flex items-center justify-between cursor-pointer transition-all">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 bg-[#FAF5E8] border border-kindei/60 flex items-center justify-center font-court text-2xl text-shu font-bold">
+                    難
+                  </div>
+<div>
+<div class="text-sm font-mincho font-bold text-sumi">Susah (Instingtif)</div>
+<div class="text-[10px] font-klee text-sumi-wash">7 Detik batas kilat • Mengasah reflek samurai sejati</div>
+</div>
+</div>
+<span class="text-[9px] font-cinzel font-bold px-2 py-0.5 bg-shu/10 text-shu border border-shu/40">
+                  +35% XP
+                </span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-6 flex flex-col">
+<div class="flex items-center gap-3 pb-3 mb-4 border-b border-kindei/40">
+<div class="w-8 h-8 bg-sumi text-[#FAF6EC] flex items-center justify-center font-court text-lg shadow-[2px_2px_0_0_#9A7C38] border border-kimpun/60">
+                四
+              </div>
+<h2 class="text-lg sm:text-xl font-mincho font-black text-sumi tracking-tight">
+                4. OPSI NASKAH KUAS
+              </h2>
+</div>
+<div class="p-4 bg-[#EDE3CA]/55 border border-kindei/45 rounded-sm flex flex-col gap-4 flex-1">
+<div>
+<span class="text-[10px] font-cinzel font-bold uppercase tracking-[0.25em] text-sumi block mb-2">
+                  JUMLAH BUTIR SOAL:
+                </span>
+<div class="grid grid-cols-4 gap-2">
+<button class="py-2 bg-[#FAF5E8] hover:bg-[#EFE5CE] border border-kindei/60 text-sm font-mincho font-bold text-sumi transition-all" type="button">
+                    10
+                  </button>
+<button class="py-2 bg-aizome text-[#FAF6EC] border border-kimpun text-sm font-mincho font-bold shadow-sm" type="button">
+                    15
+                  </button>
+<button class="py-2 bg-[#FAF5E8] hover:bg-[#EFE5CE] border border-kindei/60 text-sm font-mincho font-bold text-sumi transition-all" type="button">
+                    25
+                  </button>
+<button class="py-2 bg-[#FAF5E8] hover:bg-[#EFE5CE] border border-kindei/60 text-sm font-mincho font-bold text-sumi transition-all" type="button">
+                    全 <span class="text-[9px] font-cinzel font-normal">(Semua)</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-2.5 pt-3 border-t border-kindei/30">
+<label class="flex items-center gap-2.5 cursor-pointer select-none">
+<div class="w-4 h-4 bg-aizome text-[#FAF6EC] flex items-center justify-center rounded-[2px]">
+<span class="material-symbols-outlined text-[12px] font-bold">check</span>
+</div>
+<div>
+<span class="text-xs font-mincho font-bold text-sumi">Acak Urutan Soal (Shuffle Questions)</span>
+<span class="block text-[9px] font-klee text-sumi-wash">Menghindari hafalan posisi urutan baris</span>
+</div>
+</label>
+<label class="flex items-center gap-2.5 cursor-pointer select-none">
+<div class="w-4 h-4 bg-aizome text-[#FAF6EC] flex items-center justify-center rounded-[2px]">
+<span class="material-symbols-outlined text-[12px] font-bold">check</span>
+</div>
+<div>
+<span class="text-xs font-mincho font-bold text-sumi">Tampilkan Romaji Petunjuk saat Macet</span>
+<span class="block text-[9px] font-klee text-sumi-wash">Tersedia tombol bantuan furigana tipis</span>
+</div>
+</label>
+<label class="flex items-center gap-2.5 cursor-pointer select-none">
+<div class="w-4 h-4 bg-aizome text-[#FAF6EC] flex items-center justify-center rounded-[2px]">
+<span class="material-symbols-outlined text-[12px] font-bold">check</span>
+</div>
+<div>
+<span class="text-xs font-mincho font-bold text-sumi">Simpan Jawaban Salah ke Tab Ulang Soal</span>
+<span class="block text-[9px] font-klee text-sumi-wash">Otomatis dialokasikan ke arsip kaji ulang SRS</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relative z-10 px-6 sm:px-12 md:px-16 py-6">
+<div class="relative bg-gradient-to-r from-[#FAF5E8] to-[#EFE5CE] border-2 border-shu p-6 rounded-sm shadow-[4px_4px_0_0_#B83A2E] overflow-hidden">
+<div class="absolute -right-4 -bottom-6 w-32 h-32 rounded-full border-4 border-shu/15 flex items-center justify-center pointer-events-none rotate-12">
+<span class="font-court text-7xl text-shu/20">極</span>
+</div>
+<div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6 z-10">
+<div class="flex items-start gap-4">
+<div class="w-14 h-14 rounded-full imperial-seal flex items-center justify-center text-shu font-court text-3xl shrink-0 -rotate-3">
+                極
+              </div>
+<div class="flex flex-col">
+<span class="text-[10px] font-cinzel font-bold text-shu uppercase tracking-[0.3em]">
+                  ★ UJIAN MENYELURUH HATAMOTO ★
+                </span>
+<h3 class="text-xl sm:text-2xl font-mincho font-black text-sumi tracking-tight">
+                  Tantangan Bos: Seluruh 46 Hiragana Sekaligus
+                </h3>
+<p class="text-xs font-klee text-sumi-wash mt-0.5 max-w-xl leading-relaxed">
+                  Lewati seluruh baris tanpa jeda. Raih gelar stempel verifikasi Ahli Hiragana dan bonus 150 EXP Hatamoto untuk profil Anda.
+                </p>
+</div>
+</div>
+<button class="shrink-0 bg-gradient-to-r from-shu via-shu-deep to-shu hover:from-shu-deep hover:to-shu text-[#FAF6EC] border-y border-kimpun text-xs px-6 py-3.5 uppercase font-cinzel font-bold tracking-[0.25em] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer" type="button">
+<span>Hadapi Bos Sekarang ⚔</span>
+</button>
+</div>
+</div>
+</div>
+<div class="relative z-10 px-6 sm:px-12 md:px-16 py-6">
+<div class="p-6 sm:p-8 bg-[#FAF6EC] border-2 border-sumi shadow-[5px_5px_0_0_#191816] flex flex-col sm:flex-row items-center justify-between gap-6">
+<div class="flex flex-col text-center sm:text-left">
+<span class="text-[10px] uppercase tracking-[0.3em] font-cinzel font-bold text-kindei">
+              PARAMETER SIAP DIAJUKAN
+            </span>
+<h3 class="text-xl sm:text-2xl font-mincho font-bold text-sumi">
+              15 Karakter Terpilih • Tingkat Lumayan • +45 Potensi XP
+            </h3>
+<span class="text-xs font-klee text-sumi-wash mt-0.5">
+              Aksara Target: あ行, か行, さ行 • Waktu dialokasikan: ~3.5 Menit
+            </span>
+</div>
+<button class="w-full sm:w-auto bg-gradient-to-r from-aizome via-[#233852] to-aizome hover:from-aizome-deep hover:to-aizome text-[#FAF6EC] border-y border-kimpun text-xs sm:text-sm px-8 py-4 uppercase font-cinzel font-bold tracking-[0.3em] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-3 cursor-pointer" type="button">
+<span>Mulai Kuis Sekarang</span>
+<svg class="text-kimpun" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="16">
+<line x1="5" x2="19" y1="12" y2="12"></line>
+<polyline points="12 5 19 12 12 19"></polyline>
+</svg>
+</button>
+</div>
+</div>
+<div class="relative w-full overflow-hidden my-3">
+<div class="cloud-scallop-top w-full"></div>
+<div class="suyari-band py-3 px-6 flex items-center justify-between">
+<div class="h-px flex-1 bg-gradient-to-r from-transparent via-kindei/60 to-transparent"></div>
+<div class="text-[10px] font-court text-sumi font-black tracking-[0.45em] uppercase px-4">
+            印譜 • IMPERIAL SEAL REGISTER
+          </div>
+<div class="h-px flex-1 bg-gradient-to-r from-transparent via-kindei/60 to-transparent"></div>
+</div>
+<div class="cloud-scallop-bottom w-full"></div>
+</div>
+<div class="relative z-10 px-6 sm:px-12 md:px-16 py-8 bg-[#EFE5CE]/40">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8">
+<div>
+<span class="text-[10px] uppercase tracking-[0.38em] font-cinzel font-bold text-kindei">Pencapaian Siswa</span>
+<h3 class="text-xl sm:text-2xl font-mincho font-black text-sumi tracking-tight">
+              Cap Pencapaian Terverifikasi
+            </h3>
+</div>
+<div class="text-[11px] uppercase tracking-[0.35em] font-court text-sumi-wash">
+            印章 • HANKO GALLERY
+          </div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 sm:gap-8">
+<div class="flex flex-col items-center gap-2 text-center group cursor-pointer">
+<div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full imperial-seal flex flex-col items-center justify-center transform -rotate-3 group-hover:rotate-0 group-hover:scale-105 transition-all">
+<span class="text-3xl font-court font-black leading-none text-shu">初</span>
+</div>
+<span class="text-[10px] uppercase tracking-[0.25em] font-bold text-sumi mt-1 font-mincho">Langkah Awal</span>
+<span class="text-[9px] tracking-wider text-sumi-wash font-klee">1 Kuis Selesai</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center group cursor-pointer">
+<div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full imperial-seal flex flex-col items-center justify-center transform rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all">
+<span class="text-3xl font-court font-black leading-none text-shu">字</span>
+</div>
+<span class="text-[10px] uppercase tracking-[0.25em] font-bold text-sumi mt-1 font-mincho">Ahli Hiragana</span>
+<span class="text-[9px] tracking-wider text-sumi-wash font-klee">46 Karakter Kuasai</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center group cursor-pointer">
+<div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full imperial-seal flex flex-col items-center justify-center transform -rotate-4 group-hover:rotate-0 group-hover:scale-105 transition-all">
+<span class="text-3xl font-court font-black leading-none text-shu">炎</span>
+</div>
+<span class="text-[10px] uppercase tracking-[0.25em] font-bold text-sumi mt-1 font-mincho">Api Disiplin</span>
+<span class="text-[9px] tracking-wider text-sumi-wash font-klee">Streak 7 Hari</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center group cursor-pointer">
+<div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full imperial-seal flex flex-col items-center justify-center transform rotate-3 group-hover:rotate-0 group-hover:scale-105 transition-all">
+<span class="text-3xl font-court font-black leading-none text-shu">百</span>
+</div>
+<span class="text-[10px] uppercase tracking-[0.25em] font-bold text-sumi mt-1 font-mincho">Seratus Sempurna</span>
+<span class="text-[9px] tracking-wider text-sumi-wash font-klee">Skor 100% Kuis</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center opacity-40">
+<div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full border-2 border-dashed border-sumi-faint text-sumi-faint bg-[#DFD3B7]/60 flex flex-col items-center justify-center">
+<span class="text-2xl font-court font-bold leading-none">文</span>
+</div>
+<span class="text-[10px] uppercase tracking-[0.25em] font-bold text-sumi-wash mt-1 font-mincho">Bungou</span>
+<span class="text-[9px] tracking-wider text-sumi-faint font-klee">Terkunci</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center opacity-40">
+<div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full border-2 border-dashed border-sumi-faint text-sumi-faint bg-[#DFD3B7]/60 flex flex-col items-center justify-center">
+<span class="text-2xl font-court font-bold leading-none">極</span>
+</div>
+<span class="text-[10px] uppercase tracking-[0.25em] font-bold text-sumi-wash mt-1 font-mincho">N5 Menkyo</span>
+<span class="text-[9px] tracking-wider text-sumi-faint font-klee">Terkunci</span>
+</div>
+</div>
+</div>
+<div class="h-1.5 w-full tatami-ribbon opacity-80"></div>
+</div>
+<footer class="mt-6 pt-5 border-t border-kindei/40 flex flex-col sm:flex-row items-center justify-between gap-4 px-2 pb-6">
+<div class="flex items-center gap-3">
+<div class="w-7 h-7 bg-sumi text-[#FAF6EC] flex items-center justify-center font-court text-base border border-kimpun">
+          倶
+        </div>
+<span class="text-[11px] font-mincho font-bold tracking-[0.2em] uppercase text-sumi/85">
+          Dibuat Untuk <span class="text-sumi font-black">Panji Japanese Club</span>
+</span>
+</div>
+<div class="text-[10px] tracking-[0.28em] uppercase font-cinzel text-sumi-wash text-center">
+        Arahan Desain: <span class="font-bold text-aizome">Heian Emakimono Editorial</span> • Kredit: <span class="font-bold text-shu">@MaddLiebert</span>
+</div>
+<div class="flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-sans font-bold text-sumi-wash">
+<span class="w-2 h-2 rounded-full bg-matsuba inline-block"></span>
+        Status Server: Normal
+      </div>
+</footer>
+</main>
+</body></html>

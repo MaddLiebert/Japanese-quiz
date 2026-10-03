@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Heian Visual Language Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Klee+One:wght@400;600&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, system-ui, sans-serif; background: #f6f1e4; color: #3a332b; padding: 40px 28px 80px; }
+  .kumo { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='130' viewBox='0 0 260 130'%3E%3Cg fill='none' stroke='%233a332b' stroke-width='1.1' opacity='0.10'%3E%3Cpath d='M10 90 Q45 60 80 90 T150 90'/%3E%3Cpath d='M130 45 Q165 15 200 45 T270 45'/%3E%3Cpath d='M0 120 Q35 95 70 120 T140 120'/%3E%3C/g%3E%3C/svg%3E"); }
+  h1 { font-family: 'Yuji Syuku', serif; font-size: 40px; letter-spacing: 2px; }
+  h2 { font-family: 'Yuji Syuku', serif; font-size: 24px; margin: 42px 0 16px; padding-bottom: 8px; border-bottom: 1px solid rgba(58,51,43,.25); }
+  .lead { color: #6b6154; max-width: 760px; margin-top: 10px; line-height: 1.6; }
+  .grid { display: grid; gap: 20px; }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .col { display: grid; gap: 18px; }
+  .label { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; font-weight: 800; color: #8a7f6d; }
+
+  /* ── SEKARANG: Shōwa (kotak keras, tinta tebal) ───────────────── */
+  .showa-card { background: #fbf8ef; border: 3px solid #1a1a1a; border-radius: 0; box-shadow: 6px 6px 0 0 #1a1a1a; padding: 20px; }
+  .showa-btn  { display: inline-block; margin-top: 14px; background: #5b4a7a; color: #fff; border: 3px solid #1a1a1a; border-radius: 0; box-shadow: 4px 4px 0 0 #1a1a1a; padding: 10px 16px; font-weight: 900; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; }
+
+  /* ── HEIAN: sutra, tepi kuas, berlapis ────────────────────────── */
+  .heian-card {
+    position: relative; border-radius: 18px; padding: 22px;
+    background: linear-gradient(160deg, #fbf8ef 0%, #f6f1e4 55%, #f0e9d6 100%);
+    border: 1px solid rgba(58,51,43,.16);
+    box-shadow: 0 1px 2px rgba(58,51,43,.05), 0 10px 26px -12px rgba(58,51,43,.30), 0 30px 60px -30px rgba(91,74,122,.28);
+  }
+  .heian-card::before { /* aksen maple 紅葉 pojok */
+    content: "紅葉"; position: absolute; top: 10px; right: 14px; font-family: 'Yuji Syuku', serif;
+    font-size: 15px; color: #b83b4a; opacity: .5; letter-spacing: 2px;
+  }
+  .heian-card::after { /* bulan 月 */
+    content: "月"; position: absolute; bottom: 8px; right: 16px; font-family: 'Yuji Syuku', serif;
+    font-size: 30px; color: #c9a227; opacity: .38;
+  }
+  .heian-btn {
+    display: inline-block; margin-top: 16px; padding: 11px 20px; border-radius: 999px;
+    background: linear-gradient(180deg, #6b5a8c 0%, #5b4a7a 100%); color: #fbf8ef;
+    font-weight: 700; font-size: 13px; letter-spacing: .04em;
+    box-shadow: 0 6px 18px -6px rgba(91,74,122,.55), inset 0 1px 0 rgba(255,255,255,.25);
+    border: none;
+  }
+  .heian-title { font-family: 'Yuji Syuku', serif; font-size: 26px; }
+  .heian-kana  { font-family: 'Klee One', serif; font-size: 20px; color: #5b4a7a; }
+
+  /* kasane 襲の色目 — warna berlapis */
+  .kasane { border-radius: 14px; overflow: hidden; border: 1px solid rgba(58,51,43,.14); box-shadow: 0 8px 22px -14px rgba(58,51,43,.4); background: #fff; }
+  .kasane .pair { display: flex; height: 74px; }
+  .kasane .pair div { flex: 1; }
+  .kasane .meta { padding: 10px 12px; }
+  .kasane .meta b { font-family: 'Yuji Syuku', serif; font-size: 16px; }
+  .kasane .meta small { display: block; color: #8a7f6d; font-size: 11px; margin-top: 2px; }
+  .swatch { height: 62px; border-radius: 10px; border: 1px solid rgba(58,51,43,.12); display: flex; align-items: flex-end; padding: 6px 9px; font-size: 10px; font-weight: 800; letter-spacing: .1em; }
+
+  .note { font-size: 12px; color: #8a7f6d; margin-top: 8px; line-height: 1.5; }
+  .badge { display:inline-block; font-size:10px; font-weight:800; letter-spacing:.15em; padding:3px 9px; border-radius:999px; }
+  .badge.bad { background:#f4d9d6; color:#8a2b22; }
+  .badge.good { background:#dfe6d2; color:#4a5a2e; }
+</style>
+</head>
+<body class="kumo">
+  <span class="badge bad">SEKARANG</span>
+  <h1>Heian — Papan Bahasa Visual</h1>
+  <p class="lead">Kenapa sekarang terasa “Shōwa dicat ungu”: <b>warnanya sudah diganti, tapi bentuknya tidak.</b>
+  Heian butuh bahasa bentuk baru — tepi membulat/kuas, bayangan berlapis, kabut, emas, dan gerak lambat. Ini perbandingannya.</p>
+
+  <h2>1. Perbandingan kartu: Shōwa (kiri) vs Heian (kanan)</h2>
+  <div class="grid g2">
+    <div>
+      <div class="label">Shōwa — kotak keras, tinta tebal</div>
+      <div class="showa-card" style="margin-top:12px">
+        <div style="font-weight:900;font-size:20px">日本語 基礎</div>
+        <div style="font-size:12px;color:#6b6154;margin-top:6px">Sudut 0px · border 3px · shadow keras 6px blur 0</div>
+        <span class="showa-btn">Mulai</span>
+      </div>
+      <p class="note">Rasa: poster cetak, tegas, brutal. Ini identitas Shōwa.</p>
+    </div>
+    <div>
+      <div class="label">Heian — sutra, tepi kuas, berlapis</div>
+      <div class="heian-card" style="margin-top:12px">
+        <div class="heian-title">日本語 基礎</div>
+        <div class="heian-kana">にほんご きそ</div>
+        <div style="font-size:12px;color:#6b6154;margin-top:6px">Sudut 18px · tepi 1px halus · shadow berlapis + kabut</div>
+        <span class="heian-btn">はじめる</span>
+      </div>
+      <p class="note">Rasa: istana dalam kabut, anggun, mengambang. Ini target Heian.</p>
+    </div>
+  </div>
+
+  <h2>2. Warna berlapis 襲の色目 (kasane no irome)</h2>
+  <p class="lead" style="margin-top:0">Ciri paling khas Heian: warna dipakai <b>berpasangan/berlapis</b> seperti lengan kimono — bukan tunggal.</p>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="kasane"><div class="pair"><div style="background:#5b4a7a"></div><div style="background:#8a7fb0"></div><div style="background:#d9cfe6"></div></div><div class="meta"><b>藤襲 fuji</b><small>wisteria — ungu murasaki</small></div></div>
+    <div class="kasane"><div class="pair"><div style="background:#b83b4a"></div><div style="background:#d98a86"></div><div style="background:#f0d5cf"></div></div><div class="meta"><b>紅梅襲 kōbai</b><small>plum merah — kurenai</small></div></div>
+    <div class="kasane"><div class="pair"><div style="background:#c9a227"></div><div style="background:#e0c86a"></div><div style="background:#f4ecc9"></div></div><div class="meta"><b>黄朽葉襲 kikuchiba</b><small>daun kuning — emas kin</small></div></div>
+    <div class="kasane"><div class="pair"><div style="background:#8a9a5b"></div><div style="background:#b3bf88"></div><div style="background:#dde3c6"></div></div><div class="meta"><b>萌黄襲 moegi</b><small>hijau muda</small></div></div>
+    <div class="kasane"><div class="pair"><div style="background:#3a332b"></div><div style="background:#6b6154"></div><div style="background:#b8ad99"></div></div><div class="meta"><b>墨襲 sumi</b><small>tinta lembut kecoklatan</small></div></div>
+    <div class="kasane"><div class="pair"><div style="background:#1a1620"></div><div style="background:#5b4a7a"></div><div style="background:#a98fd6"></div></div><div class="meta"><b>夜襲 yoru</b><small>istana malam (gelap)</small></div></div>
+  </div>
+
+  <h2>3. Palet tunggal (terang + gelap)</h2>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="swatch" style="background:#f6f1e4;color:#3a332b">白練 shironeri #f6f1e4</div>
+    <div class="swatch" style="background:#5b4a7a;color:#fff">紫 murasaki #5b4a7a</div>
+    <div class="swatch" style="background:#b83b4a;color:#fff">紅 kurenai #b83b4a</div>
+    <div class="swatch" style="background:#c9a227;color:#3a332b">金 kin #c9a227</div>
+    <div class="swatch" style="background:#8a9a5b;color:#fff">萌黄 moegi #8a9a5b</div>
+    <div class="swatch" style="background:#3a332b;color:#f6f1e4">墨 sumi #3a332b</div>
+    <div class="swatch" style="background:#1a1620;color:#ece3d2">夜 yoru #1a1620</div>
+    <div class="swatch" style="background:#a98fd6;color:#1a1620">藤 fuji #a98fd6</div>
+    <div class="swatch" style="background:#e8c860;color:#1a1620">金 (gelap) #e8c860</div>
+  </div>
+
+  <h2>4. Motif & aksen</h2>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="heian-card" style="text-align:center;padding:28px"><div style="font-family:'Yuji Syuku',serif;font-size:46px;color:#5b4a7a">雲</div><div class="note">kumo — awan (latar)</div></div>
+    <div class="heian-card" style="text-align:center;padding:28px"><div style="font-family:'Yuji Syuku',serif;font-size:46px;color:#b83b4a">紅葉</div><div class="note">momiji — maple (aksen)</div></div>
+    <div class="heian-card" style="text-align:center;padding:28px"><div style="font-family:'Yuji Syuku',serif;font-size:46px;color:#c9a227">月</div><div class="note">tsuki — bulan (hero)</div></div>
+  </div>
+
+  <h2>5. Diagnosis masalah saat ini</h2>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="heian-card">
+      <span class="badge bad">RUSAK</span>
+      <ul style="margin:12px 0 0 18px;line-height:1.9;font-size:14px">
+        <li>Sudut masih <b>tajam 0px</b> (35 dari 48 elemen ber-border)</li>
+        <li>Override radius cuma menyasar <code>.rounded-none</code>, bukan default</li>
+        <li>Layout masih <b>kotak poster</b> → terasa Shōwa</li>
+        <li>Motif awan sangat samar; seigaiha lama masih dominan</li>
+        <li>Teks kecil kontras rendah di latar sutra</li>
+      </ul>
+    </div>
+    <div class="heian-card">
+      <span class="badge good">BUTUH</span>
+      <ul style="margin:12px 0 0 18px;line-height:1.9;font-size:14px">
+        <li>Default radius <b>membulat</b> untuk semua kartu/tombol</li>
+        <li>Shadow <b>berlapis</b> (bukan satu lapis)</li>
+        <li>Aksen <b>emas + maple + bulan</b> yang terasa</li>
+        <li>Motif <b>awan</b> lebih kuat, seigaiha pensiun</li>
+        <li>Gradien <b>kasane</b> di kartu & tombol</li>
+        <li>Gerak <b>mengambang lambat</b>, bukan snap</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
