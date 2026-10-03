@@ -1335,11 +1335,18 @@ button[data-toji-kill]::after {
 
 /* 1) Aksen berwarna → gradien kasane 襲の色目 (berlapis, bukan flat mengkilap)
       + tepi emas tipis, seperti papan brokat/segel istana. */
-[data-era="heian"] :where(button, a)[class*="bg-ai"]:not([class*="bg-ai/"])     { background-image: var(--era-kasane-ai); }
-[data-era="heian"] :where(button, a)[class*="bg-shu"]:not([class*="bg-shu/"])   { background-image: var(--era-kasane-shu); }
-[data-era="heian"] :where(button, a)[class*="bg-matcha"]:not([class*="bg-matcha/"]) { background-image: var(--era-kasane-matcha); }
-[data-era="heian"] :where(button, a)[class*="bg-kin"]:not([class*="bg-kinari"]):not([class*="bg-kin/"]) { background-image: var(--era-kasane-kin); }
-[data-era="heian"] :where(button, a)[class*="bg-sumi"]:not([class*="bg-sumi/"]) { background-image: var(--era-kasane-sumi); }
+[data-era="heian"] :where(button, a)[class~="bg-ai"]     { background-image: var(--era-kasane-ai); }
+[data-era="heian"] :where(button, a)[class~="bg-shu"]   { background-image: var(--era-kasane-shu); }
+[data-era="heian"] :where(button, a)[class~="bg-matcha"] { background-image: var(--era-kasane-matcha); }
+[data-era="heian"] :where(button, a)[class~="bg-kin"]:not([class~="bg-kinari"]) { background-image: var(--era-kasane-kin); }
+[data-era="heian"] :where(button, a)[class~="bg-sumi"] { background-image: var(--era-kasane-sumi); }
+/* PENTING: pakai `[class~="bg-X"]` (token EXACT), bukan `[class*="bg-X"]`.
+   `*=` cocok SUBSTRING → `hover:bg-shu`, `group-hover:bg-kin`, `sm:bg-ai`,
+   dan `bg-shu/10` semua ikut terpicu. Akibatnya tombol OUTLINE (mis. "Reset
+   Semua Data": `border-shu text-shu hover:bg-shu`, latar transparan) dapat
+   gradien penuh → TEKS MERAH di atas MERAH (kontras 1.0, tak terbaca).
+   `~=` hanya cocok kalau `bg-X` jadi kelas UTUH, jadi varian `hover:`/
+   `group-hover:`/`sm:` dan opacity `bg-X/10` otomatis dikecualikan. */
 
 /* 2) Tepi emas + tepi SOBEK untuk SEMUA tombol ber-latar.
       PENTING (kritik: "kebanyakan, teks jadi berantakan"): filter `#heian-torn`
