@@ -129,7 +129,7 @@ export function DailyQuestPanel() {
           <div className="h-[3px] flex-1 bg-sumi/10" />
           <EraTategaki className="text-sm text-sumi/40 self-center">日課</EraTategaki>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {daily.map((q) => (
             <QuestCard key={q.id} q={q} id={id} accent="ai" onClaim={makeClaim(claimQuest, 'ai')} />
           ))}
@@ -148,7 +148,7 @@ export function DailyQuestPanel() {
           <div className="h-[3px] flex-1 bg-sumi/10" />
           <EraTategaki className="text-sm text-sumi/40 self-center">週課</EraTategaki>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {weekly.map((q) => (
             <QuestCard key={q.id} q={q} id={id} accent="shu" onClaim={makeClaim(claimWeeklyQuest, 'shu')} />
           ))}
