@@ -1356,8 +1356,17 @@ button[data-toji-kill]::after {
       (background: inherit → warna/gradien sama dengan tombol), teks tetap di
       tombol → HURUF SELALU TAJAM, hanya tepi kertas yang koyak.
       `!important` pada border-color perlu karena jaring lama memaksa ke tinta. */
-[data-era="heian"] :where(button, a)[class*="bg-"] {
+[data-era="heian"] :where(button, a)[class*="bg-"]:not([class*="fixed"]):not([class*="absolute"]):not([class*="sticky"]) {
   position: relative;
+}
+/* PENTING: `position: relative` hanya untuk tombol STATIS. Tombol mengapung
+   (TutorialButton = `fixed bottom-4 right-4 bg-ai`) juga cocok selector
+   `[class*="bg-"]` → kalau ikut kena `relative`, tombol LEPAS dari viewport
+   dan jatuh ke alur normal (muncul nempel kiri-atas, numpuk header). Karena
+   itu `fixed`/`absolute`/`sticky` dikecualikan di atas; sisa gaya (isolation,
+   tepi sobek) tetap berlaku — elemen terposisi sudah jadi containing block
+   untuk ::before. */
+[data-era="heian"] :where(button, a)[class*="bg-"] {
   isolation: isolate;              /* agar ::before (z-index:-1) tetap di dalam */
   border-color: transparent !important;  /* tepi persegi disembunyikan; ::before yg gambar */
   filter: none !important;         /* jangan ada distorsi sisa pada teks */
