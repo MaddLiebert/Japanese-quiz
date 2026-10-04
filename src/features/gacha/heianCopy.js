@@ -1,12 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Teks UI "tempat gacha" — KHUSUS era Heian 平安 (kana, karena pemain belum
-// bisa kanji). Era lain → teks lama (Shōwa), jadi tema Heian tetap berdiri
-// sendiri dan TIDAK bocor ke era lain.
-//
-// Konsep: gacha Heian = 貝合わせ kai-awase (permainan mencocokkan kerang khas
-// bangsawan istana) — sejalan dengan nama gacha di eraNames.js.
+// Teks UI "tempat gacha" — era-aware dispatcher.
+// Heian 平安 → kana (HEIAN_GACHA). Edo 江戸 → 富くじ kanji (EDO_GACHA).
+// Era lain → teks lama (Shōwa). Tiap tema berdiri sendiri, tidak bocor.
 // Modul MURNI (tanpa React/DOM) → dites via `node --test`.
 // ─────────────────────────────────────────────────────────────────────────────
+import { EDO_GACHA, isEdo } from './edoCopy.js';
 
 // Label utama Heian = KANA saja (pemain belum bisa kanji). Kanji hanya muncul
 // di `titleSub` sebagai lapisan "belajar" opsional.
@@ -46,6 +44,10 @@ const LEGACY = (id) => ({
 export const isHeian = (eraId) => eraId === 'heian';
 
 // Teks "tempat gacha" untuk era aktif.
-// Heian → kana (HEIAN_GACHA). Era lain → teks lama sesuai bahasa.
-export const gachaCopy = (eraId, language) =>
-  (isHeian(eraId) ? { ...HEIAN_GACHA } : LEGACY(language === 'id'));
+// Heian → kana (HEIAN_GACHA). Edo → 富くじ kanji (EDO_GACHA).
+// Era lain → teks lama sesuai bahasa.
+export const gachaCopy = (eraId, language) => {
+  if (isHeian(eraId)) return { ...HEIAN_GACHA };
+  if (isEdo(eraId)) return { ...EDO_GACHA };
+  return LEGACY(language === 'id');
+};

@@ -184,6 +184,14 @@ export const HEIAN_SFX_PARAMS = {
   heartbeat: { kind: 'heart', beats: [{ atMs: 0, hz: 46, gain: 0.3 }, { atMs: 300, hz: 40, gain: 0.2 }], dur: 0.22 },
   // kilau halus (momen terjemahan / penutup)
   shimmer: { kind: 'shimmer', notes: [1318.51, 1567.98, 2093.0], dur: 0.4, gap: 0.07, gain: 0.06 },
+
+  // ── Edo 江戸 (kota cetak) — SFX tambahan, mesin synth yang sama ────────────
+  // 木 ketukan blok kayu (ukir / cetak)
+  woodKnock: { kind: 'wood', from: 220, to: 140, dur: 0.14, gain: 0.26, noiseGain: 0.07 },
+  // 三味線 shamisen — petikan dawai (lebih tajam & ritmis dari koto)
+  shamisen: { kind: 'pluck', from: 523.25, dur: 0.75, gain: 0.17, overtoneGain: 0.22, filterHz: 3000, bend: -8 },
+  // sorak penjaja pasar (nyaring, pendek)
+  marketCry: { kind: 'noise', dur: 0.55, gain: 0.09, type: 'bandpass', fromHz: 1200, toHz: 700, q: 1.4, curve: 'soft' },
 };
 
 export const heianSfxParams = (key) => HEIAN_SFX_PARAMS[key] || null;
@@ -208,6 +216,11 @@ export const playCinematicSfx = (key, gain = 1) => {
     case 'drum':
       tone(ctx, t, { type: 'sine', from: p.from, to: p.to, dur: p.dur, gain: g(p.gain), attack: 0.006 });
       noiseSweep(ctx, t, { dur: p.dur * 0.4, gain: g(p.noiseGain), type: 'bandpass', fromHz: p.from * 8, toHz: p.to * 3 });
+      return Math.round(p.dur * 1000);
+    case 'wood':
+      // Blok kayu: denyut rendah pendek + klik noise tinggi (karakter "tok").
+      tone(ctx, t, { type: 'triangle', from: p.from, to: p.to, dur: p.dur, gain: g(p.gain), attack: 0.004 });
+      noiseSweep(ctx, t, { dur: p.dur * 0.6, gain: g(p.noiseGain), type: 'bandpass', fromHz: 2600, toHz: 1100, q: 1.6 });
       return Math.round(p.dur * 1000);
     case 'bell':
       bell(ctx, t, { baseHz: p.baseHz, partials: p.partials, dur: p.dur, gain: g(p.gain) });
@@ -284,6 +297,36 @@ export const AMBIENCE_PLANS = {
     drone: { freqs: [41.2, 82.41, 110], detune: [0, -6, 3], gain: 0.46 },
     pad: { type: 'triangle', freqs: [146.83, 220], filterHz: 620, lfoHz: 0.04, lfoDepth: 280, gain: 0.34 },
     air: { type: 'lowpass', hz: 360, gain: 0.06 },
+  },
+
+  // ── Edo 江戸: kota cetak — lebih ramai & ritmis dari Heian ─────────────────
+  // market: siang pasar (日本橋, 浅草寺). Lebih cerah, ada denyut cepat.
+  market: {
+    level: 0.1, fadeInMs: 1400, fadeOutMs: 800,
+    drone: { freqs: [73.42, 146.83], detune: [0, -5], gain: 0.34 },
+    pad: { type: 'triangle', freqs: [293.66, 369.99, 440], filterHz: 1200, lfoHz: 0.12, lfoDepth: 260, gain: 0.28 },
+    air: { type: 'bandpass', hz: 1100, gain: 0.05 },
+  },
+  // print: bengkel cetak (浮世絵). Sunyi, kayu, tinta.
+  print: {
+    level: 0.08, fadeInMs: 1600, fadeOutMs: 900,
+    drone: { freqs: [61.74, 123.47], detune: [0, -4], gain: 0.4 },
+    pad: { type: 'triangle', freqs: [246.94, 311.13], filterHz: 900, lfoHz: 0.06, lfoDepth: 200, gain: 0.26 },
+    air: { type: 'lowpass', hz: 700, gain: 0.05 },
+  },
+  // night: 夜市 (提灯). Gelap, hangat, sedikit misterius.
+  night: {
+    level: 0.11, fadeInMs: 1800, fadeOutMs: 1100,
+    drone: { freqs: [49, 98], detune: [0, -6], gain: 0.44 },
+    pad: { type: 'triangle', freqs: [174.61, 233.08], filterHz: 720, lfoHz: 0.05, lfoDepth: 240, gain: 0.32 },
+    air: { type: 'lowpass', hz: 480, gain: 0.055 },
+  },
+  // festival: 両国 (花火 & 相撲). Paling hidup — denyut cepat, terang.
+  festival: {
+    level: 0.12, fadeInMs: 1200, fadeOutMs: 900,
+    drone: { freqs: [65.41, 130.81, 196], detune: [0, -4, 4], gain: 0.4 },
+    pad: { type: 'triangle', freqs: [329.63, 392, 523.25], filterHz: 1500, lfoHz: 0.16, lfoDepth: 300, gain: 0.3 },
+    air: { type: 'bandpass', hz: 1400, gain: 0.05 },
   },
 };
 

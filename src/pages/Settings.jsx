@@ -340,35 +340,47 @@ export function Settings() {
               </h2>
               <div className="h-[2px] flex-1 bg-sumi/10"></div>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
-              <div className="flex-1">
-                <p className="text-sm font-bold text-sumi">
-                  {language === 'id' ? 'Cinematic Sejarah Heian' : 'Heian Historical Cinematic'}
-                </p>
-                <p className="text-xs text-sumi/70 font-semibold">
-                  {language === 'id'
-                    ? 'Cinematic sejarah yang diputar sekali saat era Heian pertama terbuka. Putar ulang kapan saja di sini.'
-                    : 'The historical cinematic that plays once when the Heian era first opens. Replay it any time here.'}
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <button
-                  type="button"
-                  onClick={() => play('heian')}
-                  disabled={!unlocked.some((e) => e.id === 'heian')}
-                  className="py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer bg-kinari-light text-sumi hover:bg-sumi hover:text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {language === 'id' ? 'Putar 平安' : 'Play 平安'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate('/heian-history')}
-                  disabled={!unlocked.some((e) => e.id === 'heian')}
-                  className="py-3 px-5 border-[3px] border-kin font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer bg-kinari-light text-kin-ink hover:bg-kin hover:text-sumi shadow-[3px_3px_0_0_#1a1a1a] disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {language === 'id' ? 'Sejarah Heian' : 'Heian History'}
-                </button>
-              </div>
+            <div className="flex flex-col gap-6">
+              {[
+                { id: 'heian', kanji: '平安', name: 'Heian', route: '/heian-history',
+                  desc_id: 'Cinematic sejarah yang diputar sekali saat era Heian pertama terbuka. Putar ulang kapan saja di sini.',
+                  desc_en: 'The historical cinematic that plays once when the Heian era first opens. Replay it any time here.' },
+                { id: 'edo', kanji: '江戸', name: 'Edo', route: '/edo-history',
+                  desc_id: 'Cinematic sejarah yang diputar sekali saat era Edo pertama terbuka. Putar ulang kapan saja di sini.',
+                  desc_en: 'The historical cinematic that plays once when the Edo era first opens. Replay it any time here.' },
+              ].map((c) => {
+                const open = unlocked.some((e) => e.id === c.id);
+                return (
+                  <div key={c.id} className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm font-bold text-sumi">
+                        {language === 'id' ? `Cinematic Sejarah ${c.name}` : `${c.name} Historical Cinematic`}
+                      </p>
+                      <p className="text-xs text-sumi/70 font-semibold">
+                        {language === 'id' ? c.desc_id : c.desc_en}
+                      </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        type="button"
+                        onClick={() => play(c.id)}
+                        disabled={!open}
+                        className="py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer bg-kinari-light text-sumi hover:bg-sumi hover:text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        {language === 'id' ? `Putar ${c.kanji}` : `Play ${c.kanji}`}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigate(c.route)}
+                        disabled={!open}
+                        className="py-3 px-5 border-[3px] border-kin font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer bg-kinari-light text-kin-ink hover:bg-kin hover:text-sumi shadow-[3px_3px_0_0_#1a1a1a] disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        {language === 'id' ? `Sejarah ${c.name}` : `${c.name} History`}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </section>
 

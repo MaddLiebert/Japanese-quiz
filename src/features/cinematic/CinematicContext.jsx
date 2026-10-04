@@ -21,6 +21,7 @@ import { useEra } from '../theme/EraContext';
 import { useUserStats } from '../progress/ProgressContext';
 import { nextCinematic, getCinematic } from './cinematics';
 import { HeianCinematic } from './heian/HeianCinematic';
+import { EdoCinematic } from './edo/EdoCinematic';
 import { isAudioRunning, enableHeianAudio } from './heian/heianHistoryAudio';
 
 const CinematicContext = createContext(null);
@@ -30,6 +31,10 @@ export { CinematicContext };
 function CinematicStage({ cinematic, onDone, onExplore, onSeen }) {
   if (!cinematic) return null;
   if (cinematic.kind === 'history') {
+    // Pilih orchestrator per-era (Heian vs Edo). Keduanya berbagi mesin timeline.
+    if (cinematic.era === 'edo') {
+      return <EdoCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
+    }
     return <HeianCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
   }
   return null;

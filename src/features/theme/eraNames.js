@@ -12,6 +12,17 @@ const ERA_NAMES = {
     quest: '日課',      // tugas harian
     rank: '位',        // peringkat istana (位階)
   },
+  // Edo 江戸 — kota cetak: pedagang & perajin (chōnin), bukan istana.
+  // Lihat PRD: docs/tema/edo.md §8.
+  edo: {
+    shop: '問屋',       // toiya — pedagang besar/grosir
+    gacha: '富くじ',     // tomikuji — lotre 木札 dari 富箱
+    medaru: '両',       // ryō — mata uang Edo
+    inventory: '風呂敷',  // furoshiki — kain pembungkus barang
+    profile: '人別帳',   // ninbetsuchō — daftar penduduk
+    quest: '奉公',       // hōkō — pengabdian/kerja
+    rank: '番付',       // banzuke — daftar peringkat (sumo)
+  },
 };
 
 // Kembalikan nama era untuk `key`, atau `fallback` bila era/key tak punya nama.

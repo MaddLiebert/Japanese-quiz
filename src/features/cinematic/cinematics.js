@@ -13,6 +13,7 @@
 
 export const CINEMATICS = {
   heian: { id: 'heian', era: 'heian', kind: 'history', title: '平安', route: '/heian-history' },
+  edo: { id: 'edo', era: 'edo', kind: 'history', title: '江戸', route: '/edo-history' },
 };
 
 // ── State "sudah dilihat" (objek { [cinematicId]: true }) ────────────────────

@@ -926,6 +926,20 @@ const THEME_BGM_PLANS = {
     // Dipetik berurutan (deterministik) tiap `everyMs`, membusuk lembut.
     koto: { notes: [293.66, 329.63, 392, 440, 466.16], everyMs: 2400, dur: 1.6, gain: 0.16 },
   },
+  // Edo 江戸 (§9): 三味線 shamisen / 祭囃子 matsuri-bayashi — RITMIS, lebih
+  // cepat dari gagaku Heian. Kayu & tinta, bukan sutra istana.
+  edo: {
+    level: 0.13,
+    fadeInMs: 1400,       // masuk gesit (Heian 2600) — Edo "tegas"
+    fadeOutMs: 900,
+    // Drone kayu: bass 55/110 + 98 (G2) → dasar kokoh "kota", bukan kabut.
+    drone: { freqs: [55, 110, 98], detune: [0, -6, 4], gain: 0.46 },
+    // Pad: triangle mid lebih cerah + lowpass terbuka, napas LEBIH cepat.
+    pad: { type: 'triangle', freqs: [261.63, 329.63, 392], filterHz: 1150, lfoHz: 0.09, lfoDepth: 260, gain: 0.28 },
+    // 三味線 shamisen: petikan pada tangga insen (C D F G A♭) → warna rakyat Edo,
+    // ritmis (everyMs 1200 ≪ 2400 Heian). Petikan pendek & tegas.
+    pluck: { notes: [261.63, 293.66, 349.23, 392, 415.3], everyMs: 1200, dur: 1.1, gain: 0.18 },
+  },
 };
 
 export const themeBgmPlan = (era = 'heian') => THEME_BGM_PLANS[era] || THEME_BGM_PLANS.heian;

@@ -1932,4 +1932,648 @@ button[data-toji-kill]::after {
   box-shadow: var(--era-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
+/* ══ TEMA ERA — EDO 江戸 ═════════════════════════════════════════════════════
+   PRD: docs/tema/edo.md. Edo = "kota yang TERCETAK" — kontras TOTAL dari Heian.
+   Siang pasar, malam lentera. Kayu, tinta, cetakan ukiyo-e.
+     • garis ukir 2px (Heian 1px) · radius 4px (Heian 0) · bayangan KERAS tanpa
+       blur 3px 3px 0 0 (registrasi cetak) · gerak gesit 240ms (Heian 600ms)
+     • 藍 ai indigo #1e4f79 (Heian 紫 murasaki) · segel 極 merah · grain cetakan
+     • motif 青海波 seigaiha + 麻の葉 asanoha + 亀甲 kikkō + 花火 hanabi
+     • tipografi cetak: Shippori Mincho B1 (display), Shippori Mincho (kanji)
+   Arsitektur tetap 3 lapis: data-theme × data-era berkomposisi. */
+
+[data-era="edo"] {
+  /* ── Warna — terang (siang pasar) ─────────────────────────────────────── */
+  --kinari-val:       #f4ecd8;  /* 生成 kinari — kertas kayu alami */
+  --kinari-light-val: #faf3e0;  /* panel: kertas cetak, sedikit lebih terang */
+  --sumi-val:         #1c1b1a;  /* 墨 sumi — tinta cetak (lebih pekat dari Heian) */
+  --ai-val:           #1e4f79;  /* 藍 ai — indigo Edo */
+  --shu-val:          #c0392b;  /* 朱 shu — merah segel/cap */
+  --matcha-val:       #4a6b3a;  /* 抹茶 matcha — hijau tua */
+  --kin-val:          #c9922a;  /* 金 kin — emas kuningan */
+  --kin-ink-val:      #7a5818;  /* emas sebagai TEKS di kertas (kontras) */
+  --backdrop-val:     #e6dcc2;  /* latar kertas tua */
+
+  /* ── Bentuk — UKIRAN KAYU & CETAKAN (kontras total dari Heian) ─────────── */
+  /* Garis UKIR tipis (bukan 2px tebal ala Showa/brutalism). Keyblock ukiyo-e
+     = garis tipis & hidup, bukan outline hitam tebal. Kontras dari Heian tetap
+     ada lewat WARNA garis (tinta pekat vs coklat Heian) + misregistrasi. */
+  --era-edge-w:       1px;
+  --era-edge-color:   var(--sumi-val);
+  --era-radius:       2px;                                   /* nyaris tajam (potongan kertas) */
+  --era-radius-sm:    2px;
+  --era-radius-xs:    2px;
+  --era-radius-pill:  9999px;
+  /* Misregistrasi cetak (色ズレ misuzure): pelat warna bergeser sedikit — indigo,
+     vermilion, lalu tinta. INI tanda khas ukiyo-e, BUKAN bayangan brutalist
+     hitam 3px 3px 0 0 (kritik: "kaya Showa parah pake brutalism"). Offset kecil
+     + warna pelat → terasa "tercetak", bukan "kartu web melayang". */
+  --era-shadow:       1px 1px 0 0 rgba(30, 79, 121, 0.18),
+                      2px 2px 0 0 rgba(192, 57, 43, 0.13),
+                      3px 3px 0 0 rgba(28, 27, 26, 0.09);
+  --era-shadow-hover: 2px 2px 0 0 rgba(30, 79, 121, 0.22),
+                      3px 3px 0 0 rgba(192, 57, 43, 0.17),
+                      4px 4px 0 0 rgba(28, 27, 26, 0.11);
+  /* Blok warna datar (ukiyo-e = warna rata, bukan gradien mengkilap). */
+  --era-kasane:       #faf3e0;
+  --era-kasane-ai:    var(--ai-val);
+  --era-kasane-kin:   var(--kin-val);
+  --era-kasane-shu:   var(--shu-val);
+  --era-kasane-matcha:var(--matcha-val);
+  --era-kasane-sumi:  var(--sumi-val);
+  /* Tepi tinta cetak (bukan tepi emas brokat Heian). */
+  --era-gold:         rgba(28, 27, 26, 0.9);
+  --era-drop:         drop-shadow(1px 1px 0 rgba(30,79,121,0.18)) drop-shadow(2px 2px 0 rgba(192,57,43,0.13));
+  --era-drop-hover:   drop-shadow(2px 2px 0 rgba(30,79,121,0.22)) drop-shadow(3px 3px 0 rgba(192,57,43,0.17));
+  --era-glow:         inset 0 0 0 0 transparent;
+  --era-motion:       240ms;                                 /* gesit (Heian 600ms) */
+  --era-ease:         cubic-bezier(0.2, 0, 0, 1);
+
+  --ink:              rgba(28, 27, 26, 0.85);
+  --theme-transition: 320ms;
+
+  /* ── Tipografi — zaman CETAK: SEMUA teks serif ukiran (Shippori Mincho),
+     bukan Inter sans modern (kritik: "font masih kerasa modern"). Inter dibuang
+     dari peran sans/serif/mono; hanya angka tabular yang tetap sans via
+     .tabular-nums bila perlu. Shippori Mincho B1 = display (paling berukir). */
+  --font-sans:    "Shippori Mincho", "Noto Serif JP", serif;
+  --font-serif:   "Shippori Mincho", "Noto Serif JP", serif;
+  --font-mono:    "Shippori Mincho", "Noto Serif JP", serif;
+  --font-kana:    "Shippori Mincho", "Noto Serif JP", serif;
+  --font-display: "Shippori Mincho B1", "Shippori Mincho", "Noto Serif JP", serif;
+}
+
+/* Edo gelap — "夜市 yomise": MALAM INDIGO PEKAT + KOLAM CAHAYA 提灯 HANGAT.
+   Kritik: "dark mode kek cuma ganti ke mode gelap." Maka bukan sekadar hex
+   ditukar: latar = indigo malam (bukan abu netral), aksen = AMBER lentera
+   (bukan biru pastel), dan kartu diberi glow hangat dari dalam (cahaya tembus
+   kertas). Ini "malam di Edo", bukan "web app disetel gelap". */
+.dark[data-era="edo"], [data-theme="dark"][data-era="edo"] {
+  --kinari-val:       #0f1522;  /* indigo malam (BIRU pekat, bukan abu netral) */
+  --kinari-light-val: #16203a;  /* panel: indigo lebih terang, seperti kertas kena cahaya */
+  --sumi-val:         #f0e6cf;  /* teks krem hangat (kertas lentera) */
+  --ai-val:           #7fb2dd;  /* indigo terang (air malam) */
+  --shu-val:          #e8643f;  /* vermilion 提灯 — lebih hangat */
+  --matcha-val:       #9dba74;
+  --kin-val:          #f0be4e;  /* emas lentera — lebih hangat & terang */
+  --kin-ink-val:      #f0be4e;
+  --backdrop-val:     #080b14;  /* langit malam paling dalam */
+  --era-edge-color:   rgba(240, 230, 207, 0.7);
+  /* Misregistrasi tetap ada di malam, tapi lebih redup (cahaya sedikit). */
+  --era-shadow:       1px 1px 0 0 rgba(127, 178, 221, 0.16),
+                      2px 2px 0 0 rgba(232, 100, 63, 0.14),
+                      3px 3px 0 0 rgba(0, 0, 0, 0.5);
+  --era-shadow-hover: 2px 2px 0 0 rgba(127, 178, 221, 0.2),
+                      3px 3px 0 0 rgba(232, 100, 63, 0.18),
+                      4px 4px 0 0 rgba(0, 0, 0, 0.56);
+  --era-gold:         rgba(240, 190, 78, 0.8);
+  --era-drop:         drop-shadow(0 0 10px rgba(240, 190, 78, 0.22));
+  --era-drop-hover:   drop-shadow(0 0 16px rgba(240, 190, 78, 0.32));
+  /* Glow HANGAT dari dalam — cahaya 提灯 menembus kertas. Inilah yang bikin
+     "malam Edo", bukan "mode gelap". */
+  --era-glow:         inset 0 0 0 1px rgba(240, 190, 78, 0.10),
+                      inset 0 0 22px rgba(240, 190, 78, 0.06);
+  --ink:              rgba(240, 230, 207, 0.78);
+}
+
+/* Judul hero memakai serif cetak tebal (Shippori Mincho B1), bukan kuas. */
+[data-era="edo"] h1 { font-family: var(--font-display); letter-spacing: 0.005em; }
+
+/* ── Jaring pengaman Edo: paksa bahasa bentuk "cetakan" di SELURUH app ──────
+   Komponen lama masih memakai kelas Shōwa (border-4, shadow keras #1a1a1a,
+   hover lompat 2px). Di Edo kita SERAGAMKAN ke token era: garis ukir tipis,
+   sudut potongan kertas, misregistrasi pelat warna. BUKAN brutalist: garis
+   tipis, sudut nyaris tajam, bayangan berwarna (indigo+vermilion+tinta). */
+
+/* 1) Tepi → garis ukir tipis, warna tinta cetak. */
+[data-era="edo"] [class*="border-4"],
+[data-era="edo"] [class*="border-3"],
+[data-era="edo"] [class*="border-2"],
+[data-era="edo"] [class*="border-["] {
+  border-width: var(--era-edge-w) !important;
+  border-color: var(--era-edge-color) !important;
+}
+/* Border berarah (border-t-/b-/l-/r-[Npx]) — tiap sisi terpisah. */
+[data-era="edo"] [class*="border-t-["] { border-top-width:    var(--era-edge-w) !important; }
+[data-era="edo"] [class*="border-b-["] { border-bottom-width: var(--era-edge-w) !important; }
+[data-era="edo"] [class*="border-l-["] { border-left-width:   var(--era-edge-w) !important; }
+[data-era="edo"] [class*="border-r-["] { border-right-width:  var(--era-edge-w) !important; }
+@media (min-width: 640px) {
+  [data-era="edo"] [class*="border-t-0"] { border-top-width:    0 !important; }
+  [data-era="edo"] [class*="border-b-0"] { border-bottom-width: 0 !important; }
+  [data-era="edo"] [class*="border-l-0"] { border-left-width:   0 !important; }
+  [data-era="edo"] [class*="border-r-0"] { border-right-width:  0 !important; }
+}
+
+/* 2) Sudut → nyaris tajam (potongan kertas). Lingkaran semantik tetap bulat. */
+[data-era="edo"] :where([class*="border"]) { border-radius: var(--era-radius); }
+[data-era="edo"] [class*="rounded-"]:not(.rounded-full) { border-radius: var(--era-radius) !important; }
+[data-era="edo"] .rounded-full { border-radius: 9999px !important; }
+
+/* 2b) KERTAS CETAK: kartu ber-border tanpa bg sendiri diberi SERAT washi +
+   gradien bokashi tipis (sapuan tangan ukiyo-e) — bukan kotak datar. Inilah
+   yang membedakan "kertas tercetak" dari "kartu web ber-outline".
+   Elemen ber-garis-pemisah berarah dikecualikan (bukan kartu). */
+[data-era="edo"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]):not([class*="border-t-"]):not([class*="border-b-"]):not([class*="border-l-"]):not([class*="border-r-"]) {
+  background-color: var(--kinari-light-val);
+  background-image:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.30) 0%, transparent 46%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)' opacity='0.06'/%3E%3C/svg%3E");
+}
+.dark[data-era="edo"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]):not([class*="border-t-"]):not([class*="border-b-"]):not([class*="border-l-"]):not([class*="border-r-"]),
+[data-theme="dark"][data-era="edo"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]):not([class*="border-t-"]):not([class*="border-b-"]):not([class*="border-l-"]):not([class*="border-r-"]) {
+  background-color: var(--kinari-light-val);
+  background-image:
+    radial-gradient(120% 90% at 50% 0%, rgba(240, 190, 78, 0.06) 0%, transparent 62%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)' opacity='0.10'/%3E%3C/svg%3E");
+}
+[data-era="edo"] .era-flat {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* 3) Bayangan = misregistrasi pelat warna (bukan blok hitam brutalist). */
+[data-era="edo"] [class*="shadow-["],
+[data-era="edo"] .shadow-sm,
+[data-era="edo"] .shadow-md,
+[data-era="edo"] .shadow-lg,
+[data-era="edo"] .shadow-xl,
+[data-era="edo"] .shadow-2xl {
+  box-shadow: var(--era-shadow) !important;
+}
+[data-era="edo"] [class*="drop-shadow"] { filter: none !important; }
+
+/* 4) Tombol: blok warna datar tercetak + gerak GESIT halus (bukan snap 2px ala
+      cap karet Shōwa). Hover hanya mengangkat misregistrasi sedikit. */
+[data-era="edo"] :where(button, a)[class*="bg-"] {
+  background-image: none !important;
+  border-radius: var(--era-radius) !important;
+}
+[data-era="edo"] :where(button, a)[class*="hover:translate-"]:hover {
+  transform: translate(1px, 1px) !important;
+}
+[data-era="edo"] :where(button, a):active {
+  transform: translate(1px, 1px) !important;
+}
+
+/* ── MOTIF & TEKSTUR EDO ─────────────────────────────────────────────────── */
+
+/* 青海波 seigaiha — gelombang laut/kota pelabuhan. Latar utama Edo (aktif
+   kembali; di Heian dipensiunkan). Warna indigo 藍. */
+[data-era="edo"] .era-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cg fill='none' stroke='%231e4f79' stroke-width='1.4' opacity='0.5'%3E%3Ccircle cx='40' cy='40' r='10'/%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Ccircle cx='40' cy='40' r='30'/%3E%3Ccircle cx='0' cy='20' r='10'/%3E%3Ccircle cx='0' cy='20' r='20'/%3E%3Ccircle cx='80' cy='20' r='10'/%3E%3Ccircle cx='80' cy='20' r='20'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  opacity: 0.3 !important;
+  /* Latar penuh + animasi geser via transform (compositor), bukan background-position. */
+  top: -25%; left: -25%; width: 150%; height: 150%;
+  will-change: transform;
+  animation: edo-drift 60s linear infinite;
+}
+.dark[data-era="edo"] .era-pattern,
+[data-theme="dark"][data-era="edo"] .era-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cg fill='none' stroke='%236fa8d6' stroke-width='1.4' opacity='0.5'%3E%3Ccircle cx='40' cy='40' r='10'/%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Ccircle cx='40' cy='40' r='30'/%3E%3Ccircle cx='0' cy='20' r='10'/%3E%3Ccircle cx='0' cy='20' r='20'/%3E%3Ccircle cx='80' cy='20' r='10'/%3E%3Ccircle cx='80' cy='20' r='20'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.26 !important;
+}
+
+/* 麻の葉 asanoha — daun rami, pola geometris khas kimono Edo. Aksen. */
+[data-era="edo"] .bg-asanoha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%231e4f79' stroke-width='1' opacity='0.28'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30 Z'/%3E%3Cpath d='M30 0 L30 60 M0 30 L60 30 M0 0 L60 60 M60 0 L0 60'/%3E%3C/g%3E%3C/svg%3E");
+}
+.dark[data-era="edo"] .bg-asanoha,
+[data-theme="dark"][data-era="edo"] .bg-asanoha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%236fa8d6' stroke-width='1' opacity='0.22'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30 Z'/%3E%3Cpath d='M30 0 L30 60 M0 30 L60 30 M0 0 L60 60 M60 0 L0 60'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* 亀甲 kikkō — sisik kura-kura. Bingkai/tepi panel. */
+[data-era="edo"] .bg-kikko {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='96' viewBox='0 0 56 96'%3E%3Cg fill='none' stroke='%231e4f79' stroke-width='1.2' opacity='0.3'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z'/%3E%3Cpath d='M28 64 L56 80 L56 112 M28 64 L0 80 L0 112'/%3E%3C/g%3E%3C/svg%3E");
+}
+.dark[data-era="edo"] .bg-kikko,
+[data-theme="dark"][data-era="edo"] .bg-kikko {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='96' viewBox='0 0 56 96'%3E%3Cg fill='none' stroke='%236fa8d6' stroke-width='1.2' opacity='0.24'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z'/%3E%3Cpath d='M28 64 L56 80 L56 112 M28 64 L0 80 L0 112'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* 花火 hanabi — kembang api 両国. HANYA malam (夜市). */
+.era-hanabi-layer {
+  position: fixed; inset: 0; overflow: hidden;
+  pointer-events: none; z-index: 0; display: none;
+}
+.dark[data-era="edo"] .era-hanabi-layer,
+[data-theme="dark"][data-era="edo"] .era-hanabi-layer { display: block; }
+.era-hanabi {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0;
+  animation: edo-hanabi 9s ease-out infinite;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg stroke='%23e0553f' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M50 50 L50 6'/%3E%3Cpath d='M50 50 L88 26'/%3E%3Cpath d='M50 50 L88 74'/%3E%3Cpath d='M50 50 L50 94'/%3E%3Cpath d='M50 50 L12 74'/%3E%3Cpath d='M50 50 L12 26'/%3E%3C/g%3E%3Cg fill='%23e8b84b'%3E%3Ccircle cx='50' cy='6' r='2.5'/%3E%3Ccircle cx='88' cy='26' r='2.5'/%3E%3Ccircle cx='88' cy='74' r='2.5'/%3E%3Ccircle cx='50' cy='94' r='2.5'/%3E%3Ccircle cx='12' cy='74' r='2.5'/%3E%3Ccircle cx='12' cy='26' r='2.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+@keyframes edo-hanabi {
+  0%   { opacity: 0; transform: scale(0.4); }
+  12%  { opacity: 0.85; }
+  55%  { opacity: 0.5; }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+
+/* Grain cetakan (bintik tinta di atas blok warna) — meniru hasil cetak kayu. */
+.era-grain-layer {
+  position: fixed; inset: 0; overflow: hidden;
+  pointer-events: none; z-index: 0; display: none;
+  mix-blend-mode: multiply;
+}
+[data-era="edo"] .era-grain-layer { display: block; }
+.era-grain {
+  position: absolute; inset: 0;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.14'/%3E%3C/svg%3E");
+}
+.dark[data-era="edo"] .era-grain-layer,
+[data-theme="dark"][data-era="edo"] .era-grain-layer { mix-blend-mode: screen; }
+.dark[data-era="edo"] .era-grain,
+[data-theme="dark"][data-era="edo"] .era-grain { opacity: 0.35; }
+
+/* Segel 極 merah — tanda tangan visual Edo di sudut kartu/panel.
+   Dekoratif → aria-hidden di komponennya. */
+.era-seal { display: none; }
+[data-era="edo"] .era-seal {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 2rem; height: 2rem;
+  background: var(--shu-val);
+  color: var(--kinari-light-val);
+  font-family: var(--font-display);
+  font-size: 1rem; line-height: 1;
+  border: var(--era-edge-w) solid var(--sumi-val);
+  border-radius: 2px;
+  transform: rotate(-4deg);
+  box-shadow: 1px 1px 0 0 rgba(30, 79, 121, 0.5), 2px 2px 0 0 rgba(192, 57, 43, 0.35);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Papan/panel cetak (pengganti brokat Heian): blok kayu + tepi ukir tipis.
+   Bayangan = misregistrasi berwarna, bukan blok hitam keras (kritik user). */
+[data-era="edo"] .era-brocade {
+  background-color: var(--ai-val) !important;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0 2px, transparent 2px 12px) !important;
+  border: var(--era-edge-w) solid var(--sumi-val) !important;
+  border-radius: var(--era-radius) !important;
+  box-shadow: var(--era-shadow) !important;
+}
+.dark[data-era="edo"] .era-brocade,
+[data-theme="dark"][data-era="edo"] .era-brocade {
+  box-shadow: var(--era-shadow) !important;
+}
+
+/* ── HIASAN KHAS EDO: 提灯 chochin + 暖簾 noren (di Home, bagian 日本語学園) ───
+   Sejarah: "昼は市、夜は提灯" — siang pasar, malam lentera (docs/tema/edo.md §1).
+   Dua sosok paling mencolok zaman Edo dijadikan hiasan, BUKAN tempelan generik:
+     • 提灯 lentera — berayun seperti bandul saat scroll (momentum via JS spring).
+       Malam menyala hangat (cahaya 金 menembus kertas); siang kertas polos.
+     • 暖簾 noren — tirai toko chōnin: tanda "siang pasar". Kain indigo 藍.
+   HANYA era Edo (gate display). Dekoratif → pointer-events:none di komponennya. */
+.edo-ornament { display: none; }
+[data-era="edo"] .edo-ornament { display: block; }
+
+/* Vignette muka-toko (暖簾 + 提灯): wrapper pakai flex, jadi gate-nya sendiri. */
+.edo-shopfront { display: none; }
+[data-era="edo"] .edo-shopfront { display: flex; }
+
+/* Bentuk dasar lentera (dipakai siang & malam; malam hanya mengubah cahaya). */
+.edo-lantern { pointer-events: none; user-select: none; }
+.edo-lantern svg { width: 100%; height: auto; overflow: visible; display: block; }
+
+.edo-lantern-rope {
+  stroke: var(--sumi-val);
+  stroke-width: 1.4;
+  opacity: 0.55;
+}
+.edo-lantern-cap {
+  fill: #6b4a2a;                       /* kayu penutup atas/bawah */
+  stroke: var(--sumi-val);
+  stroke-width: 0.8;
+}
+.edo-lantern-body {
+  fill: var(--kinari-light-val);       /* kertas lentera (siang) */
+  stroke: var(--sumi-val);
+  stroke-width: 1.2;
+}
+.edo-lantern-rib {
+  stroke: rgba(28, 27, 26, 0.35);      /* rusuk anyaman bambu */
+  stroke-width: 0.9;
+}
+.edo-lantern-kanji {
+  fill: var(--shu-val);                /* 朱 segel */
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+}
+/* Siang: tanpa glow (lentera padam). */
+.edo-lantern-glow { display: none; }
+
+/* Malam 夜市: lentera MENYALA — kolam cahaya hangat dari dalam kertas. */
+.dark[data-era="edo"] .edo-lantern-body,
+[data-theme="dark"][data-era="edo"] .edo-lantern-body {
+  fill: #f0be4e;                       /* kertas lentera menyala (cahaya 金) */
+  stroke: #2a1208;
+}
+.dark[data-era="edo"] .edo-lantern-rib,
+[data-theme="dark"][data-era="edo"] .edo-lantern-rib {
+  stroke: rgba(42, 18, 8, 0.45);
+}
+.dark[data-era="edo"] .edo-lantern-kanji,
+[data-theme="dark"][data-era="edo"] .edo-lantern-kanji {
+  fill: #2a1208;
+}
+.dark[data-era="edo"] .edo-lantern-cap,
+[data-theme="dark"][data-era="edo"] .edo-lantern-cap {
+  fill: #3a2413;
+}
+.dark[data-era="edo"] .edo-lantern-glow,
+[data-theme="dark"][data-era="edo"] .edo-lantern-glow {
+  display: block;
+  fill: rgba(240, 190, 78, 0.30);
+  filter: blur(9px);
+}
+.dark[data-era="edo"] .edo-lantern-rope,
+[data-theme="dark"][data-era="edo"] .edo-lantern-rope {
+  stroke: rgba(240, 230, 207, 0.45);
+}
+
+/* 暖簾 noren — tirai toko: batang kayu + panel kain indigo 藍 ber-kanji krem. */
+.edo-noren { pointer-events: none; user-select: none; }
+.edo-noren svg { width: 100%; height: auto; display: block; }
+.edo-noren-rod {
+  fill: #6b4a2a;
+  stroke: var(--sumi-val);
+  stroke-width: 0.8;
+}
+.edo-noren-panel {
+  fill: var(--ai-val);
+  stroke: var(--sumi-val);
+  stroke-width: 1;
+}
+.edo-noren-kanji {
+  fill: var(--kinari-light-val);
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+}
+
+/* ── CETAKAN KAYU EDO (ukiyo-e) — hiasan kartu JLPT N5 ──────────────────────
+   Di Heian, ruang kartu N5 diisi lukisan 月夜 (EraNightArt). Lukisan itu
+   Heian-only, jadi di era Edo ruang itu KOSONG ("hambar"). Di sini diisi
+   cetakan kayu buatan sendiri: 富士 Fuji + matahari 朱 + gelombang 波 + perahu.
+   Disatukan ke kertas lewat mask gradien (padat di atas, luluh ke bawah) supaya
+   teks 合格/JLPT N5 di bawahnya tetap di atas kertas bersih — bukan gambar
+   kotak yang ditempel. HANYA era Edo. Dekoratif → pointer-events:none. */
+.edo-art { display: none; }
+[data-era="edo"] .edo-art {
+  display: block;
+  pointer-events: none;
+}
+.edo-art--print {
+  mix-blend-mode: multiply;                 /* menyatu ke kertas (siang) */
+  opacity: 0.92;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 46%, rgba(0,0,0,0.55) 68%, transparent 88%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 46%, rgba(0,0,0,0.55) 68%, transparent 88%);
+}
+/* Malam 夜市: cetakan menyala lembut di atas indigo (screen), lebih redup. */
+.dark[data-era="edo"] .edo-art--print,
+[data-theme="dark"][data-era="edo"] .edo-art--print {
+  mix-blend-mode: screen;
+  opacity: 0.62;
+  filter: saturate(0.92) contrast(1.03);
+}
+
+/* Kabut/tinta latar Edo (siang): pita indigo tipis (bukan gradien ungu Heian).
+   Malam 夜市: indigo pekat + KOLAM CAHAYA 提灯 hangat (amber) — inilah yang
+   membuat "malam Edo", bukan sekadar "web disetel gelap" (kritik user). */
+[data-era="edo"] body {
+  background-image: linear-gradient(180deg, rgba(30, 79, 121, 0.05) 0%, rgba(201, 146, 42, 0.04) 50%, rgba(30, 79, 121, 0.05) 100%);
+  background-attachment: fixed;
+}
+.dark[data-era="edo"] body,
+[data-theme="dark"][data-era="edo"] body {
+  background-color: #0f1522;
+  background-image:
+    radial-gradient(58% 40% at 22% 12%, rgba(240, 190, 78, 0.14) 0%, transparent 66%),
+    radial-gradient(48% 44% at 80% 78%, rgba(232, 100, 63, 0.12) 0%, transparent 68%),
+    radial-gradient(70% 50% at 50% 46%, rgba(30, 79, 121, 0.20) 0%, transparent 74%),
+    linear-gradient(180deg, #0f1522 0%, #0b0f1b 55%, #080b14 100%);
+  background-attachment: fixed;
+}
+
+/* Gerak gesit Edo: masuk dari bawah, cepat, tanpa blur kabut Heian. */
+@keyframes edo-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes edo-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(160px, 80px, 0); }
+}
+[data-era="edo"] .heian-enter,
+[data-era="edo"] .heian-enter-2,
+[data-era="edo"] .heian-enter-3 {
+  animation: edo-rise var(--era-motion) var(--era-ease) both;
+}
+[data-era="edo"] .heian-enter-2 { animation-delay: 60ms; }
+[data-era="edo"] .heian-enter-3 { animation-delay: 120ms; }
+
+/* Pemisah antar-seksi: garis ukir tebal + label kanji (bukan awan Heian). */
+[data-era="edo"] .era-divider { padding: 14px 0; }
+[data-era="edo"] .era-divider__band {
+  height: 1px; background: var(--sumi-val);
+}
+[data-era="edo"] .era-divider__label {
+  background: var(--backdrop-val);
+  font-family: var(--font-display);
+  font-size: 11px; letter-spacing: 0.4em;
+  color: var(--sumi-val); opacity: 0.85;
+  padding: 0 12px;
+}
+
+/* Gacha 富くじ (深川) — "papan 木札": blok kayu + label segel 富. */
+[data-era="edo"] .edo-tomi-panel {
+  background-color: var(--kinari-light-val);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(122, 88, 24, 0.10) 0 2px, transparent 2px 10px);
+  border-top-width: 2px !important;
+  border-right-width: 2px !important;
+  border-bottom-width: 2px !important;
+  border-left-width: 2px !important;
+  border-style: solid !important;
+  border-top-color: var(--sumi-val) !important;
+  border-right-color: var(--sumi-val) !important;
+  border-bottom-color: var(--sumi-val) !important;
+  border-left-color: var(--sumi-val) !important;
+  box-shadow: var(--era-shadow);
+  color: var(--sumi-val);
+}
+[data-era="edo"] .edo-tomi-head {
+  background-color: var(--ai-val);
+  color: var(--kinari-light-val);
+}
+[data-era="edo"] .edo-tomi-board {
+  background-color: #e7dcc0;
+  background-image: repeating-linear-gradient(45deg, rgba(122, 88, 24, 0.08) 0 3px, transparent 3px 9px);
+}
+.dark[data-era="edo"] .edo-tomi-board,
+[data-theme="dark"][data-era="edo"] .edo-tomi-board {
+  background-color: #1a1d24;
+  background-image: repeating-linear-gradient(45deg, rgba(232, 184, 75, 0.06) 0 3px, transparent 3px 9px);
+}
+/* Satu 木札 (keping kayu lotre): persegi panjang kayu, tepi ukir, label 富. */
+[data-era="edo"] .edo-tomi-slip {
+  position: relative;
+  background-color: var(--kinari-light-val);
+  border: 2px solid var(--sumi-val);
+  border-radius: var(--era-radius) !important;
+  box-shadow: var(--era-shadow);
+  overflow: hidden;
+}
+[data-era="edo"] .edo-tomi-slip-seal {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) rotate(-3deg);
+  font-family: var(--font-display);
+  font-size: 15px; color: var(--shu-val);
+  opacity: 0.5; pointer-events: none; white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-era="edo"] .era-pattern,
+  [data-era="edo"] .era-hanabi,
+  [data-era="edo"] .heian-enter,
+  [data-era="edo"] .heian-enter-2,
+  [data-era="edo"] .heian-enter-3 { animation: none !important; }
+  [data-era="edo"] .era-hanabi { opacity: 0.4; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   夜市 YOMISE — MALAM FESTIVAL EDO (ramai, bukan biru kosong)
+   Kritik user: "malem gak kerasa festival, gak ramai, birunya generik, kosong."
+   Lapisan ini menghadirkan 提灯 lentera, 屋台 stan, 人々 kerumunan, 花火 kembang
+   api. HANYA malam (di-gate .dark[data-era="edo"]). Dekoratif, pointer-events:none.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.edo-night-festival { display: none; }
+
+.dark[data-era="edo"] .edo-night-festival,
+[data-theme="dark"][data-era="edo"] .edo-night-festival {
+  display: block;
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 5;   /* di atas latar (z-0), di bawah konten (z-10) */
+  overflow: hidden;
+}
+
+/* Kabut hangat dari stan — dasar agar cahaya terasa "memantul". */
+.edo-fest-haze {
+  position: absolute; inset-x: 0; bottom: 0; height: 52%;
+  background:
+    radial-gradient(50% 46% at 18% 96%, rgba(240,190,78,0.16) 0%, transparent 72%),
+    radial-gradient(44% 42% at 52% 100%, rgba(232,100,63,0.14) 0%, transparent 74%),
+    radial-gradient(48% 44% at 86% 96%, rgba(240,190,78,0.14) 0%, transparent 72%),
+    linear-gradient(180deg, transparent 0%, rgba(10,15,30,0.30) 100%);
+}
+
+/* ── 提灯 chochin — deretan lentera gantung, berayun lembut ─────────────── */
+.edo-chochin-row { position: absolute; inset: 0; }
+.edo-chochin {
+  position: absolute;
+  display: flex; flex-direction: column; align-items: center;
+  transform-origin: top center;
+  animation: edo-sway 5.5s ease-in-out infinite;
+}
+.edo-chochin-rope {
+  width: 1px; background: rgba(240,230,207,0.4);
+}
+.edo-chochin-body {
+  position: relative;
+  width: 62px; height: 84px;
+  border-radius: 50% / 42%;
+  background:
+    radial-gradient(60% 55% at 50% 38%, #f6d488 0%, var(--edk-shu) 66%, #8f2f1f 100%);
+  border: 2px solid #2a1208;
+  display: flex; align-items: center; justify-content: center;
+  /* rusuk lentera (anyaman bambu) */
+  background-image:
+    repeating-linear-gradient(0deg, rgba(42,18,8,0.30) 0 1.5px, transparent 1.5px 11px),
+    radial-gradient(60% 55% at 50% 38%, #f6d488 0%, var(--edk-shu) 66%, #8f2f1f 100%);
+  box-shadow: 0 0 30px 10px rgba(240,190,78,0.34), inset 0 0 12px rgba(255,240,200,0.5);
+}
+.edo-chochin-kanji {
+  font-family: var(--font-display);
+  font-size: 26px; font-weight: 700;
+  color: #2a1208;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 3px rgba(255,240,200,0.7);
+}
+.edo-chochin-glow {
+  position: absolute; top: 44px; left: 50%; transform: translateX(-50%);
+  width: 150px; height: 150px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(240,190,78,0.22) 0%, transparent 68%);
+}
+@keyframes edo-sway {
+  0%, 100% { transform: rotate(-2.2deg); }
+  50%      { transform: rotate(2.2deg); }
+}
+
+/* ── 花火 hanabi — kembang api warna, mekar bergantian ──────────────────── */
+.edo-hanabi-row { position: absolute; inset: 0; }
+.edo-hanabi2 {
+  position: absolute; width: 4px; height: 4px; border-radius: 50%;
+  animation: edo-burst 7.2s ease-out infinite;
+}
+.edo-hanabi2::before, .edo-hanabi2::after {
+  content: ''; position: absolute; inset: -2px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--hb, #fff) 0 1px, transparent 1.5px) 50% 0/3px 3px no-repeat,
+    radial-gradient(circle, var(--hb, #fff) 0 1px, transparent 1.5px) 50% 100%/3px 3px no-repeat,
+    radial-gradient(circle, var(--hb, #fff) 0 1px, transparent 1.5px) 0 50%/3px 3px no-repeat,
+    radial-gradient(circle, var(--hb, #fff) 0 1px, transparent 1.5px) 100% 50%/3px 3px no-repeat,
+    radial-gradient(circle, var(--hb, #fff) 0 1px, transparent 1.5px) 15% 15%/3px 3px no-repeat,
+    radial-gradient(circle, var(--hb, #fff) 0 1px, transparent 1.5px) 85% 85%/3px 3px no-repeat,
+    radial-gradient(circle, var(--hb, #fff) 0 1px, transparent 1.5px) 85% 15%/3px 3px no-repeat,
+    radial-gradient(circle, var(--hb, #fff) 0 1px, transparent 1.5px) 15% 85%/3px 3px no-repeat;
+}
+@keyframes edo-burst {
+  0%   { transform: scale(1); opacity: 0; }
+  8%   { opacity: 0.95; }
+  30%  { transform: scale(14); opacity: 0.75; }
+  55%  { transform: scale(26); opacity: 0; }
+  100% { transform: scale(26); opacity: 0; }
+}
+
+/* ── HAPUS DNA SHOWA STRUKTURAL ──────────────────────────────────────────────
+   Kritik user: "elemen2 showa masih ada... masih masuk era digital print nya
+   showa." Selama ini CSS hanya menimpa NILAI; struktur (kotak seragam, teks
+   Latin UPPERCASE ber-tracking ala Swiss, sudut mesin) tetap. Di Edo:
+   • tepi UKIR TAK RATA — filter displacement pada TOMBOL/LINK membuat garis
+     bergoyang seperti dicungkil tangan, bukan tepi lurus mesin.
+     (HANYA tombol/link — bukan semua div: filter di semua elemen akan merusak
+      position:fixed dan berat di GPU.)
+   • buang uppercase + tracking lebar (Swiss/Showa) → serif ukiran biasa.
+   • font-black → bold ukiran (Mincho), bukan blok tebal poster digital. */
+[data-era="edo"] :where(button, a)[class*="border"],
+[data-era="edo"] :where(button, a)[class*="bg-"],
+[data-era="edo"] .era-seal,
+[data-era="edo"] .edo-tomi-slip {
+  filter: url(#edo-carve);
+}
+/* Teks Latin UPPERCASE ber-tracking = bahasa poster Swiss/Showa, bukan cetakan
+   Edo. Netralkan ke kapitalisasi normal + serif ukiran. */
+[data-era="edo"] .uppercase { text-transform: none !important; }
+[data-era="edo"] [class*="tracking-"] { letter-spacing: 0.02em !important; }
+[data-era="edo"] .font-black { font-weight: 700 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .edo-chochin, .edo-hanabi2 { animation: none !important; }
+  .edo-hanabi2 { opacity: 0.5; }
+}
+
+
 

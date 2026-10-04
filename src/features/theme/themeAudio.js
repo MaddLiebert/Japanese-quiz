@@ -113,9 +113,9 @@ const rampDown = (entry, fadeMs, target) => {
   entry.nodes.forEach((n) => { try { n.stop(t + fade + 0.1); } catch { /* sudah berhenti */ } });
 };
 
-// Satu petikan koto dijadwalkan pada waktu absolut `at` (ctx time): triangle
-// pendek (attack kilat, decay panjang) lewat lowpass lembut → "tek" kayu.
-const scheduleKoto = (ctx, master, at, note, p) => {
+// Satu petikan koto/shamisen dijadwalkan pada waktu absolut `at` (ctx time):
+// triangle pendek (attack kilat, decay panjang) lewat lowpass lembut → "tek" kayu.
+const schedulePluck = (ctx, master, at, note, p) => {
   const osc = ctx.createOscillator();
   const g = ctx.createGain();
   const f = ctx.createBiquadFilter();
@@ -179,16 +179,18 @@ export const startThemeBgm = (era = 'heian') => {
   });
   padFilter.connect(master);
 
-  // Koto: petikan berurutan pada tangga hirajoshi tiap `everyMs` (deterministik).
+  // Petikan melodi (koto Heian / shamisen Edo): berurutan pada tangga nada
+  // khas era, tiap `everyMs` (deterministik). `pluck` (Edo) → `koto` (Heian).
+  const mel = p.koto || p.pluck;
   let kotoStep = 0;
   const playKoto = () => {
     const now = getAudioContext();
     if (!now || !bed || bed.era !== era) return;
-    const note = p.koto.notes[kotoStep % p.koto.notes.length];
-    scheduleKoto(now, master, now.currentTime + 0.02, note, p.koto);
+    const note = mel.notes[kotoStep % mel.notes.length];
+    schedulePluck(now, master, now.currentTime + 0.02, note, mel);
     kotoStep += 1;
   };
-  const kotoTimer = setInterval(playKoto, p.koto.everyMs);
+  const kotoTimer = setInterval(playKoto, mel.everyMs);
   playKoto();   // petikan pertama langsung (bed belum sunyi menunggu 2.4s)
 
   const prev = bed;

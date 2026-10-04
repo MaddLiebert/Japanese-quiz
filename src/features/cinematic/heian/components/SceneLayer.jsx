@@ -10,17 +10,18 @@
 // dan indeks scene. Scene di dalamnya merender visualnya sendiri.
 // ─────────────────────────────────────────────────────────────────────────────
 import { motion, useTransform } from 'motion/react';
-import { HEIAN_SCENES, sceneStartTimes, sceneOpacityAt } from '../data/scenes';
+import { HEIAN_SCENES } from '../data/scenes';
+import { sceneStartTimes, sceneOpacityAt } from '../../timeline';
 
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
-export function SceneLayer({ index, clock, View, reduced = false, portrait = false }) {
-  const starts = sceneStartTimes(HEIAN_SCENES);
+export function SceneLayer({ index, clock, View, reduced = false, portrait = false, scenes = HEIAN_SCENES, fade = 1.7 }) {
+  const starts = sceneStartTimes(scenes);
   const start = starts[index];
-  const duration = HEIAN_SCENES[index].duration;
+  const duration = scenes[index].duration;
 
   // Opasitas dari jam — cross-fade di-center pada batas scene.
-  const opacity = useTransform(clock, (t) => (reduced ? (t >= start && t < start + duration ? 1 : 0) : sceneOpacityAt(HEIAN_SCENES, index, t)));
+  const opacity = useTransform(clock, (t) => (reduced ? (t >= start && t < start + duration ? 1 : 0) : sceneOpacityAt(scenes, index, t, fade)));
 
   // Zoom sinematik (Ken Burns). Di HP zoom diperkecil drastis: layar sudah sempit,
   // zoom besar justru memotong komposisi sampai tak terbaca. Landscape: 1.04→1.0,
@@ -46,7 +47,7 @@ export function SceneLayer({ index, clock, View, reduced = false, portrait = fal
       style={{ opacity, scale, y, willChange: 'opacity, transform' }}
       aria-hidden={opacity ? undefined : true}
     >
-      <View scene={HEIAN_SCENES[index]} reduced={reduced} clock={clock} sceneStart={start} portrait={portrait} />
+      <View scene={scenes[index]} reduced={reduced} clock={clock} sceneStart={start} portrait={portrait} />
     </motion.div>
   );
 }

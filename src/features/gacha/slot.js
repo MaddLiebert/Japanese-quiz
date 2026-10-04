@@ -47,6 +47,33 @@ export function buildShellStrips(targetIcons, pool = HEIAN_SHELL_POOL, length = 
 // Simbol acak yang dilewati saat reel muter (bukan ikon pack).
 export const SYMBOL_POOL = ['flower', 'flower2', 'sprout', 'tree', 'waves', 'fire', 'snowflake', 'moon', 'bell', 'cloudMoon'];
 
+// ── Era Edo 江戸 — 富くじ (lotre 木札 dari 富箱) ─────────────────────────────
+// Mesin slot 3-reel = bahasa Shōwa. Di Edo, undian = 富くじ: menarik 木札 kayu
+// dari 富箱. Jadi tampilan gacha Edo memakai 3 木札 (slip kayu) yang berhenti
+// berurutan, tiap slip menampilkan satu hasil. Semua konstanta HANYA dipakai
+// saat era === 'edo'.
+export const EDO_SLIP_COUNT = 3;               // 3 木札 (meniru 3 reel)
+export const EDO_SLIP_MS = [2200, 3400, 4800]; // tiap 木札 berhenti berurutan (ms)
+export const EDO_SLIP_TICK_MS = 80;            // bunyi ketukan kayu (ms)
+export const EDO_SLIP_EASE = [0.2, 0, 0, 1];   // gesit (ala cap ditekan), bukan mengambang
+export const EDO_SLIP_FADE = 24;               // fade tepi jendela 木札 (px)
+
+// Simbol yang lewat di 木札 saat masih berputar — motif cetak Edo: gelombang
+// 青海波, api/lentera, kayu, bulan, lonceng, salju.
+export const EDO_SLIP_POOL = ['waves', 'fire', 'tree', 'moon', 'bell', 'snowflake', 'sprout', 'brush'];
+
+// Strip untuk SATU 木札 (acak dari pool, elemen terakhir = target).
+export function buildEdoStrip(targetIcon, pool = EDO_SLIP_POOL, length = STRIP_LEN, rng = Math.random) {
+  return buildStrip(targetIcon, pool, length, rng);
+}
+
+// Strip untuk SEMUA 木札 Edo.
+export function buildEdoStrips(targetIcons, pool = EDO_SLIP_POOL, length = STRIP_LEN, rng = Math.random) {
+  return Array.from({ length: EDO_SLIP_COUNT }, (_, i) =>
+    buildEdoStrip(targetIcons[i % targetIcons.length], pool, length, rng)
+  );
+}
+
 // Deretan simbol satu reel: acak dari pool, ELEMEN TERAKHIR = target.
 export function buildStrip(targetIcon, pool = SYMBOL_POOL, length = STRIP_LEN, rng = Math.random) {
   if (length < 1) throw new Error('length minimal 1');

@@ -32,17 +32,27 @@ test('label utama Heian BEBAS kanji (kana saja) — syarat "belum bisa kanji"', 
   assert.ok(KANJI.test(T.titleSub), 'titleSub sengaja memuat kanji sebagai lapisan belajar');
 });
 
-test('gachaCopy: era selain Heian → teks lama, tidak ikut berubah', () => {
+test('gachaCopy: era selain Heian/Edo → teks lama, tidak ikut berubah', () => {
   const id = gachaCopy('showa', 'id');
   assert.equal(id.title, 'Gashapon Berkarat');
   assert.equal(id.pull1, 'TARIK 1X');
   assert.equal(id.watermark, '玉');
   assert.equal(id.titleSub, '');
 
-  const en = gachaCopy('edo', 'en');
+  const en = gachaCopy('meiji', 'en');
   assert.equal(en.title, 'Rusty Gashapon');
   assert.equal(en.pull10, 'PULL 10X');
   assert.equal(en.watermark, '玉');
+});
+
+test('gachaCopy(edo): 富くじ kanji, bukan teks lama', () => {
+  const T = gachaCopy('edo', 'id');
+  assert.equal(T.title, '富くじ');
+  assert.equal(T.watermark, '富');
+  assert.equal(T.pull1, '引く 1枚');
+  // Edo bukan Heian, dan bukan legacy.
+  assert.notEqual(T.title, 'Gashapon Berkarat');
+  assert.notEqual(T.title, 'かいあわせ');
 });
 
 test('gachaCopy: Heian tidak bergantung bahasa (flavor kana tetap)', () => {

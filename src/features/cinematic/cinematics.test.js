@@ -47,15 +47,18 @@ test('markCinematicSeen: id kosong diabaikan (tidak menambah key hantu)', () => 
 
 test('cinematicForEra / nextCinematic: auto-play HANYA kalau belum dilihat', () => {
   assert.equal(cinematicForEra('heian')?.id, 'heian');
-  assert.equal(cinematicForEra('edo'), null);
+  assert.equal(cinematicForEra('edo')?.id, 'edo');
   assert.equal(cinematicForEra('nope'), null);
 
   assert.equal(nextCinematic('heian', {}), 'heian', 'belum dilihat → putar');
   assert.equal(nextCinematic('heian', { heian: true }), null, 'sudah dilihat → jangan');
-  assert.equal(nextCinematic('edo', {}), null, 'era tanpa cinematic → null');
+  assert.equal(nextCinematic('edo', {}), 'edo', 'Edo punya cinematic → putar');
+  assert.equal(nextCinematic('edo', { edo: true }), null, 'Edo sudah dilihat → jangan');
+  assert.equal(nextCinematic('meiji', {}), null, 'era tanpa cinematic → null');
 });
 
 test('getCinematic: ambil by id, id tak dikenal → null', () => {
   assert.equal(getCinematic('heian')?.era, 'heian');
+  assert.equal(getCinematic('edo')?.route, '/edo-history');
   assert.equal(getCinematic('nope'), null);
 });

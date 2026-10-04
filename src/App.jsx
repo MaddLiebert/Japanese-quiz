@@ -8,6 +8,9 @@ import { Settings } from "./pages/Settings";
 import { Writing } from "./pages/Writing";
 import { Speaking } from "./pages/Speaking";
 import { HeianHistory } from "./pages/HeianHistory";
+import { EdoHistory } from "./pages/EdoHistory";
+import { EdoNightFestival } from "./features/cinematic/edo/components/EdoNightFestival";
+import { HakoneCheckpoint } from "./pages/HakoneCheckpoint";
 import Profile from "./features/profile/Profile";
 import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
 import Shop from "./features/shop/Shop";
@@ -183,6 +186,14 @@ function App() {
                     <feTurbulence type="fractalNoise" baseFrequency="0.026 0.032" numOctaves="2" seed="7" result="t" />
                     <feDisplacementMap in="SourceGraphic" in2="t" scale="9" xChannelSelector="R" yChannelSelector="G" />
                   </filter>
+                  {/* Tepi UKIR KAYU (edo-carve): frekuensi lebih tinggi + skala
+                      sedang → garis tepi bergoyang seperti dicungkil pahat, bukan
+                      tepi lurus mesin. Dipakai tombol/link & segel di Edo
+                      (lihat index.css "HAPUS DNA SHOWA STRUKTURAL"). */}
+                  <filter id="edo-carve" x="-12%" y="-12%" width="124%" height="124%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.05 0.09" numOctaves="2" seed="4" result="c" />
+                    <feDisplacementMap in="SourceGraphic" in2="c" scale="2.6" xChannelSelector="R" yChannelSelector="G" />
+                  </filter>
                 </defs>
               </svg>
 
@@ -194,6 +205,29 @@ function App() {
                 <svg className="era-stain" viewBox="0 0 200 180" style={{ bottom: '7%', right: '9%', width: 300, height: 270 }}>
                   <path d="M52 96 C40 60 78 30 116 40 C154 50 172 84 160 118 C148 150 108 164 74 150 C48 140 60 124 52 96 Z" />
                 </svg>
+              </div>
+
+              {/* 2e. Lapisan cetakan Edo 江戸 — HANYA tampil saat data-era="edo"
+                  (di-gate lewat CSS). Grain cetakan (bintik tinta) meniru hasil
+                  cetak kayu ukiyo-e; hanabi 花火 hanya menyala di malam 夜市.
+                  Dekoratif → pointer-events:none + aria-hidden. */}
+              <div className="era-grain-layer" aria-hidden="true">
+                <div className="era-grain" />
+              </div>
+              <div className="era-hanabi-layer" aria-hidden="true">
+                <span className="era-hanabi" style={{ top: '8%', left: '12%', width: 150, height: 150, animationDelay: '0s' }} />
+                <span className="era-hanabi" style={{ top: '22%', right: '14%', width: 110, height: 110, animationDelay: '3s' }} />
+                <span className="era-hanabi" style={{ bottom: '16%', left: '24%', width: 90, height: 90, animationDelay: '6s' }} />
+              </div>
+
+              {/* 2f. 夜市 YOMISE — malam festival EDO: 提灯 lentera berjajar,
+                  屋台 stan, 人々 kerumunan, 花火 kembang api. HANYA malam
+                  (.dark[data-era="edo"]). Ramai & hangat — bukan biru kosong. */}
+              <EdoNightFestival />
+
+              {/* Segel 極 merah — tanda tangan visual Edo (pojok kanan-atas). */}
+              <div className="fixed top-20 right-4 z-0 pointer-events-none" aria-hidden="true">
+                <span className="era-seal">極</span>
               </div>
 
               {/* Global Top Controls */}
@@ -218,6 +252,8 @@ function App() {
                   <Route path="/n5-exam" element={<N5ExamScreen />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/heian-history" element={<HeianHistory />} />
+                  <Route path="/edo-history" element={<EdoHistory />} />
+                  <Route path="/hakone-checkpoint" element={<HakoneCheckpoint />} />
                 </Routes>
               </main>
             </div>

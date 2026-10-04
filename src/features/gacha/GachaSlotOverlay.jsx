@@ -9,6 +9,7 @@ import { Glyph } from "../../components/icons/Glyph";
 import { MedaruCoin } from "../../components/MedaruCoin";
 import { playReelTick, playFanfare } from "../../utils/sfx";
 import { gachaCopy, isHeian } from "./heianCopy";
+import { isEdo } from "./edoCopy";
 import {
   REEL_COUNT,
   REEL_MS,
@@ -24,6 +25,12 @@ import {
   HEIAN_SHELL_EASE,
   HEIAN_SHELL_FADE,
   buildShellStrips,
+  EDO_SLIP_COUNT,
+  EDO_SLIP_MS,
+  EDO_SLIP_TICK_MS,
+  EDO_SLIP_EASE,
+  EDO_SLIP_FADE,
+  buildEdoStrips,
 } from "./slot";
 
 const ITEM_H = 120; // px — tinggi satu sel reel (era lain)
@@ -95,10 +102,60 @@ function KaiAwaseBoard({ strips, stopped, reduced, onPairStopped }) {
   );
 }
 
+// ── Papan 富くじ (Edo): 3 木札 kayu, tiap slip berhenti berurutan ─────────────
+// Meniru 富箱 深川: tarik 木札 dari kotak → tampilkan hasil. Tiap slip = satu
+// hasil gacha. Blok kayu + segel 富 (kelas .edo-tomi-* dari index.css).
+function TomikujiBoard({ strips, reduced, onSlipStopped }) {
+  return (
+    <div className="grid grid-cols-3 gap-2 sm:gap-4">
+      {Array.from({ length: EDO_SLIP_COUNT }, (_, i) => {
+        const strip = strips[i] || [];
+        return (
+          <div key={i} className="edo-tomi-slip">
+            <div className="relative overflow-hidden" style={{ height: ITEM_H }}>
+              <motion.div
+                initial={{ y: 0 }}
+                animate={{ y: -(strip.length - 1) * ITEM_H }}
+                transition={
+                  reduced
+                    ? { duration: 0 }
+                    : { duration: EDO_SLIP_MS[i] / 1000, ease: EDO_SLIP_EASE }
+                }
+                style={{ willChange: 'transform' }}
+                onAnimationComplete={() => onSlipStopped(i)}
+              >
+                {strip.map((sym, j) => (
+                  <div
+                    key={j}
+                    className="flex items-center justify-center select-none text-sumi"
+                    style={{ height: ITEM_H }}
+                  >
+                    <Glyph name={sym} size={42} />
+                  </div>
+                ))}
+              </motion.div>
+              <div
+                className="absolute inset-x-0 top-0 pointer-events-none"
+                style={{ height: EDO_SLIP_FADE, background: 'linear-gradient(to bottom, var(--kinari-light-val), transparent)' }}
+              />
+              <div
+                className="absolute inset-x-0 bottom-0 pointer-events-none"
+                style={{ height: EDO_SLIP_FADE, background: 'linear-gradient(to top, var(--kinari-light-val), transparent)' }}
+              />
+            </div>
+            <span className="edo-tomi-slip-seal" aria-hidden="true">富</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function GachaSlotOverlay({ result, onClose }) {
   const { language } = useLanguage();
   const { era } = useEra();
   const heian = isHeian(era);
+  const edo = isEdo(era);
   const T = useMemo(() => gachaCopy(era, language), [era, language]);
 
   const results = useMemo(() => result?.results || [], [result]);
@@ -123,20 +180,26 @@ export function GachaSlotOverlay({ result, onClose }) {
     return buildShellStrips(pairs);
   }, [heian, results]);
 
-  // Berapa reel / pasangan kerang yang sudah berhenti.
-  const [stopped, setStopped] = useState(
-    () => (reduced ? (heian ? HEIAN_SHELL_PAIRS : REEL_COUNT) : 0)
-  );
+  // 木札 (Edo 富くじ) — 3 slip kayu; tiap slip satu target.
+  const edoStrips = useMemo(() => {
+    if (!edo) return [];
+    return buildEdoStrips(reelTargetIcons(results, iconOf));
+  }, [edo, results]);
+
+  // Berapa reel / pasangan kerang / 木札 yang sudah berhenti.
+  const slotCount = heian ? HEIAN_SHELL_PAIRS : edo ? EDO_SLIP_COUNT : REEL_COUNT;
+  const [stopped, setStopped] = useState(() => (reduced ? slotCount : 0));
   const [revealed, setRevealed] = useState(reduced);
 
-  const allStopped = heian ? stopped >= HEIAN_SHELL_PAIRS : stopped >= REEL_COUNT;
+  const allStopped = stopped >= slotCount;
 
-  // Bunyi tick selama masih ada reel/pasangan yang muter.
+  // Bunyi tick selama masih ada reel/pasangan/木札 yang muter.
   useEffect(() => {
     if (reduced || allStopped) return;
-    const t = setInterval(playReelTick, heian ? HEIAN_SHELL_TICK_MS : TICK_MS);
+    const tick = heian ? HEIAN_SHELL_TICK_MS : edo ? EDO_SLIP_TICK_MS : TICK_MS;
+    const t = setInterval(playReelTick, tick);
     return () => clearInterval(t);
-  }, [reduced, allStopped, heian]);
+  }, [reduced, allStopped, heian, edo]);
 
   // Fanfare saat semua berhenti, lalu buka hasil.
   useEffect(() => {
@@ -154,7 +217,7 @@ export function GachaSlotOverlay({ result, onClose }) {
   }, [onClose]);
 
   const skip = () => {
-    setStopped(heian ? HEIAN_SHELL_PAIRS : REEL_COUNT);
+    setStopped(slotCount);
     setRevealed(true);
   };
 
@@ -181,7 +244,7 @@ export function GachaSlotOverlay({ result, onClose }) {
         </button>
 
         {/* Header */}
-        <div className={`p-5 sm:p-8 border-b-[4px] border-sumi relative overflow-hidden ${heian ? 'heian-kai-head' : 'bg-shu text-kinari-light'}`}>
+        <div className={`p-5 sm:p-8 border-b-[4px] border-sumi relative overflow-hidden ${heian ? 'heian-kai-head' : edo ? 'edo-tomi-head' : 'bg-shu text-kinari-light'}`}>
           <div className="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4 text-[8rem] font-serif opacity-[0.08] pointer-events-none select-none leading-none">
             {T.watermark}
           </div>
@@ -199,14 +262,20 @@ export function GachaSlotOverlay({ result, onClose }) {
           </p>
         </div>
 
-        {/* Papan: 貝合わせ (Heian) atau reel slot (era lain) */}
-        <div className={`p-4 sm:p-8 ${heian ? 'heian-kai-board' : 'bg-ai/10'}`}>
+        {/* Papan: 貝合わせ (Heian) / 富くじ 木札 (Edo) / reel slot (era lain) */}
+        <div className={`p-4 sm:p-8 ${heian ? 'heian-kai-board' : edo ? 'edo-tomi-board' : 'bg-ai/10'}`}>
           {heian ? (
             <KaiAwaseBoard
               strips={shellStrips}
               stopped={stopped}
               reduced={reduced}
               onPairStopped={(p) => setStopped((s) => Math.max(s, p + 1))}
+            />
+          ) : edo ? (
+            <TomikujiBoard
+              strips={edoStrips}
+              reduced={reduced}
+              onSlipStopped={(i) => setStopped((s) => Math.max(s, i + 1))}
             />
           ) : (
             <div className="grid grid-cols-3 gap-2 sm:gap-4">

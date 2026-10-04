@@ -17,6 +17,40 @@ test('themeBgmPlan: deterministik & default ke heian', () => {
   assert.equal(typeof THEME_BGM_STEP_S, 'number');
 });
 
+// ── BGM tema Edo 江戸 (docs/tema/edo.md §9) ──────────────────────────────────
+
+test('themeBgmPlan edo: level rendah & masuk GESIT (lebih cepat dari Heian)', () => {
+  const p = themeBgmPlan('edo');
+  assert.ok(p.level > 0 && p.level <= 0.15, 'level rendah (BGM default)');
+  assert.ok(p.fadeInMs < themeBgmPlan('heian').fadeInMs, 'Edo masuk lebih cepat dari Heian');
+  assert.ok(p.fadeInMs >= 800 && p.fadeInMs <= 2000, 'gesit tapi tidak menghentak');
+});
+
+test('themeBgmPlan edo: drone bass + pad mid (audible, ada konten mid)', () => {
+  const p = themeBgmPlan('edo');
+  assert.ok(p.drone.freqs.length >= 2);
+  assert.ok(p.drone.freqs.some((f) => f <= 60), 'ada bass');
+  assert.ok(p.pad.freqs.length >= 2);
+  const all = [...p.drone.freqs, ...p.pad.freqs];
+  for (const f of all) assert.ok(f >= 30 && f <= 2000, `freq ${f} audible`);
+  assert.ok(all.filter((f) => f >= 150).length >= 2, 'ada konten mid');
+  assert.ok(p.pad.lfoHz > 0 && p.pad.lfoHz <= 0.5, 'LFO napas');
+});
+
+test('themeBgmPlan edo: shamisen 三味線 RITMIS (lebih cepat dari koto Heian)', () => {
+  const p = themeBgmPlan('edo');
+  assert.ok(Array.isArray(p.pluck.notes) && p.pluck.notes.length >= 4, 'tangga nada cukup');
+  for (const n of p.pluck.notes) assert.ok(n >= 200 && n <= 900, `nada shamisen ${n} register nyaman`);
+  assert.ok(p.pluck.everyMs < themeBgmPlan('heian').koto.everyMs, 'Edo lebih ritmis dari Heian');
+  assert.ok(p.pluck.dur > 0 && p.pluck.gain > 0 && p.pluck.gain <= 0.3);
+});
+
+test('themeBgmPlan: Heian & Edo beda (kontras tema terdengar)', () => {
+  assert.notDeepEqual(themeBgmPlan('heian'), themeBgmPlan('edo'));
+  assert.equal(themeBgmPlan('edo').koto, undefined, 'Edo memakai pluck, bukan koto');
+  assert.equal(themeBgmPlan('heian').pluck, undefined, 'Heian memakai koto, bukan pluck');
+});
+
 test('themeBgmPlan heian: level −18 dB (≈0.12), fade lambat & santun', () => {
   const p = themeBgmPlan('heian');
   assert.ok(p.level > 0 && p.level <= 0.13, 'level rendah (BGM default −18 dB)');

@@ -10,6 +10,8 @@ import { DailyQuestPanel } from "../features/quests/DailyQuestPanel";
 import { EraDivider } from "../components/EraDivider";
 import { EraTategaki } from "../components/EraTategaki";
 import { EraVillageArt, EraNightArt } from "../components/EraArtwork";
+import { EdoPrintArt } from "../components/EdoArtwork";
+import { EdoLantern, EdoNoren } from "../components/EdoOrnament";
 
 import { StreakIndicator } from "../components/StreakIndicator";
 import { RankBadge } from "../features/progress/RankBadge";
@@ -159,6 +161,15 @@ export function Home() {
           <div className="sm:col-span-8 p-6 sm:p-12 flex flex-col justify-between border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi bg-seigaiha relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-kinari-light/85 via-kinari-light/40 to-transparent pointer-events-none"></div>
 
+            {/* Vignette 江戸 chōnin — "昼は市、夜は提灯" (siang pasar, malam lentera):
+                暖簾 noren (tirai toko = siang pasar) dengan 提灯 chochin (lentera)
+                menggantung di bawahnya, seperti muka toko Edo. Lentera berayun
+                ikut momentum scroll (bandul). Hanya era Edo (di-gate .edo-ornament). */}
+            <div className="edo-shopfront absolute top-0 right-4 sm:right-10 z-20 flex flex-col items-center">
+              <EdoNoren className="w-20 sm:w-28" />
+              <EdoLantern className="-mt-1 w-10 sm:w-12" kanji="学" />
+            </div>
+
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -248,6 +259,11 @@ export function Home() {
                 luluh diagonal ke kertas (mask radial). Tanpa bingkai → bukan
                 tempelan. Heian saja. */}
             <EraNightArt className="era-photo--night absolute top-0 right-0 w-[78%] h-[84%] object-cover object-top z-0" />
+
+            {/* Cetakan kayu 浮世絵 (buatan sendiri: 富士 Fuji + 日の丸 + 波) —
+                mengisi ruang yang sama di era Edo (lukisan Heian di atas
+                disembunyikan di Edo → dulu kosong/hambar). Luluh ke kertas. */}
+            <EdoPrintArt className="absolute inset-x-0 top-0 w-full h-[62%] z-0" />
 
             <div className="flex items-start justify-between relative z-20">
               <div className="writing-vertical-rl text-xs uppercase tracking-[0.5em] font-black text-sumi/50">
