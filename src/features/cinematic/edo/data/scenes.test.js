@@ -1,10 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { EDO_SCENES, XFADE, MOUNT_PAD } from './scenes.js';
+import { existsSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { EDO_SCENES, XFADE, MOUNT_PAD, voiceCues } from './scenes.js';
 import {
   totalDuration, sceneStartTimes, sceneAtTime, audioCues,
   ambienceTimeline, validateScenes, sceneOpacityAt, visibleSceneIndices,
 } from '../../timeline.js';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..');
 
 test('scenes Edo: valid (id unik, durasi>0, terjemahan setelah teks Jepang)', () => {
   assert.deepEqual(validateScenes(EDO_SCENES), []);
@@ -65,6 +70,28 @@ test('scenes Edo: audioCues punya beberapa SFX per scene, terurut', () => {
 test('scenes Edo: mood per scene (market/print/night/festival)', () => {
   const tl = ambienceTimeline(EDO_SCENES);
   assert.deepEqual(tl.map((x) => x.mood), ['market', 'market', 'print', 'night', 'festival']);
+});
+
+test('voiceCues Edo: satu per BARIS ber-voice (7), terurut, waktu = at baris', () => {
+  const vc = voiceCues();
+  // 7 klip narasi Nacht (babak 1 map sengaja tanpa teks → tanpa voice).
+  assert.equal(vc.length, 7, `harus 7 voice cue, dapat ${vc.length}`);
+  for (let i = 1; i < vc.length; i += 1) assert.ok(vc[i].at >= vc[i - 1].at, 'voice cue harus terurut');
+  for (const v of vc) { assert.ok(v.path, `${v.id} tanpa path`); assert.ok(v.at >= 0); }
+  // Waktu absolut = start scene + at baris.
+  const byId = Object.fromEntries(vc.map((v) => [v.id, v]));
+  assert.equal(byId['voice:capital:era'].at, 10.6);
+  assert.equal(byId['voice:capital:bridge'].at, 13.6);
+  assert.equal(byId['voice:night:lantern'].at, 36.7);
+  assert.equal(byId['voice:change:welcome'].at, 56.6);
+});
+
+test('voiceCues Edo: tiap file voice benar-benar ada di public/', () => {
+  for (const v of voiceCues()) {
+    const rel = v.path.replace(/^\//, '');   // '/voices/...' → 'voices/...'
+    const full = join(ROOT, 'public', rel);
+    assert.ok(existsSync(full), `file voice hilang: ${v.path} (→ ${full})`);
+  }
 });
 
 test('scenes Edo: cross-fade di-center (bukan cut keras)', () => {

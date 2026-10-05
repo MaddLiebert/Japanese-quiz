@@ -37,7 +37,7 @@ export const EDO_SCENES = [
     visual: 'capital',
     mood: 'market',
     lines: [
-      { id: 'era', jp: '江戸時代', translation: 'Zaman Edo (1603–1868)', kind: 'title', at: 0.6, translationAt: 2.6, sub: '1603 — 1868' },
+      { id: 'era', jp: '江戸時代', translation: 'Zaman Edo (1603–1868)', kind: 'title', at: 0.6, translationAt: 2.6, sub: '1603 — 1868', voice: '/voices/edo/01_era.mp3' },
       {
         id: 'bridge',
         jp: 'すべての道は、日本橋から始まる。',
@@ -45,6 +45,7 @@ export const EDO_SCENES = [
         kind: 'sentence',
         at: 3.6,
         translationAt: 5.8,
+        voice: '/voices/edo/02_bridge.mp3',
       },
     ],
     audio: {
@@ -70,6 +71,7 @@ export const EDO_SCENES = [
         kind: 'sentence',
         at: 0.8,
         translationAt: 2.9,
+        voice: '/voices/edo/03_ukiyoe.mp3',
       },
     ],
     audio: {
@@ -95,6 +97,7 @@ export const EDO_SCENES = [
         kind: 'sentence',
         at: 0.7,
         translationAt: 3.0,
+        voice: '/voices/edo/04_lantern.mp3',
       },
     ],
     audio: {
@@ -119,8 +122,9 @@ export const EDO_SCENES = [
         kind: 'sentence',
         at: 0.6,
         translationAt: 2.8,
+        voice: '/voices/edo/05_turn.mp3',
       },
-      { id: 'era2', jp: '江戸 — 町人の時代', translation: null, kind: 'title', at: 5.0, translationAt: null, sub: 'EDO · 1603 — 1868' },
+      { id: 'era2', jp: '江戸 — 町人の時代', translation: null, kind: 'title', at: 5.0, translationAt: null, sub: 'EDO · 1603 — 1868', voice: '/voices/edo/06_era2.mp3' },
       {
         id: 'welcome',
         jp: 'ようこそ、江戸へ。',
@@ -128,6 +132,7 @@ export const EDO_SCENES = [
         kind: 'welcome',
         at: 7.6,
         translationAt: 9.4,
+        voice: '/voices/edo/07_welcome.mp3',
       },
     ],
     audio: {
@@ -144,3 +149,28 @@ export const EDO_SCENES = [
 // ── Konstanta transisi (sama seperti Heian → bahasa gerak konsisten) ──────────
 export const XFADE = 1.7;
 export const MOUNT_PAD = 0.25;
+
+// ── Helper timeline ──────────────────────────────────────────────────────────
+// Logika timeline SATU sumber di `../../timeline` (dipakai Heian & Edo).
+// Re-export dengan default EDO_SCENES supaya orkestrator & tes memakai pintu
+// yang sama seperti Heian (lihat heian/data/scenes.js).
+import {
+  totalDuration as _totalDuration,
+  sceneStartTimes as _sceneStartTimes,
+  sceneAtTime as _sceneAtTime,
+  audioCues as _audioCues,
+  voiceCues as _voiceCues,
+  ambienceTimeline as _ambienceTimeline,
+  visibleSceneIndices as _visibleSceneIndices,
+  validateScenes as _validateScenes,
+} from '../../timeline.js';
+
+export const totalDuration = (scenes = EDO_SCENES) => _totalDuration(scenes);
+export const sceneStartTimes = (scenes = EDO_SCENES) => _sceneStartTimes(scenes);
+export const sceneAtTime = (scenes, t) => _sceneAtTime(scenes, t);
+export const audioCues = (scenes = EDO_SCENES) => _audioCues(scenes);
+export const voiceCues = (scenes = EDO_SCENES) => _voiceCues(scenes);
+export const ambienceTimeline = (scenes = EDO_SCENES) => _ambienceTimeline(scenes);
+export const visibleSceneIndices = (scenes, t, fade = XFADE, pad = MOUNT_PAD) =>
+  _visibleSceneIndices(scenes, t, fade, pad);
+export const validateScenes = (scenes = EDO_SCENES) => _validateScenes(scenes);

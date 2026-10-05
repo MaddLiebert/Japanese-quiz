@@ -23,7 +23,7 @@ import { motion, useMotionValue, useTransform, useMotionValueEvent, useAnimation
 import { EDO_SCENES } from './data/scenes';
 import {
   totalDuration, sceneStartTimes, sceneAtTime, sceneOpacityAt,
-  audioCues, visibleSceneIndices,
+  audioCues, voiceCues, visibleSceneIndices,
 } from '../timeline';
 import { EdoBackdrop } from './components/EdoBackdrop';
 import { SceneLayer } from '../heian/components/SceneLayer';
@@ -36,6 +36,9 @@ import {
   playCinematicSfx, startHeianAmbience, setHeianMood,
   stopHeianAmbience, unlockHeianAudio, isAudioRunning, ambienceActive, enableHeianAudio,
 } from '../heian/heianHistoryAudio';
+// Voice narasi per-baris = file mp3 statis → pakai pemutar klip yang sudah ada
+// (utils/sfx.js → playClipFile + preloadClips), sama seperti Heian.
+import { playClipFile, preloadClips } from '../../../utils/sfx.js';
 
 // Peta `visual` (data) → komponen latar Edo.
 const SCENE_VIEWS = {
@@ -82,6 +85,7 @@ export function EdoCinematic({ onDone, onExplore, onSeen }) {
 
   const total = useMemo(() => totalDuration(EDO_SCENES), []);
   const cues = useMemo(() => audioCues(EDO_SCENES), []);
+  const vcues = useMemo(() => voiceCues(EDO_SCENES), []);
   const timeScale = reduced ? 2.5 : 1;
 
   const clock = useMotionValue(0);
@@ -127,12 +131,25 @@ export function EdoCinematic({ onDone, onExplore, onSeen }) {
         else if (t - c.at > STALE) firedRef.current.add(c.id);
       }
     }
+    // Voice narasi Nacht — satu klip per BARIS (pola sama seperti SFX).
+    for (const v of vcues) {
+      if (t >= v.at && !firedRef.current.has(v.id)) {
+        if (isAudioRunning() && t - v.at <= STALE) { firedRef.current.add(v.id); playClipFile(v.path); }
+        else if (t - v.at > STALE) firedRef.current.add(v.id);
+      }
+    }
   });
 
   useEffect(() => {
     startHeianAmbience(moodRef.current);
     return () => stopHeianAmbience();
   }, []);
+
+  // Voice: preload klip (TANPA memutar) supaya elemen <audio> sudah ter-decode
+  // dan baris pertama tidak telat saat dijadwalkan.
+  useEffect(() => {
+    preloadClips(vcues.map((v) => v.path));
+  }, [vcues]);
 
   const releaseHold = () => { clockHoldRef.current = false; };
   useEffect(() => {
