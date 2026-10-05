@@ -151,6 +151,7 @@ Heian memakai font tulis tangan (Klee One) karena zaman hiragana. Edo = **zaman 
 | Motif | Kanji | Peran | Catatan |
 |---|---|---|---|
 | **青海波** | seigaiha | latar utama (gelombang) | motif laut/kota pelabuhan |
+| **市松** | ichimatsu | panel (kotak catur) | pola komon khas Edo; nama dari aktor kabuki 佐野川市松 |
 | **麻の葉** | asanoha | aksen (daun rami) | pola geometris, khas kimono Edo |
 | **亀甲** | kikkō | bingkai/tepi (sisik kura-kura) | sudah ada di kode sebagai kelas |
 | **花火** | hanabi | aksen malam (両国) | hanya di dark/夜市 |
@@ -158,7 +159,7 @@ Heian memakai font tulis tangan (Klee One) karena zaman hiragana. Edo = **zaman 
 **Tekstur:** **grain cetakan** (bintik tinta) di atas blok warna — meniru hasil cetak kayu.
 **Cap:** **segel 極 merah** di sudut kartu/panel — tanda tangan visual Edo.
 
-> Catatan kode: `src/index.css` sudah punya kelas `.bg-seigaiha` & `.bg-asanoha` (kini dinonaktifkan untuk Heian, lihat `heian.md` §6). Edo bisa **mengaktifkannya kembali**.
+> Catatan kode: `src/index.css` sudah punya kelas `.bg-seigaiha`, `.bg-asanoha`, & `.bg-ichimatsu` (kini dinonaktifkan untuk Heian, lihat `heian.md` §6). Edo **mengaktifkannya kembali** dengan warna indigo 藍. Ichimatsu dulu tak terdaftar di era mana pun → bocor ke semua era dengan tinta base (Shōwa); kini resmi milik Edo.
 
 ---
 

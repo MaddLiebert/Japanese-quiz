@@ -1437,10 +1437,13 @@ button[data-toji-kill]::after {
 /* drop-shadow (mis. judul 合格) = bayangan lembut ala web → dibuang. */
 [data-era="heian"] [class*="drop-shadow"] { filter: none !important; }
 
-/* Motif seigaiha (gelombang = Edo/Shōwa) dipensiunkan di era Heian → awan.
+/* Motif seigaiha (gelombang = Edo) dipensiunkan di era Heian → awan.
+   Ichimatsu 市松 (kotak catur, pola khas Edo) juga bukan bahasa Heian →
+   ikut dimatikan; sebelumnya bocor ke Heian dengan tinta base (Shōwa).
    Kecualikan .era-pattern (elemen latar) supaya awan Heian tidak ikut dimatikan. */
 [data-era="heian"] .bg-seigaiha:not(.era-pattern),
-[data-era="heian"] .bg-asanoha:not(.era-pattern) { background-image: none !important; }
+[data-era="heian"] .bg-asanoha:not(.era-pattern),
+[data-era="heian"] .bg-ichimatsu { background-image: none !important; }
 
 /* ── Utilitas era: pengganti kelas shadow keras. Dipakai bertahap. ────────── */
 .card-edge {
@@ -2133,6 +2136,29 @@ button[data-toji-kill]::after {
 [data-theme="dark"][data-era="edo"] .era-pattern {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cg fill='none' stroke='%236fa8d6' stroke-width='1.4' opacity='0.5'%3E%3Ccircle cx='40' cy='40' r='10'/%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Ccircle cx='40' cy='40' r='30'/%3E%3Ccircle cx='0' cy='20' r='10'/%3E%3Ccircle cx='0' cy='20' r='20'/%3E%3Ccircle cx='80' cy='20' r='10'/%3E%3Ccircle cx='80' cy='20' r='20'/%3E%3C/g%3E%3C/svg%3E");
   opacity: 0.26 !important;
+}
+
+/* 青海波 seigaiha — dipakai ulang sebagai pola PANEL di era Edo (mis. header
+   日本語学園 di Home). Warna indigo 藍 agar seragam dengan .era-pattern latar
+   (sebelumnya memakai tinta base #1a1a1a = Shōwa → dua seigaiha beda warna
+   dalam satu layar). Kepadatan lebih rendah dari latar karena di belakang teks. */
+[data-era="edo"] .bg-seigaiha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg stroke='%231e4f79' stroke-width='2' fill='none' opacity='0.22'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='30'/%3E%3Ccircle cx='0' cy='60' r='10'/%3E%3Ccircle cx='0' cy='60' r='20'/%3E%3Ccircle cx='0' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3C/g%3E%3C/svg%3E");
+}
+.dark[data-era="edo"] .bg-seigaiha,
+[data-theme="dark"][data-era="edo"] .bg-seigaiha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg stroke='%236fa8d6' stroke-width='2' fill='none' opacity='0.16'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='30'/%3E%3Ccircle cx='0' cy='60' r='10'/%3E%3Ccircle cx='0' cy='60' r='20'/%3E%3Ccircle cx='0' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* 市松 ichimatsu — kotak-kotak papan catur, pola komon khas Edo (nama dari
+   aktor kabuki Edo 佐野川市松). Sebelumnya TAK punya override era mana pun →
+   bocor ke semua era dengan tinta base (Shōwa). Kini resmi milik Edo. */
+[data-era="edo"] .bg-ichimatsu {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='20' height='20' fill='%231e4f79' opacity='0.06'/%3E%3Crect x='20' y='20' width='20' height='20' fill='%231e4f79' opacity='0.06'/%3E%3C/svg%3E");
+}
+.dark[data-era="edo"] .bg-ichimatsu,
+[data-theme="dark"][data-era="edo"] .bg-ichimatsu {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='20' height='20' fill='%236fa8d6' opacity='0.05'/%3E%3Crect x='20' y='20' width='20' height='20' fill='%236fa8d6' opacity='0.05'/%3E%3C/svg%3E");
 }
 
 /* 麻の葉 asanoha — daun rami, pola geometris khas kimono Edo. Aksen. */
