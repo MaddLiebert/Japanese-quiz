@@ -10,6 +10,7 @@ import { useCinematic } from "../features/cinematic/CinematicContext";
 import { ERAS } from "../features/theme/eras";
 import { themeBgmEnabled, setThemeBgmEnabled, themeBgmVolumeStep, setThemeBgmVolume, clampVolumeStep, THEME_BGM_VOL_STEPS } from "../features/theme/themeAudio";
 import { tutorialButtonVisible } from "../features/tutorial/tutorials";
+import { readMeijiSettings, writeMeijiSettings } from "../features/meiji/meijiSettings";
 import { DevPanel } from "../features/dev/DevPanel"; // DEV-ONLY — hapus baris ini untuk membuang panel cheat
 import { EraPaper } from "../components/EraPaper";
 
@@ -23,6 +24,9 @@ export function Settings() {
   const tutorialOn = tutorialButtonVisible(progress.tutorialHidden);
   const [bgmOn, setBgmOn] = useState(() => themeBgmEnabled());
   const [bgmVol, setBgmVol] = useState(() => themeBgmVolumeStep());
+  // Efek "hidup" Meiji (M9/M10/M15) — default konservatif, bisa dimatikan.
+  const [meijiFx, setMeijiFx] = useState(() => readMeijiSettings());
+  const toggleMeijiFx = (key) => setMeijiFx(writeMeijiSettings({ [key]: !meijiFx[key] }));
 
   // Terapkan volume (indeks tangga, dijepit) → state + persist + BGM langsung.
   const applyVolStep = (i) => {
@@ -329,6 +333,40 @@ export function Settings() {
                   </p>
                 </div>
               </div>
+
+              {/* Efek hidup Meiji (M9 glitch / M10 号外 / M15 napas) — bisa dimatikan */}
+              <div className="border-[3px] border-sumi/20 bg-kinari p-6">
+                <label className="block text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-1">
+                  {language === 'id' ? 'Efek Meiji 明治 (opsional)' : 'Meiji Effects 明治 (optional)'}
+                </label>
+                <p className="text-xs text-sumi/70 font-semibold mb-4">
+                  {language === 'id'
+                    ? 'Rasa "hidup" era Meiji. Default aktif tapi halus; matikan kalau mengganggu.'
+                    : 'The Meiji era\u2019s "living" feel. On by default but subtle; turn off if distracting.'}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[
+                    { key: 'glitch', jp: '電脳', id: 'Glitch cyberpunk', en: 'Cyberpunk glitch' },
+                    { key: 'gogo', jp: '号外', id: 'Koran 号外 larut malam', en: 'Late-night 号外 edition' },
+                    { key: 'breathing', jp: '呼吸', id: 'App bernapas', en: 'Breathing app' },
+                  ].map((f) => (
+                    <button
+                      key={f.key}
+                      type="button"
+                      onClick={() => toggleMeijiFx(f.key)}
+                      aria-pressed={meijiFx[f.key]}
+                      className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                        meijiFx[f.key]
+                          ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                          : 'bg-kinari-light text-sumi/60 hover:text-sumi'
+                      }`}
+                    >
+                      <span className="font-serif">{f.jp}</span>
+                      {language === 'id' ? f.id : f.en}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </section>
 
@@ -348,6 +386,9 @@ export function Settings() {
                 { id: 'edo', kanji: '江戸', name: 'Edo', route: '/edo-history',
                   desc_id: 'Cinematic sejarah yang diputar sekali saat era Edo pertama terbuka. Putar ulang kapan saja di sini.',
                   desc_en: 'The historical cinematic that plays once when the Edo era first opens. Replay it any time here.' },
+                { id: 'meiji', kanji: '明治', name: 'Meiji', route: '/meiji-history',
+                  desc_id: 'Cinematic sejarah yang diputar sekali saat era Meiji pertama terbuka. Putar ulang kapan saja di sini.',
+                  desc_en: 'The historical cinematic that plays once when the Meiji era first opens. Replay it any time here.' },
               ].map((c) => {
                 const open = unlocked.some((e) => e.id === c.id);
                 return (
