@@ -22,6 +22,7 @@ import { useUserStats } from '../progress/ProgressContext';
 import { nextCinematic, getCinematic } from './cinematics';
 import { HeianCinematic } from './heian/HeianCinematic';
 import { EdoCinematic } from './edo/EdoCinematic';
+import { MeijiCinematic } from './meiji/MeijiCinematic';
 import { isAudioRunning, enableHeianAudio } from './heian/heianHistoryAudio';
 
 const CinematicContext = createContext(null);
@@ -31,9 +32,12 @@ export { CinematicContext };
 function CinematicStage({ cinematic, onDone, onExplore, onSeen }) {
   if (!cinematic) return null;
   if (cinematic.kind === 'history') {
-    // Pilih orchestrator per-era (Heian vs Edo). Keduanya berbagi mesin timeline.
+    // Pilih orchestrator per-era (Heian vs Edo vs Meiji). Semuanya berbagi mesin timeline.
     if (cinematic.era === 'edo') {
       return <EdoCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
+    }
+    if (cinematic.era === 'meiji') {
+      return <MeijiCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
     }
     return <HeianCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
   }
@@ -45,7 +49,14 @@ export const CinematicProvider = ({ children }) => {
   const { progress, markCinematicSeen } = useUserStats();
   const navigate = useNavigate();
   const [active, setActive] = useState(null);       // id cinematic yang sedang jalan
+  const activeRef = useRef(null);                   // cermin `active` (baca state di luar render)
   const autoRef = useRef(null);                     // guard: jangan auto-play 2× untuk era sama
+
+  // Cermin `active` → dipakai stop()/explore() supaya efek samping dijalankan di
+  // LUAR updater setState (updater dijalankan saat render; memanggil setState
+  // provider lain di dalamnya memicu "Cannot update a component while rendering
+  // a different component"). Lihat catatan di stop().
+  useEffect(() => { activeRef.current = active; }, [active]);
 
   // Auto-play sekali saat mencapai era dengan cinematic yang belum dilihat.
   // PENTING: autoRef baru di-set saat timeout BENAR-BENAR jalan — bukan saat
@@ -97,6 +108,7 @@ export const CinematicProvider = ({ children }) => {
 
   const play = useCallback((id) => {
     if (!getCinematic(id)) return false;
+    activeRef.current = id;
     setActive(id);
     return true;
   }, []);
@@ -108,21 +120,25 @@ export const CinematicProvider = ({ children }) => {
   }, [markCinematicSeen]);
 
   // Tutup + tandai sudah dilihat (dipakai onDone; juga saat skip).
+  // PENTING: efek samping (markCinematicSeen → setState ProgressProvider)
+  // dijalankan DI LUAR updater setActive. Updater setState dieksekusi React saat
+  // fase render; memanggil setState provider lain di dalamnya memicu error
+  // "Cannot update a component while rendering a different component".
   const stop = useCallback(() => {
-    setActive((cur) => {
-      if (cur) markCinematicSeen(cur);
-      return null;
-    });
+    const cur = activeRef.current;
+    activeRef.current = null;
+    setActive(null);
+    if (cur) markCinematicSeen(cur);
   }, [markCinematicSeen]);
 
   // "Pelajari lebih lanjut" → tutup, tandai, lalu ke halaman sejarah era ini.
   const explore = useCallback(() => {
-    setActive((cur) => {
-      const c = cur ? getCinematic(cur) : null;
-      if (cur) markCinematicSeen(cur);
-      if (c?.route) navigate(c.route);
-      return null;
-    });
+    const cur = activeRef.current;
+    const c = cur ? getCinematic(cur) : null;
+    activeRef.current = null;
+    setActive(null);
+    if (cur) markCinematicSeen(cur);
+    if (c?.route) navigate(c.route);
   }, [markCinematicSeen, navigate]);
 
   const value = useMemo(() => ({ active, play, stop, isPlaying: !!active }), [active, play, stop]);

@@ -192,6 +192,16 @@ export const HEIAN_SFX_PARAMS = {
   shamisen: { kind: 'pluck', from: 523.25, dur: 0.75, gain: 0.17, overtoneGain: 0.22, filterHz: 3000, bend: -8 },
   // sorak penjaja pasar (nyaring, pendek)
   marketCry: { kind: 'noise', dur: 0.55, gain: 0.09, type: 'bandpass', fromHz: 1200, toHz: 700, q: 1.4, curve: 'soft' },
+
+  // ── Meiji 明治 (kota huruf logam) — mesin cetak, kereta, telegraf ──────────
+  // 活字 mesin cetak: "klak-klak" logam (ketukan tinggi + resonansi pendek).
+  pressClack: { kind: 'wood', from: 520, to: 300, dur: 0.1, gain: 0.24, noiseGain: 0.09 },
+  // 汽笛 peluit uap kereta (naik lalu tahan).
+  steamWhistle: { kind: 'noise', dur: 1.6, gain: 0.12, type: 'bandpass', fromHz: 900, toHz: 1800, q: 1.1, curve: 'soft' },
+  // 電信 telegraf "tit-tit" (klik pendek tajam, dua ketuk).
+  telegraph: { kind: 'wood', from: 1600, to: 1200, dur: 0.05, gain: 0.16, noiseGain: 0.05 },
+  // 掛け声 sorak penjual koran (nyaring, pendek) — kota yang ramai.
+  paperCry: { kind: 'noise', dur: 0.5, gain: 0.08, type: 'bandpass', fromHz: 1400, toHz: 800, q: 1.5, curve: 'soft' },
 };
 
 export const heianSfxParams = (key) => HEIAN_SFX_PARAMS[key] || null;
@@ -327,6 +337,43 @@ export const AMBIENCE_PLANS = {
     drone: { freqs: [65.41, 130.81, 196], detune: [0, -4, 4], gain: 0.4 },
     pad: { type: 'triangle', freqs: [329.63, 392, 523.25], filterHz: 1500, lfoHz: 0.16, lfoDepth: 300, gain: 0.3 },
     air: { type: 'bandpass', hz: 1400, gain: 0.05 },
+  },
+
+  // ── Meiji 明治: kota huruf logam — terang, mekanis, ada \"denyut mesin\" ─────
+  // port: 横浜港 — pelabuhan dibuka (kapal uap, gerbang Barat).
+  port: {
+    level: 0.1, fadeInMs: 1400, fadeOutMs: 900,
+    drone: { freqs: [55, 110, 130.81], detune: [0, -4, 3], gain: 0.4 },
+    pad: { type: 'triangle', freqs: [261.63, 329.63, 392], filterHz: 1200, lfoHz: 0.1, lfoDepth: 240, gain: 0.28 },
+    air: { type: 'bandpass', hz: 1000, gain: 0.05 },
+  },
+  // city: 銀座 — jalan bata & lampu gas (gaslight sore).
+  city: {
+    level: 0.1, fadeInMs: 1400, fadeOutMs: 900,
+    drone: { freqs: [58.27, 116.54, 174.61], detune: [0, -4, 3], gain: 0.38 },
+    pad: { type: 'triangle', freqs: [293.66, 369.99, 440], filterHz: 1300, lfoHz: 0.12, lfoDepth: 260, gain: 0.28 },
+    air: { type: 'bandpass', hz: 1200, gain: 0.05 },
+  },
+  // press: 新聞社 — bengkel cetak (huruf logam, tinta).
+  press: {
+    level: 0.08, fadeInMs: 1600, fadeOutMs: 900,
+    drone: { freqs: [61.74, 123.47], detune: [0, -4], gain: 0.4 },
+    pad: { type: 'triangle', freqs: [246.94, 311.13], filterHz: 950, lfoHz: 0.07, lfoDepth: 200, gain: 0.26 },
+    air: { type: 'lowpass', hz: 760, gain: 0.05 },
+  },
+  // school: 小学校 — ruang kelas (terang, tertib, lonceng).
+  school: {
+    level: 0.09, fadeInMs: 1600, fadeOutMs: 900,
+    drone: { freqs: [65.41, 130.81], detune: [0, -5], gain: 0.36 },
+    pad: { type: 'triangle', freqs: [329.63, 392], filterHz: 1400, lfoHz: 0.08, lfoDepth: 220, gain: 0.28 },
+    air: { type: 'highpass', hz: 1100, gain: 0.045 },
+  },
+  // diet: 国会 — ruang sidang (agung, tangga mayor, sedikit menegangkan).
+  diet: {
+    level: 0.11, fadeInMs: 1500, fadeOutMs: 1000,
+    drone: { freqs: [55, 110, 164.81], detune: [0, -4, 4], gain: 0.44 },
+    pad: { type: 'triangle', freqs: [261.63, 329.63, 392], filterHz: 1250, lfoHz: 0.06, lfoDepth: 260, gain: 0.3 },
+    air: { type: 'bandpass', hz: 900, gain: 0.05 },
   },
 };
 
