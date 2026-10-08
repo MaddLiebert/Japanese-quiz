@@ -12,6 +12,14 @@
   /* 金 sebagai TEKS di atas kertas: emas terang tak terbaca (kontras < 3).
      Token ini selalu "emas yang kontras dengan KERTAS", ikut terang/gelap tema. */
   --kin-ink-val: #8a6f2e;
+  /* Meiji 明治 — token warna khas era. Default netral di sini supaya kelas
+     `text-renga`/`bg-renga`/`text-gas` (dipakai halaman Peta/Checkpoint Meiji)
+     tetap valid walau dibuka di era lain; di-override penuh di [data-era="meiji"]. */
+  --renga-val: #9b4a3c;
+  --gas-val: #d9a441;
+  /* 鼠 nezumi — abu tikus (teks sekunder/blok aux). Default netral; di-override
+     di [data-era="meiji"]. Dipakai TypesettingBoard (M1 活字組み). */
+  --nezumi-val: #6b665c;
   --ink: #1a1a1a;   /* dipakai .packcard — sebelumnya TAK terdefinisi (bug) */
 }
 
@@ -36,6 +44,12 @@
   --color-matcha: var(--matcha-val);
   --color-kin: var(--kin-val);
   --color-kin-ink: var(--kin-ink-val);
+  /* Meiji 明治 — warna khas era (renga primer, gaslight aksen). Hanya terisi
+     di [data-era="meiji"]; era lain → var tak terdefinisi (diabaikan, pola sama
+     seperti --color-ai). Lihat docs/tema/meiji.md §4. */
+  --color-renga: var(--renga-val);
+  --color-gas: var(--gas-val);
+  --color-nezumi: var(--nezumi-val);
   
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-serif: "Noto Serif JP", "Shippori Mincho", "Yu Mincho", serif;
@@ -2600,6 +2614,435 @@ button[data-toji-kill]::after {
   .edo-chochin, .edo-hanabi2 { animation: none !important; }
   .edo-hanabi2 { opacity: 0.5; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   明治 MEIJI — 「活字の時代」 ZAMAN HURUF LOGAM
+   Tesis: kota yang DICETAK ULANG setiap pagi oleh surat kabar.
+   Bahasa bentuk = tipografi letterpress: huruf timah, garis aturan koran,
+   kertas cetak. PRIMER = 煉瓦 renga #9b4a3c (bata Ginza, ibu kota baru).
+   Arsitektur tetap 3 lapis: data-theme × data-era berkomposisi.
+   Lihat PRD: docs/tema/meiji.md §1–§14.
+   ⚠ ANTI-BRUTALISM (aturan keras user): TIDAK ADA box-shadow ber-offset.
+   Pemisah = hairline rule, garis aturan ganda, keyline, blok warna datar.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+[data-era="meiji"] {
+  /* ── Warna — terang (pagi kota cetak) ─────────────────────────────────── */
+  --kinari-val:       #f4f1e8;  /* kertas koran (abu-krem) */
+  --kinari-light-val: #fbf7ee;  /* panel: kertas lebih terang */
+  --sumi-val:         #141414;  /* 墨 tinta letterpress (paling pekat) */
+  --renga-val:        #9b4a3c;  /* 煉瓦 bata Ginza — PRIMER */
+  --shu-val:          #b8352c;  /* 緋 shu — merah segel/incunabula */
+  --ai-val:           #2f4f6b;  /* 藍 ai pudar — garis aturan */
+  --matcha-val:       #4f6b46;
+  --kin-val:          #c9962e;
+  --kin-ink-val:      #7a5818;
+  --gas-val:          #d9a441;  /* 瓦斯灯 gaslight — amber aksen */
+  --nezumi-val:       #6b665c;  /* 鼠 nezumi — abu tikus (teks sekunder) */
+  --backdrop-val:     #e7e2d4;  /* latar kertas tua */
+
+  /* ── Bentuk — LETTERPRESS (bukan kartu web, bukan cap Shōwa) ───────────── */
+  /* Sudut 0: potongan kertas cetak, benar-benar tajam. */
+  --era-edge-w:       1px;
+  --era-edge-color:   var(--sumi-val);
+  --era-radius:       0px;
+  --era-radius-sm:    0px;
+  --era-radius-xs:    0px;
+  --era-radius-pill:  9999px;
+  /* ⚠ TANPA BAYANGAN. Bukan brutalism: kedalaman dibawa oleh GARIS.
+     Hairline = pemisah halus; rule = garis penuh; rule-double = kepala kolom. */
+  --era-shadow:       none;
+  --era-shadow-hover: none;
+  --era-hair:         1px solid rgba(20, 20, 20, 0.55);
+  --era-rule:         1px solid var(--sumi-val);
+  --era-rule-double:  3px double var(--sumi-val);
+  --era-rule-color:   rgba(20, 20, 20, 0.45);   /* warna garis untuk gradient */
+  --era-kasane:       #fbf7ee;
+  --era-kasane-ai:    var(--ai-val);
+  --era-kasane-kin:   var(--kin-val);
+  --era-kasane-shu:   var(--shu-val);
+  --era-kasane-matcha:var(--matcha-val);
+  --era-kasane-sumi:  var(--sumi-val);
+  --era-gold:         var(--sumi-val);
+  --era-drop:         none;
+  --era-drop-hover:   none;
+  --era-glow:         inset 0 0 0 0 transparent;
+  --era-motion:       180ms;                                 /* gesit, seperti mesin cetak */
+  --era-ease:         linear;
+
+  --ink:              rgba(20, 20, 20, 0.85);
+  --theme-transition: 280ms;
+
+  /* ── Tipografi — zaman cetak: serif logam (Mincho). Display = tebal berukir.
+     Inter (sans modern) dibuang dari semua peran — diganti Mincho. */
+  --font-sans:    "Shippori Mincho", "Noto Serif JP", serif;
+  --font-serif:   "Shippori Mincho", "Noto Serif JP", serif;
+  --font-mono:    "Shippori Mincho", "Noto Serif JP", serif;
+  --font-kana:    "Shippori Mincho", "Noto Serif JP", serif;
+  --font-display: "Shippori Mincho B1", "Shippori Mincho", "Noto Serif JP", serif;
+}
+
+/* Meiji gelap — 「瓦斯灯の夜」: malam kota baru diterangi lampu gas.
+   Bukan abu netral: latar kertas hangat-gelap, aksen amber gaslight. */
+.dark[data-era="meiji"], [data-theme="dark"][data-era="meiji"] {
+  --kinari-val:       #12130f;  /* malam hangat-gelap (bukan biru, bukan abu) */
+  --kinari-light-val: #1c1d18;  /* panel: kertas kena cahaya gas */
+  --sumi-val:         #ece7d8;  /* teks krem kertas */
+  --renga-val:        #c76b58;  /* bata terbakar gaslight — lebih terang */
+  --shu-val:          #e2643f;
+  --ai-val:           #7fa7c4;
+  --matcha-val:       #9dba74;
+  --kin-val:          #e8bb52;
+  --kin-ink-val:      #e8bb52;
+  --gas-val:          #f0c85a;  /* gaslight paling terang di malam */
+  --nezumi-val:       #a49d8c;
+  --backdrop-val:     #0c0d0a;
+  --era-edge-color:   rgba(236, 231, 216, 0.72);
+  --era-hair:         1px solid rgba(236, 231, 216, 0.38);
+  --era-rule:         1px solid rgba(236, 231, 216, 0.72);
+  --era-rule-double:  3px double rgba(236, 231, 216, 0.72);
+  --era-rule-color:   rgba(236, 231, 216, 0.32);
+  --era-gold:         var(--gas-val);
+  --era-glow:         inset 0 0 0 1px rgba(240, 200, 90, 0.08);
+  --ink:              rgba(236, 231, 216, 0.78);
+}
+
+/* Judul hero memakai serif cetak tebal (Shippori Mincho B1). */
+[data-era="meiji"] h1 { font-family: var(--font-display); letter-spacing: 0.01em; }
+
+/* ── Jaring pengaman Meiji: paksa bahasa bentuk "cetakan" di SELURUH app ────
+   Komponen lama memakai kelas Shōwa (border-4 tebal, shadow keras #1a1a1a,
+   hover lompat). Di Meiji SERAGAMKAN ke token era: garis ukir tipis, sudut
+   tajam 0, TANPA bayangan (pemisah = garis, bukan blok hitam). */
+
+/* 1) Tepi → garis ukir tipis, warna tinta letterpress. */
+[data-era="meiji"] [class*="border-4"],
+[data-era="meiji"] [class*="border-3"],
+[data-era="meiji"] [class*="border-2"],
+[data-era="meiji"] [class*="border-["] {
+  border-width: var(--era-edge-w) !important;
+  border-color: var(--era-edge-color) !important;
+}
+[data-era="meiji"] [class*="border-t-["] { border-top-width:    var(--era-edge-w) !important; }
+[data-era="meiji"] [class*="border-b-["] { border-bottom-width: var(--era-edge-w) !important; }
+[data-era="meiji"] [class*="border-l-["] { border-left-width:   var(--era-edge-w) !important; }
+[data-era="meiji"] [class*="border-r-["] { border-right-width:  var(--era-edge-w) !important; }
+@media (min-width: 640px) {
+  [data-era="meiji"] [class*="border-t-0"] { border-top-width:    0 !important; }
+  [data-era="meiji"] [class*="border-b-0"] { border-bottom-width: 0 !important; }
+  [data-era="meiji"] [class*="border-l-0"] { border-left-width:   0 !important; }
+  [data-era="meiji"] [class*="border-r-0"] { border-right-width:  0 !important; }
+}
+
+/* 2) Sudut → tajam 0 (potongan kertas cetak). Lingkaran semantik tetap bulat. */
+[data-era="meiji"] :where([class*="border"]) { border-radius: var(--era-radius); }
+[data-era="meiji"] [class*="rounded-"]:not(.rounded-full) { border-radius: var(--era-radius) !important; }
+[data-era="meiji"] .rounded-full { border-radius: 9999px !important; }
+
+/* 2b) KERTAS CETAK: kartu ber-border tanpa bg sendiri diberi SERAT kertas +
+   sedikit nada koran — bukan kotak datar. Elemen ber-garis-pemisah berarah
+   dikecualikan (bukan kartu). */
+[data-era="meiji"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]):not([class*="border-t-"]):not([class*="border-b-"]):not([class*="border-l-"]):not([class*="border-r-"]) {
+  background-color: var(--kinari-light-val);
+  background-image:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.34) 0%, transparent 48%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)' opacity='0.05'/%3E%3C/svg%3E");
+}
+.dark[data-era="meiji"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]):not([class*="border-t-"]):not([class*="border-b-"]):not([class*="border-l-"]):not([class*="border-r-"]),
+[data-theme="dark"][data-era="meiji"] :where(div, section, article, li)[class*="border"]:not([class*="bg-"]):not([class*="border-t-"]):not([class*="border-b-"]):not([class*="border-l-"]):not([class*="border-r-"]) {
+  background-color: var(--kinari-light-val);
+  background-image:
+    radial-gradient(120% 90% at 50% 0%, rgba(240, 200, 90, 0.05) 0%, transparent 62%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)' opacity='0.09'/%3E%3C/svg%3E");
+}
+[data-era="meiji"] .era-flat {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* 3) Bayangan → DIBUANG TOTAL (anti-brutalism). Kedalaman via garis, bukan blok. */
+[data-era="meiji"] [class*="shadow-["],
+[data-era="meiji"] .shadow-2xs,
+[data-era="meiji"] .shadow-xs,
+[data-era="meiji"] .shadow-sm,
+[data-era="meiji"] .shadow-md,
+[data-era="meiji"] .shadow-lg,
+[data-era="meiji"] .shadow-xl,
+[data-era="meiji"] .shadow-2xl,
+[data-era="meiji"] .shadow-inner {
+  box-shadow: none !important;
+}
+[data-era="meiji"] [class*="drop-shadow"] { filter: none !important; }
+
+/* 4) Tombol: blok warna datar tercetak + gerak GESIT halus (tanpa lompat keras). */
+[data-era="meiji"] :where(button, a)[class*="bg-"] {
+  background-image: none !important;
+  border-radius: var(--era-radius) !important;
+}
+[data-era="meiji"] :where(button, a)[class*="hover:translate-"]:hover {
+  transform: translate(1px, 1px) !important;
+}
+[data-era="meiji"] :where(button, a):active {
+  transform: translate(1px, 1px) !important;
+}
+
+/* ── MOTIF & TEKSTUR MEIJI ──────────────────────────────────────────────── */
+
+/* 市松 ichimatsu — kotak papan cetak (aksen renga). */
+[data-era="meiji"] .bg-ichimatsu {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='20' height='20' fill='%239b4a3c' opacity='0.07'/%3E%3Crect x='20' y='20' width='20' height='20' fill='%239b4a3c' opacity='0.07'/%3E%3C/svg%3E");
+}
+.dark[data-era="meiji"] .bg-ichimatsu,
+[data-theme="dark"][data-era="meiji"] .bg-ichimatsu {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='20' height='20' fill='%23c76b58' opacity='0.06'/%3E%3Crect x='20' y='20' width='20' height='20' fill='%23c76b58' opacity='0.06'/%3E%3C/svg%3E");
+}
+
+/* 麻の葉 asanoha — daun rami (aksen). */
+[data-era="meiji"] .bg-asanoha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%232f4f6b' stroke-width='1' opacity='0.22'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30 Z'/%3E%3Cpath d='M30 0 L30 60 M0 30 L60 30 M0 0 L60 60 M60 0 L0 60'/%3E%3C/g%3E%3C/svg%3E");
+}
+.dark[data-era="meiji"] .bg-asanoha,
+[data-theme="dark"][data-era="meiji"] .bg-asanoha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%237fa7c4' stroke-width='1' opacity='0.18'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30 Z'/%3E%3Cpath d='M30 0 L30 60 M0 30 L60 30 M0 0 L60 60 M60 0 L0 60'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* 青海波 seigaiha — gelombang pelabuhan 横浜 (pola panel). */
+[data-era="meiji"] .bg-seigaiha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg stroke='%232f4f6b' stroke-width='2' fill='none' opacity='0.18'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='30'/%3E%3Ccircle cx='0' cy='60' r='10'/%3E%3Ccircle cx='0' cy='60' r='20'/%3E%3Ccircle cx='0' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3C/g%3E%3C/svg%3E");
+}
+.dark[data-era="meiji"] .bg-seigaiha,
+[data-theme="dark"][data-era="meiji"] .bg-seigaiha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg stroke='%237fa7c4' stroke-width='2' fill='none' opacity='0.14'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='30'/%3E%3Ccircle cx='0' cy='60' r='10'/%3E%3Ccircle cx='0' cy='60' r='20'/%3E%3Ccircle cx='0' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* 亀甲 kikkō — sisik kura-kura (bingkai panel). */
+[data-era="meiji"] .bg-kikko {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='96' viewBox='0 0 56 96'%3E%3Cg fill='none' stroke='%232f4f6b' stroke-width='1.2' opacity='0.24'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z'/%3E%3Cpath d='M28 64 L56 80 L56 112 M28 64 L0 80 L0 112'/%3E%3C/g%3E%3C/svg%3E");
+}
+.dark[data-era="meiji"] .bg-kikko,
+[data-theme="dark"][data-era="meiji"] .bg-kikko {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='96' viewBox='0 0 56 96'%3E%3Cg fill='none' stroke='%237fa7c4' stroke-width='1.2' opacity='0.20'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z'/%3E%3Cpath d='M28 64 L56 80 L56 112 M28 64 L0 80 L0 112'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Grain cetakan (bintik tinta letterpress) — dipakai ulang dari pola Edo. */
+[data-era="meiji"] .era-grain-layer { display: block; }
+[data-era="meiji"] .era-grain {
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.12'/%3E%3C/svg%3E");
+}
+.dark[data-era="meiji"] .era-grain-layer,
+[data-theme="dark"][data-era="meiji"] .era-grain-layer { mix-blend-mode: screen; }
+.dark[data-era="meiji"] .era-grain,
+[data-theme="dark"][data-era="meiji"] .era-grain { opacity: 0.3; }
+
+/* Segel 印 merah renga — tanda tangan visual Meiji di sudut kartu/panel.
+   Basis `.era-seal{display:none}` global & `.meiji-seal` none di sini.
+   Di Meiji HANYA 明 (`.meiji-seal`) yang tampil; 極 (`.era-seal`) milik Edo
+   tetap tersembunyi — jangan pernah mengaktifkan keduanya bersamaan. */
+.meiji-seal { display: none; }
+[data-era="meiji"] .meiji-seal {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 2rem; height: 2rem;
+  background: var(--renga-val);
+  color: var(--kinari-light-val);
+  font-family: var(--font-display);
+  font-size: 1rem; line-height: 1;
+  border: var(--era-edge-w) solid var(--sumi-val);
+  border-radius: 0;
+  transform: rotate(-3deg);
+  box-shadow: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Papan/panel cetak: blok warna datar + tepi ukir tipis, TANPA bayangan.
+   Pemisah dari latar = garis aturan ganda, bukan blok hitam. */
+[data-era="meiji"] .era-brocade {
+  background-color: var(--renga-val) !important;
+  background-image: none !important;
+  border: var(--era-edge-w) solid var(--sumi-val) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ── HIASAN KHAS MEIJI ──────────────────────────────────────────────────── */
+
+/* 活字 katsuji — blok huruf logam: kolom vertical + kepala kolom (aturan ganda).
+   Dipakai sebagai hiasan "meja penyusun huruf" di Home. Dekoratif. */
+.meiji-ornament { display: none; }
+[data-era="meiji"] .meiji-ornament { display: block; }
+
+/* 文選 bunsen — palung penyusun huruf: kolom 活字 (kotak logam) berbaris.
+   Sudut tajam, garis tipis, TANPA bayangan — blok huruf timah di meja. */
+[data-era="meiji"] .meiji-stick {
+  position: absolute;
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 6px;
+  border: var(--era-hair);
+  background: color-mix(in srgb, var(--kinari-light-val) 55%, transparent);
+}
+[data-era="meiji"] .meiji-type {
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border: 1px solid var(--era-edge-color);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-size: 18px; line-height: 1;
+  color: var(--sumi-val);
+  background: color-mix(in srgb, var(--renga-val) 8%, transparent);
+}
+/* Garis aturan koran (ruled column) samar — hiasan tipografi.
+   CATATAN: pakai WARNA langsung (bukan var(--era-hair) yang berupa shorthand
+   border — shorthand tak valid sebagai color-stop gradient). */
+[data-era="meiji"] .meiji-ruled {
+  position: absolute;
+  width: 190px; height: 120px;
+  background-image: repeating-linear-gradient(
+    180deg,
+    var(--era-rule-color) 0 1px,
+    transparent 1px 14px
+  );
+  opacity: 0.45;
+}
+
+/* 柱面 / 見出し罫: kepala kolom koran = garis aturan ganda. */
+[data-era="meiji"] .meiji-rule-head {
+  border-top: var(--era-rule-double);
+  border-bottom: var(--era-hair);
+}
+
+/* Masthead koran: garis atas tebal + garis bawah aturan ganda. */
+[data-era="meiji"] .meiji-masthead {
+  background-color: var(--kinari-val);
+  border-top: 4px solid var(--sumi-val);
+  border-bottom: var(--era-rule-double);
+}
+[data-era="meiji"] .meiji-masthead__rule { height: 1px; background: var(--sumi-val); margin: 10px 0; }
+/* Kesalahan cetak kromatik (色ズレ): offset HORIZONTAL saja, blur 0 — tanda
+   mesin cetak, BUKAN bayangan brutalist (yang offset diagonal 2px 2px). */
+[data-era="meiji"] .meiji-masthead__title {
+  text-shadow: 2px 0 0 rgba(155, 74, 60, 0.30);
+}
+[data-era="meiji"] .meiji-masthead__kicker {
+  color: var(--renga-val);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  text-shadow: none;
+}
+
+/* Aksen "gaslight" (tombol/garis sorot) — amber lampu gas. */
+[data-era="meiji"] .meiji-gas {
+  background: var(--gas-val);
+  color: #201a10;
+}
+
+/* Motif hiasan: 活字 huruf logam. */
+[data-era="meiji"] .meiji-motif { display: block; }
+
+/* Kabut/tinta latar Meiji (siang): pita tinta renga tipis. */
+[data-era="meiji"] body {
+  background-image: linear-gradient(180deg, rgba(155, 74, 60, 0.04) 0%, rgba(47, 79, 107, 0.035) 50%, rgba(155, 74, 60, 0.04) 100%);
+  background-attachment: fixed;
+}
+.dark[data-era="meiji"] body,
+[data-theme="dark"][data-era="meiji"] body {
+  background-color: #12130f;
+  background-image:
+    radial-gradient(56% 40% at 24% 14%, rgba(240, 200, 90, 0.12) 0%, transparent 66%),
+    radial-gradient(48% 44% at 78% 76%, rgba(199, 107, 88, 0.10) 0%, transparent 68%),
+    linear-gradient(180deg, #12130f 0%, #0e0f0b 56%, #0a0b08 100%);
+  background-attachment: fixed;
+}
+
+/* Gerak gesit Meiji: masuk dari bawah, cepat, tanpa kabut blur Heian. */
+@keyframes meiji-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+[data-era="meiji"] .heian-enter,
+[data-era="meiji"] .heian-enter-2,
+[data-era="meiji"] .heian-enter-3 {
+  animation: meiji-rise var(--era-motion) var(--era-ease) both;
+}
+[data-era="meiji"] .heian-enter-2 { animation-delay: 50ms; }
+[data-era="meiji"] .heian-enter-3 { animation-delay: 100ms; }
+
+/* Pemisah antar-seksi: garis aturan + label kanji (bukan awan Heian). */
+[data-era="meiji"] .era-divider { padding: 12px 0; }
+[data-era="meiji"] .era-divider__band { height: 1px; background: var(--sumi-val); }
+[data-era="meiji"] .era-divider__label {
+  background: var(--backdrop-val);
+  font-family: var(--font-display);
+  font-size: 11px; letter-spacing: 0.4em;
+  color: var(--sumi-val); opacity: 0.85;
+  padding: 0 12px;
+}
+
+/* ── HAPUS DNA SHOWA STRUKTURAL ──────────────────────────────────────────────
+   Bahasa poster Swiss/Shōwa = teks Latin UPPERCASE ber-tracking + font hitam
+   blok. Di Meiji netralkan ke serif cetak. */
+[data-era="meiji"] .uppercase { text-transform: none !important; }
+[data-era="meiji"] [class*="tracking-"] { letter-spacing: 0.02em !important; }
+[data-era="meiji"] .font-black { font-weight: 700 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-era="meiji"] .heian-enter,
+  [data-era="meiji"] .heian-enter-2,
+  [data-era="meiji"] .heian-enter-3 { animation: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEADER 日本語学園 (Home hero) — latar + warna teks PER-ERA
+   Aturan user: latar motif bulat-bulat 青海波 hanya di EDO. Heian & Shōwa
+   POLOS (jangan diutak-atik). Warna teks merek ikut PALET era, bukan
+   merah-hitam hardcoded.
+   Kelas: .home-hero-bg (panel) · .home-hero-mark (kotak 学) ·
+          .home-hero-title (日本語学園) · .home-hero-sub (NIHONGO GAKUEN).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Polos secara default (Shōwa/base & era yang belum didesain). */
+.home-hero-bg { background-image: none; }
+
+/* Heian 平安 — POLOS (permintaan user: jangan diubah). Mark 学 dikembalikan
+   PERSIS seperti semula (bayangan merah) supaya Heian tak berubah sedikit pun. */
+[data-era="heian"] .home-hero-bg { background-image: none; }
+[data-era="heian"] .home-hero-mark { box-shadow: 4px 4px 0 0 #d3382f; }
+
+/* Edo 江戸 — 青海波 seigaiha (gelombang bulat), motif kota pelabuhan Edo. */
+[data-era="edo"] .home-hero-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg stroke='%231e4f79' stroke-width='2' fill='none' opacity='0.22'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='30'/%3E%3Ccircle cx='0' cy='60' r='10'/%3E%3Ccircle cx='0' cy='60' r='20'/%3E%3Ccircle cx='0' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3C/g%3E%3C/svg%3E");
+}
+.dark[data-era="edo"] .home-hero-bg,
+[data-theme="dark"][data-era="edo"] .home-hero-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg stroke='%236fa8d6' stroke-width='2' fill='none' opacity='0.16'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='30'/%3E%3Ccircle cx='0' cy='60' r='10'/%3E%3Ccircle cx='0' cy='60' r='20'/%3E%3Ccircle cx='0' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ── Warna teks merek per-era (ikut PALET tema, TANPA merah) ──────────────── */
+
+/* Edo 江戸 — indigo 藍 kota cetak. TIDAK pakai 朱/merah (permintaan user:
+   "jangan merah item, samain sama palete warna tema"). */
+[data-era="edo"] .home-hero-mark {
+  background-color: var(--ai-val) !important;
+  color: var(--kinari-light-val) !important;
+  box-shadow: var(--era-shadow) !important;
+}
+[data-era="edo"] .home-hero-title { color: var(--ai-val) !important; }
+[data-era="edo"] .home-hero-sub   { color: var(--ai-val) !important; opacity: 0.8; }
+
+/* Meiji 明治 — bata renga + tinta (palet Meiji). */
+[data-era="meiji"] .home-hero-mark {
+  background-color: var(--renga-val) !important;
+  color: var(--kinari-light-val) !important;
+  box-shadow: none !important;
+}
+[data-era="meiji"] .home-hero-title { color: var(--renga-val) !important; }
+[data-era="meiji"] .home-hero-sub   { color: var(--ai-val) !important; opacity: 0.85; }
+
+/* H1 hero 基礎 — di Edo/Meiji ikut palet (indigo/bata), TANPA merah.
+   Heian tidak diubah (tetap 朱). */
+[data-era="edo"] .home-hero-h1-accent { color: var(--ai-val) !important; }
+[data-era="meiji"] .home-hero-h1-accent { color: var(--renga-val) !important; }
 
 
 

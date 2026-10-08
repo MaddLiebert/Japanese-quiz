@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HEIAN_STREAK, streakCopy, isHeianEra } from './streakCopy.js';
+import {
+  HEIAN_STREAK, EDO_STREAK, MEIJI_STREAK, STREAK_BY_ERA, streakCopy, isHeianEra,
+} from './streakCopy.js';
 
 const KANJI = /[\u4e00-\u9fff]/;
 
@@ -33,18 +35,52 @@ test('label utama Heian BEBAS kanji (kana saja)', () => {
   assert.ok(KANJI.test(T.sigilOn) && KANJI.test(T.sigilOff));
 });
 
-test('streakCopy: era lain → teks lama (Heian tidak bocor)', () => {
+test('TIAP ERA punya sigil sendiri (Heian/Edo/Meiji beda) — anti Shōwa bocor', () => {
+  const sigils = [HEIAN_STREAK.sigil, EDO_STREAK.sigil, MEIJI_STREAK.sigil];
+  assert.deepEqual(sigils, ['candle', 'lantern', 'gaslight']);
+  assert.equal(new Set(sigils).size, 3, 'sigil tiap era harus unik');
+});
+
+test('Meiji punya copy sendiri (tidak mewarisi era lain / legacy 炎)', () => {
+  const T = streakCopy('meiji', 'id');
+  assert.equal(T.title, '瓦斯灯');
+  assert.equal(T.sigil, 'gaslight');
+  assert.notEqual(T.sigilOn, '炎');
+  assert.notEqual(T.title, 'Streak Belajar');
+});
+
+test('Edo punya copy sendiri (提灯), bukan legacy', () => {
+  const T = streakCopy('edo', 'id');
+  assert.equal(T.title, '提灯');
+  assert.equal(T.sigil, 'lantern');
+  assert.notEqual(T.sigilOn, '炎');
+});
+
+test('STREAK_BY_ERA: berisi heian/edo/meiji', () => {
+  assert.deepEqual(Object.keys(STREAK_BY_ERA).sort(), ['edo', 'heian', 'meiji']);
+});
+
+test('streakCopy: era yang belum didesain → teks lama (炎/灰, ID/EN)', () => {
   const id = streakCopy('showa', 'id');
   assert.equal(id.title, 'Streak Belajar');
   assert.equal(id.bonusOn, '+5% Bonus Aktif');
   assert.equal(id.unit, null);
   assert.equal(id.sigilOn, '炎');
+  assert.equal(id.sigil, 'legacy');
 
-  const en = streakCopy('edo', 'en');
+  const en = streakCopy('cyberpunk', 'en');
   assert.equal(en.title, 'Study Streak');
   assert.equal(en.bonusOff, 'Bonus Inactive');
 });
 
-test('streakCopy: Heian tidak bergantung bahasa', () => {
-  assert.deepEqual(streakCopy('heian', 'id'), streakCopy('heian', 'en'));
+test('streakCopy: era ber-copy tidak bergantung bahasa', () => {
+  for (const era of ['heian', 'edo', 'meiji']) {
+    assert.deepEqual(streakCopy(era, 'id'), streakCopy(era, 'en'));
+  }
+});
+
+test('streakCopy: mengembalikan salinan (tabel tidak termutasi)', () => {
+  const a = streakCopy('meiji', 'id');
+  a.title = 'X';
+  assert.equal(streakCopy('meiji', 'id').title, '瓦斯灯');
 });

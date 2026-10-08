@@ -23,6 +23,17 @@ const ERA_NAMES = {
     quest: '奉公',       // hōkō — pengabdian/kerja
     rank: '番付',       // banzuke — daftar peringkat (sumo)
   },
+  // Meiji 明治 — kota surat kabar: 文明開化, istilah zaman modern.
+  // Lihat PRD: docs/tema/meiji.md §16.
+  meiji: {
+    shop: '商店',       // shōten — toko modern
+    gacha: '福引',      // fukubiki — undian berhadiah (berputar)
+    medaru: '円',       // en — mata uang Meiji (1871)
+    inventory: '鞄',    // kaban — tas (barang modern)
+    profile: '戸籍',    // koseki — catatan keluarga (sistem Meiji 1871)
+    quest: '課業',      // kagyō — pelajaran/tugas sekolah
+    rank: '階級',       // kaikyū — kelas/peringkat sosial baru
+  },
 };
 
 // Kembalikan nama era untuk `key`, atau `fallback` bila era/key tak punya nama.

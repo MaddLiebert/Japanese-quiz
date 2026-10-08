@@ -5,16 +5,27 @@ import { useEra } from '../features/theme/EraContext';
 import { streakUnit } from '../features/progress/streak';
 import { streakCopy } from '../features/progress/streakCopy';
 import { StreakCandle } from './StreakCandle';
+import { StreakLantern, StreakGaslight } from './StreakSigil';
 
-// Kartu streak belajar. Era Heian 平安: 和蝋燭 (lilin Jepang) di cangkir
-// kuningan — MENYALA 灯 tiap hari belajar, PADAM 消 (berasap) kalau bolong.
-// Era lain: segel kotak 炎/灰 + teks ID/EN (tidak diubah).
+// Kartu streak belajar. Ikon (sigil) BEDA TIAP ERA — lihat streakCopy.js `sigil`:
+//   • Heian 平安 → 和蝋燭 (lilin)   — MENYALA 灯 tiap hari, PADAM 消 kalau bolong
+//   • Edo   江戸 → 提灯 (lentera)   — menyala tiap malam
+//   • Meiji 明治 → 瓦斯灯 (lampu gas) — dinyalakan tiap senja
+//   • Era lain   → kotak segel 炎/灰 (legacy, belum didesain)
 export const StreakIndicator = ({ count = 0, isActive = false }) => {
   const { language } = useLanguage();
   const { era } = useEra();
   const T = streakCopy(era, language);
   const unit = T.unit ?? streakUnit(count, language);
-  const heian = !!T.candleLit;   // penanda era Heian (kartu lilin)
+  const sigil = T.sigil;   // 'candle' | 'lantern' | 'gaslight' | 'legacy'
+
+  // Ikon era (SVG). Semua menerima lit + size + label (aria).
+  const eraSigil = () => {
+    if (sigil === 'candle') return <StreakCandle lit={isActive} size={44} label={isActive ? T.candleLit : T.candleOut} />;
+    if (sigil === 'lantern') return <StreakLantern lit={isActive} size={44} label={isActive ? T.candleLit : T.candleOut} />;
+    if (sigil === 'gaslight') return <StreakGaslight lit={isActive} size={44} label={isActive ? T.candleLit : T.candleOut} />;
+    return null;
+  };
 
   return (
     <div className="flex items-end gap-2">
@@ -30,15 +41,11 @@ export const StreakIndicator = ({ count = 0, isActive = false }) => {
       </span>
 
       <div className="relative flex items-center justify-center">
-        {heian ? (
-          // 和蝋燭 — nyala/padam. label ARIA ikut bahasa UI (status = informasi).
-          <StreakCandle
-            lit={isActive}
-            size={44}
-            label={isActive ? T.candleLit : T.candleOut}
-          />
+        {sigil !== 'legacy' ? (
+          // Ikon SVG khas era (lilin/lentera/lampu gas) — nyala/padam.
+          eraSigil()
         ) : isActive ? (
-          // Nyala — 炎 (era lain). Api berdenyut + percikan.
+          // Legacy — kotak segel 炎 (era belum didesain). Api berdenyut + percikan.
           <motion.div
             className="relative flex items-center justify-center"
             animate={{
@@ -67,7 +74,7 @@ export const StreakIndicator = ({ count = 0, isActive = false }) => {
             />
           </motion.div>
         ) : (
-          // Padam — 灰 (era lain). Segel hanko pudar, tanpa denyut.
+          // Legacy padam — segel 灰 pudar, tanpa denyut.
           <div className="w-8 h-8 sm:w-10 sm:h-10 bg-kinari-light/60 border-[2px] border-sumi/30 border-dashed flex items-center justify-center font-serif font-bold text-sumi/40 text-sm sm:text-base select-none">
             {T.sigilOff}
           </div>
