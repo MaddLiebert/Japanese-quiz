@@ -55,3 +55,39 @@ test('Meiji: varian gelap ada (gaslight malam), bukan sekadar ganti hex', () => 
   assert.ok(/\.dark\[data-era="meiji"\]/.test(block), 'harus ada override gelap');
   assert.ok(/--gas-val:\s*#f0c85a/.test(block), 'gaslight malam = amber terang');
 });
+
+// ── T8: 6 kombinasi (3 era × terang/gelap) — token warna inti terdefinisi ────
+// Tujuan: pastikan tiap kombinasi era×mode MENENTUKAN tokennya sendiri, tidak
+// "bocor" ke base Shōwa. Kalau satu kombinasi lupa token, ia tampil sebagai era
+// lain (persis risiko R2 di PRD §14).
+const INTI = ['--kinari-val', '--kinari-light-val', '--sumi-val'];
+
+test('T8: tiap era DIDESAIN mendefinisikan token inti di TERANG & GELAP (6 kombinasi)', () => {
+  const eras = ['heian', 'edo', 'meiji'];
+  for (const era of eras) {
+    // Blok terang = selektor `[data-era="era"] {` (bukan .dark…).
+    const ltStart = css.indexOf(`[data-era="${era}"] {`);
+    assert.ok(ltStart >= 0, `${era}: blok terang tidak ditemukan`);
+    const lt = css.slice(ltStart, css.indexOf('}', ltStart));
+    // Blok gelap = `.dark[data-era="era"]`.
+    const dkStart = css.indexOf(`.dark[data-era="${era}"]`);
+    assert.ok(dkStart >= 0, `${era}: blok gelap tidak ditemukan`);
+    const dk = css.slice(dkStart, css.indexOf('}', dkStart));
+    for (const tok of INTI) {
+      assert.ok(lt.includes(tok), `${era} TERANG tidak mendefinisikan ${tok} → bocor ke base`);
+      assert.ok(dk.includes(tok), `${era} GELAP tidak mendefinisikan ${tok} → bocor ke base`);
+    }
+  }
+});
+
+test('T8: tiap era punya latar gelap BERBEDA (vibe malam tak bertabrakan)', () => {
+  const bgOf = (era) => {
+    const i = css.indexOf(`.dark[data-era="${era}"]`);
+    const blk = css.slice(i, css.indexOf('}', i));
+    const m = blk.match(/--kinari-val:\s*(#[0-9a-fA-F]{3,6})/);
+    return m ? m[1].toLowerCase() : null;
+  };
+  const bgs = ['heian', 'edo', 'meiji'].map(bgOf);
+  assert.ok(bgs.every(Boolean), `latar gelap hilang: ${JSON.stringify(bgs)}`);
+  assert.equal(new Set(bgs).size, 3, `latar gelap era harus beda semua: ${bgs.join(', ')}`);
+});
