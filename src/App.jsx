@@ -9,8 +9,15 @@ import { Writing } from "./pages/Writing";
 import { Speaking } from "./pages/Speaking";
 import { HeianHistory } from "./pages/HeianHistory";
 import { EdoHistory } from "./pages/EdoHistory";
+import { MeijiHistory } from "./pages/MeijiHistory";
+import { Typesetting } from "./pages/Typesetting";
+import { PrintShop } from "./pages/PrintShop";
+import { Neologism } from "./pages/Neologism";
+import { Codex } from "./pages/Codex";
+import { Koseki } from "./pages/Koseki";
 import { EdoNightFestival } from "./features/cinematic/edo/components/EdoNightFestival";
 import { HakoneCheckpoint } from "./pages/HakoneCheckpoint";
+import { KokkaiCheckpoint } from "./pages/KokkaiCheckpoint";
 import Profile from "./features/profile/Profile";
 import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
 import Shop from "./features/shop/Shop";
@@ -20,6 +27,8 @@ import { N5ExamScreen } from "./features/n5exam/N5ExamScreen";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
 import { EraProvider, useEra } from "./features/theme/EraContext";
 import { ThemeAudioHost } from "./features/theme/ThemeAudioHost";
+import { MeijiPress } from "./features/theme/MeijiPress";
+import { MeijiCompanion } from "./features/meiji/MeijiCompanion";
 import { eraName } from "./features/theme/eraNames";
 import { EffectProvider } from "./features/effects/EffectContext";
 import { CinematicProvider } from "./features/cinematic/CinematicContext";
@@ -225,9 +234,18 @@ function App() {
                   (.dark[data-era="edo"]). Ramai & hangat — bukan biru kosong. */}
               <EdoNightFestival />
 
-              {/* Segel 極 merah — tanda tangan visual Edo (pojok kanan-atas). */}
+              {/* 2g. 明治 MEIJI — meja penyusun huruf 活字: palung huruf logam +
+                  garis aturan koran. HANYA data-era="meiji". Dekoratif. */}
+              <MeijiPress />
+
+              {/* 2h. MEIJI hidup — jejak Nacht/Saku (M12), 号外 (M10), glitch (M9),
+                  napas (M15). HANYA era Meiji; semua bisa dimatikan di Pengaturan. */}
+              <MeijiCompanion />
+
+              {/* Segel merah — tanda tangan visual era (Edo 極 / Meiji 明). */}
               <div className="fixed top-20 right-4 z-0 pointer-events-none" aria-hidden="true">
                 <span className="era-seal">極</span>
+                <span className="meiji-seal">明</span>
               </div>
 
               {/* Global Top Controls */}
@@ -253,7 +271,14 @@ function App() {
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/heian-history" element={<HeianHistory />} />
                   <Route path="/edo-history" element={<EdoHistory />} />
+                  <Route path="/meiji-history" element={<MeijiHistory />} />
                   <Route path="/hakone-checkpoint" element={<HakoneCheckpoint />} />
+                  <Route path="/kokkai-checkpoint" element={<KokkaiCheckpoint />} />
+                  <Route path="/typesetting" element={<Typesetting />} />
+                  <Route path="/printshop" element={<PrintShop />} />
+                  <Route path="/neologism" element={<Neologism />} />
+                  <Route path="/codex" element={<Codex />} />
+                  <Route path="/koseki" element={<Koseki />} />
                 </Routes>
               </main>
             </div>

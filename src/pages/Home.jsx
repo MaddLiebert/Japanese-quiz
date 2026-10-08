@@ -18,6 +18,7 @@ import { RankBadge } from "../features/progress/RankBadge";
 import { Glyph } from "../components/icons/Glyph";
 import { useEra } from "../features/theme/EraContext";
 import { streakCopy } from "../features/progress/streakCopy";
+import { isEraUnlocked } from "../features/theme/eras";
 import { isLegendary, badgeCircleClass } from "../features/progress/badgeSeal";
 import { LegendaryDecor } from "../features/progress/BadgeDecor";
 // Hanko Stamp component — reused for level and achievements
@@ -75,6 +76,9 @@ export function Home() {
   // N5 Exam 模擬試験 — butuh rank Shogun DAN minimal 30 kanji sudah hafal (mastered).
   const masteredKanji = countMasteredKanji(itemProgress);
   const n5Unlocked = isN5ExamUnlocked(getRank(progress.xp || 0), masteredKanji);
+
+  // 活字組み (Typesetting) — terbuka di era Meiji (gate Lv 50, sumber tunggal eras.js).
+  const typesettingUnlocked = isEraUnlocked('meiji', progress.level || 1);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
@@ -158,7 +162,7 @@ export function Home() {
 
         {/* --- HEADER --- */}
         <header className="grid grid-cols-1 sm:grid-cols-12 border-b-[4px] border-sumi relative z-10">
-          <div className="sm:col-span-8 p-6 sm:p-12 flex flex-col justify-between border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi bg-seigaiha relative overflow-hidden">
+          <div className="home-hero-bg sm:col-span-8 p-6 sm:p-12 flex flex-col justify-between border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-kinari-light/85 via-kinari-light/40 to-transparent pointer-events-none"></div>
 
             {/* Vignette 江戸 chōnin — "昼は市、夜は提灯" (siang pasar, malam lentera):
@@ -176,14 +180,14 @@ export function Home() {
               transition={{ delay: 0.2 }}
               className="flex items-center gap-3 sm:gap-4 mb-12 sm:mb-20 relative z-20"
             >
-              <div className="w-12 h-12 shrink-0 bg-sumi text-kinari-light flex items-center justify-center font-serif text-2xl rotate-3 shadow-[4px_4px_0_0_#d3382f]">
+              <div className="home-hero-mark w-12 h-12 shrink-0 bg-sumi text-kinari-light flex items-center justify-center font-serif text-2xl rotate-3">
                 学
               </div>
               <div className="flex flex-col min-w-0">
-                <span className="text-base sm:text-xl font-serif font-black leading-none text-sumi whitespace-nowrap">
+                <span className="home-hero-title text-base sm:text-xl font-serif font-black leading-none text-sumi whitespace-nowrap">
                   日本語学園
                 </span>
-                <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.32em] font-bold text-sumi/70 mt-1.5 whitespace-nowrap">
+                <span className="home-hero-sub text-[10px] sm:text-[11px] uppercase tracking-[0.32em] font-bold text-sumi/70 mt-1.5 whitespace-nowrap">
                   Nihongo Gakuen
                 </span>
                 <span className="text-[9px] sm:text-[10px] text-sumi/50 uppercase tracking-[0.16em] mt-1">
@@ -198,9 +202,9 @@ export function Home() {
               transition={{ delay: 0.3 }}
               className="relative z-20"
             >
-              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black text-sumi tracking-tighter leading-[0.9]">
+              <h1 className="home-hero-h1 text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black text-sumi tracking-tighter leading-[0.9]">
                 日本語<br />
-                <span className="text-shu">基礎</span>
+                <span className="home-hero-h1-accent text-shu">基礎</span>
               </h1>
             </motion.div>
 
@@ -314,7 +318,7 @@ export function Home() {
 
             {/* Stats */}
             <div className="flex-1 grid grid-cols-2 border-b-[4px] border-sumi">
-              <div className="p-6 sm:p-8 border-r-[4px] border-sumi flex flex-col justify-center bg-ichimatsu">
+              <div className="p-6 sm:p-8 border-r-[4px] border-sumi flex flex-col justify-center">
                 <h4 className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold mb-3">
                   {language === 'id' ? 'Total XP' : 'Total XP'}
                 </h4>
@@ -332,7 +336,6 @@ export function Home() {
                 </div>
               </div>
               <div className="p-6 sm:p-8 flex flex-col justify-center bg-kinari relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-[radial-gradient(circle,currentColor_2px,transparent_2px)] bg-[length:8px_8px] text-sumi/10"></div>
                 <h4 className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold mb-3">
                   {ST.title}
                 </h4>
@@ -417,6 +420,78 @@ export function Home() {
                 </div>
                 <div className="w-14 h-14 border-[3px] border-ai text-ai flex items-center justify-center group-hover:bg-ai group-hover:text-kinari-light transition-all flex-shrink-0">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v1a7 7 0 0 1-14 0v-1"></path><line x1="12" y1="18" x2="12" y2="22"></line></svg>
+                </div>
+              </motion.div>
+
+              {/* 活字組み Typesetting — era Meiji (gate Lv 50) */}
+              <motion.div onClick={() => navigate('/typesetting')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${typesettingUnlocked ? '' : 'opacity-60'}`}>
+                <div className="flex flex-col gap-2 relative z-10">
+                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${typesettingUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
+                    {language === 'id' ? 'Susun Huruf' : 'Typesetting'} 活字組み
+                    {!typesettingUnlocked && <Glyph name="lock" className="text-xs" />}
+                  </h4>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                    {typesettingUnlocked
+                      ? (language === 'id' ? 'Grammar · Susun Blok Jadi Kalimat' : 'Grammar · Set Blocks Into Sentences')
+                      : (language === 'id' ? 'Era Meiji · Lv 50' : 'Meiji Era · Lv 50')}
+                  </p>
+                </div>
+                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${typesettingUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                  <span className="text-lg font-serif font-black select-none">活</span>
+                </div>
+              </motion.div>
+
+              {/* 新語 Neologism — era Meiji (gate Lv 50) */}
+              <motion.div onClick={() => navigate('/neologism')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${typesettingUnlocked ? '' : 'opacity-60'}`}>
+                <div className="flex flex-col gap-2 relative z-10">
+                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${typesettingUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
+                    {language === 'id' ? 'Cipta Kata' : 'Coin Words'} 新語
+                    {!typesettingUnlocked && <Glyph name="lock" className="text-xs" />}
+                  </h4>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                    {typesettingUnlocked
+                      ? (language === 'id' ? 'Susun Kanji Jadi Istilah Baru' : 'Build New Terms From Kanji')
+                      : (language === 'id' ? 'Era Meiji · Lv 50' : 'Meiji Era · Lv 50')}
+                  </p>
+                </div>
+                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${typesettingUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                  <span className="text-lg font-serif font-black select-none">新</span>
+                </div>
+              </motion.div>
+
+              {/* Codex つながり — glosarium lintas-era (gate Meiji) */}
+              <motion.div onClick={() => navigate('/codex')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${typesettingUnlocked ? '' : 'opacity-60'}`}>
+                <div className="flex flex-col gap-2 relative z-10">
+                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${typesettingUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
+                    {language === 'id' ? 'Benang Lintas Era' : 'Cross-Era Threads'} Codex
+                    {!typesettingUnlocked && <Glyph name="lock" className="text-xs" />}
+                  </h4>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                    {typesettingUnlocked
+                      ? (language === 'id' ? 'Edo → Meiji → Shōwa' : 'Edo → Meiji → Shōwa')
+                      : (language === 'id' ? 'Era Meiji · Lv 50' : 'Meiji Era · Lv 50')}
+                  </p>
+                </div>
+                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${typesettingUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                  <span className="text-lg font-serif font-black select-none">繋</span>
+                </div>
+              </motion.div>
+
+              {/* 戸籍 Koseki — buku hidup pemain (gate Meiji) */}
+              <motion.div onClick={() => navigate('/koseki')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${typesettingUnlocked ? '' : 'opacity-60'}`}>
+                <div className="flex flex-col gap-2 relative z-10">
+                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${typesettingUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
+                    {language === 'id' ? 'Buku Hidupmu' : 'Your Life Record'} 戸籍
+                    {!typesettingUnlocked && <Glyph name="lock" className="text-xs" />}
+                  </h4>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                    {typesettingUnlocked
+                      ? (language === 'id' ? 'Apa yang App Ingat Tentangmu' : 'What the App Remembers')
+                      : (language === 'id' ? 'Era Meiji · Lv 50' : 'Meiji Era · Lv 50')}
+                  </p>
+                </div>
+                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${typesettingUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                  <span className="text-lg font-serif font-black select-none">籍</span>
                 </div>
               </motion.div>
 
