@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Meiji Visual Language Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Serif+JP:wght@400;700;900&family=Shippori+Mincho:wght@400;700&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ════════════════════════════════════════════════════════════════
+     TOKEN MEIJI 明治 — "活字の時代" (letterpress / koran)
+     Primer: 煉瓦 renga #9b4a3c   ·   Aksen: 瓦斯灯 gaslight #d9a441
+     ⚠️ ATURAN BENTUK: TANPA BAYANGAN. Struktur = GARIS ATURAN (rules).
+     ════════════════════════════════════════════════════════════════ */
+  :root {
+    --kinari-val: #f4f1e8;   /* kertas koran (abu-krem) */
+    --sumi-val:   #141414;   /* tinta letterpress pekat */
+    --renga-val:  #9b4a3c;   /* 煉瓦 — bata Ginza (PRIMER) */
+    --shu-val:    #b8352c;   /* 緋 — merah segel */
+    --ai-val:     #2f4f6b;   /* 藍 pudar — garis aturan */
+    --kin-val:    #c9922a;   /* 金 — kuningan */
+    --gas-val:    #d9a441;   /* 瓦斯灯 — amber lampu gas */
+    --nezumi-val: #6f6a60;   /* 鼠 — abu teks sekunder */
+    --backdrop-val:#e7e1d2;  /* latar luar */
+
+    /* bentuk — cetak, bukan poster */
+    --era-hair:  1px solid rgba(20,20,20,.55);   /* hairline rule */
+    --era-rule:  1px solid var(--sumi-val);
+    --era-rule-double: 3px double var(--sumi-val); /* garis aturan ganda */
+    --era-radius: 0px;
+    --era-motion: 180ms;
+    --era-ease:   linear;
+  }
+
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    background: var(--backdrop-val);
+    color: var(--sumi-val);
+    padding: 40px 28px 90px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  /* latar kertas koran + grain cetakan halus */
+  .paper {
+    background:
+      radial-gradient(circle at 20% 10%, rgba(155,74,60,.05), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(201,146,42,.05), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(20,20,20,.018) 0 1px, transparent 1px 3px),
+      var(--kinari-val);
+  }
+
+  h1 { font-family: 'Playfair Display', 'Noto Serif JP', serif; font-size: 44px; letter-spacing: .5px; line-height: 1.05; }
+  h1 .jp { font-family: 'Noto Serif JP', serif; }
+  h2 {
+    font-family: 'Playfair Display', 'Noto Serif JP', serif; font-size: 23px;
+    margin: 46px 0 6px; padding-bottom: 8px;
+    border-bottom: var(--era-rule-double);
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  h2 .num {
+    font-family: Inter, sans-serif; font-size: 12px; font-weight: 900; letter-spacing: .15em;
+    background: var(--renga-val); color: #fff; padding: 3px 8px; border-radius: 0;
+  }
+  .lead { color: #4a463d; max-width: 780px; margin-top: 12px; line-height: 1.65; font-size: 14.5px; }
+  .lead b { color: var(--sumi-val); }
+  .lead .jp { font-family: 'Noto Serif JP', serif; }
+
+  .grid { display: grid; gap: 20px; }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .label {
+    font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
+    font-weight: 800; color: var(--nezumi-val);
+  }
+  .note { font-size: 12px; color: var(--nezumi-val); margin-top: 8px; line-height: 1.55; }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; background: rgba(20,20,20,.06); padding: 1px 5px; border-radius: 0; }
+
+  /* ════════════════════════════════════════════════════════════════
+     KARTU MEIJI — kotak kolom koran: hairline + aturan ganda, TANPA shadow
+     ════════════════════════════════════════════════════════════════ */
+  .meiji-card {
+    position: relative;
+    background: var(--kinari-val);
+    border: var(--era-hair);
+    border-top: var(--era-rule-double);   /* kepala kolom koran */
+    border-radius: var(--era-radius);
+    padding: 18px 20px 20px;
+  }
+  .meiji-card .kicker {
+    font-size: 10px; font-weight: 900; letter-spacing: .24em; text-transform: uppercase;
+    color: var(--renga-val);
+  }
+  .meiji-title { font-family: 'Noto Serif JP', serif; font-weight: 900; font-size: 24px; letter-spacing: .5px; }
+  .meiji-sub { font-family: 'Shippori Mincho', serif; font-size: 13px; color: var(--nezumi-val); margin-top: 4px; }
+
+  .meiji-btn {
+    display: inline-block; margin-top: 16px; padding: 10px 18px;
+    background: var(--renga-val); color: #fbf7ee;
+    border: var(--era-rule); border-radius: 0;
+    font-weight: 800; font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  }
+  .meiji-btn.ghost { background: transparent; color: var(--sumi-val); }
+  .meiji-btn.gas { background: var(--gas-val); color: #201a10; }
+
+  /* masthead koran — judul bergaya surat kabar Meiji */
+  .masthead {
+    background: var(--kinari-val);
+    border-top: 4px solid var(--sumi-val);
+    border-bottom: var(--era-rule-double);
+    padding: 14px 18px 12px;
+  }
+  .masthead .name {
+    font-family: 'Noto Serif JP', serif; font-weight: 900; font-size: 40px; letter-spacing: 3px;
+    line-height: 1;
+    /* chromatic misprint: offset HORIZONTAL tipis (salah register warna), bukan drop shadow */
+    text-shadow: 2px 0 0 rgba(155,74,60,.30);
+  }
+  .masthead .name .en {
+    font-family: 'Playfair Display', serif; font-size: 15px; letter-spacing: 6px;
+    display: block; margin-top: 6px; color: var(--renga-val); text-transform: uppercase;
+    text-shadow: none;
+  }
+  .masthead .rule { height: 1px; background: var(--sumi-val); margin: 10px 0; }
+  .masthead .meta {
+    display: flex; justify-content: space-between; font-size: 10.5px; letter-spacing: .1em;
+    color: var(--nezumi-val); text-transform: uppercase; font-weight: 600;
+  }
+
+  /* kolom koran (teks 2 kolom dengan garis pemisah) */
+  .columns {
+    column-count: 2; column-gap: 22px; column-rule: 1px solid rgba(20,20,20,.22);
+    font-size: 12.5px; line-height: 1.75; color: #3a362e; margin-top: 12px;
+    text-align: justify;
+  }
+  .columns .jp { font-family: 'Noto Serif JP', serif; }
+
+  /* tombol era / chip */
+  .chip {
+    display: inline-block; padding: 6px 12px; margin: 0 6px 6px 0;
+    background: #fbf7ee; border: var(--era-rule); border-radius: 0;
+    font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 700;
+  }
+
+  /* swatch */
+  .swatch {
+    height: 66px; border: var(--era-rule); border-radius: 0;
+    display: flex; align-items: flex-end; padding: 7px 10px;
+    font-size: 10px; font-weight: 800; letter-spacing: .08em;
+  }
+
+  .badge { display:inline-block; font-size:10px; font-weight:800; letter-spacing:.15em; padding:3px 9px; border-radius:0; }
+  .badge.pick { background: var(--renga-val); color:#fff; }
+  .badge.alt  { background: #e8e2d2; color: var(--sumi-val); }
+
+  /* strip motif */
+  .motif-box {
+    border: var(--era-hair); border-top: var(--era-rule-double); border-radius: 0; height: 130px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  }
+  .motif-box .glyph { font-family: 'Noto Serif JP', serif; font-size: 44px; font-weight: 900; }
+  .motif-box small { font-size: 10.5px; color: var(--nezumi-val); }
+
+  /* bata renga pattern */
+  .renga-pattern {
+    background-image:
+      linear-gradient(90deg, rgba(155,74,60,.16) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(20,20,20,.10) 1px, transparent 1px);
+    background-size: 34px 17px;
+  }
+  /* halftone koran */
+  .halftone {
+    background-image: radial-gradient(rgba(20,20,20,.22) 1px, transparent 1.4px);
+    background-size: 7px 7px;
+  }
+  /* garis aturan kolom */
+  .ruled { background-image: repeating-linear-gradient(0deg, rgba(20,20,20,.10) 0 1px, transparent 1px 26px); }
+
+  /* dark mode mock: 瓦斯灯の夜 */
+  .night {
+    background:
+      radial-gradient(circle at 25% 30%, rgba(217,164,65,.16), transparent 42%),
+      radial-gradient(circle at 78% 70%, rgba(217,164,65,.10), transparent 40%),
+      #12131a;
+    color: #ece5d5;
+  }
+  .night .meiji-card {
+    background: #191b23; border-color: rgba(236,229,213,.45); border-top-color: #ece5d5;
+  }
+  .night .meiji-title { color: #ece5d5; }
+  .night .kicker { color: #e08a6f; }
+  .night .meiji-btn { background: #d9a441; color: #201a10; border-color: #ece5d5; }
+
+  .tok { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; }
+  .tok .k { color: var(--renga-val); font-weight: 700; }
+  .tok .v { color: var(--ai-val); }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 12px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(20,20,20,.16); }
+  th { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--nezumi-val); border-bottom: var(--era-rule); }
+  td .jp { font-family: 'Noto Serif JP', serif; font-weight: 700; }
+
+  /* tabel aturan bentuk */
+  .ruledemo { border: var(--era-hair); border-top: var(--era-rule-double); border-radius:0; padding:14px 16px; background: var(--kinari-val); }
+  .keyline { border: var(--era-rule); border-radius:0; padding:12px 14px; background: var(--kinari-val); }
+</style>
+</head>
+<body class="paper">
+<div class="wrap">
+
+  <span class="badge pick">ERA #3 · LV 50 · NARATOR SAKU</span>
+  <h1><span class="jp">明治</span> Meiji — Papan Bahasa Visual</h1>
+  <p class="lead">
+    Tesis: <b><span class="jp">「明治 = 活字の時代」</span> — zaman huruf lepas.</b>
+    Heian <b>menulis tangan</b> (kana, kuas) → Edo <b>mencetak satu blok kayu</b> (ukiyo-e) →
+    Meiji <b>menyusun huruf logam</b> dan menekannya jadi <b>koran</b>, setiap pagi.
+    Karena fokus bahasa Meiji = <b>Grammar + Reading</b>, bentuk &amp; isi belajar jadi satu benda: <b>surat kabar</b>.
+    Primer <b><span class="jp">煉瓦</span> renga #9b4a3c</b> (bata Ginza) · aksen <b>瓦斯灯 gaslight #d9a441</b>.
+  </p>
+  <p class="lead" style="border-left:4px solid var(--renga-val);padding-left:14px;background:rgba(155,74,60,.06);padding-top:10px;padding-bottom:10px;margin-top:14px">
+    <b>⚠️ Koreksi bentuk:</b> versi pertama board ini masih memakai <code>box-shadow</code> offset (blur 0) = <b>tanda tangan Shōwa brutalism</b>, cuma diganti warna.
+    Sudah dibuang. <b>Meiji tidak punya bayangan sama sekali</b> — strukturnya dari <b>garis aturan</b> (hairline, aturan ganda, keyline) dan <b>flat fill</b>.
+  </p>
+
+  <!-- 1 ─────────────────────────────────────────────── -->
+  <h2><span class="num">01</span> Kontras tiga era: Heian → Edo → Meiji</h2>
+  <p class="lead" style="margin-top:10px">Meiji harus terasa sebagai <b>dunia ketiga</b>. Bentuknya berpindah dari <b>kuas</b> → <b>blok ukir (shadow keras)</b> → <b>huruf logam (tanpa shadow, garis aturan)</b>.</p>
+  <div class="grid g3" style="margin-top:18px">
+
+    <!-- Heian -->
+    <div>
+      <div class="label">Heian 平安 — tulis tangan</div>
+      <div style="margin-top:12px;position:relative;border-radius:18px;padding:20px;
+                  background:linear-gradient(160deg,#fbf8ef,#f0e9d6);
+                  border:1px solid rgba(58,51,43,.16);
+                  box-shadow:0 10px 26px -12px rgba(58,51,43,.30),0 30px 60px -30px rgba(91,74,122,.28);">
+        <div style="font-family:'Noto Serif JP',serif;font-size:22px;color:#5b4a7a;font-weight:700">日本語 基礎</div>
+        <div style="font-size:12px;color:#6b6154;margin-top:6px">radius 18px · tepi 1px · shadow blur</div>
+        <span style="display:inline-block;margin-top:14px;padding:9px 18px;border-radius:999px;background:linear-gradient(180deg,#6b5a8c,#5b4a7a);color:#fbf8ef;font-size:12px;font-weight:700">はじめる</span>
+      </div>
+      <p class="note">Sutra, kabut, mengambang. <b>Kuas.</b></p>
+    </div>
+
+    <!-- Edo -->
+    <div>
+      <div class="label">Edo 江戸 — cetak kayu</div>
+      <div style="margin-top:12px;background:#f4ecd8;border:2px solid #1c1b1a;border-radius:4px;
+                  padding:20px;box-shadow:3px 3px 0 0 rgba(28,27,26,.85);">
+        <div style="font-family:'Shippori Mincho',serif;font-size:22px;color:#1c1b1a;font-weight:700">日本語 基礎</div>
+        <div style="font-size:12px;color:#5c574a;margin-top:6px">radius 4px · tepi 2px · shadow keras 3·3·0</div>
+        <span style="display:inline-block;margin-top:14px;padding:9px 18px;background:#1e4f79;color:#f4ecd8;border:1.5px solid #1c1b1a;border-radius:4px;font-size:12px;font-weight:800;box-shadow:3px 3px 0 0 #1c1b1a">はじめる</span>
+      </div>
+      <p class="note">Kota tercetak, tegas, kayu. <b>Blok ukir + shadow.</b></p>
+    </div>
+
+    <!-- Meiji -->
+    <div>
+      <div class="label" style="color:var(--renga-val)">Meiji 明治 — huruf logam ✦ TARGET</div>
+      <div class="meiji-card" style="margin-top:12px">
+        <div class="kicker">No. 50 · 号外</div>
+        <div class="meiji-title">日本語 基礎</div>
+        <div class="meiji-sub">radius 0 · hairline + aturan ganda · tanpa bayangan</div>
+        <span class="meiji-btn">はじめる</span>
+      </div>
+      <p class="note">Presisi, mekanis, tercetak. <b>Huruf lepas, garis aturan.</b></p>
+    </div>
+  </div>
+
+  <!-- 2 ─────────────────────────────────────────────── -->
+  <h2><span class="num">02</span> Palet — 煉瓦 renga + 瓦斯灯 gaslight</h2>
+  <p class="lead" style="margin-top:10px">Primer bata Ginza (hangat, kota) di atas kertas koran (dingin, abu). Aksen amber = cahaya lampu gas — satu-satunya warna "menyala".</p>
+  <div class="grid g4" style="margin-top:16px">
+    <div class="swatch" style="background:#f4f1e8;color:#141414">生成 kinari #f4f1e8</div>
+    <div class="swatch" style="background:#141414;color:#f4f1e8">墨 sumi #141414</div>
+    <div class="swatch" style="background:#9b4a3c;color:#fff">煉瓦 renga #9b4a3c</div>
+    <div class="swatch" style="background:#b8352c;color:#fff">緋 shu #b8352c</div>
+    <div class="swatch" style="background:#2f4f6b;color:#fff">藍 ai #2f4f6b</div>
+    <div class="swatch" style="background:#c9922a;color:#201a10">金 kin #c9922a</div>
+    <div class="swatch" style="background:#d9a441;color:#201a10">瓦斯灯 gas #d9a441</div>
+    <div class="swatch" style="background:#6f6a60;color:#f4f1e8">鼠 nezumi #6f6a60</div>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="swatch" style="background:#12131a;color:#ece5d5">夜 yoru #12131a</div>
+    <div class="swatch" style="background:#d9795f;color:#201a10">煉瓦(gelap) #d9795f</div>
+    <div class="swatch" style="background:#e0b050;color:#201a10">瓦斯灯(gelap) #e0b050</div>
+  </div>
+
+  <!-- 3 ─────────────────────────────────────────────── -->
+  <h2><span class="num">03</span> Bentuk — garis aturan, BUKAN bayangan</h2>
+  <p class="lead" style="margin-top:10px">
+    Edo punya <b>shadow keras</b> (blok offset). Meiji <b>tidak punya bayangan sama sekali</b>.
+    Strukturnya dari <b>garis aturan</b>: hairline <code>1px</code>, aturan ganda <code>3px double</code> sebagai kepala kolom,
+    <b>keyline</b> (kotak tipis), dan <b>flat fill</b>. Satu-satunya offset = <b>chromatic misprint</b> horizontal tipis di masthead (salah register warna), bukan drop shadow.
+  </p>
+  <div class="grid g4" style="margin-top:16px">
+    <div class="motif-box" style="background:var(--kinari-val)">
+      <div class="glyph" style="color:var(--sumi-val)">│</div>
+      <small>hairline 1px</small>
+    </div>
+    <div class="motif-box" style="background:var(--kinari-val)">
+      <div class="glyph" style="color:var(--sumi-val)">═</div>
+      <small>aturan ganda 3px</small>
+    </div>
+    <div class="motif-box halftone">
+      <div class="glyph" style="color:var(--sumi-val)">◍</div>
+      <small>halftone — bintik cetak</small>
+    </div>
+    <div class="motif-box renga-pattern">
+      <div class="glyph" style="color:var(--renga-val)">▤</div>
+      <small>renga — pola bata</small>
+    </div>
+  </div>
+
+  <div class="grid g3" style="margin-top:18px">
+    <div>
+      <div class="label">Kartu: hairline + aturan ganda</div>
+      <div class="ruledemo" style="margin-top:12px">
+        <div class="kicker" style="font-size:10px;font-weight:900;letter-spacing:.24em;color:var(--renga-val)">KEPALA KOLOM</div>
+        <div style="font-family:'Noto Serif JP',serif;font-weight:900;font-size:20px;margin-top:6px">本日の課業</div>
+        <div class="note" style="margin-top:4px">1px hairline · 3px double di atas · radius 0 · <b>tanpa shadow</b></div>
+      </div>
+    </div>
+    <div>
+      <div class="label">Keyline — kotak tipis cetak</div>
+      <div class="keyline" style="margin-top:12px">
+        <div style="font-family:'Noto Serif JP',serif;font-weight:900;font-size:18px">号外</div>
+        <div class="note" style="margin-top:4px">1px solid mengelilingi blok — seperti kotak berita koran.</div>
+      </div>
+    </div>
+    <div>
+      <div class="label">Aturan pemisah antar-item</div>
+      <div class="ruledemo" style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:var(--era-hair)"><span>見出し A</span><b>+40</b></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:var(--era-hair)"><span>見出し B</span><b>+40</b></div>
+        <div style="display:flex;justify-content:space-between;padding-top:8px"><span>見出し C</span><b>+40</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div>
+      <div class="label">Masthead koran — judul hero</div>
+      <div class="masthead" style="margin-top:12px">
+        <div class="name">日本語学園<span class="en">Meiji Edition</span></div>
+        <div class="rule"></div>
+        <div class="meta"><span>第 五十 号</span><span>明治 edition</span><span>価 一銭</span></div>
+      </div>
+      <p class="note">Nama tebal serif + <b>misprint horizontal</b> tipis · sub-baris Latin spaced · aturan ganda di bawah.</p>
+    </div>
+    <div>
+      <div class="label">Kolom teks — Reading</div>
+      <div class="columns" style="margin-top:12px">
+        <span class="jp">文明開化</span> membawa koran ke setiap kota. Huruf logam disusun, ditekan, dicetak ribuan kali dalam sehari —
+        <span class="jp">活字</span> mengubah cara orang Jepang membaca. Di sini <b>Reading</b> hidup: teks dua kolom,
+        furigana makin sedikit, garis aturan memisahkan cerita seperti halaman surat kabar sungguhan.
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 ─────────────────────────────────────────────── -->
+  <h2><span class="num">04</span> Tipografi</h2>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="meiji-card">
+      <div class="kicker">Display / hero</div>
+      <div style="font-family:'Noto Serif JP',serif;font-weight:900;font-size:34px;margin-top:6px">明治の朝</div>
+      <div class="note"><b>Noto Serif JP 900</b> — 明朝体 modern, blok huruf cetak.</div>
+    </div>
+    <div class="meiji-card">
+      <div class="kicker">Latin / masthead</div>
+      <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:30px;margin-top:6px">The Daily</div>
+      <div class="note"><b>Playfair Display</b> — serif Victoria, khas koran abad ke-19.</div>
+    </div>
+    <div class="meiji-card">
+      <div class="kicker">Kanji / body</div>
+      <div style="font-family:'Shippori Mincho',serif;font-size:22px;margin-top:6px">新聞を読む</div>
+      <div class="note"><b>Shippori Mincho</b> (sudah dimuat) — konsisten dengan Edo.</div>
+    </div>
+  </div>
+  <p class="note" style="margin-top:12px">Aturan: <code>.font-display</code> → hero &amp; masthead · <code>.font-serif</code> → kanji/reading · Inter → tombol &amp; angka. Hanya <b>1 keluarga baru</b> (Playfair Display) + Noto Serif JP bila belum ada.</p>
+
+  <!-- 5 ─────────────────────────────────────────────── -->
+  <h2><span class="num">05</span> Motif &amp; aksen</h2>
+  <div class="grid g4" style="margin-top:16px">
+    <div class="motif-box" style="background:var(--kinari-val)"><div class="glyph" style="color:var(--renga-val)">唐草</div><small>karakusa — arabesque</small></div>
+    <div class="motif-box renga-pattern"><div class="glyph" style="color:var(--sumi-val)">煉瓦</div><small>renga — bata Ginza</small></div>
+    <div class="motif-box" style="background:var(--kinari-val)"><div class="glyph" style="color:var(--gas-val)">瓦斯灯</div><small>gaslight — lampu gas</small></div>
+    <div class="motif-box" style="background:var(--kinari-val)"><div class="glyph" style="color:var(--ai-val)">歯車</div><small>haguruma — gigi mesin</small></div>
+  </div>
+  <p class="note" style="margin-top:12px">Sekunder (dipakai tipis): 縞 garis · 蒸気 uap · 旭日 rising sun (hati-hati konotasi imperial) · halftone bintik koran.</p>
+
+  <!-- 6 ─────────────────────────────────────────────── -->
+  <h2><span class="num">06</span> Dark mode — 瓦斯灯の夜</h2>
+  <p class="lead" style="margin-top:10px">Gelap = <b>gang bata basah + kolam cahaya lampu gas</b> + kereta malam. Bukan "Heian ungu gelap", bukan "夜市 Edo". Tetap <b>tanpa bayangan</b> — aturan jadi krem tipis.</p>
+  <div class="night grid g3" style="margin-top:16px;padding:22px;border-radius:0;border:1px solid #ece5d5">
+    <div class="meiji-card">
+      <div class="kicker">夜 号外</div>
+      <div class="meiji-title">日本語 基礎</div>
+      <div class="meiji-sub" style="color:#a49c88">kolam cahaya gas di jalan bata</div>
+      <span class="meiji-btn">はじめる</span>
+    </div>
+    <div class="meiji-card" style="display:flex;flex-direction:column;justify-content:center;gap:8px">
+      <div class="kicker">headline malam</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:900;color:#ece5d5">夜汽車の窓</div>
+      <div class="note" style="color:#a49c88">teks krem koran · aksen amber gaslight · renga menyala</div>
+    </div>
+    <div class="meiji-card halftone" style="display:flex;align-items:center;justify-content:center">
+      <div style="font-family:'Noto Serif JP',serif;font-size:34px;font-weight:900;color:#e0b050">灯</div>
+    </div>
+  </div>
+
+  <!-- 7 ─────────────────────────────────────────────── -->
+  <h2><span class="num">07</span> Token CSS (usulan — untuk docs/tema/meiji.md)</h2>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="meiji-card">
+      <div class="kicker">[data-era="meiji"] — terang</div>
+      <pre class="tok" style="margin-top:10px;line-height:1.9">
+<span class="k">--kinari-val</span>: <span class="v">#f4f1e8</span>;  <span style="color:#8a8578">/* kertas koran */</span>
+<span class="k">--sumi-val</span>:   <span class="v">#141414</span>;  <span style="color:#8a8578">/* tinta pekat */</span>
+<span class="k">--renga-val</span>:  <span class="v">#9b4a3c</span>;  <span style="color:#8a8578">/* PRIMER bata */</span>
+<span class="k">--shu-val</span>:    <span class="v">#b8352c</span>;
+<span class="k">--ai-val</span>:     <span class="v">#2f4f6b</span>;
+<span class="k">--kin-val</span>:    <span class="v">#c9922a</span>;
+<span class="k">--gas-val</span>:    <span class="v">#d9a441</span>;  <span style="color:#8a8578">/* gaslight */</span>
+<span class="k">--era-shadow</span>: <span class="v">none</span>;  <span style="color:#8a8578">/* ⚠️ TANPA bayangan */</span>
+<span class="k">--era-hair</span>:   <span class="v">1px solid rgba(20,20,20,.55)</span>;
+<span class="k">--era-rule</span>:   <span class="v">1px solid var(--sumi-val)</span>;
+<span class="k">--era-rule-double</span>: <span class="v">3px double var(--sumi-val)</span>;
+<span class="k">--era-radius</span>: <span class="v">0px</span>;
+<span class="k">--era-motion</span>: <span class="v">180ms linear</span>;</pre>
+    </div>
+    <div class="meiji-card">
+      <div class="kicker">.dark[data-era="meiji"] — 瓦斯灯の夜</div>
+      <pre class="tok" style="margin-top:10px;line-height:1.9">
+<span class="k">--kinari-val</span>: <span class="v">#12131a</span>;
+<span class="k">--sumi-val</span>:   <span class="v">#ece5d5</span>;
+<span class="k">--renga-val</span>:  <span class="v">#d9795f</span>;
+<span class="k">--shu-val</span>:    <span class="v">#e0553f</span>;
+<span class="k">--ai-val</span>:     <span class="v">#6fa8d6</span>;
+<span class="k">--gas-val</span>:    <span class="v">#e0b050</span>;  <span style="color:#8a8578">/* gas menyala */</span></pre>
+      <div class="note" style="margin-top:10px"><b>Tanpa</b> <code>box-shadow</code>. Struktur dari <code>--era-rule</code> &amp; <code>--era-rule-double</code>. Satu-satunya offset = <code>text-shadow: 2px 0 0</code> di masthead (misprint horizontal).</div>
+    </div>
+  </div>
+
+  <!-- 8 ─────────────────────────────────────────────── -->
+  <h2><span class="num">08</span> Nama UI era (eraNames) &amp; aksen</h2>
+  <table>
+    <thead><tr><th>Fungsi</th><th>Heian</th><th>Edo</th><th>Meiji 明治</th><th>Alasan</th></tr></thead>
+    <tbody>
+      <tr><td>Shop</td><td>市</td><td>問屋</td><td><span class="jp">商店 shōten</span></td><td>toko modern</td></tr>
+      <tr><td>Gacha</td><td>貝合わせ</td><td>富くじ</td><td><span class="jp">福引 fukubiki</span></td><td>raffle ala department store</td></tr>
+      <tr><td>Mata uang</td><td>文</td><td>両</td><td><span class="jp">円 en</span></td><td>Yen lahir 1871 — akurat</td></tr>
+      <tr><td>Inventory</td><td>箪笥</td><td>風呂敷</td><td><span class="jp">鞄 kaban</span></td><td>tas Barat</td></tr>
+      <tr><td>Profil</td><td>系図</td><td>人別帳</td><td><span class="jp">戸籍 koseki</span></td><td>registrasi keluarga 1872</td></tr>
+      <tr><td>Misi</td><td>日課</td><td>奉公</td><td><span class="jp">課業 kagyō</span></td><td>pelajaran/PR sekolah</td></tr>
+      <tr><td>Peringkat</td><td>位</td><td>番付</td><td><span class="jp">階級 kaikyū</span></td><td>pangkat + 勲章</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:16px" class="grid g2">
+    <div>
+      <div class="label">Chip nama era — pratinjau</div>
+      <div style="margin-top:10px">
+        <span class="chip">商店</span><span class="chip">福引</span><span class="chip">円</span>
+        <span class="chip">鞄</span><span class="chip">戸籍</span><span class="chip">課業</span><span class="chip">階級</span>
+      </div>
+    </div>
+    <div class="meiji-card">
+      <div class="kicker">Contoh di layar (masthead + kartu)</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:20px;font-weight:900;margin-top:8px">本日の課業</div>
+      <div class="meiji-sub">Misi harian · 3 tugas · +120 EXP</div>
+      <div style="margin-top:10px">
+        <span class="meiji-btn">はじめる</span>
+        <span class="meiji-btn ghost" style="margin-left:8px">福引</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9 ─────────────────────────────────────────────── -->
+  <h2><span class="num">09</span> Peta Meiji — 8 perhentian (pratinjau)</h2>
+  <p class="lead" style="margin-top:10px">Tur "kota yang berubah": pelabuhan → kota → pers → masyarakat → rel → sekolah → pameran → parlemen.</p>
+  <div class="grid g4" style="margin-top:16px">
+    <div class="meiji-card"><div class="kicker">00 港</div><div class="meiji-title" style="font-size:18px">横浜港</div><div class="meiji-sub">gerbang dibuka · 開国</div></div>
+    <div class="meiji-card"><div class="kicker">01 市</div><div class="meiji-title" style="font-size:18px">銀座</div><div class="meiji-sub">jalan bata + gas · 買い物</div></div>
+    <div class="meiji-card"><div class="kicker">02 新聞</div><div class="meiji-title" style="font-size:18px">新聞社</div><div class="meiji-sub">koran · <b>Reading</b></div></div>
+    <div class="meiji-card"><div class="kicker">03 社交</div><div class="meiji-title" style="font-size:18px">鹿鳴館</div><div class="meiji-sub">dansa Barat · 洋装</div></div>
+    <div class="meiji-card"><div class="kicker">04 鉄道</div><div class="meiji-title" style="font-size:18px">鉄道</div><div class="meiji-sub">kereta + telegraf · 時間</div></div>
+    <div class="meiji-card"><div class="kicker">05 学</div><div class="meiji-title" style="font-size:18px">小学校</div><div class="meiji-sub">学制 1872 · <b>Grammar</b></div></div>
+    <div class="meiji-card"><div class="kicker">06 博</div><div class="meiji-title" style="font-size:18px">博覧会</div><div class="meiji-sub">pameran · 展示</div></div>
+    <div class="meiji-card"><div class="kicker">07 国会</div><div class="meiji-title" style="font-size:18px">国会</div><div class="meiji-sub">Konstitusi 1889 · <b>CHECKPOINT</b></div></div>
+  </div>
+
+  <h2><span class="num">10</span> Yang sudah terkunci (dari diskusi)</h2>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="meiji-card">
+      <span class="badge pick">DIKUNCI</span>
+      <ul style="margin:12px 0 0 18px;line-height:1.95;font-size:13.5px">
+        <li>Bentuk = <b>letterpress / koran</b> — garis aturan, keyline, halftone, <b>tanpa bayangan</b></li>
+        <li>Warna primer = <b>煉瓦 renga #9b4a3c</b></li>
+        <li>Aksen tunggal = <b>瓦斯灯 gaslight #d9a441</b></li>
+        <li>Fokus bahasa = <b>Grammar + Reading</b> · narator <b>Saku</b></li>
+        <li>Gerbang <b>Lv 50</b> · era #3 dari 6</li>
+      </ul>
+    </div>
+    <div class="meiji-card">
+      <span class="badge alt">PERLU DIPUTUSKAN</span>
+      <ul style="margin:12px 0 0 18px;line-height:1.95;font-size:13.5px">
+        <li>Font display: Noto Serif JP 900 vs Zen Old Mincho</li>
+        <li>Latin masthead: Playfair vs Bodoni Moda</li>
+        <li>Motif 旭日 rising sun — pakai / hindari?</li>
+        <li>Cinematic: 5 babak, naskah &amp; voice Saku</li>
+        <li>Checkpoint 国会: jenis ujian naik era</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
