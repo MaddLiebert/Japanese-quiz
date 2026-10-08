@@ -940,6 +940,20 @@ const THEME_BGM_PLANS = {
     // ritmis (everyMs 1200 ≪ 2400 Heian). Petikan pendek & tegas.
     pluck: { notes: [261.63, 293.66, 349.23, 392, 415.3], everyMs: 1200, dur: 1.1, gain: 0.18 },
   },
+  // Meiji 明治 (§9): 軍楽隊 brass band + piano ringan (文明開化) — MARCH tapi
+  // ringan. Satu-satunya era bertangga MAYOR diatonik (Barat) → menandai 文明開化.
+  // Bukan gagaku (Heian), bukan shamisen insen (Edo).
+  meiji: {
+    level: 0.13,
+    fadeInMs: 1200,       // masuk tegas-mekanis (Edo 1400, Heian 2600)
+    fadeOutMs: 800,
+    // Drone bass stabil, sedikit lebih TERANG dari Edo (+C3 130.81).
+    drone: { freqs: [55, 110, 130.81], detune: [0, -4, 2], gain: 0.46 },
+    // Pad: triangle mid lebih cerah + lowpass terbuka, napas lebih hidup.
+    pad: { type: 'triangle', freqs: [261.63, 329.63, 392], filterHz: 1300, lfoHz: 0.12, lfoDepth: 240, gain: 0.28 },
+    // piano/glock: tangga MAYOR (C D E G A) — "modern/Barat", bukan pentatonik.
+    pluck: { notes: [261.63, 293.66, 329.63, 392, 440], everyMs: 1100, dur: 1.0, gain: 0.17 },
+  },
 };
 
 export const themeBgmPlan = (era = 'heian') => THEME_BGM_PLANS[era] || THEME_BGM_PLANS.heian;

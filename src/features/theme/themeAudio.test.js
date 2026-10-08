@@ -51,6 +51,45 @@ test('themeBgmPlan: Heian & Edo beda (kontras tema terdengar)', () => {
   assert.equal(themeBgmPlan('heian').pluck, undefined, 'Heian memakai koto, bukan pluck');
 });
 
+// ── BGM tema Meiji 明治 (docs/tema/meiji.md §9) ─────────────────────────────
+
+test('themeBgmPlan meiji: level rendah & masuk TEGAS (lebih gesit dari Heian)', () => {
+  const p = themeBgmPlan('meiji');
+  assert.ok(p.level > 0 && p.level <= 0.15, 'level rendah (BGM default)');
+  assert.ok(p.fadeInMs < themeBgmPlan('heian').fadeInMs, 'Meiji masuk lebih cepat dari Heian');
+  assert.ok(p.fadeInMs >= 800 && p.fadeInMs <= 2000, 'tegas-mekanis tapi tidak menghentak');
+  assert.ok(p.fadeOutMs > 0 && p.fadeOutMs <= 1200);
+});
+
+test('themeBgmPlan meiji: drone bass + pad mid (audible, ada konten mid)', () => {
+  const p = themeBgmPlan('meiji');
+  assert.ok(p.drone.freqs.length >= 2);
+  assert.ok(p.drone.freqs.some((f) => f <= 60), 'ada bass');
+  assert.ok(p.pad.freqs.length >= 2);
+  const all = [...p.drone.freqs, ...p.pad.freqs];
+  for (const f of all) assert.ok(f >= 30 && f <= 2000, `freq ${f} audible`);
+  assert.ok(all.filter((f) => f >= 150).length >= 2, 'ada konten mid');
+  assert.ok(p.pad.lfoHz > 0 && p.pad.lfoHz <= 0.5, 'LFO napas');
+});
+
+test('themeBgmPlan meiji: piano/glock bertangga MAYOR diatonik (Barat, bukan pentatonik)', () => {
+  const p = themeBgmPlan('meiji');
+  assert.ok(Array.isArray(p.pluck.notes) && p.pluck.notes.length >= 4, 'tangga nada cukup');
+  for (const n of p.pluck.notes) assert.ok(n >= 200 && n <= 900, `nada ${n} register nyaman`);
+  // C D E G A = mayor pentatonik; setara derajat 0,2,4,7,9 dari C.
+  const semis = p.pluck.notes.map((n) => Math.round(12 * Math.log2(n / 261.63)));
+  assert.deepEqual(semis, [0, 2, 4, 7, 9], 'tangga mayor (Barat), bukan insen/hirajoshi');
+  assert.ok(p.pluck.dur > 0 && p.pluck.gain > 0 && p.pluck.gain <= 0.3);
+});
+
+test('themeBgmPlan: tiga era saling beda (kontras tema terdengar)', () => {
+  assert.notDeepEqual(themeBgmPlan('meiji'), themeBgmPlan('edo'));
+  assert.notDeepEqual(themeBgmPlan('meiji'), themeBgmPlan('heian'));
+  assert.equal(themeBgmPlan('meiji').koto, undefined, 'Meiji memakai pluck, bukan koto');
+  // Drone Meiji lebih terang dari Edo (+C3 130.81).
+  assert.ok(themeBgmPlan('meiji').drone.freqs.includes(130.81), 'drone +C3 = lebih terang');
+});
+
 test('themeBgmPlan heian: level −18 dB (≈0.12), fade lambat & santun', () => {
   const p = themeBgmPlan('heian');
   assert.ok(p.level > 0 && p.level <= 0.13, 'level rendah (BGM default −18 dB)');
