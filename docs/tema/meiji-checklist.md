@@ -6,6 +6,8 @@
 
 ## Legenda status
 `[ ]` belum · `[~]` setengah · `[x]` selesai · `[!]` butuh aset/eksternal
+> Catatan: **tidak ada lagi item `[!]`** — aset suara sudah terpasang, dan video
+> sengaja tidak dipakai (lihat T11b).
 
 ---
 
@@ -47,7 +49,7 @@
 - [x] T5-audio. Mood ambience Meiji (port/city/press/school/diet) + SFX (pressClack/steamWhistle/telegraph/paperCry) di `heianHistoryAudio.js`
 - [x] T10. Audio tema BGM — `THEME_BGM_PLANS.meiji` (brass, tangga **mayor diatonik** C D E G A, drone +C3) + test (**4 test**)
 - [x] T11. Voice cinematic — `public/voices/meiji/` **7 klip terpasang** (sumber `sakuu.mp3` 66,85s → split) + test penjaga file ada
-- [!] T11b. Video cinematic — `public/themes/meiji/` **butuh mp4/webm** (repo pakai pendekatan SVG/React → video opsional)
+- [x] T11b. Video cinematic — **TIDAK DIPAKAI.** Cinematic intro di-render **SVG/React** (`MeijiScenes.jsx` + `MeijiBackdrop.jsx` + `SceneLayer`), sama seperti Heian/Edo. Nol tag `<video>`/`.mp4`/`public/themes/` di `src/`. Baris "MP4/WebM" di PRD §10 = opsi alternatif yang tidak diambil; video jadi tak bisa reaktif ke waktu/mood/`prefers-reduced-motion` dan menambah ~8 MB bundle.
 - [x] T3. Motif — `.bg-karakusa`, `.bg-renga`, `.bg-halftone`, `.era-rule-top` (+ varian gelap)
 - [x] T4. Font — Playfair Display dimuat di `index.html`; `--font-display` = Noto Serif JP (明朝体), `--font-masthead` = Playfair (masthead Latin)
 - [x] T8. Verifikasi dark mode 6 kombinasi — test statis token (tiap era terang/gelap punya token inti, 3 latar gelap beda) + verifikasi CSS build ter-compile
@@ -58,6 +60,6 @@
 
 ## Catatan eksekusi
 - Test dijalankan: `node --test` (Node 24). Lint: `oxlint`. Build: `vite build`.
-- Item `[!]` (video) tidak bisa dibuat tanpa aset biner → ditandai, bukan dikarang.
-  Voice sudah **selesai** (aset user `sakuu.mp3` dipecah jadi 7 klip).
-- Semua modul mekanik M1–M15 selesai + teruji. Tema Meiji lengkap.
+- **Aset biner:** voice sudah **selesai** (aset user `sakuu.mp3` dipecah jadi 7 klip).
+  Video **tidak dipakai** — cinematic di-render SVG/React (lihat T11b).
+- Semua modul mekanik M1–M15 selesai + teruji. Tema Meiji **lengkap**.

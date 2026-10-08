@@ -309,6 +309,11 @@ Mengikuti pola Heian/Edo (`heian.md` §10, `edo.md` §10): 60–90 detik, data-d
 
 **Spesifikasi:** MP4 (H.264) + WebM fallback · 1920×1080 · < 8 MB · simpan di `public/themes/meiji/`.
 
+> **Status implementasi:** jalur video **tidak dipakai**. Cinematic di-render
+> **SVG/React** (`meiji/scenes/MeijiScenes.jsx` + `components/MeijiBackdrop.jsx` +
+> `SceneLayer`), sama seperti Heian/Edo — reaktif ke waktu/mood/`prefers-reduced-motion`,
+> tanpa bobot ~8 MB. Baris di atas = opsi alternatif yang tidak diambil.
+
 **Voice (pola sama `docs/voice-cinematic-edo.md`):** narator **Saku**, 1 file `saku-meiji.mp3` di-split jadi 7 klip (`01_era` … `07_welcome`) di `public/voices/meiji/`, sumber mentah di `voice-source/meiji/`.
 
 ### Naskah + timing (usulan, 7 baris)
