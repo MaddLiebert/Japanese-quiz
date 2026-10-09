@@ -2711,6 +2711,33 @@ button[data-toji-kill]::after {
   --ink:              rgba(236, 231, 216, 0.78);
 }
 
+/* ── CETAKAN MEIJI (nishiki-e/letterpress) — hiasan kartu JLPT N5 ────────────
+   Di Heian ruang kartu N5 diisi lukisan 月夜; di Edo diisi cetakan Fuji; di
+   Meiji dulu KOSONG. Di sini diisi "cetakan Meiji" buatan sendiri: 銀座煉瓦街
+   Ginza brick street + 瓦斯灯 gaslight (kolam cahaya amber = "malam Meiji") +
+   蒸気機関車 kereta uap + 電信柱 tiang telegraf + asap pabrik. Disatukan ke
+   kertas lewat mask gradien (padat di atas, luluh ke bawah) supaya teks
+   合格/JLPT N5 di bawahnya tetap di atas kertas bersih. HANYA era Meiji.
+   Dekoratif → pointer-events:none. */
+.meiji-art { display: none; }
+[data-era="meiji"] .meiji-art {
+  display: block;
+  pointer-events: none;
+}
+.meiji-art--print {
+  mix-blend-mode: multiply;                 /* menyatu ke kertas koran (siang) */
+  opacity: 0.9;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 46%, rgba(0,0,0,0.55) 68%, transparent 88%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 46%, rgba(0,0,0,0.55) 68%, transparent 88%);
+}
+/* Malam 瓦斯灯: cetakan menyala lembut di atas malam (screen), lebih redup. */
+.dark[data-era="meiji"] .meiji-art--print,
+[data-theme="dark"][data-era="meiji"] .meiji-art--print {
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  filter: saturate(0.95) contrast(1.03);
+}
+
 /* Judul hero memakai serif cetak tebal (Shippori Mincho B1). */
 [data-era="meiji"] h1 { font-family: var(--font-display); letter-spacing: 0.01em; }
 
@@ -2856,6 +2883,38 @@ button[data-toji-kill]::after {
   background-image: radial-gradient(circle at center, rgba(236, 231, 216, 0.18) 0 0.8px, transparent 0.9px);
 }
 
+/* ── DINDING BATA 煉瓦 — versi ORIGINAL (poster meiji.html `#brick`) ─────────
+   Sebelumnya Meiji TAK punya .era-pattern sendiri → lapisan latar (elemen
+   `.bg-seigaiha.era-pattern` di App.jsx) jatuh ke .bg-seigaiha = gelombang laut
+   milik EDO → dinding Meiji salah. Dinding Meiji yang BENAR = tembok bata 煉瓦
+   jalan Ginza: bata tersusun (staggered), nat gelap, garis highlight di atas &
+   bayangan di bawah tiap bata. Pola diambil APA ADANYA dari poster asli
+   (pattern 232×120, 5 bata + highlight + shadow) — makanya "versi original".
+   Warna SIANG = PERSIS poster asli day.html; GELAP = PERSIS meiji.html.
+   Dinding TIDAK bergerak (animation:none): tembok itu diam, sekaligus hemat
+   (hindari repaint tiap frame seperti peringatan di perf-heian.test.js). */
+[data-era="meiji"] .era-pattern {
+  /* Latar Meiji = 唐草 karakusa (arabesque) — motif UTAMA Meiji (PRD §motif),
+     BUKAN bata 煉瓦 (bata = aksen di poster Ginza, bukan latar app). Sengaja
+     dibedakan dari poster nihongo-gakuen supaya app punya identitas sendiri:
+     dinding kertas bersulur, bukan tembok bata. Warna renga pudar di siang. */
+  background-image: url("/art/meiji-karakusa-day.svg");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  opacity: 0.5 !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  animation: none !important;
+  top: 0; left: 0; width: 100%; height: 100%;
+  will-change: auto;
+}
+.dark[data-era="meiji"] .era-pattern,
+[data-theme="dark"][data-era="meiji"] .era-pattern {
+  /* Malam 瓦斯灯の夜: sulur 唐草 berpendar amber di kertas gelap. */
+  background-image: url("/art/meiji-karakusa-night.svg");
+  opacity: 0.5 !important;
+}
+
 /* 見出し罫 era-rule-top — garis aturan ganda (kepala kolom koran). */
 [data-era="meiji"] .era-rule-top {
   border-top: var(--era-rule-double);
@@ -2910,6 +2969,59 @@ button[data-toji-kill]::after {
    Dipakai sebagai hiasan "meja penyusun huruf" di Home. Dekoratif. */
 .meiji-ornament { display: none; }
 [data-era="meiji"] .meiji-ornament { display: block; }
+
+/* ── ORNAMEN MEIJI 明治 (hero 日本語学園) — 瓦斯灯 + 文選 ─────────────────────
+   Analog 提灯/暖簾 milik Edo. Di-gate `.meiji-ornament` (default none).
+   Dekoratif → pointer-events:none + user-select:none. Bentuk = logam & kaca,
+   sudut tajam, garis hairline, TANPA bayangan (anti-brutalism). */
+.meiji-ornament { pointer-events: none; user-select: none; }
+.meiji-ornament svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* 瓦斯灯 — lampu gas. Siang: kaca pucat, api PADAM (tanpa halo). */
+.meiji-gaslight-plate, .meiji-gaslight-arm { stroke: var(--sumi-val); stroke-width: 1.4; fill: none; }
+.meiji-gaslight-plate { fill: var(--sumi-val); opacity: 0.55; }
+.meiji-gaslight-finial { fill: var(--sumi-val); opacity: 0.7; }
+.meiji-gaslight-crown { fill: #3a3a38; stroke: var(--sumi-val); stroke-width: 1; }
+.meiji-gaslight-glass {
+  fill: color-mix(in srgb, var(--kinari-light-val) 70%, #ffffff 6%);
+  stroke: var(--sumi-val); stroke-width: 1.2; opacity: 0.9;
+}
+.meiji-gaslight-facets line { stroke: var(--sumi-val); stroke-width: 0.6; opacity: 0.35; }
+.meiji-gaslight-flame { fill: var(--gas-val); opacity: 0.18; }   /* padam: samar */
+.meiji-gaslight-base { fill: #3a3a38; stroke: var(--sumi-val); stroke-width: 1; }
+.meiji-gaslight-foot { fill: var(--sumi-val); opacity: 0.6; }
+.meiji-gaslight-glow { display: none; }                          /* siang: tanpa halo */
+
+/* Malam 瓦斯灯の夜: api menyala + kaca bercahaya + halo hangat. */
+.dark[data-era="meiji"] .meiji-gaslight-glass,
+[data-theme="dark"][data-era="meiji"] .meiji-gaslight-glass {
+  fill: rgba(240, 200, 90, 0.34);
+  stroke: #2a2415;
+}
+.dark[data-era="meiji"] .meiji-gaslight-flame,
+[data-theme="dark"][data-era="meiji"] .meiji-gaslight-flame {
+  fill: #ffe6a6; opacity: 1; filter: drop-shadow(0 0 3px rgba(255, 214, 130, 0.9));
+}
+.dark[data-era="meiji"] .meiji-gaslight-facets line,
+[data-theme="dark"][data-era="meiji"] .meiji-gaslight-facets line { stroke: #2a2415; opacity: 0.5; }
+.dark[data-era="meiji"] .meiji-gaslight-glow,
+[data-theme="dark"][data-era="meiji"] .meiji-gaslight-glow { display: block; }
+
+/* 文選 — rak huruf 活字: kayu + blok logam ber-kanji. */
+.meiji-bunsen-box { fill: #4a3a2a; stroke: var(--sumi-val); stroke-width: 1.2; }
+.meiji-bunsen-rail { fill: var(--sumi-val); opacity: 0.5; }
+.meiji-bunsen-type { fill: #6b5b48; stroke: var(--sumi-val); stroke-width: 0.8; }
+.meiji-bunsen-kanji {
+  fill: var(--kinari-light-val);
+  font-family: var(--font-display);
+  font-size: 8px; font-weight: 700;
+}
+.dark[data-era="meiji"] .meiji-bunsen-box,
+[data-theme="dark"][data-era="meiji"] .meiji-bunsen-box { fill: #2c2219; }
+.dark[data-era="meiji"] .meiji-bunsen-type,
+[data-theme="dark"][data-era="meiji"] .meiji-bunsen-type { fill: #463a2c; }
+.dark[data-era="meiji"] .meiji-bunsen-kanji,
+[data-theme="dark"][data-era="meiji"] .meiji-bunsen-kanji { fill: var(--gas-val); }
 
 /* 文選 bunsen — palung penyusun huruf: kolom 活字 (kotak logam) berbaris.
    Sudut tajam, garis tipis, TANPA bayangan — blok huruf timah di meja. */
@@ -3057,6 +3169,35 @@ button[data-toji-kill]::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg stroke='%236fa8d6' stroke-width='2' fill='none' opacity='0.16'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='30'/%3E%3Ccircle cx='0' cy='60' r='10'/%3E%3Ccircle cx='0' cy='60' r='20'/%3E%3Ccircle cx='0' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3C/g%3E%3C/svg%3E");
 }
 
+/* Meiji 明治 — dinding bata 煉瓦 di panel hero. WAJIB di sini (bukan cuma
+   `.era-pattern` global): panel Home opak (frame bg-kinari-light + gradien
+   overlay) menutupi lapisan latar global → dinding bata tak terlihat di Home
+   ("gak ada tuh di sini"). Pola era lain (Edo seigaiha) pun tampil langsung di
+   panel hero; Meiji disamakan. Warna = PERSIS poster asli (siang day.html,
+   gelap meiji.html). Dinding rata (repeat, tanpa animasi). */
+[data-era="meiji"] .home-hero-bg {
+  /* Hero Meiji = 唐草 karakusa di kertas koran (bukan tembok bata). Sengaja
+     dibedakan dari poster: app = dinding kertas bersulur. Siang: sulur renga
+     tipis + sedikit sorot kertas. Bukan scene bata. */
+  background-image:
+    radial-gradient(70% 55% at 80% 22%, rgba(201,118,105,0.10) 0%, rgba(0,0,0,0) 62%),
+    url("/art/meiji-karakusa-day.svg");
+  background-repeat: no-repeat, repeat;
+  background-size: auto, 300px 300px;
+  box-shadow: inset 0 0 0 1px rgba(155,74,60,0.16);
+}
+.dark[data-era="meiji"] .home-hero-bg,
+[data-theme="dark"][data-era="meiji"] .home-hero-bg {
+  /* Malam: sulur 唐草 amber + sorot lampu gas di kanan-atas + vignette ruangan. */
+  background-image:
+    radial-gradient(46% 34% at 84% 20%, rgba(255,196,120,0.34) 0%, rgba(255,168,84,0.14) 36%, rgba(0,0,0,0) 68%),
+    radial-gradient(150% 128% at 30% 40%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.72) 100%),
+    url("/art/meiji-karakusa-night.svg");
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: auto, auto, 300px 300px;
+  box-shadow: inset 0 0 0 1px rgba(236,231,216,0.13);
+}
+
 /* ── Warna teks merek per-era (ikut PALET tema, TANPA merah) ──────────────── */
 
 /* Edo 江戸 — indigo 藍 kota cetak. TIDAK pakai 朱/merah (permintaan user:
@@ -3082,6 +3223,22 @@ button[data-toji-kill]::after {
    Heian tidak diubah (tetap 朱). */
 [data-era="edo"] .home-hero-h1-accent { color: var(--ai-val) !important; }
 [data-era="meiji"] .home-hero-h1-accent { color: var(--renga-val) !important; }
+
+/* ── Scene Meiji ala mockup_meiji — veil pengganti: lapisan pencerah bawaan
+   (from-kinari-light/85) memudarkan dinding → di Meiji DIMATIKAN supaya dinding
+   bata gelap terbaca seperti ruangan di mockup. */
+[data-era="meiji"] .home-hero-veil { background-image: none !important; }
+
+/* Teks di atas dinding gelap (mode gelap): judul 日本語 krem, merek krem hangat —
+   persis poster meiji.html (putih di atas bata gelap), bukan hitam. */
+.dark[data-era="meiji"] .home-hero-h1,
+[data-theme="dark"][data-era="meiji"] .home-hero-h1 { color: #f0eee8 !important; }
+.dark[data-era="meiji"] .home-hero-title,
+[data-theme="dark"][data-era="meiji"] .home-hero-title { color: #efe6d6 !important; }
+.dark[data-era="meiji"] .home-hero-sub,
+[data-theme="dark"][data-era="meiji"] .home-hero-sub { color: #cbbaa3 !important; opacity: 0.9; }
+.dark[data-era="meiji"] .home-hero-mark,
+[data-theme="dark"][data-era="meiji"] .home-hero-mark { color: #f0eee8 !important; }
 
 
 

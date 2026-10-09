@@ -11,7 +11,9 @@ import { EraDivider } from "../components/EraDivider";
 import { EraTategaki } from "../components/EraTategaki";
 import { EraVillageArt, EraNightArt } from "../components/EraArtwork";
 import { EdoPrintArt } from "../components/EdoArtwork";
+import { MeijiPrintArt } from "../components/MeijiArtwork";
 import { EdoLantern, EdoNoren } from "../components/EdoOrnament";
+import { MeijiGaslight, MeijiBunsen } from "../components/MeijiOrnament";
 
 import { StreakIndicator } from "../components/StreakIndicator";
 import { RankBadge } from "../features/progress/RankBadge";
@@ -163,7 +165,7 @@ export function Home() {
         {/* --- HEADER --- */}
         <header className="grid grid-cols-1 sm:grid-cols-12 border-b-[4px] border-sumi relative z-10">
           <div className="home-hero-bg sm:col-span-8 p-6 sm:p-12 flex flex-col justify-between border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-sumi relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-kinari-light/85 via-kinari-light/40 to-transparent pointer-events-none"></div>
+            <div className="home-hero-veil absolute inset-0 bg-gradient-to-br from-kinari-light/85 via-kinari-light/40 to-transparent pointer-events-none"></div>
 
             {/* Vignette 江戸 chōnin — "昼は市、夜は提灯" (siang pasar, malam lentera):
                 暖簾 noren (tirai toko = siang pasar) dengan 提灯 chochin (lentera)
@@ -173,6 +175,12 @@ export function Home() {
               <EdoNoren className="w-20 sm:w-28" />
               <EdoLantern className="-mt-1 w-10 sm:w-12" kanji="学" />
             </div>
+
+            {/* Hiasan Meiji 明治 — 瓦斯灯 lampu gas Ginza (analog 提灯 Edo:
+                gantung & berayun ikut scroll; menyala saat malam) + 文選 rak
+                huruf 活字. HANYA era Meiji (di-gate .meiji-ornament). */}
+            <MeijiGaslight className="meiji-hero-lamp absolute top-0 right-2 sm:right-6 w-8 sm:w-11 z-20" />
+            <MeijiBunsen className="meiji-hero-bunsen absolute bottom-3 right-3 sm:right-8 w-20 sm:w-28 z-20" />
 
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -268,6 +276,11 @@ export function Home() {
                 mengisi ruang yang sama di era Edo (lukisan Heian di atas
                 disembunyikan di Edo → dulu kosong/hambar). Luluh ke kertas. */}
             <EdoPrintArt className="absolute inset-x-0 top-0 w-full h-[62%] z-0" />
+
+            {/* Cetakan Meiji (buatan sendiri: 銀座煉瓦街 + 瓦斯灯 + 蒸気機関車 +
+                電信柱) — mengisi ruang kartu N5 di era Meiji (dulu kosong/hambar,
+                sama seperti Edo sebelum ada ukiyo-e). Luluh ke kertas. */}
+            <MeijiPrintArt className="absolute inset-x-0 top-0 w-full h-[64%] z-0" />
 
             <div className="flex items-start justify-between relative z-20">
               <div className="writing-vertical-rl text-xs uppercase tracking-[0.5em] font-black text-sumi/50">

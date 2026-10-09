@@ -91,3 +91,50 @@ test('T8: tiap era punya latar gelap BERBEDA (vibe malam tak bertabrakan)', () =
   assert.ok(bgs.every(Boolean), `latar gelap hilang: ${JSON.stringify(bgs)}`);
   assert.equal(new Set(bgs).size, 3, `latar gelap era harus beda semua: ${bgs.join(', ')}`);
 });
+
+// ── Latar 唐草 karakusa (motif UTAMA Meiji, bukan bata poster) ──────────────
+// Keputusan user: latar Meiji app harus BEDA dari poster nihongo-gakuen (yang
+// bertembok bata 煉瓦). Motif utama Meiji menurut PRD tema = 唐草 karakusa
+// (arabesque); bata hanya aksen. Jadi .era-pattern = sulur karakusa, bukan bata.
+test('Meiji: latar = 唐草 karakusa (motif utama PRD), bukan bata poster', () => {
+  const lt = block.match(/\[data-era="meiji"\]\s*\.era-pattern\s*\{([\s\S]*?)\n\}/);
+  assert.ok(lt, 'Meiji harus punya rule [data-era="meiji"] .era-pattern sendiri');
+  assert.ok(/url\("\/art\/meiji-karakusa-day\.svg"\)/.test(lt[1]),
+    '.era-pattern Meiji siang harus pakai /art/meiji-karakusa-day.svg');
+  // Bukan bata: jangan rujuk aset bata poster.
+  assert.ok(!/meiji-brick/.test(lt[1]), 'latar Meiji tidak boleh pakai aset bata poster');
+  // Bukan seigaiha (lingkaran gelombang) milik Edo.
+  assert.ok(!/circle cx='30' cy='30'/.test(lt[1]), 'dinding Meiji tidak boleh seigaiha Edo');
+  // Dinding diam — jangan dianimasikan (perf: hindari repaint).
+  assert.ok(/animation:\s*none/.test(lt[1]), '.era-pattern Meiji harus animation:none (statis)');
+
+  const dk = block.match(/\.dark\[data-era="meiji"\]\s*\.era-pattern[\s\S]*?\{([\s\S]*?)\n\}/);
+  assert.ok(dk, 'harus ada varian gelap .era-pattern Meiji');
+  assert.ok(/url\("\/art\/meiji-karakusa-night\.svg"\)/.test(dk[1]),
+    'varian gelap harus pakai /art/meiji-karakusa-night.svg');
+});
+// ── Ornamen hero Meiji: 瓦斯灯 (lampu gas) + 文選 (rak 活字) ─────────────────
+// Analog 提灯/暖簾 milik Edo. Harus di-gate `.meiji-ornament` (default none),
+// dan lampu gas MENYALA (halo tampil) hanya di mode gelap.
+test('Meiji: ornamen 瓦斯灯/文選 di-gate meiji, lampu menyala saat gelap', () => {
+  assert.ok(/\.meiji-ornament\s*\{\s*display:\s*none/.test(block), 'ornamen default none');
+  assert.ok(/\[data-era="meiji"\]\s*\.meiji-ornament\s*\{\s*display:\s*block/.test(block),
+    'ornamen tampil di Meiji');
+  assert.ok(/\.meiji-gaslight-glow\s*\{\s*display:\s*none/.test(block), 'halo padam (siang)');
+  assert.ok(/\.dark\[data-era="meiji"\]\s*\.meiji-gaslight-glow[\s\S]*?display:\s*block/.test(block),
+    'halo lampu gas menyala di mode gelap');
+  assert.ok(/\.meiji-bunsen-kanji/.test(block), 'blok 活字 文選 ada');
+});
+
+// ── Seni kartu JLPT N5 era Meiji (銀座煉瓦街 + 瓦斯灯 + 蒸気機関車) ───────────
+// Sejajar EdoPrintArt (ukiyo-e) & lukisan 月夜 Heian: kartu N5 Meiji dulu KOSONG,
+// kini diisi "cetakan Meiji". Harus di-gate .meiji-art (default none) & luluh
+// ke kertas lewat mask.
+test('Meiji: kartu N5 = cetakan Meiji (gate meiji-art + mask luluh)', () => {
+  assert.ok(/\.meiji-art\s*\{\s*display:\s*none/.test(block), 'seni default none');
+  assert.ok(/\[data-era="meiji"\]\s*\.meiji-art\s*\{\s*display:\s*block/.test(block),
+    'seni tampil di Meiji');
+  assert.ok(/\.meiji-art--print[\s\S]*?mask-image/.test(block), 'ada mask luluh ke kertas');
+  assert.ok(/\.dark\[data-era="meiji"\]\s*\.meiji-art--print[\s\S]*?mix-blend-mode:\s*screen/.test(block),
+    'malam: seni menyala lembut (screen)');
+});

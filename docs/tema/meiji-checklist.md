@@ -51,9 +51,12 @@
 - [x] T11. Voice cinematic — `public/voices/meiji/` **7 klip terpasang** (sumber `sakuu.mp3` 66,85s → split) + test penjaga file ada
 - [x] T11b. Video cinematic — **TIDAK DIPAKAI.** Cinematic intro di-render **SVG/React** (`MeijiScenes.jsx` + `MeijiBackdrop.jsx` + `SceneLayer`), sama seperti Heian/Edo. Nol tag `<video>`/`.mp4`/`public/themes/` di `src/`. Baris "MP4/WebM" di PRD §10 = opsi alternatif yang tidak diambil; video jadi tak bisa reaktif ke waktu/mood/`prefers-reduced-motion` dan menambah ~8 MB bundle.
 - [x] T3. Motif — `.bg-karakusa`, `.bg-renga`, `.bg-halftone`, `.era-rule-top` (+ varian gelap)
+- [x] T3b. **Latar 唐草 karakusa (REVISI keputusan user)** — latar Meiji diganti dari dinding bata 煉瓦 → **唐草 karakusa (arabesque)**, sesuai motif UTAMA PRD §2 (`docs/tema/meiji.md`); bata cuma AKSEN. Alasan: bata bikin latar app MIRIP poster `nihongo-gakuen` (bertembok bata) — user mau BEDA. Aset: `public/art/meiji-karakusa-day.svg` + `meiji-karakusa-night.svg` (sulur S-curve + daun berlekuk acanthus + tendril, seamless). **Dipasang di DUA tempat**: (a) `.era-pattern` global; (b) `.home-hero-bg` panel hero Home. Guard: `meijiTheme.test.js` + `homeHero.test.js` (assert pakai karakusa DAN menolak `/meiji-brick/`).
+- [x] T3c. **Ornamen hero Meiji** — 瓦斯灯 gaslight (lampu gas Ginza, analog 提灯 Edo: berayun ikut scroll, MENYALA+halo saat gelap) + 文選 bunsen (rak huruf 活字). `src/components/MeijiOrnament.jsx`, gate `.meiji-ornament`. Guard: `meijiTheme.test.js`.
+- [x] T3d. **Seni kartu JLPT N5 Meiji** — 銀座煉瓦街 + 瓦斯灯 + 蒸気機関車 + 電信柱 + asap pabrik (letterpress + garis ukir hatching). `src/components/MeijiArtwork.jsx`, gate `.meiji-art`, mask luluh ke kertas. Sejajar EdoPrintArt (ukiyo-e) & lukisan 月夜 (Heian). Guard: `meijiTheme.test.js`.
 - [x] T4. Font — Playfair Display dimuat di `index.html`; `--font-display` = Noto Serif JP (明朝体), `--font-masthead` = Playfair (masthead Latin)
 - [x] T8. Verifikasi dark mode 6 kombinasi — test statis token (tiap era terang/gelap punya token inti, 3 latar gelap beda) + verifikasi CSS build ter-compile
-- [x] T12. Verifikasi akhir — `npm test` (**1171 pass / 0 fail**), `npm run lint` (**exit 0**), `npm run build` (**exit 0**)
+- [x] T12. Verifikasi akhir — `npm test` (**1177 pass / 0 fail**), `npm run lint` (**exit 0**), `npm run build` (**exit 0**)
 - [x] T12b. Wiring app: route `/meiji-history`, `/kokkai-checkpoint`, `/typesetting`, `/printshop`, `/neologism`, `/codex`, `/koseki` di `App.jsx`; entri cinematic Meiji di `Settings.jsx`; token warna `--color-renga`/`--color-gas`/`--color-nezumi` + default `:root` di `index.css`
 
 ---
