@@ -954,6 +954,17 @@ const THEME_BGM_PLANS = {
     // piano/glock: tangga MAYOR (C D E G A) — "modern/Barat", bukan pentatonik.
     pluck: { notes: [261.63, 293.66, 329.63, 392, 440], everyMs: 1100, dur: 1.0, gain: 0.17 },
   },
+  showa: {
+    level: 0.13,
+    fadeInMs: 1600,       // masuk hangat (Meiji 1200, Heian 2600)
+    fadeOutMs: 1000,
+    // Drone bass stabil, BERAT & RENDAH (beton) — lebih gelap dari Meiji.
+    drone: { freqs: [49, 98, 116.54], detune: [0, -5, 2], gain: 0.5 },
+    // Pad: sawtooth mid hangat (kayōkyoku) + lowpass, napas nostalgia.
+    pad: { type: 'sawtooth', freqs: [196, 233.08, 293.66], filterHz: 900, lfoHz: 0.08, lfoDepth: 180, gain: 0.24 },
+    // gitar bersih: pentatonik + blues (A C D E G) — Jepang-modern/melankolis.
+    pluck: { notes: [196, 220, 261.63, 293.66, 349.23], everyMs: 1250, dur: 1.1, gain: 0.16 },
+  },
 };
 
 export const themeBgmPlan = (era = 'heian') => THEME_BGM_PLANS[era] || THEME_BGM_PLANS.heian;

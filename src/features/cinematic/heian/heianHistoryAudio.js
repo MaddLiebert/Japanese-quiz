@@ -202,6 +202,18 @@ export const HEIAN_SFX_PARAMS = {
   telegraph: { kind: 'wood', from: 1600, to: 1200, dur: 0.05, gain: 0.16, noiseGain: 0.05 },
   // 掛け声 sorak penjual koran (nyaring, pendek) — kota yang ramai.
   paperCry: { kind: 'noise', dur: 0.5, gain: 0.08, type: 'bandpass', fromHz: 1400, toHz: 800, q: 1.5, curve: 'soft' },
+
+  // ── Shōwa 昭和 (kota beton) — mesin, kereta cepat, sekolah, 歌謡曲 ──────────
+  // 蝉 cicada (ミンミンゼミ) — denging musim panas Shōwa (latar pasca-perang).
+  cicada: { kind: 'noise', dur: 1.4, gain: 0.05, type: 'bandpass', fromHz: 4200, toHz: 5200, q: 3.2, curve: 'soft' },
+  // 歌謡曲 kayōkyoku — petikan gitar bersih pentatonik+blues (nostalgia).
+  kayokyoku: { kind: 'pluck', from: 220, dur: 1.2, gain: 0.15, overtoneGain: 0.14, filterHz: 1900, bend: -10 },
+  // 杭打ち tiang pancang beton — "dug-dug" berat, rendah (pondasi kota).
+  pileDriver: { kind: 'drum', from: 78, to: 34, dur: 0.62, gain: 0.32, noiseGain: 0.1 },
+  // 新幹線 — kereta cepat melintas (desis naik cepat, bukan peluit uap).
+  shinkansen: { kind: 'noise', dur: 1.3, gain: 0.11, type: 'bandpass', fromHz: 700, toHz: 3200, q: 0.9, curve: 'soft' },
+  // チャイム sekolah — bel dua nada (ta-ding) khas sekolah Shōwa.
+  schoolChime: { kind: 'bell', baseHz: 523.25, partials: [1, 2.0, 2.76, 4.0], dur: 2.0, gain: 0.1 },
 };
 
 export const heianSfxParams = (key) => HEIAN_SFX_PARAMS[key] || null;
@@ -374,6 +386,36 @@ export const AMBIENCE_PLANS = {
     drone: { freqs: [55, 110, 164.81], detune: [0, -4, 4], gain: 0.44 },
     pad: { type: 'triangle', freqs: [261.63, 329.63, 392], filterHz: 1250, lfoHz: 0.06, lfoDepth: 260, gain: 0.3 },
     air: { type: 'bandpass', hz: 900, gain: 0.05 },
+  },
+
+  // ── Shōwa 昭和: kota beton — drone BERAT & RENDAH (beton), pentatonik+blues ─
+  // ruins: 焼け跡 — sunyi, abu, langit kosong. Paling kelam & lapang.
+  ruins: {
+    level: 0.09, fadeInMs: 2200, fadeOutMs: 1200,
+    drone: { freqs: [41.2, 82.41], detune: [0, -6], gain: 0.5 },
+    pad: { type: 'triangle', freqs: [146.83, 174.61], filterHz: 520, lfoHz: 0.04, lfoDepth: 300, gain: 0.3 },
+    air: { type: 'lowpass', hz: 320, gain: 0.06 },
+  },
+  // yamichi: 闇市 — malam pasar, hangat samar (bohlam), hidup keras.
+  yamichi: {
+    level: 0.1, fadeInMs: 1600, fadeOutMs: 1000,
+    drone: { freqs: [49, 98], detune: [0, -5], gain: 0.46 },
+    pad: { type: 'triangle', freqs: [196, 233.08], filterHz: 760, lfoHz: 0.06, lfoDepth: 240, gain: 0.3 },
+    air: { type: 'bandpass', hz: 700, gain: 0.05 },
+  },
+  // danchi: 団地 — siang beton (terang, netral, sedikit kosong).
+  danchi: {
+    level: 0.1, fadeInMs: 1600, fadeOutMs: 900,
+    drone: { freqs: [49, 98, 116.54], detune: [0, -5, 2], gain: 0.48 },
+    pad: { type: 'triangle', freqs: [220, 261.63, 329.63], filterHz: 1100, lfoHz: 0.08, lfoDepth: 220, gain: 0.28 },
+    air: { type: 'bandpass', hz: 1000, gain: 0.05 },
+  },
+  // expo: 万博 — masa depan 1970 (paling terang, sentuhan harapan, pentatonik).
+  expo: {
+    level: 0.12, fadeInMs: 1400, fadeOutMs: 1000,
+    drone: { freqs: [49, 98, 146.83], detune: [0, -4, 4], gain: 0.46 },
+    pad: { type: 'triangle', freqs: [261.63, 329.63, 392, 440], filterHz: 1400, lfoHz: 0.12, lfoDepth: 260, gain: 0.3 },
+    air: { type: 'bandpass', hz: 1300, gain: 0.05 },
   },
 };
 

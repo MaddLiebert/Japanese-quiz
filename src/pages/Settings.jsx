@@ -389,6 +389,9 @@ export function Settings() {
                 { id: 'meiji', kanji: '明治', name: 'Meiji', route: '/meiji-history',
                   desc_id: 'Cinematic sejarah yang diputar sekali saat era Meiji pertama terbuka. Putar ulang kapan saja di sini.',
                   desc_en: 'The historical cinematic that plays once when the Meiji era first opens. Replay it any time here.' },
+                { id: 'showa', kanji: '昭和', name: 'Shōwa', route: '/showa-history',
+                  desc_id: 'Cinematic sejarah yang diputar sekali saat era Shōwa pertama terbuka. Putar ulang kapan saja di sini.',
+                  desc_en: 'The historical cinematic that plays once when the Shōwa era first opens. Replay it any time here.' },
               ].map((c) => {
                 const open = unlocked.some((e) => e.id === c.id);
                 return (

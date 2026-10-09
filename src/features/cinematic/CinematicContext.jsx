@@ -23,6 +23,7 @@ import { nextCinematic, getCinematic } from './cinematics';
 import { HeianCinematic } from './heian/HeianCinematic';
 import { EdoCinematic } from './edo/EdoCinematic';
 import { MeijiCinematic } from './meiji/MeijiCinematic';
+import { ShowaCinematic } from './showa/ShowaCinematic';
 import { isAudioRunning, enableHeianAudio } from './heian/heianHistoryAudio';
 
 const CinematicContext = createContext(null);
@@ -38,6 +39,9 @@ function CinematicStage({ cinematic, onDone, onExplore, onSeen }) {
     }
     if (cinematic.era === 'meiji') {
       return <MeijiCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
+    }
+    if (cinematic.era === 'showa') {
+      return <ShowaCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
     }
     return <HeianCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
   }

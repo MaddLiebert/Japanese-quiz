@@ -10,6 +10,7 @@ import { Speaking } from "./pages/Speaking";
 import { HeianHistory } from "./pages/HeianHistory";
 import { EdoHistory } from "./pages/EdoHistory";
 import { MeijiHistory } from "./pages/MeijiHistory";
+import { ShowaHistory } from "./pages/ShowaHistory";
 import { Typesetting } from "./pages/Typesetting";
 import { PrintShop } from "./pages/PrintShop";
 import { Neologism } from "./pages/Neologism";
@@ -272,6 +273,7 @@ function App() {
                   <Route path="/heian-history" element={<HeianHistory />} />
                   <Route path="/edo-history" element={<EdoHistory />} />
                   <Route path="/meiji-history" element={<MeijiHistory />} />
+                  <Route path="/showa-history" element={<ShowaHistory />} />
                   <Route path="/hakone-checkpoint" element={<HakoneCheckpoint />} />
                   <Route path="/kokkai-checkpoint" element={<KokkaiCheckpoint />} />
                   <Route path="/typesetting" element={<Typesetting />} />
