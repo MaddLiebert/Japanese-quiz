@@ -1,10 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { SHOWA_SCENES, XFADE, MOUNT_PAD, voiceCues } from './scenes.js';
 import {
   totalDuration, sceneStartTimes, sceneAtTime, audioCues,
   ambienceTimeline, validateScenes, sceneOpacityAt, visibleSceneIndices,
 } from '../../timeline.js';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..');
 
 test('scenes Shōwa: valid (id unik, durasi>0, terjemahan setelah teks Jepang)', () => {
   assert.deepEqual(validateScenes(SHOWA_SCENES), []);
@@ -91,6 +96,15 @@ test('voiceCues Shōwa: file voice menunjuk /voices/showa/ (T11 belum digenerate
   for (const v of voiceCues()) {
     assert.ok(v.path.startsWith('/voices/showa/'), `path tidak di /voices/showa/: ${v.path}`);
     assert.ok(v.path.endsWith('.mp3'), `path bukan mp3: ${v.path}`);
+  }
+});
+
+test('voiceCues Shōwa: T11 SELESAI — tiap file voice ADA di public/voices/showa/', () => {
+  // Aset Nacht 昭和 (7 klip) di-split dari voice-source/showa/nacht.mp3.
+  // Lihat docs/voice-cinematic-showa.md.
+  for (const v of voiceCues()) {
+    const full = join(ROOT, 'public', v.path.replace(/^\//, ''));
+    assert.ok(existsSync(full), `file voice hilang: ${v.path} (harus di ${full})`);
   }
 });
 
