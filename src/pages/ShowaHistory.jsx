@@ -24,7 +24,7 @@ const ROUTE_BY_FEATURE = {
   transit: '/learn',     // 新幹線 — perjalanan/progres
   social: '/learn',      // オリンピック — pergaulan/bahasa
   shop: '/shop',         // 万博 — display barang (商店街)
-  checkpoint: '/n5-exam',// 卒業 — ujian N5 → naik era (pakai features/n5exam)
+  checkpoint: '/sotsugyo-checkpoint',// 卒業 — gerbang ujian N5 → naik era (pakai features/n5exam)
 };
 
 const FEATURE_LABEL = {
@@ -35,7 +35,7 @@ const FEATURE_LABEL = {
   transit: { jp: '新幹線', id: 'Perjalanan 新幹線' },
   social: { jp: '祭', id: 'Bangga オリンピック' },
   shop: { jp: '商店街', id: 'Warung (商店街)' },
-  checkpoint: { jp: '卒業', id: 'Checkpoint Naik Era (N5)' },
+  checkpoint: { jp: '卒業', id: 'Gerbang N5 (卒業)' },
 };
 
 export function ShowaHistory() {

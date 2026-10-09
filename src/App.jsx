@@ -25,6 +25,7 @@ import Shop from "./features/shop/Shop";
 import Inventory from "./features/inventory/Inventory";
 import { DeathQuizScreen } from "./features/deathquiz/DeathQuizScreen";
 import { N5ExamScreen } from "./features/n5exam/N5ExamScreen";
+import { SotsugyoCheckpoint } from "./pages/SotsugyoCheckpoint";
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
 import { EraProvider, useEra } from "./features/theme/EraContext";
 import { ThemeAudioHost } from "./features/theme/ThemeAudioHost";
@@ -276,6 +277,7 @@ function App() {
                   <Route path="/showa-history" element={<ShowaHistory />} />
                   <Route path="/hakone-checkpoint" element={<HakoneCheckpoint />} />
                   <Route path="/kokkai-checkpoint" element={<KokkaiCheckpoint />} />
+                  <Route path="/sotsugyo-checkpoint" element={<SotsugyoCheckpoint />} />
                   <Route path="/typesetting" element={<Typesetting />} />
                   <Route path="/printshop" element={<PrintShop />} />
                   <Route path="/neologism" element={<Neologism />} />
