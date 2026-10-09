@@ -47,7 +47,7 @@ test('gachaCopy dispatcher: edo → 富くじ, tidak bocor ke Heian/legacy', () 
   assert.equal(gachaCopy('edo', 'id').title, '富くじ');
   assert.equal(gachaCopy('edo', 'en').title, '富くじ'); // tidak bergantung bahasa
   assert.equal(gachaCopy('heian', 'id').title, 'かいあわせ');
-  assert.equal(gachaCopy('showa', 'id').title, 'Gashapon Berkarat');
+  assert.equal(gachaCopy('cyberpunk', 'id').title, 'Gashapon Berkarat');
 });
 
 test('gachaCopy: Heian & Edo beda (kontras tema)', () => {

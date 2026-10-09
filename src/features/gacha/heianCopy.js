@@ -7,6 +7,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { EDO_GACHA, isEdo } from './edoCopy.js';
 import { MEIJI_GACHA, isMeiji } from './meijiCopy.js';
+import { SHOWA_GACHA, isShowa } from './showaCopy.js';
 
 // Label utama Heian = KANA saja (pemain belum bisa kanji). Kanji hanya muncul
 // di `titleSub` sebagai lapisan "belajar" opsional.
@@ -47,10 +48,12 @@ export const isHeian = (eraId) => eraId === 'heian';
 
 // Teks "tempat gacha" untuk era aktif.
 // Heian → kana (HEIAN_GACHA). Edo → 富くじ kanji (EDO_GACHA).
+// Meiji → 福引 kanji (MEIJI_GACHA). Shōwa → ガチャガチャ kanji+katakana (SHOWA_GACHA).
 // Era lain → teks lama sesuai bahasa.
 export const gachaCopy = (eraId, language) => {
   if (isHeian(eraId)) return { ...HEIAN_GACHA };
   if (isEdo(eraId)) return { ...EDO_GACHA };
   if (isMeiji(eraId)) return { ...MEIJI_GACHA };
+  if (isShowa(eraId)) return { ...SHOWA_GACHA };
   return LEGACY(language === 'id');
 };

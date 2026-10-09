@@ -32,17 +32,16 @@ test('label utama Heian BEBAS kanji (kana saja) — syarat "belum bisa kanji"', 
   assert.ok(KANJI.test(T.titleSub), 'titleSub sengaja memuat kanji sebagai lapisan belajar');
 });
 
-test('gachaCopy: era tanpa tema (showa/cyberpunk) → teks lama, tidak ikut berubah', () => {
-  const id = gachaCopy('showa', 'id');
-  assert.equal(id.title, 'Gashapon Berkarat');
-  assert.equal(id.pull1, 'TARIK 1X');
-  assert.equal(id.watermark, '玉');
-  assert.equal(id.titleSub, '');
-
+test('gachaCopy: era tanpa tema (cyberpunk) → teks lama, tidak ikut berubah', () => {
   const en = gachaCopy('cyberpunk', 'en');
   assert.equal(en.title, 'Rusty Gashapon');
   assert.equal(en.pull10, 'PULL 10X');
   assert.equal(en.watermark, '玉');
+
+  const id = gachaCopy('cyberpunk', 'id');
+  assert.equal(id.title, 'Gashapon Berkarat');
+  assert.equal(id.pull1, 'TARIK 1X');
+  assert.equal(id.titleSub, '');
 });
 
 test('gachaCopy(meiji): 福引 kanji, bukan teks lama', () => {
