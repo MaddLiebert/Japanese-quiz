@@ -34,6 +34,17 @@ const ERA_NAMES = {
     quest: '課業',      // kagyō — pelajaran/tugas sekolah
     rank: '階級',       // kaikyū — kelas/peringkat sosial baru
   },
+  // Shōwa 昭和 — kota beton & ujian: pasca-perang, gachapon, 偏差値.
+  // Lihat PRD: docs/tema/showa.md §8. Pemain Lv 100 sudah mahir → kanji penuh.
+  showa: {
+    shop: '商店街',      // shōtengai — jalan belanja pasca-perang
+    gacha: 'ガチャガチャ', // gachagacha — mesin kapsul (lahir 1965)
+    medaru: '円',       // en — yen bertahan (新円 1946)
+    inventory: 'ランドセル', // randoseru — tas sekolah Shōwa
+    profile: '履歴書',    // rirekisho — CV/résumé, dokumen Shōwa
+    quest: '宿題',       // shukudai — PR sekolah
+    rank: '偏差値',      // hensachi — skor ujian (inti tema)
+  },
 };
 
 // Kembalikan nama era untuk `key`, atau `fallback` bila era/key tak punya nama.

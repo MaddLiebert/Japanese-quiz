@@ -32,13 +32,23 @@ test('eraName: Meiji memetakan nama UI zaman modern (文明開化)', () => {
   assert.equal(eraName('rank', 'meiji'), '階級');
 });
 
+test('eraName: Shōwa memetakan nama UI kota beton & ujian (PRD §8)', () => {
+  assert.equal(eraName('shop', 'showa'), '商店街');
+  assert.equal(eraName('gacha', 'showa'), 'ガチャガチャ');
+  assert.equal(eraName('medaru', 'showa'), '円');
+  assert.equal(eraName('inventory', 'showa'), 'ランドセル');
+  assert.equal(eraName('profile', 'showa'), '履歴書');
+  assert.equal(eraName('quest', 'showa'), '宿題');
+  assert.equal(eraName('rank', 'showa'), '偏差値');
+});
+
 test('eraName: era lain → fallback (nama sekarang)', () => {
-  assert.equal(eraName('shop', 'showa', 'Warung'), 'Warung');
   assert.equal(eraName('shop', 'cyberpunk', 'Warung'), 'Warung');
+  assert.equal(eraName('shop', 'anime', 'Warung'), 'Warung');
 });
 
 test('eraName: default fallback = string kosong', () => {
-  assert.equal(eraName('shop', 'showa'), '');
+  assert.equal(eraName('shop', 'cyberpunk'), '');
   assert.equal(eraName('shop', 'era-belum-ada'), '');
 });
 

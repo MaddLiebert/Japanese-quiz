@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HEIAN_MEDARU, EDO_MEDARU, MEIJI_MEDARU, medaruCopy, isHeianEra, isEdoEra, isMeijiEra } from './medaruCopy.js';
+import { HEIAN_MEDARU, EDO_MEDARU, MEIJI_MEDARU, SHOWA_MEDARU, medaruCopy, isHeianEra, isEdoEra, isMeijiEra, isShowaEra } from './medaruCopy.js';
 
 const KANJI = /[\u4e00-\u9fff]/;
 
@@ -19,6 +19,13 @@ test('isMeijiEra: hanya "meiji" yang dianggap Meiji', () => {
   assert.equal(isMeijiEra('edo'), false);
   assert.equal(isMeijiEra(undefined), false);
   assert.equal(isMeijiEra(null), false);
+});
+
+test('isShowaEra: hanya "showa" yang dianggap Shōwa', () => {
+  assert.equal(isShowaEra('showa'), true);
+  assert.equal(isShowaEra('meiji'), false);
+  assert.equal(isShowaEra(undefined), false);
+  assert.equal(isShowaEra(null), false);
 });
 
 test('medaruCopy(heian): nama pakai KANA (もん), bukan "MEDARU"', () => {
@@ -50,16 +57,25 @@ test('medaruCopy(meiji): nama pakai 円 (en), bukan "MEDARU"', () => {
   assert.deepEqual(MEIJI_MEDARU, medaruCopy('meiji', 'en'));
 });
 
-test('medaruCopy: era lain → "MEDARU" (Heian/Edo/Meiji tidak bocor)', () => {
-  assert.equal(medaruCopy('showa', 'id').name, 'MEDARU');
-  assert.equal(medaruCopy('showa', 'en').name, 'MEDARU');
-  assert.equal(medaruCopy('cyberpunk', 'en').nameShort, 'MEDARU');
+test('medaruCopy(showa): nama pakai 円 (en, 新円 1946), bukan "MEDARU"', () => {
+  const T = medaruCopy('showa', 'id');
+  assert.equal(T.name, '円');
+  assert.equal(T.nameShort, '円');
+  assert.ok(/えん/.test(T.aria), 'aria harus memuat furigana えん');
+  assert.deepEqual(SHOWA_MEDARU, medaruCopy('showa', 'en'));
+});
+
+test('medaruCopy: era lain → "MEDARU" (Heian/Edo/Meiji/Shōwa tidak bocor)', () => {
+  assert.equal(medaruCopy('cyberpunk', 'id').name, 'MEDARU');
+  assert.equal(medaruCopy('cyberpunk', 'en').name, 'MEDARU');
+  assert.equal(medaruCopy('anime', 'en').nameShort, 'MEDARU');
 });
 
 test('medaruCopy: Heian & Edo tidak bergantung bahasa', () => {
   assert.deepEqual(medaruCopy('heian', 'id'), medaruCopy('heian', 'en'));
   assert.deepEqual(medaruCopy('edo', 'id'), medaruCopy('edo', 'en'));
   assert.deepEqual(medaruCopy('meiji', 'id'), medaruCopy('meiji', 'en'));
+  assert.deepEqual(medaruCopy('showa', 'id'), medaruCopy('showa', 'en'));
   assert.deepEqual(EDO_MEDARU, medaruCopy('edo', 'id'));
 });
 

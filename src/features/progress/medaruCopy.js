@@ -37,6 +37,13 @@ export const MEIJI_MEDARU = {
   aria: '円 えん',         // kanji + furigana untuk pembaca layar
 };
 
+// Shōwa 昭和: 円 (en) — yen bertahan (新円 1946). Kanji + furigana di aria.
+export const SHOWA_MEDARU = {
+  name: '円',             // en — yen Shōwa (新円 1946)
+  nameShort: '円',        // label ringkas untuk chip di top-bar
+  aria: '円 えん',         // kanji + furigana untuk pembaca layar
+};
+
 const LEGACY = (id) => ({
   name: 'MEDARU',
   nameShort: 'MEDARU',
@@ -46,12 +53,14 @@ const LEGACY = (id) => ({
 export const isHeianEra = (eraId) => eraId === 'heian';
 export const isEdoEra = (eraId) => eraId === 'edo';
 export const isMeijiEra = (eraId) => eraId === 'meiji';
+export const isShowaEra = (eraId) => eraId === 'showa';
 
 // Teks mata uang untuk era aktif. Heian → kana; Edo → 両; Meiji → 円;
-// era lain → "MEDARU".
+// Shōwa → 円; era lain → "MEDARU".
 export const medaruCopy = (eraId, language) => {
   if (isHeianEra(eraId)) return { ...HEIAN_MEDARU };
   if (isEdoEra(eraId)) return { ...EDO_MEDARU };
   if (isMeijiEra(eraId)) return { ...MEIJI_MEDARU };
+  if (isShowaEra(eraId)) return { ...SHOWA_MEDARU };
   return LEGACY(language === 'id');
 };
