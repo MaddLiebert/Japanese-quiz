@@ -27,6 +27,8 @@ dist-ssr
 
 # Screenshot lokal di .hermes/ (plan .md tetap di-track, ikut konvensi repo)
 .hermes/*.png
+# Screenshot/preview lokal (Chrome headless) — jangan commit
+.shots/
 
 # Scratch kerja agent — dump output, script sekali pakai, hasil recon.
 # Plans TIDAK di-track (aturan repo: "committed plans = clutter").

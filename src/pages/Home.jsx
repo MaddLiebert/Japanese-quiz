@@ -14,6 +14,8 @@ import { EdoPrintArt } from "../components/EdoArtwork";
 import { MeijiPrintArt } from "../components/MeijiArtwork";
 import { EdoLantern, EdoNoren } from "../components/EdoOrnament";
 import { MeijiGaslight, MeijiBunsen } from "../components/MeijiOrnament";
+import { ShowaDenchu, ShowaKanban, ShowaTower } from "../components/ShowaOrnament";
+import { ShowaPrintArt } from "../components/ShowaArtwork";
 
 import { StreakIndicator } from "../components/StreakIndicator";
 import { RankBadge } from "../features/progress/RankBadge";
@@ -182,6 +184,14 @@ export function Home() {
             <MeijiGaslight className="meiji-hero-lamp absolute top-0 right-2 sm:right-6 w-8 sm:w-11 z-20" />
             <MeijiBunsen className="meiji-hero-bunsen absolute bottom-3 right-3 sm:right-8 w-20 sm:w-28 z-20" />
 
+            {/* Hiasan Shōwa 昭和 — 電柱 tiang beton + 架線 kabel (analog 提灯/瓦斯灯:
+                gantung & berayun, tapi paling BERAT; lampu sodium menyala saat
+                malam 夜の団地) + 看板 papan 商店街 + 東京タワー menara 1958.
+                HANYA era Shōwa (di-gate .showa-ornament). */}
+            <ShowaDenchu className="showa-hero-denchu" />
+            <ShowaKanban className="showa-hero-kanban absolute bottom-3 right-3 sm:right-8 w-24 sm:w-32 z-20" />
+            <ShowaTower className="showa-hero-tower absolute bottom-0 right-28 sm:right-40 w-10 sm:w-14 z-0" />
+
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -281,6 +291,14 @@ export function Home() {
                 電信柱) — mengisi ruang kartu N5 di era Meiji (dulu kosong/hambar,
                 sama seperti Edo sebelum ada ukiyo-e). Luluh ke kertas. */}
             <MeijiPrintArt className="absolute inset-x-0 top-0 w-full h-[64%] z-0" />
+
+            {/* Scene beton Shōwa (buatan sendiri: 新幹線 1964 + 団地 danchi +
+                電柱/電線 + antena TV) — mengisi ruang kartu N5 di era Shōwa
+                (dulu kosong/hambar, sama seperti Edo/Meiji sebelum ada seni).
+                SENGAJA BEDA dari hero (hero = 電柱 + 看板 + 東京タワー berdiri):
+                di sini kota = ruang hidup + kecepatan, bukan ornamen hero.
+                Luluh ke kertas lewat mask. HANYA era Shōwa. */}
+            <ShowaPrintArt className="absolute inset-x-0 top-0 w-full h-[64%] z-0" />
 
             <div className="flex items-start justify-between relative z-20">
               <div className="writing-vertical-rl text-xs uppercase tracking-[0.5em] font-black text-sumi/50">

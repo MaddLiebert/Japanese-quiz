@@ -3198,6 +3198,28 @@ button[data-toji-kill]::after {
   box-shadow: inset 0 0 0 1px rgba(236,231,216,0.13);
 }
 
+/* Shōwa 昭和 — latar skyline 団地 beton (kota pasca-perang), supaya 電柱/看板
+   東京タワー di hero tidak menggantung di ruang kosong. Seamless repeat-x,
+   menempel bawah panel. Siang: siluet abu + jendela pucat. */
+[data-era="showa"] .home-hero-bg {
+  background-image: url("/art/showa-skyline-day.svg");
+  background-repeat: repeat-x;
+  background-position: center bottom;
+  background-size: auto 78%;
+  background-color: var(--kinari-val);
+}
+.dark[data-era="showa"] .home-hero-bg,
+[data-theme="dark"][data-era="showa"] .home-hero-bg {
+  /* Malam 夜の団地: gedung gelap + jendela sodium menyala + sorot lampu jalan. */
+  background-image:
+    radial-gradient(58% 46% at 82% 78%, rgba(224,176,80,0.20) 0%, rgba(224,176,80,0.06) 42%, rgba(0,0,0,0) 72%),
+    url("/art/showa-skyline-night.svg");
+  background-repeat: no-repeat, repeat-x;
+  background-position: center, center bottom;
+  background-size: auto, auto 78%;
+  background-color: #14161a;
+}
+
 /* ── Warna teks merek per-era (ikut PALET tema, TANPA merah) ──────────────── */
 
 /* Edo 江戸 — indigo 藍 kota cetak. TIDAK pakai 朱/merah (permintaan user:
@@ -3239,6 +3261,165 @@ button[data-toji-kill]::after {
 [data-theme="dark"][data-era="meiji"] .home-hero-sub { color: #cbbaa3 !important; opacity: 0.9; }
 .dark[data-era="meiji"] .home-hero-mark,
 [data-theme="dark"][data-era="meiji"] .home-hero-mark { color: #f0eee8 !important; }
+
+
+/* ══ TEMA ERA — SHŌWA 昭和 ═══════════════════════════════════════════════════
+   PRD: docs/tema/showa.md. "昭和 = コンクリートの時代" (zaman beton).
+   ⚠️ PRINSIP #0 (§0): Shōwa = tema ASLI app. Ia MENG-ECHO base (shadow keras,
+   garis 4px, radius 0) — BUKAN mengganti. Base :root TIDAK disentuh.
+   Blok ini menambah token BARU (beton) + mengunci bentuk base. */
+
+[data-era="showa"] {
+  /* Token baru khas Shōwa (beton). Fallback dipakai di ornamen bila belum ada. */
+  --concrete-val: #8c8c85;  /* コンクリ灰 — beton (PRIMER) */
+  --gin-nezu-val: #b9b7ae;  /* 銀鼠 — abu perak muda (panel) */
+  --sodium-val:   #d9a441;  /* ナトリウム灯 — lampu sodium amber (AKSEN) */
+  /* Bentuk: ECHO base (bukan ganti) — mengunci identitas Shōwa. */
+  --era-shadow:       4px 4px 0 0 var(--sumi-val);
+  --era-shadow-hover: 6px 6px 0 0 var(--sumi-val);
+  --era-edge-w:       4px;
+  --era-edge-color:   var(--sumi-val);
+  --era-radius:       0px;
+  --era-radius-sm:    0px;
+  --era-radius-pill:  9999px;
+  --era-motion:       200ms;
+  --era-ease:         cubic-bezier(0.2, 0, 0, 1);
+}
+
+.dark[data-era="showa"], [data-theme="dark"][data-era="showa"] {
+  --concrete-val: #5a5a55;
+  --gin-nezu-val: #6e6c64;
+  --sodium-val:   #e0b050;
+}
+
+/* ── ORNAMEN SHŌWA 昭和 (hero 日本語学園) — 電柱 + 看板 + 東京タワー ──────────
+   Analog 提灯/暖簾 (Edo) & 瓦斯灯/文選 (Meiji). Di-gate `.showa-ornament`
+   (default none). Dekoratif → pointer-events:none + user-select:none.
+   Beton = sudut tajam, abu, tanpa glossy. */
+.showa-ornament { display: none; }
+[data-era="showa"] .showa-ornament { display: block; }
+.showa-ornament { pointer-events: none; user-select: none; }
+.showa-ornament svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* 電柱＋架線 denchū — tiang beton TINGGI di kanan + kabel panjang menjuntai
+   menyeberang hero sampai dekat logo 学. SVG full-hero (preserveAspectRatio none)
+   → kabel melintang skala penuh; tiang tetap di kanan, berdiri di tanah. */
+.showa-denchu { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 15; }
+.showa-denchu svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.showa-denchu-pole { fill: var(--concrete-val, #8c8c85); stroke: var(--sumi-val); stroke-width: 1; }
+.showa-denchu-arm { fill: var(--sumi-val); opacity: 0.75; }
+.showa-denchu-insulator { fill: var(--gin-nezu-val, #b9b7ae); stroke: var(--sumi-val); stroke-width: 0.6; }
+.showa-denchu-cable { fill: none; stroke: var(--sumi-val); stroke-width: 1.6; opacity: 0.65; }
+.showa-denchu-lamp-arm { fill: none; stroke: var(--sumi-val); stroke-width: 1.4; }
+.showa-denchu-lamp { fill: #3a3a38; stroke: var(--sumi-val); stroke-width: 1; }
+.showa-denchu-lamp-glass { fill: var(--sodium-val, #d9a441); opacity: 0.28; }  /* siang: padam */
+.showa-denchu-glow { display: none; }                                          /* siang: tanpa halo */
+
+/* Malam 夜の団地: lampu sodium menyala + halo hangat. */
+.dark[data-era="showa"] .showa-denchu-lamp-glass,
+[data-theme="dark"][data-era="showa"] .showa-denchu-lamp-glass {
+  fill: #ffe6a6; opacity: 1; filter: drop-shadow(0 0 4px rgba(255, 214, 130, 0.9));
+}
+.dark[data-era="showa"] .showa-denchu-cable,
+[data-theme="dark"][data-era="showa"] .showa-denchu-cable {
+  stroke: var(--gin-nezu-val, #b9b7ae); opacity: 0.5;   /* malam: kabel jadi abu terang biar tak hilang di langit hitam */
+}
+.dark[data-era="showa"] .showa-denchu-glow,
+[data-theme="dark"][data-era="showa"] .showa-denchu-glow { display: block; }
+
+/* 看板 kanban — papan toko 商店街: plat logam, huruf grotesk tebal. */
+.showa-kanban-plate { fill: var(--concrete-val, #8c8c85); stroke: var(--sumi-val); stroke-width: 2; }
+.showa-kanban-frame { fill: none; stroke: var(--sumi-val); stroke-width: 0.8; opacity: 0.5; }
+.showa-kanban-bolt { fill: var(--sumi-val); opacity: 0.6; }
+.showa-kanban-text {
+  fill: var(--sumi-val);
+  font-family: var(--font-sans);
+  font-size: 15px; font-weight: 900;
+  letter-spacing: 0.02em;
+}
+.dark[data-era="showa"] .showa-kanban-text,
+[data-theme="dark"][data-era="showa"] .showa-kanban-text { fill: #f0eee8; }
+.dark[data-era="showa"] .showa-kanban-plate,
+[data-theme="dark"][data-era="showa"] .showa-kanban-plate { fill: #4a4a46; }
+
+/* 東京タワー — menara 1958, siluet rangka merah-putih. */
+.showa-tower-leg, .showa-tower-brace { stroke: var(--concrete-val, #8c8c85); fill: none; stroke-width: 2.4; }
+.showa-tower-brace { stroke-width: 1.2; opacity: 0.7; }
+.showa-tower-body { fill: #f0eee8; stroke: var(--sumi-val); stroke-width: 1; }   /* badan putih */
+.showa-tower-band { fill: var(--shu-val); }   /* pita merah 東京タワー */
+.showa-tower-deck { fill: var(--shu-val); }
+.showa-tower-mast { fill: var(--concrete-val, #8c8c85); }
+.showa-tower-beacon { fill: var(--shu-val); }
+/* Malam: rangka jadi siluet gelap + lampu merah puncak menyala. */
+.dark[data-era="showa"] .showa-tower-body,
+[data-theme="dark"][data-era="showa"] .showa-tower-body { fill: #cfc9bd; }
+.dark[data-era="showa"] .showa-tower-leg,
+[data-theme="dark"][data-era="showa"] .showa-tower-leg,
+.dark[data-era="showa"] .showa-tower-brace,
+[data-theme="dark"][data-era="showa"] .showa-tower-brace { stroke: #55554f; }
+.dark[data-era="showa"] .showa-tower-beacon,
+[data-theme="dark"][data-era="showa"] .showa-tower-beacon { fill: #ff5a45; filter: drop-shadow(0 0 4px rgba(255,90,69,0.9)); }
+
+/* ── Warna teks merek Shōwa (ikut palet beton, TANPA mengubah base) ────────── */
+[data-era="showa"] .home-hero-mark {
+  background-color: var(--concrete-val, #8c8c85) !important;
+  color: #f0eee8 !important;
+  box-shadow: var(--era-shadow) !important;   /* echo base: shadow keras KEMBALI */
+}
+[data-era="showa"] .home-hero-title { color: var(--sumi-val) !important; }
+[data-era="showa"] .home-hero-sub   { color: var(--sumi-val) !important; opacity: 0.7; }
+[data-era="showa"] .home-hero-h1-accent { color: var(--shu-val) !important; }
+
+/* ── SENI KARTU JLPT N5 SHŌWA 昭和 (scene beton) — hiasan kartu N5 bawah ──────
+   Di Heian ruang kartu N5 diisi lukisan 月夜; di Edo ukiyo-e; di Meiji cetakan;
+   di Shōwa dulu KOSONG ("hambar"). Di sini diisi "scene beton Shōwa" buatan
+   sendiri: 新幹線 (1964, kecepatan → ujian N5) + 団地 danchi (blok beton
+   berjendela seragam) + 電柱/電線 + antena TV. SENGAJA BEDA dari hero (hero =
+   電柱 + 看板 + 東京タワー berdiri) — di kartu kota dilihat sebagai ruang hidup
+   + kecepatan, bukan ornamen hero. Disatukan ke kertas lewat mask gradien
+   (padat di atas, luluh ke bawah) supaya teks 合格/JLPT N5 di bawahnya tetap di
+   atas kertas bersih. HANYA era Shōwa. Dekoratif → pointer-events:none. */
+.showa-art { display: none; }
+[data-era="showa"] .showa-art {
+  display: block;
+  pointer-events: none;
+}
+.showa-art--print {
+  mix-blend-mode: multiply;                 /* menyatu ke kertas (siang) */
+  opacity: 0.9;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 46%, rgba(0,0,0,0.55) 68%, transparent 88%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 46%, rgba(0,0,0,0.55) 68%, transparent 88%);
+}
+/* Malam 夜の団地: scene menyala lembut di atas malam (screen), lebih redup. */
+.dark[data-era="showa"] .showa-art--print,
+[data-theme="dark"][data-era="showa"] .showa-art--print {
+  mix-blend-mode: screen;
+  opacity: 0.58;
+  filter: saturate(0.95) contrast(1.03);
+}
+/* Elemen scene — beton DATAR, sudut tajam, tanpa glossy (bukan brutalist basah). */
+.showa-art-concrete { fill: var(--concrete-val, #8c8c85); stroke: var(--sumi-val); stroke-width: 1; }
+.showa-art-window { fill: var(--sodium-val, #d9a441); opacity: 0.85; }
+.showa-art-girder { fill: var(--gin-nezu-val, #b9b7ae); stroke: var(--sumi-val); stroke-width: 1; }
+.showa-art-pier   { fill: var(--concrete-val, #8c8c85); stroke: var(--sumi-val); stroke-width: 0.8; }
+.showa-art-ground { fill: var(--gin-nezu-val, #b9b7ae); stroke: var(--sumi-val); stroke-width: 1; }
+.showa-art-train { fill: #f4f3ee; stroke: var(--sumi-val); stroke-width: 1.2; }
+.showa-art-train-stripe { fill: var(--ai-val, #182b49); }
+.showa-art-train-window { fill: var(--sumi-val); opacity: 0.7; }
+.showa-art-train-light { fill: var(--sodium-val, #d9a441); }
+/* Malam: badan kereta redup, jendela 団地 menyala penuh + halo sodium. */
+.dark[data-era="showa"] .showa-art-concrete,
+[data-theme="dark"][data-era="showa"] .showa-art-concrete { fill: #4a4a46; }
+.dark[data-era="showa"] .showa-art-window,
+[data-theme="dark"][data-era="showa"] .showa-art-window {
+  fill: #ffe6a6; opacity: 1; filter: drop-shadow(0 0 2.5px rgba(255, 214, 130, 0.85));
+}
+.dark[data-era="showa"] .showa-art-train,
+[data-theme="dark"][data-era="showa"] .showa-art-train { fill: #d9d6cc; }
+.dark[data-era="showa"] .showa-art-girder,
+[data-theme="dark"][data-era="showa"] .showa-art-girder,
+.dark[data-era="showa"] .showa-art-ground,
+[data-theme="dark"][data-era="showa"] .showa-art-ground { fill: #55554f; }
 
 
 
