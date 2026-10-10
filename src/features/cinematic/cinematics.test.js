@@ -49,6 +49,7 @@ test('cinematicForEra / nextCinematic: auto-play HANYA kalau belum dilihat', () 
   assert.equal(cinematicForEra('heian')?.id, 'heian');
   assert.equal(cinematicForEra('edo')?.id, 'edo');
   assert.equal(cinematicForEra('meiji')?.id, 'meiji');
+  assert.equal(cinematicForEra('anime')?.id, 'anime');
   assert.equal(cinematicForEra('nope'), null);
 
   assert.equal(nextCinematic('heian', {}), 'heian', 'belum dilihat → putar');
@@ -59,6 +60,8 @@ test('cinematicForEra / nextCinematic: auto-play HANYA kalau belum dilihat', () 
   assert.equal(nextCinematic('meiji', { meiji: true }), null, 'Meiji sudah dilihat → jangan');
   assert.equal(nextCinematic('showa', {}), 'showa', 'Shōwa punya cinematic → putar');
   assert.equal(nextCinematic('showa', { showa: true }), null, 'Shōwa sudah dilihat → jangan');
+  assert.equal(nextCinematic('anime', {}), 'anime', '多元 punya cinematic → putar');
+  assert.equal(nextCinematic('anime', { anime: true }), null, '多元 sudah dilihat → jangan');
   assert.equal(nextCinematic('cyberpunk', {}), null, 'era tanpa cinematic → null');
 });
 
@@ -67,5 +70,6 @@ test('getCinematic: ambil by id, id tak dikenal → null', () => {
   assert.equal(getCinematic('edo')?.route, '/edo-history');
   assert.equal(getCinematic('meiji')?.route, '/meiji-history');
   assert.equal(getCinematic('showa')?.route, '/showa-history');
+  assert.equal(getCinematic('anime')?.route, '/anime-history');
   assert.equal(getCinematic('nope'), null);
 });

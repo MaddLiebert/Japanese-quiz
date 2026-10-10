@@ -214,6 +214,22 @@ export const HEIAN_SFX_PARAMS = {
   shinkansen: { kind: 'noise', dur: 1.3, gain: 0.11, type: 'bandpass', fromHz: 700, toHz: 3200, q: 0.9, curve: 'soft' },
   // チャイム sekolah — bel dua nada (ta-ding) khas sekolah Shōwa.
   schoolChime: { kind: 'bell', baseHz: 523.25, partials: [1, 2.0, 2.76, 4.0], dur: 2.0, gain: 0.1 },
+
+  // ── 多元 Anime Multiverse (halaman manga) — sobekan kertas, city-pop, doki ──
+  // 紙を破る suara kertas manga sobek (babak 1, TANPA teks).
+  pageTear: { kind: 'noise', dur: 1.1, gain: 0.12, type: 'bandpass', fromHz: 2000, toHz: 600, q: 1.1, curve: 'soft' },
+  // city-pop masuk — petikan bersih cerah (arpeggio 8-bit-ish).
+  popChord: { kind: 'pluck', from: 523.25, dur: 0.9, gain: 0.16, overtoneGain: 0.18, filterHz: 2600, bend: -6 },
+  // ドキドキ detak jantung (momen dramatis).
+  doki: { kind: 'heart', beats: [{ atMs: 0, hz: 52, gain: 0.3 }, { atMs: 260, hz: 44, gain: 0.2 }], dur: 0.2 },
+  // ledakan panel (halaman pecah → dunia keluar).
+  burst: { kind: 'drum', from: 120, to: 44, dur: 0.5, gain: 0.3, noiseGain: 0.09 },
+  // キラキラ kilau (momen terjemahan / banyak dunia).
+  sparklePop: { kind: 'shimmer', notes: [1046.5, 1318.51, 1567.98], dur: 0.4, gap: 0.06, gain: 0.07 },
+  // portal 異世界 — drone NAIK (bukan turun seperti dread).
+  portal: { kind: 'drone', from: 60, to: 120, dur: 2.0, gain: 0.2, padGain: 0.1 },
+  // ファンファーレ fanfare penutup (題字 多元).
+  fanfarePop: { kind: 'bell', baseHz: 523.25, partials: [1, 2.0, 2.76, 4.0], dur: 2.2, gain: 0.13 },
 };
 
 export const heianSfxParams = (key) => HEIAN_SFX_PARAMS[key] || null;
@@ -416,6 +432,64 @@ export const AMBIENCE_PLANS = {
     drone: { freqs: [49, 98, 146.83], detune: [0, -4, 4], gain: 0.46 },
     pad: { type: 'triangle', freqs: [261.63, 329.63, 392, 440], filterHz: 1400, lfoHz: 0.12, lfoDepth: 260, gain: 0.3 },
     air: { type: 'bandpass', hz: 1300, gain: 0.05 },
+  },
+
+  // ── 多元 Anime Multiverse: halaman manga — city-pop cerah, ritmis, hidup ───
+  // burst: 開幕 — halaman pecah (terang, energik, pentatonik cerah).
+  burst: {
+    level: 0.11, fadeInMs: 1200, fadeOutMs: 900,
+    drone: { freqs: [65.41, 130.81], detune: [0, -4], gain: 0.4 },
+    pad: { type: 'triangle', freqs: [261.63, 329.63, 392, 523.25], filterHz: 1500, lfoHz: 0.14, lfoDepth: 240, gain: 0.3 },
+    air: { type: 'bandpass', hz: 1600, gain: 0.05 },
+  },
+  // adventure 冒険 — dunia shōnen (bertenaga, lompat, siang).
+  adventure: {
+    level: 0.1, fadeInMs: 1200, fadeOutMs: 900,
+    drone: { freqs: [73.42, 146.83], detune: [0, -4], gain: 0.42 },
+    pad: { type: 'triangle', freqs: [293.66, 369.99, 440, 587.33], filterHz: 1800, lfoHz: 0.16, lfoDepth: 260, gain: 0.3 },
+    air: { type: 'highpass', hz: 1500, gain: 0.045 },
+  },
+  // school 日常 — kehidupan sehari-hari (ringan, hangat, sore).
+  schoolPop: {
+    level: 0.09, fadeInMs: 1400, fadeOutMs: 900,
+    drone: { freqs: [65.41, 130.81], detune: [0, -5], gain: 0.38 },
+    pad: { type: 'triangle', freqs: [261.63, 329.63], filterHz: 1300, lfoHz: 0.1, lfoDepth: 200, gain: 0.28 },
+    air: { type: 'bandpass', hz: 1100, gain: 0.045 },
+  },
+  // youth 青春 — olahraga/remaja (sorak, matahari terbenam, hangat).
+  youth: {
+    level: 0.1, fadeInMs: 1200, fadeOutMs: 900,
+    drone: { freqs: [73.42, 146.83], detune: [0, -4], gain: 0.42 },
+    pad: { type: 'triangle', freqs: [329.63, 415.3, 493.88], filterHz: 1700, lfoHz: 0.18, lfoDepth: 250, gain: 0.3 },
+    air: { type: 'bandpass', hz: 1500, gain: 0.05 },
+  },
+  // magic 魔法 — fantasi (kilau, misterius tapi cerah, kristal).
+  magic: {
+    level: 0.1, fadeInMs: 1400, fadeOutMs: 1000,
+    drone: { freqs: [82.41, 164.81], detune: [0, 4], gain: 0.4 },
+    pad: { type: 'triangle', freqs: [349.23, 440, 523.25], filterHz: 2000, lfoHz: 0.12, lfoDepth: 300, gain: 0.3 },
+    air: { type: 'highpass', hz: 1800, gain: 0.05 },
+  },
+  // horror 怪談 — dunia paling gelap (深夜アニメ, satu lampu, tegang).
+  horror: {
+    level: 0.12, fadeInMs: 1800, fadeOutMs: 1200,
+    drone: { freqs: [41.2, 82.41], detune: [0, -7], gain: 0.5 },
+    pad: { type: 'triangle', freqs: [138.59, 174.61], filterHz: 520, lfoHz: 0.035, lfoDepth: 320, gain: 0.34 },
+    air: { type: 'lowpass', hz: 340, gain: 0.06 },
+  },
+  // isekai 異世界 — dunia terjauh (portal, luas, dua bulan).
+  isekai: {
+    level: 0.11, fadeInMs: 1600, fadeOutMs: 1100,
+    drone: { freqs: [55, 110, 164.81], detune: [0, -4, 3], gain: 0.44 },
+    pad: { type: 'triangle', freqs: [220, 293.66, 392, 440], filterHz: 1200, lfoHz: 0.07, lfoDepth: 280, gain: 0.3 },
+    air: { type: 'bandpass', hz: 900, gain: 0.05 },
+  },
+  // finale 最終回 — episode terakhir (hangat lalu sepi, kredit berjalan).
+  finale: {
+    level: 0.1, fadeInMs: 1600, fadeOutMs: 1400,
+    drone: { freqs: [49, 98], detune: [0, -4], gain: 0.42 },
+    pad: { type: 'triangle', freqs: [261.63, 329.63, 392], filterHz: 1300, lfoHz: 0.09, lfoDepth: 220, gain: 0.3 },
+    air: { type: 'lowpass', hz: 1000, gain: 0.05 },
   },
 };
 

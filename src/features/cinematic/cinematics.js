@@ -16,6 +16,7 @@ export const CINEMATICS = {
   edo: { id: 'edo', era: 'edo', kind: 'history', title: '江戸', route: '/edo-history' },
   meiji: { id: 'meiji', era: 'meiji', kind: 'history', title: '明治', route: '/meiji-history' },
   showa: { id: 'showa', era: 'showa', kind: 'history', title: '昭和', route: '/showa-history' },
+  anime: { id: 'anime', era: 'anime', kind: 'history', title: '多元', route: '/anime-history' },
 };
 
 // ── State "sudah dilihat" (objek { [cinematicId]: true }) ────────────────────
