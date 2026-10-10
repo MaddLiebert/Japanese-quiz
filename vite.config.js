@@ -10,7 +10,12 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['**/*'],
+      // ⚠️ JANGAN pakai ['**/*'] — itu menyapu SELURUH public/ ke precache (semua
+      // mp3 audio 165MB + voices + gif efek + webp) sehingga tiap install PWA
+      // mengunduh ratusan MB. Dulu: 725 entri / 181 MB di dist/sw.js.
+      // Di sini hanya aset KECIL yang selalu dibutuhkan & tak tertangkap
+      // globPatterns (ico/svg/png sudah masuk lewat globPatterns).
+      includeAssets: ['favicon.svg', 'icons.svg', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
         name: '日本語学園 · Nihongo Gakuen',
         short_name: 'Nihongo Gakuen',
@@ -30,7 +35,23 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2}']
+        // Precache app shell + data ringan (strokes json, art svg, font).
+        // Media BERAT (mp3/gif/webp/jpg) TIDAK di sini → lewat runtimeCaching.
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2}'],
+        // Media berat: cache saat PERTAMA dipakai (CacheFirst), bukan diunduh
+        // semua saat install. Klip yang sudah diputar tetap tersedia offline.
+        runtimeCaching: [
+          {
+            // mp3 (audio/voices) + gif/webp/jpg (efek & art).
+            urlPattern: /\.(?:mp3|gif|webp|jpe?g)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'media',
+              expiration: { maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 90 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       }
     })
   ],
