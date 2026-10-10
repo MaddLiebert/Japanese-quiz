@@ -12,6 +12,9 @@ import { dateKey, emptyQuests, ensureToday, bumpEvent, canClaim, markClaimed, qu
 import { emptySeen, ensureSeen, markSeen, ensureTutorialHidden } from '../tutorial/tutorials';
 import { emptyCinematics, ensureCinematics, markCinematicSeen as markCine } from '../cinematic/cinematics';
 import { getRankName } from './rank';
+// 多元 LAPIS 2 & 3 — franchise (dibeli) + karakter (gacha). Modul murni.
+import { canBuyFranchise, addFranchise, equipFranchise as equipFranchiseState, franchiseById } from '../anime/franchises';
+import { charactersOf } from '../anime/characters';
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -59,6 +62,11 @@ const DEFAULT_PROGRESS = {
   ownedPacks: [],
   activePack: null,
   ownedItems: {},
+  // 多元 LAPIS 2 (franchise dibeli) & LAPIS 3 (karakter di-gacha) + 推し.
+  ownedFranchises: [],
+  activeFranchise: null,
+  ownedCharacters: {},
+  oshiId: null,
   n5Exam: emptyExamRecord(),
   lastActiveDate: getLocalDateString(),
   quests: emptyQuests(),
@@ -628,6 +636,65 @@ export const ProgressProvider = ({ children }) => {
     return nowActive;
   }, []);
 
+  // ── 多元 LAPIS 2: beli dunia (franchise) di 物販. Atomic: cek → potong → set.
+  // Return { ok, reason } — 'invalid' | 'level' | 'owned' | 'poor' | 'bought'.
+  const buyFranchise = useCallback((id) => {
+    const f = franchiseById(id);
+    if (!f) return { ok: false, reason: 'invalid' };
+    const cur = progressRef.current || {};
+    if ((cur.ownedFranchises || []).includes(id)) return { ok: false, reason: 'owned' };
+    if ((Number(cur.level) || 0) < 150) return { ok: false, reason: 'level' };
+    if ((Number(cur.medaru) || 0) < f.price) return { ok: false, reason: 'poor' };
+    setProgress(prev => {
+      if (!canBuyFranchise(prev, id)) return prev; // guard di dalam updater
+      const withFr = addFranchise(prev, id);
+      return {
+        ...withFr,
+        medaru: (prev.medaru || 0) - f.price,
+        activeFranchise: prev.activeFranchise || id, // dunia pertama → langsung aktif
+      };
+    });
+    return { ok: true, reason: 'bought' };
+  }, []);
+
+  // Aktifkan dunia (equip). Hanya bila dimiliki.
+  const equipFranchise = useCallback((id) => {
+    setProgress(prev => equipFranchiseState(prev, id));
+  }, []);
+
+  // ── 多元 LAPIS 3: gacha karakter (クレーンゲーム). Return { ok, isNew }.
+  const pullCharacter = useCallback((id) => {
+    const cur = progressRef.current || {};
+    if ((cur.ownedCharacters || {})[id]) return { ok: false, isNew: false };
+    setProgress(prev => {
+      const owned = prev.ownedCharacters || {};
+      if (owned[id]) return prev;
+      return { ...prev, ownedCharacters: { ...owned, [id]: { obtainedAt: getLocalDateString() } } };
+    });
+    return { ok: true, isNew: true };
+  }, []);
+
+  // 推し: pilih karakter favorit (harus dimiliki). id kosong → lepas 推し.
+  const setOshi = useCallback((id) => {
+    setProgress(prev => {
+      if (!id) return { ...prev, oshiId: null };
+      if (!(prev.ownedCharacters || {})[id]) return prev; // hanya karakter yang dimiliki
+      return { ...prev, oshiId: id };
+    });
+  }, []);
+
+  // Karakter yang dimiliki (untuk halaman koleksi & 推し).
+  const ownedCharacterList = useCallback(
+    () => Object.keys(progressRef.current?.ownedCharacters || {}),
+    [],
+  );
+
+  // Kolam karakter untuk クレーンゲーム = karakter dari franchise yang DIMILIKI.
+  const characterPool = useCallback(
+    () => (progressRef.current?.ownedFranchises || []).flatMap((fid) => charactersOf(fid)),
+    [],
+  );
+
   // Undian gacha. count = 1 atau 10.
   // Return { ok, results:[{id,isNew}], refunded }.
   const rollGacha = useCallback((count = 1) => {
@@ -702,7 +769,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, markTutorialSeen, setTutorialHidden, markCinematicSeen, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, buyFranchise, equipFranchise, pullCharacter, setOshi, ownedCharacterList, characterPool, markTutorialSeen, setTutorialHidden, markCinematicSeen, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}

@@ -44,6 +44,14 @@ export const SHOWA_MEDARU = {
   aria: '円 えん',         // kanji + furigana untuk pembaca layar
 };
 
+// 多元 Anime Multiverse: コイン (koin) — mata uang arcade/ゲーセン.
+// Kanji + katakana (bahasa pop), furigana こいん di aria. Lihat PRD §8.
+export const ANIME_MEDARU = {
+  name: 'コイン',          // koin — mata uang arcade
+  nameShort: 'コイン',     // label ringkas untuk chip di top-bar
+  aria: 'コイン こいん',    // katakana + furigana untuk pembaca layar
+};
+
 const LEGACY = (id) => ({
   name: 'MEDARU',
   nameShort: 'MEDARU',
@@ -54,13 +62,15 @@ export const isHeianEra = (eraId) => eraId === 'heian';
 export const isEdoEra = (eraId) => eraId === 'edo';
 export const isMeijiEra = (eraId) => eraId === 'meiji';
 export const isShowaEra = (eraId) => eraId === 'showa';
+export const isAnimeEra = (eraId) => eraId === 'anime';
 
 // Teks mata uang untuk era aktif. Heian → kana; Edo → 両; Meiji → 円;
-// Shōwa → 円; era lain → "MEDARU".
+// Shōwa → 円; 多元 → コイン; era lain → "MEDARU".
 export const medaruCopy = (eraId, language) => {
   if (isHeianEra(eraId)) return { ...HEIAN_MEDARU };
   if (isEdoEra(eraId)) return { ...EDO_MEDARU };
   if (isMeijiEra(eraId)) return { ...MEIJI_MEDARU };
   if (isShowaEra(eraId)) return { ...SHOWA_MEDARU };
+  if (isAnimeEra(eraId)) return { ...ANIME_MEDARU };
   return LEGACY(language === 'id');
 };

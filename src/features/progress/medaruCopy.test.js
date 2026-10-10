@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HEIAN_MEDARU, EDO_MEDARU, MEIJI_MEDARU, SHOWA_MEDARU, medaruCopy, isHeianEra, isEdoEra, isMeijiEra, isShowaEra } from './medaruCopy.js';
+import { HEIAN_MEDARU, EDO_MEDARU, MEIJI_MEDARU, SHOWA_MEDARU, ANIME_MEDARU, medaruCopy, isHeianEra, isEdoEra, isMeijiEra, isShowaEra, isAnimeEra } from './medaruCopy.js';
 
 const KANJI = /[\u4e00-\u9fff]/;
 
@@ -65,10 +65,19 @@ test('medaruCopy(showa): nama pakai 円 (en, 新円 1946), bukan "MEDARU"', () =
   assert.deepEqual(SHOWA_MEDARU, medaruCopy('showa', 'en'));
 });
 
-test('medaruCopy: era lain → "MEDARU" (Heian/Edo/Meiji/Shōwa tidak bocor)', () => {
+test('medaruCopy(anime): nama pakai コイン (koin), bukan "MEDARU"', () => {
+  const T = medaruCopy('anime', 'id');
+  assert.equal(T.name, 'コイン');
+  assert.equal(T.nameShort, 'コイン');
+  assert.ok(/こいん/.test(T.aria), 'aria harus memuat furigana こいん');
+  assert.deepEqual(ANIME_MEDARU, medaruCopy('anime', 'en')); // tidak bergantung bahasa
+  assert.equal(isAnimeEra('anime'), true);
+  assert.equal(isAnimeEra('showa'), false);
+});
+
+test('medaruCopy: era lain → "MEDARU" (Heian/Edo/Meiji/Shōwa/多元 tidak bocor)', () => {
   assert.equal(medaruCopy('cyberpunk', 'id').name, 'MEDARU');
   assert.equal(medaruCopy('cyberpunk', 'en').name, 'MEDARU');
-  assert.equal(medaruCopy('anime', 'en').nameShort, 'MEDARU');
 });
 
 test('medaruCopy: Heian & Edo tidak bergantung bahasa', () => {
