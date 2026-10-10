@@ -16,6 +16,8 @@ import { useEra } from "../theme/EraContext";
 import { medaruCopy } from "../progress/medaruCopy";
 import { gachaCopy, isHeian } from "../gacha/heianCopy";
 import { isEdo } from "../gacha/edoCopy";
+import { isAnime } from "../gacha/animeCopy";
+import { WorldShelf } from "../anime/WorldShelf";
 import { eraName } from "../theme/eraNames";
 
 const GACHA_PRICE_1X = 100;
@@ -27,6 +29,7 @@ export function Shop() {
   const { era } = useEra();
   const heian = isHeian(era);
   const edo = isEdo(era);
+  const anime = isAnime(era);
   const T = gachaCopy(era, language);
   const navigate = useNavigate();
   const [pullResult, setPullResult] = useState(null);
@@ -243,6 +246,18 @@ export function Shop() {
               </div>
             </div>
           </section>
+
+          {/* 多元 — LAPIS 2: DUNIA yang bisa dibeli (mis. JJK). Di era lain tak tampil. */}
+          {anime && (
+            <section>
+              <WorldShelf showHeading showLink={false} />
+              <p className="text-[11px] font-bold text-sumi/50 mt-3">
+                {language === 'id'
+                  ? 'Beli sebuah dunia → kanvas 多元 langsung berubah warna. Dunia lisensi (mis. 呪術廻戦) menampilkan kreditnya.'
+                  : 'Buy a world → the 多元 canvas repaints at once. Licensed worlds (e.g. 呪術廻戦) show their credit.'}
+              </p>
+            </section>
+          )}
 
           {/* Etalase Section — hanya barang konsumsi (Theme Pack dari gacha) */}
           <section>
