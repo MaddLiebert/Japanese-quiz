@@ -17,9 +17,11 @@
 // Narator = Saku 咲 (selang-seling: Shōwa = Nacht, 多元 = Saku).
 // Bahasa: teks Jepang = elemen utama, terjemahan Indonesia menyusul.
 //
-// ⚠️ VOICE (T12): `voice` menunjuk /voices/anime/NN_*.mp3 sesuai PRD §10, tapi
-//    file mp3 BELUM digenerate (T12 = tugas terakhir; tema tetap jalan tanpa
-//    voice — PRD §14 R7). Pemutar klip aman kalau file belum ada.
+// ⚠️ VOICE (T12): `voice` menunjuk /voices/anime/NN_*.mp3 sesuai PRD §10. 7 klip
+//    narasi Saku digenerate oleh `scripts/generate-anime-voice.py` (edge-tts,
+//    pola generate-jjk-voices.py) → public/voices/anime/. Naskah + timing di
+//    docs/voice-cinematic-anime.md. Guard `scenes.test.js` menjaga keberadaan
+//    file. Pemutar klip tetap aman kalau file diganti/hilang (no-op, tanpa error).
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const ANIME_SCENES = [

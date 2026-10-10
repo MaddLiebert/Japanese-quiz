@@ -1,11 +1,16 @@
 // scenes.test.js — penjaga cinematic 多元 (T5). Lihat PRD docs/tema/anime.md §10.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { ANIME_SCENES, XFADE, MOUNT_PAD, voiceCues } from './scenes.js';
 import {
   totalDuration, sceneStartTimes, sceneAtTime, audioCues,
   ambienceTimeline, validateScenes, sceneOpacityAt, visibleSceneIndices,
 } from '../../timeline.js';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..');
 
 test('scenes 多元: valid (id unik, durasi>0, terjemahan setelah teks Jepang)', () => {
   assert.deepEqual(validateScenes(ANIME_SCENES), []);
@@ -87,13 +92,16 @@ test('voiceCues 多元: satu per BARIS ber-voice (7), terurut, waktu = at baris'
   assert.equal(byId['voice:finale:welcome'].at, 61.4);
 });
 
-test('voiceCues 多元: file voice menunjuk /voices/anime/ (T12 belum digenerate)', () => {
-  // T12 (generate mp3 + split) = tugas TERAKHIR; PRD §14 R7 bilang tema tetap
-  // jalan tanpa voice. Jadi di sini kita HANYA cek path menunjuk folder yang
-  // benar — BUKAN keberadaan file.
+test('voiceCues 多元: file voice benar-benar ADA di public/voices/anime/ (T12)', () => {
+  // T12 = voice cinematic. 7 klip narasi Saku digenerate oleh
+  // scripts/generate-anime-voice.py (pola generate-jjk-voices.py). Guard ini
+  // memastikan tiap path di scenes.js benar-benar ada (kalau file hilang, tes
+  // GAGAL — bukan diam-diam tampil tanpa suara).
   for (const v of voiceCues()) {
     assert.ok(v.path.startsWith('/voices/anime/'), `path tidak di /voices/anime/: ${v.path}`);
     assert.ok(v.path.endsWith('.mp3'), `path bukan mp3: ${v.path}`);
+    const full = join(ROOT, 'public', v.path.replace(/^\//, ''));
+    assert.ok(existsSync(full), `file voice hilang: ${v.path} (jalankan scripts/generate-anime-voice.py)`);
   }
 });
 
