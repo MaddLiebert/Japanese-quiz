@@ -101,16 +101,38 @@ test('多元: jaring pengaman MEMAKAI token bentuk (cel-shade, bukan beton Shōw
     'cel-shadow 多元 tidak boleh pakai sumi/hitam');
 });
 
-test('多元: tipografi BEDA dari Shōwa (§5) — body Shippori, judul 題字 miring', () => {
-  // Body/kanji → Shippori Mincho (dialog manga), bukan Noto Serif JP milik Shōwa.
-  assert.ok(/\[data-era="anime"\]\s*\{\s*--font-serif:\s*"Shippori Mincho"/.test(block),
-    '--font-serif 多元 = Shippori Mincho (beda dari Shōwa)');
-  // Judul → 題字 judul anime: miring (impact frame), bukan serif tegak Shōwa.
-  assert.ok(/\[data-era="anime"\]\s*h1[\s\S]{0,200}font-style:\s*italic/.test(block),
-    'judul 多元 miring (題字 ala judul anime)');
+test('多元: tipografi MANGA (§5 revisi) — judul Dela Gothic, body Zen Maru', () => {
+  // Body/kanji → Zen Maru Gothic (gothic bulat = huruf dialog manga), bukan
+  // Noto Serif JP milik Shōwa.
+  assert.ok(/--font-serif:\s*"Zen Maru Gothic"/.test(block),
+    '--font-serif 多元 = Zen Maru Gothic (manga, beda dari Shōwa)');
+  // Judul → Dela Gothic One (題字 judul anime: gothic 極太 blok tebal), bukan serif.
+  assert.ok(/--font-display:\s*"Dela Gothic One"/.test(block),
+    '--font-display 多元 = Dela Gothic One (題字 judul anime)');
+  // Judul episode → Rampart One (display manga).
+  assert.ok(/--font-episode:\s*"Rampart One"/.test(block),
+    '--font-episode 多元 = Rampart One');
   // Shōwa TIDAK meng-override --font-serif (font base) → 多元 wajib beda.
   assert.ok(!/\[data-era="showa"\]\s*\{\s*--font-serif/.test(css),
     'Shōwa memakai font base; 多元 harus punya sendiri');
+});
+
+test('多元: GARIS PANEL MANGA — .anime-manga + gutter, bukan garis mesin', () => {
+  // Kartu panel manga: tinta tebal + screentone + cel-shadow.
+  assert.ok(/\[data-era="anime"\]\s*\.anime-manga\s*\{[\s\S]{0,400}border:\s*var\(--era-edge-w\) solid var\(--manga-line\)/.test(block),
+    '.anime-manga = panel bergaris tinta');
+  assert.ok(/\[data-era="anime"\]\s*\.anime-manga\s*\{[\s\S]{0,400}background-image:\s*var\(--era-tone\)/.test(block),
+    'panel manga punya screentone');
+  // Garis DIGORES (feDisplacementMap) lewat ::before — bukan garis lurus mesin.
+  assert.ok(/\[data-era="anime"\]\s*\.anime-manga::before[\s\S]{0,300}filter:\s*url\(#anime-ink\)/.test(block),
+    'garis panel digores via filter url(#anime-ink)');
+  // Gutter コマ間: divider jadi garis tinta tebal, bukan garis tipis netral.
+  assert.ok(/\[data-era="anime"\]\s*\.era-divider__band[\s\S]{0,160}background:\s*var\(--manga-line\)/.test(block),
+    'gutter = garis tinta tebal');
+  assert.ok(/--manga-line:\s*var\(--sumi-val\)/.test(block), 'token --manga-line ada');
+  // Filter didefinisikan di App.jsx.
+  const app = readFileSync(join(here, '..', '..', 'App.jsx'), 'utf8');
+  assert.ok(/<filter id="anime-ink"/.test(app), 'filter #anime-ink ada di App.jsx');
 });
 
 // ── T3: Ornamen (フィルム＋セル画 / コマ割り題字 / 多世界の扉) ────────────────

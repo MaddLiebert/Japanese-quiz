@@ -210,6 +210,15 @@ function App() {
                     <feTurbulence type="fractalNoise" baseFrequency="0.05 0.09" numOctaves="2" seed="4" result="c" />
                     <feDisplacementMap in="SourceGraphic" in2="c" scale="2.6" xChannelSelector="R" yChannelSelector="G" />
                   </filter>
+                  {/* Garis panel MANGA (anime-ink): goyangan HALUS → tepi panel
+                      terasa digores tinta, bukan garis mesin. Skala kecil (2.2)
+                      supaya tetap lurus seperti panel komik, bukan koyak kertas
+                      (Heian) atau ukiran kayu (Edo). Dipakai via url(#anime-ink)
+                      pada .anime-manga (lihat index.css "GARIS PANEL MANGA 多元"). */}
+                  <filter id="anime-ink" x="-8%" y="-8%" width="116%" height="116%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.019 0.027" numOctaves="2" seed="12" result="n" />
+                    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
+                  </filter>
                 </defs>
               </svg>
 

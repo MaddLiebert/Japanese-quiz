@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { ANIME_STOPS } from '../features/cinematic/anime/animeStops';
+import { EraDivider } from '../components/EraDivider';
 
 // Perhentian → tujuan navigasi (fitur app). Yang tak punya rute → null.
 const ROUTE_BY_FEATURE = {
@@ -64,10 +65,10 @@ export function AnimeHistory() {
               8つの世界 · {id ? 'Peta 多元' : 'Multiverse Map'}
             </p>
           </div>
-          {/* 頁 — tanda tangan visual 多元 (halaman manga) */}
+          {/* 頁 — tanda tangan visual 多元 (panel manga: tinta tebal + screentone) */}
           <span
-            className="shrink-0 border-[3px] border-sumi font-display font-black text-sumi"
-            style={{ background: '#fdfcf8', width: 56, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.6rem', borderRadius: 6, boxShadow: '5px 5px 0 0 #1a1a1a' }}
+            className="anime-manga shrink-0 font-display font-black text-sumi"
+            style={{ width: 56, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.6rem' }}
             aria-hidden="true"
           >
             頁
@@ -82,6 +83,7 @@ export function AnimeHistory() {
       </div>
 
       {/* 8 perhentian */}
+      <EraDivider label="コマ · PANEL · コマ" className="relative z-10 mb-6" />
       <ol className="relative z-10 space-y-4">
         {ANIME_STOPS.map((s) => {
           const label = FEATURE_LABEL[s.feature] || { jp: '', id: '' };
@@ -90,14 +92,7 @@ export function AnimeHistory() {
           return (
             <li
               key={s.id}
-              className="border-[3px] border-sumi bg-kinari-light/60 py-4 pl-5 pr-4"
-              style={{
-                borderRadius: 6,
-                // screentone halus — titik-titik sel (PRD §5).
-                backgroundImage: 'radial-gradient(rgba(20,20,18,0.08) 1px, transparent 1.2px)',
-                backgroundSize: '7px 7px',
-                boxShadow: '5px 5px 0 0 rgba(20,20,18,0.9)',
-              }}
+              className="anime-manga py-4 pl-5 pr-4"
             >
               <div className="flex items-baseline justify-between gap-3">
                 <p className="font-sans text-[0.62rem] font-bold uppercase tracking-[0.28em] text-sumi/70">

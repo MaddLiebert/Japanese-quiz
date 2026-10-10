@@ -3319,8 +3319,16 @@ button[data-toji-kill]::after {
   --era-tone:         radial-gradient(var(--tone-val) 1px, transparent 1.2px);
   --era-tone-size:    5px 5px;
 
-  /* Tipografi — judul ala 題字 judul anime (blok tebal), teks isi manga. */
-  --font-display: "Noto Serif JP", "Shippori Mincho B1", serif;
+  /* Tipografi MANGA (revisi §5): judul = 題字 judul anime = Dela Gothic One
+     (display gothic 極太, blok tebal) — BUKAN serif Shōwa. Body/kanji/セリフ =
+     Zen Maru Gothic (gothic bulat = huruf dialog manga). Judul episode = Rampart. */
+  --font-display:  "Dela Gothic One", "Zen Maru Gothic", "Noto Sans JP", sans-serif;
+  --font-episode:  "Rampart One", "Dela Gothic One", sans-serif;   /* judul episode manga */
+  --font-serif:    "Zen Maru Gothic", "Shippori Mincho", sans-serif;
+
+  /* ── Bentuk MANGA — panel & gutter (revisi: user minta garis ala panel manga) */
+  --manga-line:    var(--sumi-val);              /* garis panel (tinta manga) */
+  --manga-gutter:  10px;                          /* jarak antar-panel (コマ割り) */
 }
 
 /* ── 多元 gelap — 「深夜アニメ」 RUANG TONTON TENGAH MALAM ─────────────────
@@ -3478,15 +3486,19 @@ button[data-toji-kill]::after {
    多元 terbaca sebagai "Shōwa diberi warna". Jaring ini memetakan kelas keras
    itu ke token 多元, sama pola seperti jaring Heian/Edo/Meiji. */
 
-/* 1) TIPOGRAFI — BEDA dari Shōwa (§5). Body/kanji = Shippori Mincho (dialog
-      manga), BUKAN Noto Serif JP milik Shōwa. Judul = 題字 judul anime:
-      tebal + MIRING (impact frame), bukan serif ukir TEGAK ala Shōwa. */
-[data-era="anime"] { --font-serif: "Shippori Mincho", "Noto Serif JP", serif; }
+/* 1) TIPOGRAFI MANGA (§5 revisi). Judul = 題字 judul anime = Dela Gothic One
+      (gothic 極太 blok tebal) — BUKAN serif Shōwa. Body/kanji = Zen Maru Gothic
+      (gothic bulat = huruf dialog manga). Judul episode = Rampart One. */
 [data-era="anime"] h1,
 [data-era="anime"] h2 {
   font-family: var(--font-display);
-  font-style: italic;
-  letter-spacing: -0.01em;
+  font-weight: 900;
+  letter-spacing: -0.015em;
+}
+/* Judul episode / label babak → Rampart One (display manga). */
+[data-era="anime"] .anime-episode {
+  font-family: var(--font-episode);
+  letter-spacing: 0.01em;
 }
 
 /* 2) TEPI → outline tinta 3px (panel manga), bukan 4px beton Shōwa.
@@ -3533,6 +3545,68 @@ button[data-toji-kill]::after {
 [data-era="anime"] :where(button, a)[class*="hover:translate-"]:hover { transform: none !important; }
 [data-era="anime"] :where(button, a)[class*="shadow-["] { transition: box-shadow var(--era-motion) var(--era-ease); }
 [data-era="anime"] :where(button, a)[class*="shadow-["]:hover { box-shadow: var(--era-shadow-hover) !important; }
+
+/* ── GARIS PANEL MANGA 多元 (revisi: user minta garis ala panel manga) ─────────
+   Manga = bahasa GARIS: panel dikelilingi tinta tebal, sudut nyaris siku,
+   screentone di dalam, gutter (コマ間) memisahkan panel. Ini yang membedakan
+   多元 dari "Shōwa diberi warna". Dipakai bertahap lewat kelas .anime-manga
+   (kartu panel) + varian .era-divider (gutter).
+   Tepi TIDAK lurus-mesin: ::before ber-filter url(#anime-ink) (feDisplacementMap
+   skala kecil) → garis terasa DIGORES tinta, tapi tetap lurus seperti komik —
+   bukan koyak kertas (Heian) atau ukiran kayu (Edo). Elemen wajib ber-position. */
+
+/* 1) KARTU PANEL MANGA — kotak tinta + screentone di dalam + cel-shadow era. */
+[data-era="anime"] .anime-manga {
+  position: relative;
+  border: var(--era-edge-w) solid var(--manga-line) !important;
+  border-radius: var(--era-radius) !important;
+  background-color: var(--kinari-light-val);
+  /* screentone スクリーントーン — bintik halftone di dalam panel (PRD §6). */
+  background-image: var(--era-tone);
+  background-size: var(--era-tone-size);
+  box-shadow: var(--era-shadow);
+}
+/* Garis panel DIGORES (bukan garis mesin) — overlay di atas border asli. */
+[data-era="anime"] .anime-manga::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: var(--era-edge-w) solid var(--manga-line);
+  border-radius: inherit;
+  filter: url(#anime-ink);
+}
+/* Panel "besar" (panel utama) = garis tinta LEBIH tebal, seperti splash page. */
+[data-era="anime"] .anime-manga--bold { border-width: 4px !important; }
+[data-era="anime"] .anime-manga--bold::before { border-width: 4px; }
+/* Balon ucapan フキダシ — panel putih dengan ekor (dipakai untuk kutipan). */
+[data-era="anime"] .anime-manga--balloon {
+  border-radius: var(--era-radius-pill) !important;
+  background-image: none;
+}
+[data-era="anime"] .anime-manga--balloon::before { border-radius: var(--era-radius-pill); }
+
+/* 2) GUTTER コマ間 — pemisah antar-panel: SATU garis tinta tebal bergores,
+      bukan garis tipis netral. Memakai komponen <EraDivider /> yang sudah ada. */
+[data-era="anime"] .era-divider { padding: 16px 0; }
+[data-era="anime"] .era-divider__band {
+  height: 3px;
+  background: var(--manga-line);
+  filter: url(#anime-ink);
+}
+[data-era="anime"] .era-divider__label {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  color: var(--sumi-val);
+  opacity: 0.9;
+  background: var(--backdrop-val);
+}
+.dark[data-era="anime"] .era-divider__label,
+[data-theme="dark"][data-era="anime"] .era-divider__label { background: var(--kinari-val); }
+
+/* 3) 集中線 shūchūsen sudah ada (.anime-burst). Di sini hanya memastikan garis
+      radial dipakai di belakang elemen fokus (jawaban benar/gacha/checkpoint). */
 
 /* ══ TEMA ERA — SHŌWA 昭和 ═══════════════════════════════════════════════════
    PRD: docs/tema/showa.md. "昭和 = コンクリートの時代" (zaman beton).
