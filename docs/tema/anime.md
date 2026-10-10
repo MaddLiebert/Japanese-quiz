@@ -118,12 +118,17 @@ Mengikuti 3 lapis Heian/Edo/Meiji/Shōwa (`docs/tema/heian.md` §4.1), **plus du
 LAPIS 0  base :root              bentuk+DNA Shōwa          ← BEKU (tidak diubah)
 LAPIS 1  [data-era="anime"]      KANVAS KOSONG (dasar)      ← selalu ada
 LAPIS 2  [data-franchise="…"]    OVERLAY dunia              ← muncul jika franchise dimiliki
+LAPIS 2b [data-franchise-nuance="…"]  NUANSA dunia         ← suasana khas dunia (mis. 呪力)
 LAPIS 3  [data-character="…"]    AKSEN tokoh                ← muncul jika karakter di-gacha
 ```
 
 Selektor: `[data-era="anime"]` (terang) · `.dark[data-era="anime"]`, `[data-theme="dark"][data-era="anime"]` (gelap) · `.anime-fr-<id>` untuk overlay franchise.
 
 > **⚠️ Keputusan kunci:** **level tema (franchise/karakter) = atribut di `<html>`**, sama seperti `data-era`. Menambah franchise **tidak** menulis CSS baru per-franchise di `index.css` — cukup **satu token set** `--fr-1`/`--fr-2` yang **diisi dari data** franchise (`franchises.js`). CSS hanya tahu *peran* (`--fr-1` = warna dunia), bukan *identitas*.
+
+> **Nuansa dunia (LAPIS 2b):** selain *warna* (`--fr-1`/`--fr-2`), sebuah dunia boleh punya **`nuance`** (mis. JJK → `'cursed'` 呪力) yang mengubah **SUASANA** kanvas: screentone lebih rapat (arsir horor) + tinta lebih pekat + panel lebih rapat. Atribut `data-franchise-nuance` **data-driven** dari `franchises.js` (`franchiseNuance(id)`); CSS hanya punya satu blok `[data-franchise-nuance="cursed"]`. Nuansa mengubah **suasana, bukan bentuk** — outline/cel/radius/motion tetap milik era. Dunia tanpa `nuance` → kanvas default. **Nol nama IP di CSS** (dijaga `animeTheme.test.js` §6.4).
+>
+> **⚠️ Nuansa = KEPADATAN TINTA, bukan stiker.** Percobaan awal menempel **ornamen tempelan** (segel 呪 + cincin di hero) → ditolak pemilik ("jelek… jangan AI slop"): ornamen numpuk di atas judul 基礎 dan terlihat ngawur. Aturan: nuansa dunia **tidak** menambah elemen tempelan di hero; ia hanya menyetel token (tone/tinta/gutter) + judul mesin gacha (`CLAW_NUANCE`). Efek "nyala" JJK hidup di **jawaban kuis** (lihat §8), bukan ornamen.
 
 ### 4.2 Warna — 多元 KANVAS (terang / 「白紙の頁」 hakushi no peiji)
 

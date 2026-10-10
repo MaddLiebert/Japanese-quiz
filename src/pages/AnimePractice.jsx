@@ -14,6 +14,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useUserStats } from '../features/progress/ProgressContext';
 import { isEraUnlocked } from '../features/theme/eras';
+import { useEffectLayer } from '../features/effects/EffectContext';
 import {
   QUIZ_MODES, QUIZ_MODE_LABEL, buildQuestions, checkAnswer, QUIZ_XP,
 } from '../features/anime/quiz';
@@ -38,6 +39,14 @@ export function AnimePractice() {
   const id = language === 'id';
   const level = progress?.level ?? 1;
   const unlocked = isEraUnlocked('anime', level);
+  // Efek JJK (visual + suara) saat menjawab — pak sama dengan kuis lain
+  // (Quiz/MondaiQuiz/N5Exam): benar → efek karakter, salah → efek gagal.
+  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
+
+  // Sesi baru: streak efek mulai dari nol; keluar halaman → efek padam
+  // (bar/domain/bola tidak nyangkut di halaman berikutnya).
+  useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
+  useEffect(() => () => endQuizSession(), [endQuizSession]);
 
   const modeParam = params.get('mode');
   const mode = QUIZ_MODES.includes(modeParam) ? modeParam : 'onoma';
@@ -71,6 +80,7 @@ export function AnimePractice() {
     const r = checkAnswer(q, choiceId);
     setChosen(choiceId);
     setResult(r);
+    triggerEffect(r.ok ? 'correct' : 'wrong');
     if (r.ok) { setScore((s) => s + 1); addXp?.(QUIZ_XP); }
   };
 
@@ -83,6 +93,7 @@ export function AnimePractice() {
     if (result || !q || placed.length !== q.correct.length) return;
     const r = checkAnswer(q, placed);
     setResult(r);
+    triggerEffect(r.ok ? 'correct' : 'wrong');
     if (r.ok) { setScore((s) => s + 1); addXp?.(QUIZ_XP); }
   };
 

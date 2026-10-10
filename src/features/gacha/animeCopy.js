@@ -29,3 +29,19 @@ export const isAnime = (eraId) => eraId === 'anime';
 
 // Salinan baru tiap panggilan (konstanta tak bisa dirusak pemanggil).
 export const gachaCopyAnime = () => ({ ...ANIME_GACHA });
+
+// ── NUANSA DUNIA di mesin gacha (LAPIS 2) ───────────────────────────────────
+// Saat dunia aktif punya nuansa (mis. 'cursed' 呪力), mesin クレーンゲーム
+// berganti judul & tagline agar terasa dunia itu. Teks = GENERIK bertema
+// kutukan (bukan nama tokoh/logo IP). Dunia tanpa nuansa → default arcade.
+export const CLAW_NUANCE = {
+  cursed: {
+    kicker: '呪物回収',                       // pemulihan benda terkutuk
+    title: '呪具クレーン',                     // crane 呪具
+    titleSub: 'じゅぐくれーん · cursed crane',
+    tagline: '呪力を込めて、呪物をつかめ。',      // curahkan 呪力, rebut 呪物
+  },
+};
+
+// Salinan nuansa mesin; nuansa null/tak dikenal → objek kosong (pakai default).
+export const clawNuanceCopy = (nuance) => ({ ...(CLAW_NUANCE[nuance] || {}) });

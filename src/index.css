@@ -3370,6 +3370,30 @@ button[data-toji-kill]::after {
   --era-shadow-hover: 7px 7px 0 0 var(--fr-1);
 }
 
+/* ── LAPIS 2 — NUANSA DUNIA (data-driven) ──────────────────────────────────
+   `<html data-franchise-nuance="…">` (diisi EraContext dari franchises.js).
+   Mengubah SUASANA kanvas saat dunia itu aktif — BUKAN bentuk (outline/cel/
+   radius/motion tetap milik era). Dipakai dunia lisensi yang punya karakter
+   visual khas (mis. dunia kutukan → 'cursed' 呪力: tinta lebih pekat +
+   screentone rapat + segel 呪). Nol string IP di sini (data-driven, §4.1/§11). */
+
+/* Nuansa 'cursed' (呪術) — kanvas jadi lebih gelap & pekat; screentone rapat
+   meniru arsir tinta manga horor. Warna tetap dari dunia. TANPA ornamen
+   tempelan — nuansa cukup lewat kepadatan tinta & tone (bukan stiker). */
+[data-era="anime"][data-franchise-nuance="cursed"] {
+  --tone-val:   #b9c2d4;                 /* screentone lebih rapat (arsir) */
+  --manga-gutter: 7px;                    /* panel lebih rapat (tegang) */
+}
+.dark[data-era="anime"][data-franchise-nuance="cursed"],
+[data-theme="dark"][data-era="anime"][data-franchise-nuance="cursed"] {
+  --tone-val:   #333c52;
+}
+/* Screentone 呪 — bintik lebih rapat + diagonal (arsir horor), hanya cursed. */
+[data-era="anime"][data-franchise-nuance="cursed"] .anime-tone {
+  background-image: radial-gradient(var(--tone-val) 1.1px, transparent 1.2px);
+  background-size: 3px 3px;
+}
+
 /* ── ORNAMEN 多元 (hero 日本語学園) — フィルム＋セル画 + コマ割り題字 + 多世界の扉 ──
    Analog 提灯 (Edo) / 瓦斯灯 (Meiji) / 電柱 (Shōwa). Di-gate `.anime-ornament`
    (default none). Dekoratif → pointer-events:none + user-select:none.

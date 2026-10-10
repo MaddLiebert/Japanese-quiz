@@ -53,7 +53,7 @@ export const FRANCHISES = [
     id: 'jjk', kanji: '呪術廻戦', name: 'Jujutsu Kaisen', genre_id: 'Pertarungan kutukan (dark fantasy)',
     price: 20000,
     fr1: '#161a2b', fr2: '#7c4dff', motif: 'curse', pool: ['curse', 'seal', 'flash', 'domain'],
-    licensed: true, status: 'live',
+    licensed: true, status: 'live', nuance: 'cursed',
     credit: '呪術廻戦 © 芥見下々 / 集英社・MAPPA',
   },
   {
@@ -81,8 +81,18 @@ export const FRANCHISE_MOTIFS = ['star', 'shuriken', 'crystal', 'gear', 'lantern
 // Status yang sah untuk sebuah dunia.
 export const FRANCHISE_STATUSES = ['live', 'soon'];
 
+// Nuansa dunia (LAPIS 2 → atribut <html data-franchise-nuance>): mengubah
+// SUASANA kanvas saat dunia itu aktif (mis. JJK → 'cursed' 呪力). Warna/garis
+// tetap milik era (bentuk TIDAK berubah); nuansa hanya menambah karakter visual
+// khas dunia (segel 呪, tinta lebih pekat, screentone rapat). Data-driven →
+// tidak ada string IP di CSS.
+export const FRANCHISE_NUANCES = ['cursed'];
+
 // Franchise berdasarkan id; tak dikenal → null (UI tidak pernah crash).
 export const franchiseById = (id) => FRANCHISES.find((f) => f.id === id) || null;
+
+// Nuansa dunia (null bila dunia tak punya nuansa / tak dikenal).
+export const franchiseNuance = (id) => franchiseById(id)?.nuance || null;
 
 // Dunia yang BELUM rilis (teaser). Tak dikenal → false.
 export const isFranchiseComingSoon = (id) => franchiseById(id)?.status === 'soon';
@@ -145,6 +155,9 @@ export const validateFranchises = (bank = FRANCHISES) => {
       errors.push(`${tag}: franchise lisensi wajib punya credit`);
     }
     if (f?.status && !FRANCHISE_STATUSES.includes(f.status)) errors.push(`${tag}: status tak dikenal: ${f.status}`);
+    // Nuansa (opsional) harus dari daftar yang dikenal — dijaga agar CSS
+    // [data-franchise-nuance] selalu punya pasangan.
+    if (f?.nuance && !FRANCHISE_NUANCES.includes(f.nuance)) errors.push(`${tag}: nuance tak dikenal: ${f.nuance}`);
   }
   return errors;
 };

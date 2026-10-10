@@ -2,7 +2,7 @@
 // Lihat SPEC: docs/tema/anime-mekanik.md §A5. Modul TANPA React/DOM → `node --test`.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ANIME_GACHA, isAnime, gachaCopyAnime } from './animeCopy.js';
+import { ANIME_GACHA, isAnime, gachaCopyAnime, CLAW_NUANCE, clawNuanceCopy } from './animeCopy.js';
 import { gachaCopy } from './heianCopy.js';
 import {
   ANIME_CLAW_COUNT, ANIME_CLAW_MS, ANIME_CLAW_EASE, ANIME_CLAW_POOL, ANIME_CLAW_FADE,
@@ -83,4 +83,27 @@ test('buildClawStrips: 3 strip, tiap elemen terakhir = target yang diminta', () 
   const strips = buildClawStrips(targets, ANIME_CLAW_POOL, STRIP_LEN, () => 0.5);
   assert.equal(strips.length, ANIME_CLAW_COUNT);
   strips.forEach((s, i) => assert.equal(s[s.length - 1], targets[i]));
+});
+
+// ── NUANSA DUNIA di mesin (LAPIS 2) ─────────────────────────────────────────
+test('nuansa mesin: "cursed" punya judul/tagline sendiri (bukan nama IP)', () => {
+  const n = clawNuanceCopy('cursed');
+  assert.ok(n.title && n.kicker && n.tagline, 'field nuansa lengkap');
+  assert.notEqual(n.title, ANIME_GACHA.title, 'judul berubah saat nuansa aktif');
+  // Teks GENERIK bertema kutukan — bukan nama tokoh/logo IP.
+  const terlarang = ['gojo', 'sukuna', 'jjk', 'jujutsu', 'naruto', 'onepiece', 'jojo'];
+  const blob = JSON.stringify(CLAW_NUANCE).toLowerCase();
+  assert.deepEqual(terlarang.filter((x) => blob.includes(x)), [], 'tak ada nama IP');
+});
+
+test('clawNuanceCopy: nuansa null/tak dikenal → {} (pakai default mesin)', () => {
+  assert.deepEqual(clawNuanceCopy(null), {});
+  assert.deepEqual(clawNuanceCopy(undefined), {});
+  assert.deepEqual(clawNuanceCopy('nope'), {});
+});
+
+test('clawNuanceCopy: hasil salinan baru (konstanta aman)', () => {
+  const a = clawNuanceCopy('cursed');
+  a.title = 'X';
+  assert.notEqual(CLAW_NUANCE.cursed.title, 'X');
 });

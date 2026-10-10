@@ -3,9 +3,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  FRANCHISES, FRANCHISE_MOTIFS, FRANCHISE_MIN_LEVEL, FRANCHISE_STATUSES,
+  FRANCHISES, FRANCHISE_MOTIFS, FRANCHISE_MIN_LEVEL, FRANCHISE_STATUSES, FRANCHISE_NUANCES,
   franchiseById, isFranchiseComingSoon, isFranchiseLicensed,
-  canBuyFranchise, addFranchise, franchiseTokens, equipFranchise,
+  canBuyFranchise, addFranchise, franchiseTokens, franchiseNuance, equipFranchise,
   ownsFranchise, validateFranchises,
 } from './franchises.js';
 
@@ -125,4 +125,23 @@ test('coming soon: One Piece & JoJo = teaser, TIDAK bisa dibeli', () => {
   }
   assert.equal(isFranchiseComingSoon('hoshi'), false);
   assert.equal(isFranchiseComingSoon('nope'), false);
+});
+
+// ── NUANSA DUNIA (LAPIS 2 → data-franchise-nuance) ──────────────────────────
+test('nuance: JJK = "cursed" (呪力), dunia lain tak ber-nuansa', () => {
+  assert.equal(franchiseNuance('jjk'), 'cursed');
+  assert.equal(franchiseById('jjk').nuance, 'cursed');
+  assert.equal(franchiseNuance('hoshi'), null);
+  assert.equal(franchiseNuance('nope'), null);
+});
+
+test('nuance: tiap nuance bank ada di daftar FRANCHISE_NUANCES (CSS punya pasangan)', () => {
+  for (const f of FRANCHISES) {
+    if (f.nuance) assert.ok(FRANCHISE_NUANCES.includes(f.nuance), `${f.id}: nuance '${f.nuance}' tak dikenal`);
+  }
+});
+
+test('validateFranchises: menangkap nuance tak dikenal', () => {
+  const bad = [{ id: 'x', kanji: 'X', name: 'X', genre_id: 'g', price: 100, fr1: '#000000', fr2: '#ffffff', motif: 'star', pool: ['a', 'b'], nuance: 'nope' }];
+  assert.ok(validateFranchises(bad).some((e) => e.includes('nuance')));
 });

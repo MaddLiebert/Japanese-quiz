@@ -3,7 +3,7 @@
 // Lihat PRD: docs/tema/heian.md §12 T2.
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useUserStats } from '../progress/ProgressContext';
-import { franchiseTokens } from '../anime/franchises';
+import { franchiseTokens, franchiseNuance } from '../anime/franchises';
 import {
   DEFAULT_ERA, getEra, eraForLevel, isEraUnlocked, unlockedEras, nextEra,
 } from './eras';
@@ -46,8 +46,14 @@ export const EraProvider = ({ children }) => {
       root.setAttribute('data-franchise', activeFranchise);
       root.style.setProperty('--fr-1', fr.fr1);
       root.style.setProperty('--fr-2', fr.fr2);
+      // Nuansa dunia (mis. JJK → 'cursed'): mengubah SUASANA kanvas (segel 呪,
+      // tinta pekat, screentone rapat). Data-driven → tak ada string IP di CSS.
+      const nuance = franchiseNuance(activeFranchise);
+      if (nuance) root.setAttribute('data-franchise-nuance', nuance);
+      else root.removeAttribute('data-franchise-nuance');
     } else {
       root.removeAttribute('data-franchise');
+      root.removeAttribute('data-franchise-nuance');
       root.style.removeProperty('--fr-1');
       root.style.removeProperty('--fr-2');
     }

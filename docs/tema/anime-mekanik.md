@@ -569,7 +569,7 @@ export const FRANCHISES = [
   // ── Dunia LISENSI (IP nyata) — tier "dunia besar" ~20k, wajib credit ──
   { id: 'jjk', kanji: '呪術廻戦', name: 'Jujutsu Kaisen', genre_id: '…', price: 20000,
     fr1: '#161a2b', fr2: '#7c4dff', motif: 'curse', pool: ['curse', 'seal', 'flash', 'domain'],
-    licensed: true, status: 'live', credit: '呪術廻戦 © 芥見下々 / 集英社・MAPPA' },
+    licensed: true, status: 'live', nuance: 'cursed', credit: '呪術廻戦 © 芥見下々 / 集英社・MAPPA' },
   { id: 'onepiece', kanji: 'ワンピース', name: 'One Piece', …, licensed: true, status: 'soon', credit: '…' },
   { id: 'jojo',     kanji: 'ジョジョ',   name: "JoJo's Bizarre Adventure", …, licensed: true, status: 'soon', credit: '…' },
 ];
@@ -603,6 +603,10 @@ export const franchiseTokens = (id) => {
   return f ? { fr1: f.fr1, fr2: f.fr2, motif: f.motif } : null;
 };
 
+// Nuansa dunia → dipakai CSS [data-franchise-nuance="…"] (LAPIS 2b). Dunia
+// tanpa `nuance` → null (kanvas default).
+export const franchiseNuance = (id) => franchiseById(id)?.nuance || null;
+
 // Aktifkan dunia (equip) — 1 dunia aktif pada satu waktu.
 export const equipFranchise = (progress, id) =>
   (franchiseById(id) && (progress?.ownedFranchises || []).includes(id))
@@ -614,9 +618,10 @@ export const equipFranchise = (progress, id) =>
 - Franchise **menimpa warna & motif**, **tidak menimpa bentuk** (outline/cel/radius/motion tetap milik era) — §4.5 `anime.md`.
 - **1 dunia aktif** pada satu waktu (bisa diganti); semua yang dibeli tetap tersimpan.
 - **BELI = AUTO-EQUIP:** dunia yang baru dibeli **langsung jadi `activeFranchise`** (kanvas langsung berubah warna). Fungsi murni `addFranchise` tetap hanya menambah daftar; auto-equip ada di `buyFranchise` (ProgressContext).
+- **NUANSA (LAPIS 2b, opsional):** dunia boleh punya `nuance` → atribut `data-franchise-nuance` (mis. JJK `'cursed'` 呪力: screentone rapat + panel rapat). Mengubah **SUASANA (kepadatan tinta), BUKAN bentuk & TANPA ornamen tempelan** (percobaan segel 呪 di hero ditolak pemilik = "AI slop"). Data-driven (`franchiseNuance`); CSS hanya satu blok `[data-franchise-nuance="cursed"]`. Nuansa juga **mengganti judul mesin gacha** (`CLAW_NUANCE` di `animeCopy.js`, mis. クレーンゲーム → 呪具クレーン). Teks = GENERIK bertema kutukan, **tanpa nama IP**.
 - Bisa **dibeli** (bukan gacha) — mahal, pakai medaru. Dunia lisensi = **tier besar ~20k**.
 - **Dua jenis dunia:** ORISINAL (fiktif) vs LISENSI (`licensed: true` → wajib `credit`). Dunia `status:'soon'` = teaser → `canBuyFranchise` **selalu false**.
-- Helper baru: `isFranchiseComingSoon(id)`, `isFranchiseLicensed(id)`.
+- Helper baru: `isFranchiseComingSoon(id)`, `isFranchiseLicensed(id)`, `franchiseNuance(id)`.
 - State baru: `ownedFranchises: []`, `activeFranchise: null` di `ProgressContext`.
 
 ### Test (`franchises.test.js`)

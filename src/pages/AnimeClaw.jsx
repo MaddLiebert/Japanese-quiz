@@ -10,7 +10,9 @@ import { useLanguage } from '../context/LanguageContext';
 import { useUserStats } from '../features/progress/ProgressContext';
 import { medaruCopy } from '../features/progress/medaruCopy';
 import { characterById, characterHissatsu, characterFranchise } from '../features/anime/characters';
+import { franchiseNuance } from '../features/anime/franchises';
 import { clawPrice, rollClaw, clawRefund, CLAW_DUPLICATE_REFUND } from '../features/anime/claw';
+import { gachaCopyAnime, clawNuanceCopy } from '../features/gacha/animeCopy';
 import { MedaruCoin } from '../components/MedaruCoin';
 
 export function AnimeClaw() {
@@ -19,6 +21,14 @@ export function AnimeClaw() {
   const { progress, characterPool, pullCharacter, setOshi, spendMedaru, gainMedaru } = useUserStats();
   const id = language === 'id';
   const money = medaruCopy('anime', language);
+
+  // Nuansa dunia aktif (mis. 'cursed' 呪力) → judul/tagline mesin ikut berubah.
+  const copy = gachaCopyAnime();
+  const nuance = clawNuanceCopy(franchiseNuance(progress?.activeFranchise));
+  const title = nuance.title || copy.title;
+  const kicker = nuance.kicker || copy.kicker;
+  const tagline = nuance.tagline || copy.tagline;
+  const titleSub = nuance.titleSub || copy.titleSub;
 
   const owned = progress?.ownedCharacters || {};
   const oshiId = progress?.oshiId || null;
@@ -55,12 +65,14 @@ export function AnimeClaw() {
       </button>
 
       <div className="mb-6">
+        <p className="font-sans text-[0.6rem] font-black uppercase tracking-[0.35em] text-sumi/50">{kicker}</p>
         <h1 className="font-display font-black leading-tight text-sumi" style={{ fontSize: 'clamp(2rem, 7vw, 3.2rem)' }}>
-          クレーンゲーム
+          {title}
         </h1>
         <p className="mt-1 font-sans text-sm font-bold tracking-[0.3em] text-sumi/70">
-          CRANE GAME · {id ? 'Koleksi Karakter' : 'Character Collection'}
+          {titleSub.toUpperCase()} · {id ? 'Koleksi Karakter' : 'Character Collection'}
         </p>
+        <p className="mt-2 font-serif text-sm text-sumi/70">{tagline}</p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 border-[3px] border-sumi bg-kinari-light px-3 py-1.5 font-sans text-xs font-black text-sumi" style={{ borderRadius: 6, boxShadow: '3px 3px 0 0 #1a1a1a' }}>
             <MedaruCoin size={14} /> {balance.toLocaleString()} {money.nameShort}
