@@ -3510,10 +3510,12 @@ button[data-toji-kill]::after {
 }
 
 /* ── NYALA JAWABAN KUIS 多元 (§8) — efek "benar/salah" di kartu soal ─────────
-   Bukan sekadar teks hijau/merah: 集中線 (radial speed-lines) + kilau warna
-   (matcha saat benar, shu saat salah) muncul di tepi kartu, lalu meredup.
-   Dipakai AnimePractice saat menjawab; kelasnya diberi kunci unik per-jawaban
-   (key React) → animasi replay tiap jawaban. Dekoratif (pointer-events:none). */
+   Bukan sekadar teks hijau/merah: 集中線 (radial speed-lines) + kilatan warna
+   (matcha saat benar, shu saat salah) + cincin cahaya di tepi kartu, lalu
+   meredup. Dipakai AnimePractice saat menjawab; kelasnya diberi kunci unik
+   per-jawaban (key React) → animasi replay tiap jawaban.
+   Dekoratif (pointer-events:none), tapi CUKUP KUAT biar terbaca sebagai "nyala".
+   z-index tinggi → tak tertutup popup karakter. Hormati prefers-reduced-motion. */
 .anime-answer-flare { display: none; }
 [data-era="anime"] .anime-answer-flare {
   display: block;
@@ -3522,41 +3524,54 @@ button[data-toji-kill]::after {
   pointer-events: none;
   overflow: hidden;
   border-radius: var(--era-radius);
+  z-index: 30;
+}
+/* Kilatan dasar: selubung warna menyala dari tepi (呪力 surge), bukan rata. */
+[data-era="anime"] .anime-answer-flare {
+  background: radial-gradient(ellipse at center, transparent 38%, currentColor 130%);
+  animation: anime-answer-wash 900ms var(--era-motion, 140ms) ease-out both;
 }
 [data-era="anime"] .anime-answer-flare::before {
   /* 集中線 di tepi (bukan penuh) — mata fokus ke teks, tepi "meledak". */
   content: "";
   position: absolute;
   inset: -30%;
-  background: repeating-conic-gradient(from 0deg, currentColor 0deg 1deg, transparent 1deg 5deg);
-  -webkit-mask-image: radial-gradient(circle, transparent 40%, #000 52%, transparent 72%);
-          mask-image: radial-gradient(circle, transparent 40%, #000 52%, transparent 72%);
-  opacity: 0.22;
-  animation: anime-answer-burst 720ms var(--era-motion, 140ms) ease-out both;
+  background: repeating-conic-gradient(from 0deg, currentColor 0deg 1.4deg, transparent 1.4deg 4.6deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 34%, #000 50%, transparent 76%);
+          mask-image: radial-gradient(circle, transparent 34%, #000 50%, transparent 76%);
+  animation: anime-answer-burst 900ms var(--era-motion, 140ms) ease-out both;
 }
 [data-era="anime"] .anime-answer-flare--correct { color: var(--matcha-val); }
 [data-era="anime"] .anime-answer-flare--wrong   { color: var(--shu-val); }
 [data-era="anime"] .anime-answer-flare::after {
-  /* Kilau tepi: cincin warna yang mengembang & meredup. */
+  /* Cincin cahaya tepi: tebal + glow luar. Meletup lalu MENETAP samar sampai
+     soal berikutnya → warna kartu tetap terbaca benar/salah (bukan sekadar
+     kedip 0.9 dtk). */
   content: "";
   position: absolute;
   inset: 0;
   border-radius: var(--era-radius);
-  box-shadow: inset 0 0 0 3px currentColor;
-  animation: anime-answer-glow 720ms ease-out both;
+  box-shadow: inset 0 0 0 4px currentColor, 0 0 26px 2px currentColor;
+  animation: anime-answer-glow 900ms ease-out both;
+}
+@keyframes anime-answer-wash {
+  from { opacity: 0; }
+  22%  { opacity: 0.5; }
+  to   { opacity: 0.14; }   /* menetap samar — kartu tetap "menyala" */
 }
 @keyframes anime-answer-burst {
-  from { opacity: 0; transform: scale(0.86) rotate(-3deg); }
-  40%  { opacity: 0.28; }
-  to   { opacity: 0; transform: scale(1.06) rotate(0deg); }
+  from { opacity: 0; transform: scale(0.82) rotate(-3deg); }
+  32%  { opacity: 0.6; }
+  to   { opacity: 0.18; transform: scale(1.0) rotate(0deg); }
 }
 @keyframes anime-answer-glow {
-  from { opacity: 0.9; }
-  to   { opacity: 0; }
+  from { opacity: 1; }
+  to   { opacity: 0.72; }   /* menetap — cincin tetap terlihat */
 }
 @media (prefers-reduced-motion: reduce) {
-  [data-era="anime"] .anime-answer-flare::before { animation: none; opacity: 0.16; }
-  [data-era="anime"] .anime-answer-flare::after  { animation: none; opacity: 0.5; }
+  [data-era="anime"] .anime-answer-flare { animation: none; background: none; }
+  [data-era="anime"] .anime-answer-flare::before { animation: none; opacity: 0.2; }
+  [data-era="anime"] .anime-answer-flare::after  { animation: none; opacity: 0.7; }
 }
 
 /* ── JARING PENGAMAN 多元 — bahasa bentuk CEL-SHADE (anti-brutalism Shōwa) ────
