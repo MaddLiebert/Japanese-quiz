@@ -321,10 +321,12 @@ Setiap era punya **2 ornamen** dengan pembagian yang selalu sama. 多元 **wajib
 - `src/index.css` sudah punya `.era-grain`, `.bg-halftone`, `.showa-concrete`. 多元 **menambah**: `.anime-tone`, `.anime-film`, `.anime-panel`, `.anime-gate`, `.anime-burst`, `.anime-onoma`. **Semua override di dalam `[data-era="anime"]`** supaya tak bocor ke era lain (jaring pengaman sama seperti Heian §7.2C).
 - **Guard test** (pola `showaTheme.test.js`): `animeTheme.test.js` memastikan (a) tiap ornamen punya gate `.anime-*`, (b) ornamen **tidak** muncul di era lain, (c) token `--sora-val` ada di blok 多元, (d) **kanvas kosong tetap tampil tanpa franchise** (tidak jatuh ke base).
 
-> **⚠️ HAK CIPTA — keputusan TERKUNCI (baca keras-keras):**
-> - **Franchise di PRD ini = FIKTIF & ORISINAL** (`星の旅人`, `影の忍者`, `魔法学園`, `機神`, `妖奇譚`). **JANGAN** menamai/menyalin IP nyata (Judul anime/manga/game komersial, nama karakter berhak cipta, logo, desain tokoh) ke dalam **aset yang di-ship**.
-> - **Konten JJK yang SUDAH ADA** (`pack_07`..`pack_14` Gojo/Sukuna/dst, efek, voice) = **sudah ada di repo & dipakai sebagai referensi personal**. 多元 **memakai sistem yang sama** (gacha/efek/voice) tapi **template franchise baru wajib orisinal**. Jangan menambah IP berhak cipta baru.
-> - **シルエット, bukan reproduksi:** motif "robot"/"ninja"/"penyihir" digambar sebagai **siluet/bentuk generik** (bukan desain tokoh ikonik).
+> **⚠️ HAK CIPTA — kebijakan (REVISI, keputusan pemilik proyek):**
+> - **Dunia ORISINAL (tanpa flag `licensed`) = FIKTIF & ORISINAL** (`星の旅人`, `影の忍者`, `魔法学園`, `機神`, `妖奇譚`). **JANGAN** menamai/menyalin IP nyata ke sini. Aturan ini **tetap mengikat**.
+> - **Dunia LISENSI (`licensed: true`) = BOLEH memakai IP nyata** (mis. JJK `呪術廻戦`), **ASAL WAJIB punya `credit`** (atribusi ke pemegang hak: `© 芥見下々 / 集英社・MAPPA`). **Kredit = mitigasi hak cipta** — ini yang menahan agar tidak "menyalin tanpa izin". Dijaga `validateFranchises` + test.
+> - **Alasan revisi:** konten JJK (`pack_07`..`pack_14`) sudah lama ada di repo; pemilik proyek memutuskan menjadikannya **dunia lisensi resmi** di 多元 (payoff §11.2), bukan sekadar referensi. Belum dipublikasikan → aman; kredit disiapkan sejak awal.
+> - **Dunia `status: 'soon'`** (One Piece, JoJo) = teaser: tampil di 物販 tapi **tidak bisa dibeli** & belum punya tokoh (`canBuyFranchise` → false).
+> - **シルエット, bukan reproduksi:** motif dunia lisensi (`curse`/`anchor`) tetap digambar sebagai **siluet/bentuk generik** (bukan desain tokoh ikonik / logo resmi).
 > - **Nama & kata umum aman:** 機神, 忍者, 魔法, 異世界, 青春 = kata generik/trope, bukan merek. Boleh.
 > - Aturan ini **mengikat** semua task §12 (T3, T6, T7, T11).
 
@@ -479,8 +481,11 @@ Scene 1 (`tear`, 9s) **TANPA teks** → tanpa voice. Scene start: tear 0 · burs
 | Lapis | Gerbang | Isi | State | Contoh |
 |---|---|---|---|---|
 | **1 — ERA** | **LEVEL** (Lv 150) | kanvas kosong + register bahasa pop | `progress.era` (sudah ada) | 多元 |
-| **2 — FRANCHISE** | **BELI di 物販** (shop) | satu **dunia** (palet + motif + 8 perhentian sendiri + gacha pool) | `progress.ownedFranchises[]` (BARU) | 機神, 星の旅人 |
+| **2 — FRANCHISE** | **BELI di 物販** (shop) | satu **dunia** (palet + motif + 8 perhentian sendiri + gacha pool) | `progress.ownedFranchises[]` (BARU) | 機神, 星の旅人, **呪術廻戦** |
 | **3 — KARAKTER** | **GACHA** (クレーンゲーム) | satu **tokoh** (voice + efek 必殺技) | `progress.ownedCharacters{}` (BARU) | (tokoh per franchise) |
+
+> **Dua jenis dunia (LAPIS 2):** (a) **ORISINAL** — 5 dunia fiktif, harga 5–7k; (b) **LISENSI** — IP nyata (`licensed: true`), **tier harga dunia besar ~20k**, wajib `credit`, dan memuat **banyak karakter** (wadah banyak tokoh). Contoh live: **JJK `呪術廻戦`** (8 tokoh: Gojo/Yuji/Megumi/Nobara/Nanami/Toji/Yuta/Sukuna — memakai voice + efek `pack_07`..`pack_14` yang **sudah ada**). Dunia `status:'soon'` (One Piece, JoJo) = **teaser**: tampil, tak bisa dibeli.
+> **Beli = AUTO-EQUIP:** dunia yang baru dibeli **langsung jadi dunia aktif** (kanvas langsung berubah warna) — bukan sekadar masuk koleksi.
 
 > **Ini yang membedakan 多元 dari 5 era lain** — dan yang sudah ditanam di `heian.md` §13. Ia **membutuhkan state baru** di `ProgressContext` (2 array/objek) + **backend-less** (semua lokal, seperti `ownedPacks` sekarang).
 
@@ -747,6 +752,7 @@ Setiap perhentian punya **rasio 賑 (ramai) / 寂 (sepi)** — sehingga tiap dun
 > Font: Noto Serif JP 900 (display) · Inter 900 italic (オノマトペ/戦闘力) · Shippori Mincho (セリフ). **Nol font baru.**
 > Uang **コイン** · gacha **クレーンゲーム** · shop **物販** · checkpoint **最終回** · dark mode **深夜アニメ**.
 > **3 lapis:** ERA (Lv 150) → **FRANCHISE** (beli di 物販) → **KARAKTER** (gacha クレーンゲーム).
+> **Dunia:** 5 ORISINAL (fiktif) + **LISENSI** (IP nyata, tier ~20k, wajib `credit`; JJK live 8 tokoh) + `soon` teaser (One Piece, JoJo). **Beli = auto-equip.**
 > **8 perhentian (dunia):** 開幕 → 冒険 → 日常 → 青春 → 魔法 → 怪談 → 異世界 → 最終回.
 > Fokus bahasa **budaya pop (オノマトペ · タメ口/敬語 · 若者言葉 · カタカナ · セリフ)** · narator **Saku** · gerbang **Lv 150 — dunia bertambah**.
-> **ATURAN:** `:root` BEKU (§0 Shōwa) · **franchise = FIKTIF/orisinal, JANGAN IP nyata** (§6.4) · bentuk era TETAP, franchise hanya ganti warna+motif.
+> **ATURAN:** `:root` BEKU (§0 Shōwa) · **dunia orisinal = FIKTIF; dunia lisensi = IP nyata + `credit` WAJIB** (§6.4 revisi) · bentuk era TETAP, franchise hanya ganti warna+motif.

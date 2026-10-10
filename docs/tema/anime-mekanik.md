@@ -560,18 +560,18 @@ export const darkPagesForStop = (stopId) => DARK_PAGES.filter((p) => p.stop === 
 ### Data model
 ```js
 // features/anime/franchises.js — MURNI
-// ⚠️ SEMUA FIKTIF & ORISINAL (§6.4 anime.md). Jangan IP nyata.
+// ⚠️ Dunia ORISINAL (tanpa `licensed`) = FIKTIF. Dunia LISENSI = IP nyata + credit.
 export const FRANCHISES = [
   { id: 'hoshi',  kanji: '星の旅人', name: 'Star Traveler',  genre_id: 'Petualangan luar angkasa', price: 5000,
     fr1: '#2b6cb0', fr2: '#f0c862', motif: 'star',  pool: ['star', 'rocket', 'planet', 'comet'] },
-  { id: 'kage',   kanji: '影の忍者', name: 'Shadow Ninja',   genre_id: 'Aksi ninja',              price: 5000,
-    fr1: '#2f3b46', fr2: '#d94f3d', motif: 'shuriken', pool: ['shuriken', 'leaf', 'moon', 'scroll'] },
-  { id: 'mahou',  kanji: '魔法学園', name: 'Magic Academy',  genre_id: 'Fantasi sekolah sihir',   price: 6000,
-    fr1: '#6b4fa0', fr2: '#f18bb0', motif: 'crystal', pool: ['crystal', 'wand', 'book', 'star'] },
-  { id: 'kishin', kanji: '機神',     name: 'Machine God',    genre_id: 'Mecha',                   price: 7000,
-    fr1: '#b23a3a', fr2: '#f0c862', motif: 'gear',   pool: ['gear', 'bolt', 'shield', 'wing'] },
-  { id: 'yokai',  kanji: '妖奇譚',   name: 'Yokai Tales',    genre_id: 'Horor/misteri yōkai',     price: 5500,
-    fr1: '#3a5a40', fr2: '#c94f7c', motif: 'lantern',pool: ['lantern', 'mask', 'flame', 'eye'] },
+  // … kage / mahou / kishin / yokai (orisinal) …
+
+  // ── Dunia LISENSI (IP nyata) — tier "dunia besar" ~20k, wajib credit ──
+  { id: 'jjk', kanji: '呪術廻戦', name: 'Jujutsu Kaisen', genre_id: '…', price: 20000,
+    fr1: '#161a2b', fr2: '#7c4dff', motif: 'curse', pool: ['curse', 'seal', 'flash', 'domain'],
+    licensed: true, status: 'live', credit: '呪術廻戦 © 芥見下々 / 集英社・MAPPA' },
+  { id: 'onepiece', kanji: 'ワンピース', name: 'One Piece', …, licensed: true, status: 'soon', credit: '…' },
+  { id: 'jojo',     kanji: 'ジョジョ',   name: "JoJo's Bizarre Adventure", …, licensed: true, status: 'soon', credit: '…' },
 ];
 ```
 
@@ -613,7 +613,10 @@ export const equipFranchise = (progress, id) =>
 ### Aturan desain
 - Franchise **menimpa warna & motif**, **tidak menimpa bentuk** (outline/cel/radius/motion tetap milik era) — §4.5 `anime.md`.
 - **1 dunia aktif** pada satu waktu (bisa diganti); semua yang dibeli tetap tersimpan.
-- Bisa **dibeli** (bukan gacha) — mahal, pakai medaru.
+- **BELI = AUTO-EQUIP:** dunia yang baru dibeli **langsung jadi `activeFranchise`** (kanvas langsung berubah warna). Fungsi murni `addFranchise` tetap hanya menambah daftar; auto-equip ada di `buyFranchise` (ProgressContext).
+- Bisa **dibeli** (bukan gacha) — mahal, pakai medaru. Dunia lisensi = **tier besar ~20k**.
+- **Dua jenis dunia:** ORISINAL (fiktif) vs LISENSI (`licensed: true` → wajib `credit`). Dunia `status:'soon'` = teaser → `canBuyFranchise` **selalu false**.
+- Helper baru: `isFranchiseComingSoon(id)`, `isFranchiseLicensed(id)`.
 - State baru: `ownedFranchises: []`, `activeFranchise: null` di `ProgressContext`.
 
 ### Test (`franchises.test.js`)

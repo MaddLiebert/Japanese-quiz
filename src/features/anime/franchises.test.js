@@ -3,12 +3,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  FRANCHISES, FRANCHISE_MOTIFS, FRANCHISE_MIN_LEVEL, franchiseById,
+  FRANCHISES, FRANCHISE_MOTIFS, FRANCHISE_MIN_LEVEL, FRANCHISE_STATUSES,
+  franchiseById, isFranchiseComingSoon, isFranchiseLicensed,
   canBuyFranchise, addFranchise, franchiseTokens, equipFranchise,
   ownsFranchise, validateFranchises,
 } from './franchises.js';
 
 const rich = { level: 150, medaru: 9000, ownedFranchises: [] };
+const tycoon = { level: 150, medaru: 30000, ownedFranchises: [] };
 
 test('franchiseById: dikenal → objek; tak dikenal → null', () => {
   assert.equal(franchiseById('hoshi').kanji, '星の旅人');
@@ -85,9 +87,42 @@ test('gerbang: FRANCHISE_MIN_LEVEL = 150 (sinkron dengan era 多元)', () => {
   assert.equal(FRANCHISE_MIN_LEVEL, 150);
 });
 
-test('hak cipta §6.4: tidak ada nama IP nyata di data franchise', () => {
-  const terlarang = ['jujutsu', 'jjk', 'gojo', 'sukuna', 'naruto', 'one piece', 'onepiece', 'dragon ball', 'dragonball', 'bleach', 'onepunch', 'attack on titan'];
-  const blob = JSON.stringify(FRANCHISES).toLowerCase();
+// ── REVISI §6.4: dunia ORISINAL tetap fiktif; dunia LISENSI boleh IP nyata
+//    ASAL ber-kredit (atribusi = mitigasi hak cipta). ────────────────────────
+test('§6.4 (orisinal): dunia TANPA flag licensed bebas dari nama IP nyata', () => {
+  const terlarang = ['jujutsu', 'jjk', 'gojo', 'sukuna', 'naruto', 'one piece', 'onepiece', 'dragon ball', 'dragonball', 'bleach', 'onepunch', 'attack on titan', 'jojo'];
+  const orisinal = FRANCHISES.filter((f) => !f.licensed);
+  const blob = JSON.stringify(orisinal).toLowerCase();
   const found = terlarang.filter((n) => blob.includes(n));
-  assert.deepEqual(found, [], `IP berhak cipta ditemukan: ${found.join(', ')}`);
+  assert.deepEqual(found, [], `IP berhak cipta di dunia orisinal: ${found.join(', ')}`);
+});
+
+test('§6.4 (lisensi): tiap dunia licensed WAJIB punya credit + status sah', () => {
+  for (const f of FRANCHISES.filter((x) => x.licensed)) {
+    assert.ok(typeof f.credit === 'string' && f.credit.trim(), `${f.id}: credit wajib ada`);
+    assert.ok(FRANCHISE_STATUSES.includes(f.status), `${f.id}: status '${f.status}' tak sah`);
+  }
+});
+
+test('JJK live: dunia besar (harga ~20k) & bisa dibeli bila medaru cukup', () => {
+  const jjk = franchiseById('jjk');
+  assert.ok(jjk, 'dunia jjk ada');
+  assert.equal(jjk.licensed, true);
+  assert.equal(jjk.status, 'live');
+  assert.ok(jjk.price >= 20000, 'tier harga dunia besar');
+  assert.equal(isFranchiseLicensed('jjk'), true);
+  assert.equal(isFranchiseComingSoon('jjk'), false);
+  // medaru 9000 tak cukup; 30000 cukup.
+  assert.equal(canBuyFranchise(rich, 'jjk'), false);
+  assert.equal(canBuyFranchise(tycoon, 'jjk'), true);
+});
+
+test('coming soon: One Piece & JoJo = teaser, TIDAK bisa dibeli', () => {
+  for (const id of ['onepiece', 'jojo']) {
+    assert.equal(isFranchiseComingSoon(id), true, `${id}: coming soon`);
+    assert.equal(canBuyFranchise(tycoon, id), false, `${id}: tidak bisa dibeli`);
+    assert.equal(franchiseById(id).status, 'soon');
+  }
+  assert.equal(isFranchiseComingSoon('hoshi'), false);
+  assert.equal(isFranchiseComingSoon('nope'), false);
 });

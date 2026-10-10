@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CHARACTERS, validateCharacters, validateCharacterData } from './characters.js';
-import { FRANCHISES } from './franchises.js';
+import { FRANCHISES, franchiseById } from './franchises.js';
 import { VOICES } from '../audio/voices.js';
 import { VISUALS } from '../effects/visuals.js';
 
@@ -17,11 +17,16 @@ test('data karakter konsisten dengan franchise (fr → franchise ada)', () => {
   assert.deepEqual(validateCharacterData(CHARACTERS, FRANCHISES), []);
 });
 
-test('voice 多元 = PUNYA KLIP SENDIRI (bukan generik) + synth tetap fallback', () => {
-  for (const c of CHARACTERS) {
+// Dua jenis karakter 多元:
+//   • ORISINAL → suara SENDIRI (9 klip TTS) + synth fallback.
+//   • LISENSI (JJK) → memakai voice JALUR TEKNIK (correct/streak kosong,
+//     deterministik lewat playXxxTechnique; pola pack_07..pack_14).
+test('voice karakter ORISINAL = PUNYA KLIP SENDIRI (9 TTS) + synth fallback', () => {
+  const orisinal = CHARACTERS.filter((c) => !franchiseById(c.fr)?.licensed);
+  assert.ok(orisinal.length > 0);
+  for (const c of orisinal) {
     const v = VOICES[c.voice];
     assert.ok(v, `VOICES.${c.voice} hilang`);
-    // Karakter 多元 sekarang punya suara sendiri (9 klip TTS) — bukan KOSONG.
     assert.equal(v.files.correct.length, 3, `${c.voice}: 3 klip correct`);
     assert.equal(v.files.wrong.length, 3, `${c.voice}: 3 klip wrong`);
     assert.equal(v.files.streak.length, 3, `${c.voice}: 3 klip streak`);
@@ -29,7 +34,20 @@ test('voice 多元 = PUNYA KLIP SENDIRI (bukan generik) + synth tetap fallback',
   }
 });
 
-test('visual 多元 terdaftar (siluet generik)', () => {
+test('voice karakter LISENSI (JJK) = punya jalur klip/teknik + synth fallback', () => {
+  const lisensi = CHARACTERS.filter((c) => franchiseById(c.fr)?.licensed);
+  assert.ok(lisensi.length > 0);
+  for (const c of lisensi) {
+    const v = VOICES[c.voice];
+    assert.ok(v, `VOICES.${c.voice} hilang`);
+    // Sekurangnya punya KLIP (jalur jurus) ATAU klip wrong — bukan entri kosong.
+    const klip = (v.clips || []).length + (v.files?.wrong || []).length;
+    assert.ok(klip > 0, `${c.voice}: tanpa klip jurus/wrong`);
+    assert.ok(v.synth?.correct, `${c.voice}: synth tetap jadi fallback`);
+  }
+});
+
+test('visual 多元 terdaftar (siluet generik / efek karakter)', () => {
   for (const c of CHARACTERS) {
     assert.ok(VISUALS[c.effect], `VISUALS.${c.effect} hilang`);
   }

@@ -637,10 +637,14 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   // ── 多元 LAPIS 2: beli dunia (franchise) di 物販. Atomic: cek → potong → set.
-  // Return { ok, reason } — 'invalid' | 'level' | 'owned' | 'poor' | 'bought'.
+  // Return { ok, reason } — 'invalid' | 'soon' | 'level' | 'owned' | 'poor' | 'bought'.
+  // BELI = AUTO-EQUIP: dunia yang baru dibeli langsung jadi dunia aktif (dilukis
+  // ke kanvas). Ini yang bikin "beli dunia → warnanya langsung berubah" terasa
+  // (keputusan pemilik proyek). Dunia 'soon' (teaser) tak bisa dibeli.
   const buyFranchise = useCallback((id) => {
     const f = franchiseById(id);
     if (!f) return { ok: false, reason: 'invalid' };
+    if (f.status === 'soon') return { ok: false, reason: 'soon' };
     const cur = progressRef.current || {};
     if ((cur.ownedFranchises || []).includes(id)) return { ok: false, reason: 'owned' };
     if ((Number(cur.level) || 0) < 150) return { ok: false, reason: 'level' };
@@ -651,7 +655,7 @@ export const ProgressProvider = ({ children }) => {
       return {
         ...withFr,
         medaru: (prev.medaru || 0) - f.price,
-        activeFranchise: prev.activeFranchise || id, // dunia pertama → langsung aktif
+        activeFranchise: id, // AUTO-EQUIP: beli → langsung aktif
       };
     });
     return { ok: true, reason: 'bought' };

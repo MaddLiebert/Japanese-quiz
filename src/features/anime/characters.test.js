@@ -4,7 +4,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   CHARACTERS, characterById, charactersOf, characterVoice, characterEffect,
-  characterHissatsu, validateCharacters, validateCharacterData,
+  characterHissatsu, characterFranchise, characterCredit,
+  validateCharacters, validateCharacterData,
 } from './characters.js';
 import { FRANCHISES, franchiseById } from './franchises.js';
 
@@ -61,23 +62,45 @@ test('validateCharacterData: menangkap fr yang bukan franchise terdaftar', () =>
   assert.ok(validateCharacterData(bad, FRANCHISES).some((e) => e.includes("fr 'nope'")));
 });
 
-test('validateCharacterData: menangkap franchise tanpa karakter', () => {
+test('validateCharacterData: franchise rilis TANPA karakter → error; soon → diabaikan', () => {
   const errs = validateCharacterData([], FRANCHISES);
-  assert.equal(errs.length, FRANCHISES.length);
-  for (const f of FRANCHISES) assert.ok(errs.some((e) => e.includes(f.id)));
+  // Hanya franchise 'live' yang wajib punya tokoh (dunia 'soon' = teaser).
+  const liveCount = FRANCHISES.filter((f) => f.status !== 'soon').length;
+  assert.equal(errs.length, liveCount);
+  for (const f of FRANCHISES.filter((x) => x.status !== 'soon')) {
+    assert.ok(errs.some((e) => e.includes(f.id)));
+  }
+  // Dunia 'soon' tidak menuntut karakter.
+  for (const f of FRANCHISES.filter((x) => x.status === 'soon')) {
+    assert.ok(!errs.some((e) => e.includes(f.id)));
+  }
 });
 
-test('bank: tiap franchise punya ≥1 karakter & id unik', () => {
+test('bank: tiap franchise RILIS punya ≥1 karakter & id unik', () => {
   const ids = CHARACTERS.map((c) => c.id);
   assert.equal(new Set(ids).size, ids.length);
-  for (const f of FRANCHISES) {
+  for (const f of FRANCHISES.filter((x) => x.status !== 'soon')) {
     assert.ok(charactersOf(f.id).length >= 1, `franchise ${f.id} tanpa karakter`);
   }
 });
 
-test('hak cipta §6.4: tidak ada nama karakter berhak cipta', () => {
+// ── REVISI §6.4: karakter dunia ORISINAL tetap fiktif; dunia lisensi boleh IP
+//    nyata (kredit ditanggung franchise). ────────────────────────────────────
+test('§6.4 (orisinal): karakter dunia non-lisensi bebas nama berhak cipta', () => {
   const terlarang = ['gojo', 'sukuna', 'yuji', 'megumi', 'nobara', 'nanami', 'toji', 'yuta', 'naruto', 'luffy', 'goku', 'ichigo'];
-  const blob = JSON.stringify(CHARACTERS).toLowerCase();
+  const orisinal = CHARACTERS.filter((c) => !franchiseById(c.fr)?.licensed);
+  const blob = JSON.stringify(orisinal).toLowerCase();
   const found = terlarang.filter((n) => blob.includes(n));
   assert.deepEqual(found, [], `nama berhak cipta ditemukan: ${found.join(', ')}`);
+});
+
+test('JJK = wadah 8 karakter; kredit ditanggung franchise', () => {
+  const jjk = charactersOf('jjk');
+  assert.equal(jjk.length, 8, 'JJK memuat 8 tokoh');
+  for (const c of jjk) {
+    assert.equal(franchiseById(c.fr).licensed, true);
+    assert.ok(characterCredit(c.id), `${c.id}: kredit franchise ada`);
+  }
+  assert.equal(characterFranchise('jjk_gojo').kanji, '呪術廻戦');
+  assert.equal(characterCredit('hoshi_hikari'), null, 'dunia orisinal tanpa kredit');
 });

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useUserStats } from '../features/progress/ProgressContext';
 import { medaruCopy } from '../features/progress/medaruCopy';
-import { characterById, characterHissatsu } from '../features/anime/characters';
+import { characterById, characterHissatsu, characterFranchise } from '../features/anime/characters';
 import { clawPrice, rollClaw, clawRefund, CLAW_DUPLICATE_REFUND } from '../features/anime/claw';
 import { MedaruCoin } from '../components/MedaruCoin';
 
@@ -149,6 +149,7 @@ export function AnimeClaw() {
                     className="border-[3px] border-sumi bg-kinari-light/60 p-3"
                     style={{ borderRadius: 6, boxShadow: '3px 3px 0 0 rgba(20,20,18,0.9)', opacity: has ? 1 : 0.5 }}
                   >
+                    <p className="font-sans text-[0.55rem] font-bold uppercase tracking-widest text-sumi/45">{characterFranchise(c.id)?.kanji}</p>
                     <p className="font-display text-lg font-black text-sumi">{c.kanji}</p>
                     <p className="font-sans text-xs font-bold text-sumi/70">{c.name}</p>
                     <p className="font-sans text-[0.65rem] text-sumi/55">{c.hissatsu_jp}</p>
