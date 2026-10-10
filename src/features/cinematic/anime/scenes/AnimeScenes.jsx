@@ -171,18 +171,12 @@ export function SceneMontage({ clock, sceneStart = 0, reduced = false }) {
   const p3 = useTransform(clock, (t) => (reduced ? 1 : easeOut((t - sceneStart - 10.8) / 1.4)));
   const ops = [p0, p1, p2, p3];
 
-  // 4 dunia (kanji label + rona). Semua ORISINAL.
+  // 4 dunia (kanji label). Semua ORISINAL.
   const WORLDS = [
-    { jp: '冒険', fill: '#2b6cb0', kind: 'adventure' },
-    { jp: '日常', fill: '#f0c862', kind: 'daily' },
-    { jp: '青春', fill: '#d94f3d', kind: 'youth' },
-    { jp: '魔法', fill: '#6b4fa0', kind: 'magic' },
-  ];
-  const POS = [
-    { x: 150, y: 190, w: 520, h: 340 },
-    { x: 770, y: 190, w: 520, h: 340 },
-    { x: 150, y: 570, w: 520, h: 0 },   // placeholder (di bawah, clip)
-    { x: 770, y: 570, w: 520, h: 0 },
+    { jp: '冒険' },
+    { jp: '日常' },
+    { jp: '青春' },
+    { jp: '魔法' },
   ];
 
   return (
