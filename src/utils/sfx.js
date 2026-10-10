@@ -978,7 +978,26 @@ const THEME_BGM_PLANS = {
     // arpeggio 8-bit: tangga mayor cerah (C D E G A), ritmis seperti game.
     pluck: { notes: [261.63, 293.66, 329.63, 392, 440, 523.25], everyMs: 1000, dur: 0.8, gain: 0.16 },
   },
+  // 多元 · DUNIA KUTUKAN (呪術 / nuance 'cursed', LAPIS 2b): ambience khas dunia
+  // — drone DALAM & tegang (bukan chiptune ceria), pad minor-half (cemas),
+  // petikan sparse seperti denyut 呪力. Dipakai saat dunia ber-nuansa aktif.
+  'anime-cursed': {
+    level: 0.12,
+    fadeInMs: 1800,       // masuk lambat & berat (anime biasa 1400)
+    fadeOutMs: 1300,
+    // Drone dalam (E1/B1 + G#1) → dasar gelap, berdenyut (detune lebar).
+    drone: { freqs: [41.2, 82.41, 51.91], detune: [0, -7, 4], gain: 0.5 },
+    // Pad: triangle minor (A C D#) + lowpass rapat, napas lambat & tegang.
+    pad: { type: 'triangle', freqs: [220, 261.63, 311.13], filterHz: 680, lfoHz: 0.04, lfoDepth: 280, gain: 0.28 },
+    // 呪力: petikan sparse (A B♭ C# D E) — langka & menegangkan, bukan arpeggio.
+    pluck: { notes: [220, 233.08, 277.18, 311.13, 329.63], everyMs: 1700, dur: 1.4, gain: 0.15 },
+  },
 };
+
+// Kunci BGM efektif: era biasa → era; era 多元 + dunia ber-nuansa → '<era>-<nuance>'
+// (mis. 'anime-cursed'). MURNI → dites tanpa DOM. Dunia tanpa nuansa → era polos.
+export const themeBgmKey = (era = 'heian', nuance = null) =>
+  (nuance && THEME_BGM_PLANS[`${era}-${nuance}`]) ? `${era}-${nuance}` : era;
 
 export const themeBgmPlan = (era = 'heian') => THEME_BGM_PLANS[era] || THEME_BGM_PLANS.heian;
 

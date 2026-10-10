@@ -195,7 +195,15 @@ export function AnimePractice() {
 
       {/* Kartu soal */}
       {q && !done && (
-        <div style={{ ...CARD, ...SCREENTONE }} className="p-5 sm:p-7">
+        <div style={{ ...CARD, ...SCREENTONE, position: 'relative' }} className="p-5 sm:p-7">
+          {/* Nyala jawaban (§8): 集中線 + kilau warna saat menjawab. */}
+          {result && (
+            <span
+              key={idx}
+              className={`anime-answer-flare ${result.ok ? 'anime-answer-flare--correct' : 'anime-answer-flare--wrong'}`}
+              aria-hidden="true"
+            />
+          )}
           <p className="font-sans text-[0.6rem] font-bold uppercase tracking-[0.3em] text-sumi/45">
             {QUIZ_MODE_LABEL[mode].jp} · {QUIZ_MODE_LABEL[mode].id}
           </p>

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { themeBgmPlan, THEME_BGM_STEP_S } from '../../utils/sfx.js';
+import { themeBgmPlan, themeBgmKey, THEME_BGM_STEP_S } from '../../utils/sfx.js';
 import {
   startThemeBgm, stopThemeBgm, setThemeBgmEnabled,
   themeBgmEnabled, themeBgmActive, themeBgmEra, THEME_BGM_KEY,
@@ -128,6 +128,28 @@ test('themeBgmPlan: 5 era saling beda (kontras tema terdengar)', () => {
   const seen = eras.map((e) => JSON.stringify(themeBgmPlan(e)));
   assert.equal(new Set(seen).size, eras.length, 'tiap era punya plan sendiri');
   assert.equal(themeBgmPlan('anime').koto, undefined, '多元 memakai pluck, bukan koto');
+});
+
+// ── BGM NUANSA DUNIA (LAPIS 2b) — ambience khas dunia (mis. 呪力) ────────────
+test('themeBgmKey: era + nuansa → kunci dunia; tanpa nuansa → era polos', () => {
+  assert.equal(themeBgmKey('anime', 'cursed'), 'anime-cursed');
+  assert.equal(themeBgmKey('anime', null), 'anime');
+  assert.equal(themeBgmKey('anime', 'nope'), 'anime', 'nuansa tak dikenal → era polos');
+  assert.equal(themeBgmKey('heian', 'cursed'), 'heian', 'nuansa hanya utk era yg punya plan');
+});
+
+test('themeBgmPlan anime-cursed: dunia kutukan beda dari anime biasa (kontras)', () => {
+  const base = themeBgmPlan('anime');
+  const cursed = themeBgmPlan('anime-cursed');
+  assert.notDeepEqual(cursed, base);
+  // Masuk LEBIH lambat & berat (anime 1400) — suasana tegang, bukan ceria.
+  assert.ok(cursed.fadeInMs > base.fadeInMs, 'cursed masuk lebih lambat/berat');
+  assert.ok(cursed.fadeOutMs > base.fadeOutMs);
+  // Bukan chiptune: pad bukan square.
+  assert.notEqual(cursed.pad.type, 'square', 'dunia kutukan bukan 8-bit ceria');
+  // Petikan lebih langka (sparse) dari anime.
+  assert.ok(cursed.pluck.everyMs > base.pluck.everyMs, '呪力 lebih langka/tegang');
+  assert.ok(cursed.level > 0 && cursed.level <= 0.15, 'level rendah (BGM default)');
 });
 
 test('themeBgmPlan heian: level −18 dB (≈0.12), fade lambat & santun', () => {

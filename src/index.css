@@ -3509,6 +3509,56 @@ button[data-toji-kill]::after {
   [data-era="anime"] .anime-burst { display: none; }
 }
 
+/* ── NYALA JAWABAN KUIS 多元 (§8) — efek "benar/salah" di kartu soal ─────────
+   Bukan sekadar teks hijau/merah: 集中線 (radial speed-lines) + kilau warna
+   (matcha saat benar, shu saat salah) muncul di tepi kartu, lalu meredup.
+   Dipakai AnimePractice saat menjawab; kelasnya diberi kunci unik per-jawaban
+   (key React) → animasi replay tiap jawaban. Dekoratif (pointer-events:none). */
+.anime-answer-flare { display: none; }
+[data-era="anime"] .anime-answer-flare {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: var(--era-radius);
+}
+[data-era="anime"] .anime-answer-flare::before {
+  /* 集中線 di tepi (bukan penuh) — mata fokus ke teks, tepi "meledak". */
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background: repeating-conic-gradient(from 0deg, currentColor 0deg 1deg, transparent 1deg 5deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 40%, #000 52%, transparent 72%);
+          mask-image: radial-gradient(circle, transparent 40%, #000 52%, transparent 72%);
+  opacity: 0.22;
+  animation: anime-answer-burst 720ms var(--era-motion, 140ms) ease-out both;
+}
+[data-era="anime"] .anime-answer-flare--correct { color: var(--matcha-val); }
+[data-era="anime"] .anime-answer-flare--wrong   { color: var(--shu-val); }
+[data-era="anime"] .anime-answer-flare::after {
+  /* Kilau tepi: cincin warna yang mengembang & meredup. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--era-radius);
+  box-shadow: inset 0 0 0 3px currentColor;
+  animation: anime-answer-glow 720ms ease-out both;
+}
+@keyframes anime-answer-burst {
+  from { opacity: 0; transform: scale(0.86) rotate(-3deg); }
+  40%  { opacity: 0.28; }
+  to   { opacity: 0; transform: scale(1.06) rotate(0deg); }
+}
+@keyframes anime-answer-glow {
+  from { opacity: 0.9; }
+  to   { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-era="anime"] .anime-answer-flare::before { animation: none; opacity: 0.16; }
+  [data-era="anime"] .anime-answer-flare::after  { animation: none; opacity: 0.5; }
+}
+
 /* ── JARING PENGAMAN 多元 — bahasa bentuk CEL-SHADE (anti-brutalism Shōwa) ────
    KRITIK NYATA: "font-nya sama kaya Shōwa, shadow-nya masih brutalism".
    AKAR BUG: blok [data-era="anime"] hanya MENDEKLARASIKAN token bentuk

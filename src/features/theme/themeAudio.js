@@ -12,7 +12,7 @@
 //
 // Semua fungsi no-op di node (`node --test`) → aman di-import di mana pun.
 // ─────────────────────────────────────────────────────────────────────────────
-import { getAudioContext, themeBgmPlan } from '../../utils/sfx.js';   // WAJIB .js: file ini di-load node --test (ESM butuh specifier lengkap)
+import { getAudioContext, themeBgmPlan, themeBgmKey } from '../../utils/sfx.js';   // WAJIB .js: file ini di-load node --test (ESM butuh specifier lengkap)
 
 const hasWindow = () => typeof window !== 'undefined';
 
@@ -133,13 +133,16 @@ const schedulePluck = (ctx, master, at, note, p) => {
 // Bed BGM aktif (satu pada satu waktu; era lain = bed baru, crossfade).
 let bed = null;
 
-// Mulai BGM untuk `era`. Idempoten: era sama → tidak restart.
-export const startThemeBgm = (era = 'heian') => {
+// Mulai BGM untuk `era`. Idempoten: kunci sama → tidak restart.
+// `nuance` (opsional) = nuansa dunia (LAPIS 2b) → mis. era 'anime' + 'cursed'
+// memakai bed 'anime-cursed' (ambience khas dunia). Tanpa nuansa → bed era.
+export const startThemeBgm = (era = 'heian', nuance = null) => {
   if (!hasWindow()) return false;
   const ctx = ctxLive();
   if (!ctx) return false;
-  if (bed && bed.era === era) return false;
-  const p = themeBgmPlan(era);
+  const key = themeBgmKey(era, nuance);
+  if (bed && bed.era === key) return false;
+  const p = themeBgmPlan(key);
   const t = ctx.currentTime;
 
   const master = ctx.createGain();
@@ -185,7 +188,7 @@ export const startThemeBgm = (era = 'heian') => {
   let kotoStep = 0;
   const playKoto = () => {
     const now = getAudioContext();
-    if (!now || !bed || bed.era !== era) return;
+    if (!now || !bed || bed.era !== key) return;
     const note = mel.notes[kotoStep % mel.notes.length];
     schedulePluck(now, master, now.currentTime + 0.02, note, mel);
     kotoStep += 1;
@@ -194,9 +197,9 @@ export const startThemeBgm = (era = 'heian') => {
   playKoto();   // petikan pertama langsung (bed belum sunyi menunggu 2.4s)
 
   const prev = bed;
-  bed = { master, nodes, era, level: p.level, baseLevel: p.level, fadeOutMs: p.fadeOutMs, kotoTimer };
+  bed = { master, nodes, era: key, level: p.level, baseLevel: p.level, fadeOutMs: p.fadeOutMs, kotoTimer };
   if (prev) rampDown(prev, prev.fadeOutMs, 0.0001);
-  setDebug({ bgm: true, era, enabled: themeBgmEnabled(), volume: themeBgmVolume() });
+  setDebug({ bgm: true, era: key, enabled: themeBgmEnabled(), volume: themeBgmVolume() });
   return true;
 };
 

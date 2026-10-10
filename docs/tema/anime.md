@@ -441,6 +441,19 @@ anime: {
 
 > **Keputusan kunci:** 多元 = **cerah & energik** (city-pop + chiptune) — kontras dengan Shōwa yang **hangat & nostalgia** (kayōkyoku di atas beton). Meiji = mayor diatonik kaku; 多元 = mayor **bergroove + elektronik ringan**. Ini "generasi berikutnya" secara bunyi.
 
+### 9.1 BGM NUANSA DUNIA (LAPIS 2b) — ambience khas dunia
+
+Saat dunia aktif punya `nuance` (mis. JJK → `'cursed'`), BGM **bukan** chiptune generik — ia ambience khas dunia. Kunci efektif = `themeBgmKey(era, nuance)` → mis. `'anime-cursed'`. **Murni & data-driven** (`utils/sfx.js` `THEME_BGM_PLANS`), no-op di node.
+
+| Aspek | Anime biasa (chiptune) | Dunia kutukan `'anime-cursed'` |
+|---|---|---|
+| Suasana | cerah, gesit | gelap, tegang, berat |
+| Masuk | fadeIn 1400 ms | **fadeIn 1800 ms** (lambat & berat) |
+| Pad | `square` 8-bit (C E G C) | `triangle` minor (A C D#), lowpass rapat |
+| Petikan | arpeggio mayor cepat (1000 ms) | **sparse** (1700 ms) — seperti denyut 呪力 |
+
+> **Prinsip:** nuansa dunia mengubah **bunyi & kepadatan tinta**, bukan menempel stiker. Dunia tanpa `nuance` → BGM era polos. Preferensi BGM tetap **default OFF** (`themeAudio`); ambience menyala hanya kalau user menyalakannya.
+
 ---
 
 ## 10. Cinematic Perkenalan
