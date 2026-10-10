@@ -1,14 +1,17 @@
 # Voice cinematic 多元 多元 — narasi Saku 咲
 
-**Status: ✅ TERPASANG (voice SINTETIS).** 7 klip narasi Saku digenerate oleh
-`scripts/generate-anime-voice.py` (edge-tts, Microsoft neural — pola
-`generate-jjk-voices.py`), tersimpan di `public/voices/anime/`, sudah di-wire ke
+**Status: ✅ TERPASANG (voice Saku ASLI).** 7 klip narasi Saku di `public/voices/anime/`
+berasal dari **rekaman asli** `voice-source/anime/saku.mp3` (69.88s), dipotong
+dengan `scripts/split-voice.py` (pola sama Heian/Meiji/Shōwa). Sudah di-wire ke
 `anime/data/scenes.js`, tes + build hijau.
 
-> ⚠️ **Voice SINTETIS, bukan rekaman Saku asli.** Kalau mau memakai rekaman Saku
-> asli (seperti Heian/Meiji), lihat §3 — taruh sumber di `voice-source/anime/`,
-> potong dengan `split-voice.py`, dan **jangan** jalankan generator TTS lagi
-> (akan menimpa).
+> ℹ️ **Voice ASLI.** Rekaman utuh `saku.mp3` berisi 7 baris dengan jeda alami
+> antar-baris; app memutar tiap baris sebagai klip terpisah pada
+> `sceneStart + at` (9.6/12.4/23.0/38.8/54.6/58.6/61.4s), jadi jeda di rekaman
+> boleh lebih longgar dari timeline — yang penting tiap klip **< gap**-nya (§2).
+> Jangan jalankan `generate-anime-voice.py` (TTS) lagi — akan menimpa rekaman asli.
+> Klip 1 (`01_world`) dipangkas ke 2.77s agar muat di gap 2.8s (pidato asli
+> berakhir ~2.68s → tanpa memotong suara).
 
 Narator cinematic = dua tokoh bergantian per era (`docs/story.md` §4):
 
@@ -50,44 +53,45 @@ sobekan kertas). Narasi mulai di babak 2 (`burst`).
 
 | # | scene/baris | absolut (mulai) | **gap → baris berikut** | durasi klip nyata |
 |---|---|---|---|---|
-| 1 | burst/world | **9.6s** | **2.8s** | 2.78s ✓ |
-| 2 | burst/turn | **12.4s** | **10.6s** | 3.98s ✓ |
-| 3 | montage/stories | **23.0s** | **15.8s** | 3.53s ✓ |
-| 4 | worlds/choose | **38.8s** | **15.8s** | 2.64s ✓ |
-| 5 | finale/grow | **54.6s** | **4.0s** | 2.78s ✓ |
-| 6 | finale/era | **58.6s** | **2.8s** | 2.59s ✓ |
-| 7 | finale/welcome | **61.4s** | **7.6s** (ekor) | 2.64s ✓ |
+| 1 | burst/world | **9.6s** | **2.8s** | 2.77s ✓ |
+| 2 | burst/turn | **12.4s** | **10.6s** | 3.55s ✓ |
+| 3 | montage/stories | **23.0s** | **15.8s** | 2.95s ✓ |
+| 4 | worlds/choose | **38.8s** | **15.8s** | 2.09s ✓ |
+| 5 | finale/grow | **54.6s** | **4.0s** | 2.46s ✓ |
+| 6 | finale/era | **58.6s** | **2.8s** | 2.17s ✓ |
+| 7 | finale/welcome | **61.4s** | **7.6s** (ekor) | 1.99s ✓ |
 
 > **"gap"** = jeda antara baris ini dan baris berikutnya. Ini **batas atas durasi**
 > klip: klip baris N harus **lebih pendek** dari gap ini supaya tidak menimpa baris
-> N+1. Gap terketat = **2.8s** (klip 1 `world` & klip 6 `era`) — karena itu klip 1
-> digenerate pada `+12%` (lihat §3) agar jatuh < 2.8s.
+> N+1. Gap terketat = **2.8s** (klip 1 `world` & klip 6 `era`) — klip 1 dipangkas
+> ke 2.77s agar muat (pidato asli berakhir ~2.68s, jadi tanpa memotong suara).
 
 ---
 
-## 3. Cara regenerate (voice sintetis)
+## 3. Cara regenerate (voice Saku ASLI — potong dari rekaman utuh)
+
+Sumber: **`voice-source/anime/saku.mp3`** (69.88s, rekaman asli berisi 7 baris
+dengan jeda alami). Potong jadi 7 klip:
+
+```bash
+python scripts/split-voice.py voice-source/anime/saku.mp3 .hermes/_anime-voice-split \
+  --names 01_world,02_turn,03_stories,04_choose,05_grow,06_era,07_welcome --min-sil 0.8
+# lalu salin 7 klip ke public/voices/anime/ (verifikasi tiap klip < gap §2)
+```
+
+Deteksi jeda pakai `silencedetect` (ffmpeg). Nama klip harus urut sesuai
+`voiceCues()`. **Jangan** jalankan `generate-anime-voice.py` (TTS) — akan
+menimpa rekaman asli.
+
+<details><summary>Cadangan: voice TTS (bila tak ada rekaman)</summary>
 
 ```bash
 python scripts/generate-anime-voice.py            # 7 klip → public/voices/anime/
 python scripts/generate-anime-voice.py --list      # lihat daftar (tanpa generate)
-python scripts/generate-anime-voice.py 01_world    # satu klip saja
 ```
-
-Casting (di skrip): `ja-JP-NanamiNeural`, `rate=-4%`, `pitch=+2Hz` — pelan &
-hangat (narator, bukan tokoh aksi). Klip 1 memakai `rate=+12%` khusus supaya
-pas di gap 2.8s. Butuh `pip install edge-tts` + jaringan.
-
-### Opsi memakai rekaman Saku ASLI (bukan TTS)
-
-1. Taruh satu narasi panjang di `voice-source/anime/saku-anime.mp3` (DI LUAR
-   `public/`, supaya tidak ikut precache PWA).
-2. Potong jadi 7 klip (jeda ≥ 0.8s antar baris):
-   ```bash
-   python scripts/split-voice.py voice-source/anime/saku-anime.mp3 public/voices/anime \
-     --names 01_world,02_turn,03_stories,04_choose,05_grow,06_era,07_welcome
-   ```
-3. Verifikasi tiap klip < gap-nya (§2). Jangan jalankan `generate-anime-voice.py`
-   lagi (akan menimpa).
+Casting: `ja-JP-NanamiNeural`, `rate=-4%`, `pitch=+2Hz`. Butuh `pip install
+edge-tts` + jaringan. (Ini yang dipakai SEBELUM rekaman asli tersedia.)
+</details>
 
 ---
 

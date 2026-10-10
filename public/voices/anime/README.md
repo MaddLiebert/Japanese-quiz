@@ -4,8 +4,16 @@
 pada detik absolut barisnya. Di-wire dari
 `src/features/cinematic/anime/data/scenes.js` (`line.voice`).
 
-**Sumber:** voice SINTETIS (edge-tts) via `scripts/generate-anime-voice.py`
-(casting `ja-JP-NanamiNeural`, rate −4%, pitch +2Hz). Bukan rekaman asli.
-Kalau diganti rekaman Saku asli, lihat `docs/voice-cinematic-anime.md` §3.
+**Sumber: rekaman Saku ASLI.** `voice-source/anime/saku.mp3` (69.88s) dipotong
+jadi 7 klip dengan `scripts/split-voice.py` (pola sama Heian/Meiji/Shōwa).
+**Jangan** jalankan `scripts/generate-anime-voice.py` (TTS) — akan menimpa
+rekaman asli. Kalau perlu regenerate: lihat `docs/voice-cinematic-anime.md` §3.
 
-Regenerate: `python scripts/generate-anime-voice.py` (butuh `pip install edge-tts`).
+| klip | durasi | gap | | klip | durasi | gap |
+|---|---|---|---|---|---|---|
+| 01_world | 2.77s | 2.8s | | 05_grow | 2.46s | 4.0s |
+| 02_turn | 3.55s | 10.6s | | 06_era | 2.17s | 2.8s |
+| 03_stories | 2.95s | 15.8s | | 07_welcome | 1.99s | 7.6s |
+| 04_choose | 2.09s | 15.8s | | | | |
+
+Tiap klip **< gap**-nya (supaya tak menimpa baris berikutnya).

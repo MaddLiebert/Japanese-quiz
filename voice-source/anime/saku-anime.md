@@ -1,35 +1,33 @@
-# Voice cinematic 多元 — data gabung 1 mp3 (kana + gap per detik)
+# Voice cinematic 多元 — kana + gap per detik (narasi Saku 咲)
 
 Narator: **Saku 咲** · 7 baris · total **69.0s** (babak 1 `tear` = 9s tanpa suara).
 Sumber timing (authoritative): `src/features/cinematic/anime/data/scenes.js` →
-`voiceCues()`. File mp3 gabungan: **`voice-source/anime/saku-anime.mp3`** (68.96s).
+`voiceCues()`.
 
-Hasil gabung sudah diverifikasi: tiap baris mendarat di detik absolutnya
-(selisih ≤ 0.07s).
+**Rekaman asli:** `voice-source/anime/saku.mp3` (69.88s) — 7 baris dengan jeda
+alami. Dipotong jadi 7 klip di `public/voices/anime/` via `scripts/split-voice.py`.
 
 ## Tabel: kana + gap per detik
 
-`abs` = detik absolut di seluruh cinematic. `gap→next` = jeda ke baris berikutnya
-(= batas atas durasi klip). `sisipkan` = senyap yang disisipkan setelah klip ini
-saat menggabung.
+`abs` = detik absolut di seluruh cinematic (= start scene + `line.at`). App
+memutar tiap baris sebagai **klip terpisah** pada `abs` ini. `gap→next` = jeda ke
+baris berikutnya = **batas atas durasi** klip (klip N harus < gap agar tak menimpa
+N+1).
 
-| # | file | Kana (untuk TTS) | abs | klip | gap→next | sisipkan |
-|---|---|---|---|---|---|---|
-| 1 | `01_world.mp3` | ページの むこうに、せかいが ある。 | 9.6 | 2.78 | 2.8 | 0.02 |
-| 2 | `02_turn.mp3` | ここは じだいじゃない。せかいだ。 | 12.4 | 3.98 | 10.6 | 6.62 |
-| 3 | `03_stories.mp3` | いくつもの ものがたりが、まっている。 | 23.0 | 3.53 | 15.8 | 12.27 |
-| 4 | `04_choose.mp3` | どの せかいへ、いく？ | 38.8 | 2.64 | 15.8 | 13.16 |
-| 5 | `05_grow.mp3` | せかいが、ふえていく。 | 54.6 | 2.78 | 4.0 | 1.22 |
-| 6 | `06_era.mp3` | たげん — せかいが ふえる | 58.6 | 2.59 | 2.8 | 0.21 |
-| 7 | `07_welcome.mp3` | ようこそ、たげんへ。 | 61.4 | 2.64 | 7.6 (ekor) | 4.96 |
+| # | file | Kana (naskah) | abs | klip | gap→next |
+|---|---|---|---|---|---|
+| 1 | `01_world.mp3` | ページの むこうに、せかいが ある。 | 9.6 | 2.77 | 2.8 |
+| 2 | `02_turn.mp3` | ここは じだいじゃない。せかいだ。 | 12.4 | 3.55 | 10.6 |
+| 3 | `03_stories.mp3` | いくつもの ものがたりが、まっている。 | 23.0 | 2.95 | 15.8 |
+| 4 | `04_choose.mp3` | どの せかいへ、いく？ | 38.8 | 2.09 | 15.8 |
+| 5 | `05_grow.mp3` | せかいが、ふえていく。 | 54.6 | 2.46 | 4.0 |
+| 6 | `06_era.mp3` | たげん — せかいが ふえる | 58.6 | 2.17 | 2.8 |
+| 7 | `07_welcome.mp3` | ようこそ、たげんへ。 | 61.4 | 1.99 | 7.6 (ekor) |
 
-> Senyap **di depan** = 9.6s (babak 1 tanpa voice). Senyap **di ekor** = 4.96s.
-> Urutan gabung: `[senyap 9.6]` → `01_world` → `[senyap 0.02]` → `02_turn` →
-> `[senyap 6.62]` → `03_stories` → `[senyap 12.27]` → `04_choose` →
-> `[senyap 13.16]` → `05_grow` → `[senyap 1.22]` → `06_era` →
-> `[senyap 0.21]` → `07_welcome` → `[senyap 4.96]`  = **69.0s**.
+> `abs` = start scene (tear 0 · burst 9 · montage 22 · worlds 38 · finale 54) + `at`.
+> Semua klip **< gap** ✓. Klip 1 dipangkas ke 2.77s agar muat (pidato berakhir ~2.68s).
 
-## Blok siap-tempel (kana, satu baris per klip)
+## Blok naskah (kana, satu baris per klip)
 
 ```
 ページの むこうに、せかいが ある。
@@ -41,20 +39,24 @@ saat menggabung.
 ようこそ、たげんへ。
 ```
 
-## Cara gabung ulang jadi 1 mp3
+## Cara potong dari rekaman asli
 
 ```bash
-python scripts/stitch-anime-voice.py            # → voice-source/anime/saku-anime.mp3
-python scripts/stitch-anime-voice.py --no-lead  # tanpa senyap 9.6s di depan
+python scripts/split-voice.py voice-source/anime/saku.mp3 .hermes/_anime-voice-split \
+  --names 01_world,02_turn,03_stories,04_choose,05_grow,06_era,07_welcome --min-sil 0.8
+# salin 7 klip → public/voices/anime/ , verifikasi tiap klip < gap (§ tabel)
 ```
 
-Skrip menyalin klip dari `public/voices/anime/`, menyisipkan senyap presisi di
-atas, lalu `ffmpeg concat`. Kalau ada klip lebih panjang dari gap-nya, skrip
-**memperingatkan** (dan memangkas jeda ke 0.2s) — saat ini tak ada yang negatif.
+Jangan jalankan `scripts/generate-anime-voice.py` (TTS) — akan menimpa rekaman asli.
 
-## Potong balik (kalau sumber diganti rekaman asli)
+## Catatan: kenapa tidak digabung ulang jadi 1 mp3 timeline presisi?
+
+`scripts/stitch-anime-voice.py` bisa menyatukan 7 klip jadi satu mp3 dengan jeda
+presisi ke detik absolut (pola `stitch-showa-voice.py`). **Tidak dipakai** karena
+rekaman asli sudah punya jeda alami sendiri, dan app memutar **per-klip** pada
+waktu visualnya (bukan satu file panjang) — jadi menyatukan hanya perlu bila
+ingin pratinjau satu file. Kalau perlu:
 
 ```bash
-python scripts/split-voice.py voice-source/anime/saku-anime.mp3 public/voices/anime \
-  --names 01_world,02_turn,03_stories,04_choose,05_grow,06_era,07_welcome
+python scripts/stitch-anime-voice.py --out voice-source/anime/saku-preview.mp3
 ```

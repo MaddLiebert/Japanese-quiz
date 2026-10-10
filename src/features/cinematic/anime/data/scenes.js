@@ -18,10 +18,12 @@
 // Bahasa: teks Jepang = elemen utama, terjemahan Indonesia menyusul.
 //
 // ⚠️ VOICE (T12): `voice` menunjuk /voices/anime/NN_*.mp3 sesuai PRD §10. 7 klip
-//    narasi Saku digenerate oleh `scripts/generate-anime-voice.py` (edge-tts,
-//    pola generate-jjk-voices.py) → public/voices/anime/. Naskah + timing di
+//    narasi Saku = REKAMAN ASLI (voice-source/anime/saku.mp3) yang dipotong
+//    dengan scripts/split-voice.py → public/voices/anime/. Naskah + timing di
 //    docs/voice-cinematic-anime.md. Guard `scenes.test.js` menjaga keberadaan
 //    file. Pemutar klip tetap aman kalau file diganti/hilang (no-op, tanpa error).
+//    (Cadangan TTS: scripts/generate-anime-voice.py — jangan dijalankan bila
+//    rekaman asli sudah terpasang, akan menimpa.)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const ANIME_SCENES = [
