@@ -11,6 +11,10 @@ import { HeianHistory } from "./pages/HeianHistory";
 import { EdoHistory } from "./pages/EdoHistory";
 import { MeijiHistory } from "./pages/MeijiHistory";
 import { ShowaHistory } from "./pages/ShowaHistory";
+import { AnimeHistory } from "./pages/AnimeHistory";
+import { AnimeShop } from "./pages/AnimeShop";
+import { AnimeClaw } from "./pages/AnimeClaw";
+import { AnimeCheckpoint } from "./pages/AnimeCheckpoint";
 import { Typesetting } from "./pages/Typesetting";
 import { PrintShop } from "./pages/PrintShop";
 import { Neologism } from "./pages/Neologism";
@@ -275,6 +279,10 @@ function App() {
                   <Route path="/edo-history" element={<EdoHistory />} />
                   <Route path="/meiji-history" element={<MeijiHistory />} />
                   <Route path="/showa-history" element={<ShowaHistory />} />
+                  <Route path="/anime-history" element={<AnimeHistory />} />
+                  <Route path="/anime-shop" element={<AnimeShop />} />
+                  <Route path="/anime-claw" element={<AnimeClaw />} />
+                  <Route path="/anime-checkpoint" element={<AnimeCheckpoint />} />
                   <Route path="/hakone-checkpoint" element={<HakoneCheckpoint />} />
                   <Route path="/kokkai-checkpoint" element={<KokkaiCheckpoint />} />
                   <Route path="/sotsugyo-checkpoint" element={<SotsugyoCheckpoint />} />

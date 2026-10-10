@@ -392,6 +392,9 @@ export function Settings() {
                 { id: 'showa', kanji: '昭和', name: 'Shōwa', route: '/showa-history',
                   desc_id: 'Cinematic sejarah yang diputar sekali saat era Shōwa pertama terbuka. Putar ulang kapan saja di sini.',
                   desc_en: 'The historical cinematic that plays once when the Shōwa era first opens. Replay it any time here.' },
+                { id: 'anime', kanji: '多元', name: 'Multiverse', route: '/anime-history',
+                  desc_id: 'Peta 8 dunia 多元: 物販 (beli dunia), クレーンゲーム (koleksi karakter), dan gerbang 最終回.',
+                  desc_en: 'The 8-world 多元 map: 物販 (buy worlds), クレーンゲーム (character collection), and the 最終回 gate.' },
               ].map((c) => {
                 const open = unlocked.some((e) => e.id === c.id);
                 return (
