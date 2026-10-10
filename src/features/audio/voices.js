@@ -19,14 +19,52 @@ export const VOICES = {
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
 
-  // ── 多元 Anime Multiverse — 5 karakter ORISINAL (E15 wiring) ─────────────────
-  // Aset voice menyusul (R9): files KOSONG → otomatis jatuh ke synth (tidak error).
-  // Begitu klip siap, isi files.correct/wrong/streak seperti pack lain.
-  hoshi_hikari: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
-  kage_kuro:    { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
-  mahou_mira:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
-  kishin_zero:  { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
-  yokai_kitsune:{ files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  // ── 多元 Anime Multiverse — 5 karakter ORISINAL (E15 wiring / A16) ──────────
+  // Tiap karakter = FIKTIF (§6.4) tapi PUNYA SUARA SENDIRI (bukan generik):
+  // 9 klip TTS (correct/wrong/streak ×3) di public/voices/<key>/, dibedakan
+  // lewat rate+pitch+baris sesuai persona. Generator: scripts/generate-anime-
+  // characters.py. synth tetap jadi fallback bila mp3 gagal dimuat.
+  // (Kalau nanti ada rekaman asli, cukup ganti array files di sini.)
+  hoshi_hikari: {   // Hikari 星の旅人 — ceria, petualang shōnen
+    files: {
+      correct: ['/voices/hoshi_hikari/correct_1.mp3', '/voices/hoshi_hikari/correct_2.mp3', '/voices/hoshi_hikari/correct_3.mp3'],
+      wrong:   ['/voices/hoshi_hikari/wrong_1.mp3',   '/voices/hoshi_hikari/wrong_2.mp3',   '/voices/hoshi_hikari/wrong_3.mp3'],
+      streak:  ['/voices/hoshi_hikari/streak_1.mp3',  '/voices/hoshi_hikari/streak_2.mp3',  '/voices/hoshi_hikari/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
+  kage_kuro: {      // Kuro 影の忍者 — pendiam, kalem
+    files: {
+      correct: ['/voices/kage_kuro/correct_1.mp3', '/voices/kage_kuro/correct_2.mp3', '/voices/kage_kuro/correct_3.mp3'],
+      wrong:   ['/voices/kage_kuro/wrong_1.mp3',   '/voices/kage_kuro/wrong_2.mp3',   '/voices/kage_kuro/wrong_3.mp3'],
+      streak:  ['/voices/kage_kuro/streak_1.mp3',  '/voices/kage_kuro/streak_2.mp3',  '/voices/kage_kuro/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
+  mahou_mira: {     // Mira 魔法学園 — riang, magical girl
+    files: {
+      correct: ['/voices/mahou_mira/correct_1.mp3', '/voices/mahou_mira/correct_2.mp3', '/voices/mahou_mira/correct_3.mp3'],
+      wrong:   ['/voices/mahou_mira/wrong_1.mp3',   '/voices/mahou_mira/wrong_2.mp3',   '/voices/mahou_mira/wrong_3.mp3'],
+      streak:  ['/voices/mahou_mira/streak_1.mp3',  '/voices/mahou_mira/streak_2.mp3',  '/voices/mahou_mira/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
+  kishin_zero: {    // Zero 機神 — dingin, pilot mecha
+    files: {
+      correct: ['/voices/kishin_zero/correct_1.mp3', '/voices/kishin_zero/correct_2.mp3', '/voices/kishin_zero/correct_3.mp3'],
+      wrong:   ['/voices/kishin_zero/wrong_1.mp3',   '/voices/kishin_zero/wrong_2.mp3',   '/voices/kishin_zero/wrong_3.mp3'],
+      streak:  ['/voices/kishin_zero/streak_1.mp3',  '/voices/kishin_zero/streak_2.mp3',  '/voices/kishin_zero/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
+  yokai_kitsune: {  // Kitsune 妖奇譚 — misterius, rubah halus
+    files: {
+      correct: ['/voices/yokai_kitsune/correct_1.mp3', '/voices/yokai_kitsune/correct_2.mp3', '/voices/yokai_kitsune/correct_3.mp3'],
+      wrong:   ['/voices/yokai_kitsune/wrong_1.mp3',   '/voices/yokai_kitsune/wrong_2.mp3',   '/voices/yokai_kitsune/wrong_3.mp3'],
+      streak:  ['/voices/yokai_kitsune/streak_1.mp3',  '/voices/yokai_kitsune/streak_2.mp3',  '/voices/yokai_kitsune/streak_3.mp3'],
+    },
+    synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
+  },
 
   // Contoh voice anime (aktifkan saat aset siap):
   // anime_a: {

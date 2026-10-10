@@ -17,12 +17,15 @@ test('data karakter konsisten dengan franchise (fr → franchise ada)', () => {
   assert.deepEqual(validateCharacterData(CHARACTERS, FRANCHISES), []);
 });
 
-test('voice 多元 = fallback synth (aset menyusul, tidak error)', () => {
+test('voice 多元 = PUNYA KLIP SENDIRI (bukan generik) + synth tetap fallback', () => {
   for (const c of CHARACTERS) {
     const v = VOICES[c.voice];
     assert.ok(v, `VOICES.${c.voice} hilang`);
-    assert.deepEqual(v.files.correct, [], `${c.voice}: files.correct harus kosong sampai aset siap`);
-    assert.ok(v.synth?.correct, `${c.voice}: butuh fallback synth`);
+    // Karakter 多元 sekarang punya suara sendiri (9 klip TTS) — bukan KOSONG.
+    assert.equal(v.files.correct.length, 3, `${c.voice}: 3 klip correct`);
+    assert.equal(v.files.wrong.length, 3, `${c.voice}: 3 klip wrong`);
+    assert.equal(v.files.streak.length, 3, `${c.voice}: 3 klip streak`);
+    assert.ok(v.synth?.correct, `${c.voice}: synth tetap jadi fallback`);
   }
 });
 

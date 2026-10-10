@@ -45,6 +45,8 @@ import { preloadHinaGifs } from "./features/effects/hinaGifs";
 import { preloadGojoGifs } from "./features/effects/gojoGifs";
 import { preloadYujiGifs } from "./features/effects/yujiGifs";
 import { getVoice } from "./features/audio/voices";
+import { resolveVoiceKey } from "./features/audio/voiceKey";
+import { characterVoice } from "./features/anime/characters";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { TutorialButton } from "./features/tutorial/TutorialButton";
@@ -124,17 +126,27 @@ function TopControls() {
   );
 }
 
-// Sinkronkan voice aktif ke sfx.js setiap activePack berubah.
+// Sinkronkan voice aktif ke sfx.js setiap pack / era / 推し berubah.
 function VoiceSync() {
   const { progress } = useUserStats();
+  const { era } = useEra();
   useEffect(() => {
     const pack = getPack(progress.activePack);
-    setActiveVoice(pack?.voice || null);
-    // Preload klip pack aktif → hindari suara telat (fetch/decode ulang tiap jawaban).
-    preloadVoice(pack ? getVoice(pack.voice) : null);
+    // Voice = voice PACK, KECUALI di era 多元 dengan 推し terpilih → karakter 推し
+    // yang bersuara (inti A4/A16). Tanpa ini, 45 klip karakter 多元 tak pernah
+    // diputar (bug "registry ≠ wired"). resolveVoiceKey = satu sumber kebenaran.
+    const key = resolveVoiceKey({
+      era,
+      oshiId: progress.oshiId,
+      packVoice: pack?.voice,
+      voiceOfCharacter: characterVoice,
+    });
+    setActiveVoice(key);
+    // Preload klip yang aktif → hindari suara telat (fetch/decode ulang tiap jawaban).
+    preloadVoice(key ? getVoice(key) : null);
     // Prime = unduh tiap klip sampai buffer penuh → klip baru (tier streak) tidak
     // telat saat diputar (elemen <audio> preload='auto' saja cuma ambil metadata).
-    primeVoice(pack ? getVoice(pack.voice) : null);
+    primeVoice(key ? getVoice(key) : null);
     // Pack visual 'hina' → preload + decode GIF, supaya efek muncul TEPAT saat
     // suara Hina bunyi (bukan telat karena decode GIF 1.7MB).
     if (pack?.visual === 'hina') preloadHinaGifs();
@@ -144,7 +156,7 @@ function VoiceSync() {
     // Pack visual 'yuji' → preload + decode GIF (keiteiken/kokusen/fuga/takeover/
     // wrong/zakome), supaya GIF tampil instan saat jawaban & cast takeover.
     if (pack?.visual === 'yuji') preloadYujiGifs();
-  }, [progress.activePack]);
+  }, [progress.activePack, progress.oshiId, era]);
   return null;
 }
 
@@ -153,8 +165,8 @@ function App() {
     <ThemeProvider>
       <LanguageProvider>
         <ProgressProvider>
-          <VoiceSync />
           <EraProvider>
+          <VoiceSync />
           <ThemeAudioHost />
           <BrowserRouter>
             <CinematicProvider>

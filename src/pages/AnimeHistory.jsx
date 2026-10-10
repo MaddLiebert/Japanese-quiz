@@ -12,8 +12,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useUserStats } from '../features/progress/ProgressContext';
 import { ANIME_STOPS } from '../features/cinematic/anime/animeStops';
 import { EraDivider } from '../components/EraDivider';
+import { isCanvasEmpty, canvasEmptyCopy } from '../features/anime/canvasCopy';
 
 // Perhentian → tujuan navigasi (fitur app). Yang tak punya rute → null.
 const ROUTE_BY_FEATURE = {
@@ -41,8 +43,14 @@ const FEATURE_LABEL = {
 export function AnimeHistory() {
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const { progress } = useUserStats();
   const [openDetail, setOpenDetail] = useState(null);
   const id = language === 'id';
+  // Kanvas kosong (白紙の頁) — belum beli satu pun dunia. Ini SENGAJA (PRD §R2):
+  // ornamen panel 題字 + balon kosong sudah membuktikannya; copy 「この頁は、
+  // まだ白い。」 mengundang pemain melukisnya di 物販. Hilang begitu dunia dibeli.
+  const empty = isCanvasEmpty(progress);
+  const emptyCopy = canvasEmptyCopy(language);
 
   return (
     <div className="relative mx-auto max-w-3xl px-4 py-8 sm:py-12">
@@ -81,6 +89,41 @@ export function AnimeHistory() {
             : 'Eight worlds from Kaimaku to Saishūkai — a manga page torn open, spilling worlds that never existed in history.'}
         </p>
       </div>
+
+      {/* 白紙の頁 — kanvas masih KOSONG (belum beli dunia). SENGAJA, bukan lupa
+          didesain (PRD §12 R2): panel manga + balon kosong 「（　）」 + copy
+          「この頁は、まだ白い。」 = bukti kesengajaan, lalu undang ke 物販.
+          Hilang otomatis begitu dunia pertama dibeli. */}
+      {empty && (
+        <div className="anime-manga relative z-10 mb-6 p-5 sm:p-6">
+          <div className="flex items-start gap-4">
+            {/* Balon フキダシ kosong 「（　）」 — kanvas menunggu diisi. */}
+            <span
+              className="anime-manga anime-manga--balloon shrink-0 font-serif text-sumi"
+              style={{ width: 52, height: 52, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}
+              aria-hidden="true"
+            >
+              （　）
+            </span>
+            <div className="min-w-0">
+              <p className="font-serif text-lg font-black leading-snug text-sumi sm:text-xl">
+                {emptyCopy.jp}
+              </p>
+              <p className="mt-1 font-sans text-sm font-semibold text-sumi/75">
+                {emptyCopy.text}
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate('/anime-shop')}
+                className="mt-3 border-[3px] border-sumi bg-kinari-light px-4 py-2 font-sans text-xs font-black uppercase tracking-wider text-sumi transition-colors hover:bg-sumi hover:text-kinari-light"
+                style={{ borderRadius: 6, boxShadow: '3px 3px 0 0 #1a1a1a' }}
+              >
+                物販 → {id ? 'Pilih Dunia' : 'Pick a World'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 8 perhentian */}
       <EraDivider label="コマ · PANEL · コマ" className="relative z-10 mb-6" />

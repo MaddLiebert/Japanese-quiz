@@ -163,3 +163,33 @@ test('voice sukuna: 2 klip kalah (wrong) + 6 klip jurus (clips) — pola Yuji/Go
   assert.equal(new Set([...v.files.wrong, ...v.clips]).size, 8, 'tidak boleh duplikat');
   assert.equal(getVoice('sukuna'), VOICES.sukuna);
 });
+
+
+// ── Karakter 多元 (A16 / LAPIS 3) — 5 karakter ORISINAL, voice sendiri ────────
+// Dulu files KOSONG (murni synth gong/thud). Sekarang tiap karakter punya 9 klip
+// TTS sendiri (correct/wrong/streak ×3) → "tiap karakter punya suara khas",
+// bukan generik. Aset: public/voices/<key>/, generator scripts/generate-anime-characters.py.
+const ANIME_CHARS = ['hoshi_hikari', 'kage_kuro', 'mahou_mira', 'kishin_zero', 'yokai_kitsune'];
+
+test('voice 多元 karakter: 5 key terdaftar & reachable (bukan fallback taiko)', () => {
+  for (const k of ANIME_CHARS) {
+    assert.ok(VOICES[k], `VOICES.${k} harus ada`);
+    assert.equal(getVoice(k), VOICES[k], `getVoice('${k}') harus voice-nya sendiri`);
+  }
+});
+
+test('voice 多元 karakter: tiap karakter 3 correct + 3 wrong + 3 streak (suara sendiri)', () => {
+  for (const k of ANIME_CHARS) {
+    const v = VOICES[k];
+    assert.equal(v.files.correct.length, 3, `${k}: 3 klip correct`);
+    assert.equal(v.files.wrong.length, 3, `${k}: 3 klip wrong`);
+    assert.equal(v.files.streak.length, 3, `${k}: 3 klip streak`);
+    const all = [...v.files.correct, ...v.files.wrong, ...v.files.streak];
+    assert.equal(new Set(all).size, 9, `${k}: 9 path unik (tanpa duplikat)`);
+    for (const p of all) assert.match(p, new RegExp(`^/voices/${k}/[a-z0-9_]+\\.mp3$`),
+      `${k}: path harus di /voices/${k}/`);
+    // Synth tetap ada sebagai fallback bila file gagal dimuat.
+    assert.ok(v.synth?.correct, `${k}: fallback synth tetap ada`);
+  }
+});
+
