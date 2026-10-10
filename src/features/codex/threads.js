@@ -6,10 +6,16 @@
 // Tiap thread = rantai istilah lintas-era. Data-driven: nambah node = nambah
 // data, bukan kode. Label 和 untuk judul toast.
 export const THREADS = [
-  { id: 'light', label_jp: '灯り', chain: ['提灯 (edo)', '瓦斯灯 (meiji)', '電気 (showa)'] },
-  { id: 'road',  label_jp: '道',   chain: ['東海道 (edo)', '鉄道 (meiji)', '新幹線 (showa)'] },
-  { id: 'money', label_jp: '銭',   chain: ['両 (edo)', '円 (meiji)', '円 (showa)'] },
-  { id: 'news',  label_jp: '報',   chain: ['瓦版 (edo)', '新聞 (meiji)', '新聞 (showa)'] },
+  { id: 'light', label_jp: '灯り', chain: ['提灯 (edo)', '瓦斯灯 (meiji)', '電気 (showa)', 'ネオン (anime)'] },
+  { id: 'road',  label_jp: '道',   chain: ['東海道 (edo)', '鉄道 (meiji)', '新幹線 (showa)', 'ロケット (anime)'] },
+  { id: 'money', label_jp: '銭',   chain: ['両 (edo)', '円 (meiji)', '円 (showa)', 'コイン (anime)'] },
+  { id: 'news',  label_jp: '報',   chain: ['瓦版 (edo)', '新聞 (meiji)', '新聞 (showa)', 'ネット (anime)'] },
+];
+
+// Thread BARU khas 多元 (budaya pop): bagaimana "pahlawan" berubah dari samurai
+// → tentara → ヒーロー fiksi. Benang inti 多元. Spec: §A13.
+export const ANIME_THREADS = [
+  { id: 'hero', label_jp: '英雄', chain: ['武士 (edo)', '軍人 (meiji)', 'ヒーロー (anime)'] },
 ];
 
 export const threadById = (threadId) => THREADS.find((t) => t.id === threadId) || null;

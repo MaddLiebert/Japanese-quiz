@@ -29,4 +29,22 @@ export const shouldGlitch = (level, rng = 1, minLevel = GLITCH_MIN_LEVEL) =>
 export const glitchAllowed = ({ reducedMotion = false, enabled = true } = {}) =>
   enabled && !reducedMotion;
 
+// ── Varian 多元 Anime Multiverse — kebocoran PALING KUAT ────────────────────
+// 多元 = era paling dekat rumah Nacht/Saku (Cyberpunk). Di Lv 300 glitch jadi
+// PERMANEN (bukan lagi "bocor", tapi "terbuka"). Frekuensi 0..0.20 (Meiji 0..0.12).
+export const GLITCH_MIN_LEVEL_ANIME = 150;
+
+export const glitchChanceAnime = (level, minLevel = GLITCH_MIN_LEVEL_ANIME) => {
+  const lv = Number(level) || 0;
+  if (lv < minLevel) return 0;
+  const t = Math.min(1, (lv - minLevel) / (300 - minLevel)); // 150 → 0 .. 300 → 1
+  return t * 0.20;
+};
+
+export const glitchIntensityAnime = (level, minLevel = GLITCH_MIN_LEVEL_ANIME) => {
+  const lv = Number(level) || 0;
+  if (lv < minLevel) return 0;
+  return Math.min(1, (lv - minLevel) / (300 - minLevel));
+};
+
 export default glitchChance;
