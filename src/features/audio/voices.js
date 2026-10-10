@@ -19,6 +19,15 @@ export const VOICES = {
     synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' },
   },
 
+  // ── 多元 Anime Multiverse — 5 karakter ORISINAL (E15 wiring) ─────────────────
+  // Aset voice menyusul (R9): files KOSONG → otomatis jatuh ke synth (tidak error).
+  // Begitu klip siap, isi files.correct/wrong/streak seperti pack lain.
+  hoshi_hikari: { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  kage_kuro:    { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  mahou_mira:   { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  kishin_zero:  { files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+  yokai_kitsune:{ files: { correct: [], wrong: [], streak: [] }, synth: { correct: 'gong', wrong: 'thud', streak: 'gong-big' } },
+
   // Contoh voice anime (aktifkan saat aset siap):
   // anime_a: {
   //   files: {
