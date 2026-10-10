@@ -3263,6 +3263,81 @@ button[data-toji-kill]::after {
 [data-theme="dark"][data-era="meiji"] .home-hero-mark { color: #f0eee8 !important; }
 
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   多元 ANIME MULTIVERSE — 「白紙の頁」 HALAMAN KOSONG (kanvas)
+   Tesis: era pertama yang BUKAN satu dunia, tapi KANVAS tempat banyak dunia
+   (franchise) ditempel. Dasar = halaman manga kosong: kertas paling putih dari
+   semua era, tinta kebiruan, outline tebal, cel-shadow BERWARNA.
+   PRIMER = 空 sora #3a8dde (langit anime). AKSEN = 桜 sakura #f18bb0.
+   ⚠ PRINSIP #0 (§0 Shōwa): :root TIDAK disentuh. Blok ini hanya MENAMBAH.
+   ⚠ HAK CIPTA (§6.4): franchise = fiktif/orisinal. Jangan tambah IP berhak cipta.
+   Lihat PRD: docs/tema/anime.md §4 + spec docs/tema/anime-mekanik.md.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+[data-era="anime"] {
+  /* ── Warna — kanvas terang (「白紙の頁」 halaman putih) ─────────────────── */
+  --kinari-val:       #fdfcf8;  /* 白紙 shiro — halaman manga (paling putih) */
+  --kinari-light-val: #ffffff;  /* panel: kertas lebih putih lagi */
+  --sumi-val:         #171a22;  /* 墨 sumi — tinta manga (hampir hitam, kebiruan) */
+  --backdrop-val:     #e9eef6;  /* meja studio biru pucat */
+  --sora-val:         #3a8dde;  /* 空 sora — langit anime (PRIMER) */
+  --sakura-val:       #f18bb0;  /* 桜 sakura — merah muda (AKSEN) */
+  --daidai-val:       #f2872e;  /* 橙 daidai — oranye */
+  --matcha-val:       #6cae54;  /* 抹茶 matcha — hijau */
+  --kin-val:          #e8b84b;  /* 金 kin — emas (segel) */
+  --kin-ink-val:      #a97a12;  /* emas sebagai TEKS di atas kertas putih */
+  --nezumi-val:       #6b7280;  /* 鼠 nezumi — abu teks sekunder */
+  --tone-val:         #c9d2e0;  /* screentone — bintik halftone */
+
+  /* ── Bentuk — CEL-SHADE / MANGA (bukan beton Shōwa, bukan letterpress Meiji) */
+  --era-shadow:       5px 5px 0 0 var(--sora-val);   /* ⭐ cel-shadow BERWARNA (2-tone) */
+  --era-shadow-hover: 7px 7px 0 0 var(--sora-val);
+  --era-edge-w:       3px;                            /* outline tinta tebal (panel manga) */
+  --era-edge-color:   var(--sumi-val);
+  --era-radius:       6px;                            /* agak membulat (kartun) */
+  --era-radius-sm:    4px;
+  --era-radius-xs:    2px;
+  --era-radius-pill:  9999px;
+  --era-motion:       140ms;                          /* snap impact-frame (tercepat) */
+  --era-ease:         cubic-bezier(0.2, 0, 0, 1);
+  --era-glow:         inset 0 0 0 0 transparent;
+  --era-tone:         radial-gradient(var(--tone-val) 1px, transparent 1.2px);
+  --era-tone-size:    5px 5px;
+
+  /* Tipografi — judul ala 題字 judul anime (blok tebal), teks isi manga. */
+  --font-display: "Noto Serif JP", "Shippori Mincho B1", serif;
+}
+
+/* ── 多元 gelap — 「深夜アニメ」 RUANG TONTON TENGAH MALAM ─────────────────
+   Ruang gelap + layar menyala + 応援ペンライト warna-warni. BUKAN 夜の団地
+   (Shōwa), BUKAN 瓦斯灯の夜 (Meiji), BUKAN istana malam (Heian). */
+.dark[data-era="anime"], [data-theme="dark"][data-era="anime"] {
+  --kinari-val:       #101219;  /* halaman malam */
+  --kinari-light-val: #1a1d27;  /* panel malam */
+  --sumi-val:         #f3f4f8;  /* tinta jadi putih (garis terang) */
+  --backdrop-val:     #06070c;
+  --sora-val:         #5fa9f2;  /* langit malam menyala */
+  --sakura-val:       #ff9dc6;
+  --daidai-val:       #ff9a44;
+  --matcha-val:       #86c96a;
+  --kin-val:          #f0c862;
+  --kin-ink-val:      #f0c862;
+  --nezumi-val:       #a7b0c0;
+  --tone-val:         #2a3143;
+}
+
+/* ── LAPIS 2 — OVERLAY FRANCHISE (generik, data-driven) ────────────────────
+   Franchise dimiliki → <html data-franchise="…"> + --fr-1/--fr-2 diisi inline
+   dari data (src/features/anime/franchises.js). Franchise menimpa WARNA, bukan
+   BENTUK: outline/cel/radius/motion tetap milik era → semua dunia terasa "satu
+   app". TIDAK ada CSS per-franchise di sini (lihat PRD §4.1). */
+[data-era="anime"][data-franchise] {
+  --sora-val:         var(--fr-1);
+  --sakura-val:       var(--fr-2);
+  --era-shadow:       5px 5px 0 0 var(--fr-1);
+  --era-shadow-hover: 7px 7px 0 0 var(--fr-1);
+}
+
 /* ══ TEMA ERA — SHŌWA 昭和 ═══════════════════════════════════════════════════
    PRD: docs/tema/showa.md. "昭和 = コンクリートの時代" (zaman beton).
    ⚠️ PRINSIP #0 (§0): Shōwa = tema ASLI app. Ia MENG-ECHO base (shadow keras,

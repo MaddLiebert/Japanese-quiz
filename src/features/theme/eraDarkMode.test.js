@@ -34,24 +34,24 @@ const darkBlock = (era) => {
   return i < 0 ? null : css.slice(i, css.indexOf('}', i));
 };
 
-const DESIGNED = ['heian', 'edo', 'meiji', 'showa'];
+const DESIGNED = ['heian', 'edo', 'meiji', 'showa', 'anime'];
 
-test('T8: 4 era terdaftar (heian/edo/meiji/showa) & terdaftar di ERAS', () => {
+test('T8: 5 era terdaftar (heian/edo/meiji/showa/anime) & terdaftar di ERAS', () => {
   const ids = new Set(ERAS.map((e) => e.id));
   for (const era of DESIGNED) assert.ok(ids.has(era), `${era} harus ada di ERAS`);
 });
 
-test('T8: tiap era punya blok token TERANG & GELAP (8 kombinasi lengkap)', () => {
+test('T8: tiap era punya blok token TERANG & GELAP (10 kombinasi lengkap)', () => {
   for (const era of DESIGNED) {
     assert.ok(lightBlock(era), `${era}: blok terang [data-era="${era}"] { hilang`);
     assert.ok(darkBlock(era), `${era}: blok gelap .dark[data-era="${era}"] hilang`);
   }
 });
 
-// Heian/Edo/Meiji DIDESAIN penuh → wajib menentukan token inti sendiri di
+// Heian/Edo/Meiji/Anime DIDESAIN penuh → wajib menentukan token inti sendiri di
 // terang & gelap (kalau lupa → bocor ke base Shōwa).
-test('T8: Heian/Edo/Meiji menentukan --kinari-val sendiri di terang & gelap', () => {
-  for (const era of ['heian', 'edo', 'meiji']) {
+test('T8: Heian/Edo/Meiji/Anime menentukan --kinari-val sendiri di terang & gelap', () => {
+  for (const era of ['heian', 'edo', 'meiji', 'anime']) {
     assert.ok(/--kinari-val:/.test(lightBlock(era)), `${era} TERANG lupa --kinari-val`);
     assert.ok(/--kinari-val:/.test(darkBlock(era)), `${era} GELAP lupa --kinari-val`);
   }

@@ -42,9 +42,18 @@ test('eraName: Shōwa memetakan nama UI kota beton & ujian (PRD §8)', () => {
   assert.equal(eraName('rank', 'showa'), '偏差値');
 });
 
+test('eraName: 多元 Anime Multiverse memetakan nama UI budaya pop (PRD anime §8)', () => {
+  assert.equal(eraName('shop', 'anime'), '物販');
+  assert.equal(eraName('gacha', 'anime'), 'クレーンゲーム');
+  assert.equal(eraName('medaru', 'anime'), 'コイン');
+  assert.equal(eraName('inventory', 'anime'), 'リュック');
+  assert.equal(eraName('profile', 'anime'), '名刺');
+  assert.equal(eraName('quest', 'anime'), 'デイリー');
+  assert.equal(eraName('rank', 'anime'), '戦闘力');
+});
+
 test('eraName: era lain → fallback (nama sekarang)', () => {
   assert.equal(eraName('shop', 'cyberpunk', 'Warung'), 'Warung');
-  assert.equal(eraName('shop', 'anime', 'Warung'), 'Warung');
 });
 
 test('eraName: default fallback = string kosong', () => {

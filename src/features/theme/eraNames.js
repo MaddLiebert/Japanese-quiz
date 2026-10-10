@@ -45,6 +45,19 @@ const ERA_NAMES = {
     quest: '宿題',       // shukudai — PR sekolah
     rank: '偏差値',      // hensachi — skor ujian (inti tema)
   },
+  // 多元 Anime Multiverse — era KANVAS: budaya pop (オノマトペ, 推し活, arcade).
+  // Lihat PRD: docs/tema/anime.md §8. Pemain Lv 150 sudah lewat N5 → kanji +
+  // KATAKANA + romaji campur (bahasa pop). Satu-satunya era dengan 3 lapis
+  // (ERA → FRANCHISE → KARAKTER) — nama UI di bawah = kanvas/dunia.
+  anime: {
+    shop: '物販',        // butsuhan — booth jual merch di konvensi
+    gacha: 'クレーンゲーム', // crane game — UFO catcher arcade
+    medaru: 'コイン',     // koin — mata uang arcade
+    inventory: 'リュック',  // rikku — ransel pop
+    profile: '名刺',      // meishi — kartu tukar (推し活)
+    quest: 'デイリー',     // daily — misi harian = episode
+    rank: '戦闘力',       // sentōryoku — "power level" (trope anime)
+  },
 };
 
 // Kembalikan nama era untuk `key`, atau `fallback` bila era/key tak punya nama.

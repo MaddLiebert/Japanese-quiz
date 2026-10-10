@@ -19,10 +19,10 @@ const here = dirname(fileURLToPath(import.meta.url));
 const css = readFileSync(join(here, '..', '..', 'index.css'), 'utf8');
 
 // Era yang SUDAH punya tema lengkap (blok [data-era="…"] di index.css).
-const DIDESAIN = ['heian', 'edo', 'meiji', 'showa'];
+const DIDESAIN = ['heian', 'edo', 'meiji', 'showa', 'anime'];
 // Era yang BELUM didesain → sengaja pakai base untuk sekarang. Pindahkan ke
 // DIDESAIN begitu temanya dibuat.
-const BELUM = ['anime', 'cyberpunk'];
+const BELUM = ['cyberpunk'];
 
 test('setiap era di ERAS terdaftar sebagai DIDESAIN atau BELUM (tak boleh diam-diam)', () => {
   const known = new Set([...DIDESAIN, ...BELUM]);
