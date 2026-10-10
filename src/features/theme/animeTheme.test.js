@@ -82,6 +82,37 @@ test('多元: tidak menambah IP berhak cipta di CSS (§6.4)', () => {
   assert.deepEqual(found, [], `nama IP berhak cipta di blok 多元: ${found.join(', ')}`);
 });
 
+// ── Kritik nyata: 多元 jangan terbaca "Shōwa diberi warna" ────────────────────
+// Akar bug: token bentuk 多元 hanya DIDEFINISIKAN, tak ada rule yang MEMAKAI →
+// kelas keras Shōwa tampil mentah (shadow hitam) + font jatuh ke base (sama
+// Shōwa). Jaring pengaman wajib memetakan kelas keras itu ke token 多元.
+test('多元: jaring pengaman MEMAKAI token bentuk (cel-shade, bukan beton Shōwa)', () => {
+  // Bayangan keras → cel-shadow BERWARNA (var(--era-shadow)), bukan hitam.
+  assert.ok(/\[data-era="anime"\]\s*\[class\*="shadow-\["\][\s\S]{0,400}box-shadow:\s*var\(--era-shadow\)\s*!important/.test(block),
+    'kelas shadow keras → cel-shadow 多元 (var(--era-shadow))');
+  // Tepi keras → outline 3px era.
+  assert.ok(/\[data-era="anime"\]\s*\[class\*="border-4"\][\s\S]{0,300}border-width:\s*var\(--era-edge-w\)\s*!important/.test(block),
+    'kelas border keras → outline 3px 多元');
+  // Sudut keras → radius kartun 6px.
+  assert.ok(/\[data-era="anime"\]\s*\[class\*="rounded-"\][\s\S]{0,80}?\{[\s\S]{0,160}border-radius:\s*var\(--era-radius\)\s*!important/.test(block),
+    'kelas rounded → radius 6px 多元');
+  // Cel-shadow TIDAK BOLEH hitam (sumi) — itu DNA Shōwa.
+  assert.ok(!/\[data-era="anime"\][^{]*\{[^}]*box-shadow:[^;}]*var\(--sumi-val\)/.test(block),
+    'cel-shadow 多元 tidak boleh pakai sumi/hitam');
+});
+
+test('多元: tipografi BEDA dari Shōwa (§5) — body Shippori, judul 題字 miring', () => {
+  // Body/kanji → Shippori Mincho (dialog manga), bukan Noto Serif JP milik Shōwa.
+  assert.ok(/\[data-era="anime"\]\s*\{\s*--font-serif:\s*"Shippori Mincho"/.test(block),
+    '--font-serif 多元 = Shippori Mincho (beda dari Shōwa)');
+  // Judul → 題字 judul anime: miring (impact frame), bukan serif tegak Shōwa.
+  assert.ok(/\[data-era="anime"\]\s*h1[\s\S]{0,200}font-style:\s*italic/.test(block),
+    'judul 多元 miring (題字 ala judul anime)');
+  // Shōwa TIDAK meng-override --font-serif (font base) → 多元 wajib beda.
+  assert.ok(!/\[data-era="showa"\]\s*\{\s*--font-serif/.test(css),
+    'Shōwa memakai font base; 多元 harus punya sendiri');
+});
+
 // ── T3: Ornamen (フィルム＋セル画 / コマ割り題字 / 多世界の扉) ────────────────
 test('多元 T3: ornamen di-gate .anime-ornament (default none, tampil hanya 多元)', () => {
   assert.ok(/\.anime-ornament\s*\{\s*display:\s*none/.test(block), 'ornamen default none');

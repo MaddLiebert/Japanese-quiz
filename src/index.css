@@ -3468,6 +3468,72 @@ button[data-toji-kill]::after {
   [data-era="anime"] .anime-burst { display: none; }
 }
 
+/* ── JARING PENGAMAN 多元 — bahasa bentuk CEL-SHADE (anti-brutalism Shōwa) ────
+   KRITIK NYATA: "font-nya sama kaya Shōwa, shadow-nya masih brutalism".
+   AKAR BUG: blok [data-era="anime"] hanya MENDEKLARASIKAN token bentuk
+   (--era-shadow cel berwarna / --era-edge-w 3px / --era-radius 6px) tetapi
+   TIDAK ADA satu pun rule yang MEMAKAINYA — beda dari jaring Heian/Edo/Meiji.
+   Akibatnya semua kelas keras hardcoded ala Shōwa
+   (shadow-[8px_8px_0_0_#1a1a1a], border-4, rounded-none) tampil apa adanya →
+   多元 terbaca sebagai "Shōwa diberi warna". Jaring ini memetakan kelas keras
+   itu ke token 多元, sama pola seperti jaring Heian/Edo/Meiji. */
+
+/* 1) TIPOGRAFI — BEDA dari Shōwa (§5). Body/kanji = Shippori Mincho (dialog
+      manga), BUKAN Noto Serif JP milik Shōwa. Judul = 題字 judul anime:
+      tebal + MIRING (impact frame), bukan serif ukir TEGAK ala Shōwa. */
+[data-era="anime"] { --font-serif: "Shippori Mincho", "Noto Serif JP", serif; }
+[data-era="anime"] h1,
+[data-era="anime"] h2 {
+  font-family: var(--font-display);
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
+/* 2) TEPI → outline tinta 3px (panel manga), bukan 4px beton Shōwa.
+      Tiap sisi ditimpa terpisah supaya reset responsif (sm:border-b-0) tetap 0. */
+[data-era="anime"] [class*="border-4"],
+[data-era="anime"] [class*="border-3"],
+[data-era="anime"] [class*="border-2"],
+[data-era="anime"] [class*="border-["] {
+  border-width: var(--era-edge-w) !important;
+}
+[data-era="anime"] [class*="border-t-["] { border-top-width:    var(--era-edge-w) !important; }
+[data-era="anime"] [class*="border-b-["] { border-bottom-width: var(--era-edge-w) !important; }
+[data-era="anime"] [class*="border-l-["] { border-left-width:   var(--era-edge-w) !important; }
+[data-era="anime"] [class*="border-r-["] { border-right-width:  var(--era-edge-w) !important; }
+@media (min-width: 640px) {
+  [data-era="anime"] [class*="border-t-0"] { border-top-width:    0 !important; }
+  [data-era="anime"] [class*="border-b-0"] { border-bottom-width: 0 !important; }
+  [data-era="anime"] [class*="border-l-0"] { border-left-width:   0 !important; }
+  [data-era="anime"] [class*="border-r-0"] { border-right-width:  0 !important; }
+}
+
+/* 3) SUDUT → membulat kartun 6px (cel), bukan siku beton 0px Shōwa.
+      Lingkaran semantik (avatar/segel .rounded-full) tetap bulat. */
+[data-era="anime"] :where([class*="border"]) { border-radius: var(--era-radius); }
+[data-era="anime"] [class*="rounded-"]:not(.rounded-full) { border-radius: var(--era-radius) !important; }
+[data-era="anime"] .rounded-full { border-radius: 9999px !important; }
+
+/* 4) BAYANGAN → CEL-SHADOW BERWARNA (2-tone, --sora-val), BUKAN blok HITAM
+      keras ala Shōwa. Inilah tanda tangan 多元 (§4.4): warna, bukan sumi. */
+[data-era="anime"] [class*="shadow-["],
+[data-era="anime"] .shadow-2xs,
+[data-era="anime"] .shadow-xs,
+[data-era="anime"] .shadow-sm,
+[data-era="anime"] .shadow-md,
+[data-era="anime"] .shadow-lg,
+[data-era="anime"] .shadow-xl,
+[data-era="anime"] .shadow-2xl,
+[data-era="anime"] .shadow-inner {
+  box-shadow: var(--era-shadow) !important;
+}
+
+/* 5) TOMBOL — cel-shade: bayangan BERWARNA MEMBESAR saat hover (pop impact
+      frame), bukan tombol turun-mengempis ala Shōwa. Gerak snap 140ms. */
+[data-era="anime"] :where(button, a)[class*="hover:translate-"]:hover { transform: none !important; }
+[data-era="anime"] :where(button, a)[class*="shadow-["] { transition: box-shadow var(--era-motion) var(--era-ease); }
+[data-era="anime"] :where(button, a)[class*="shadow-["]:hover { box-shadow: var(--era-shadow-hover) !important; }
+
 /* ══ TEMA ERA — SHŌWA 昭和 ═══════════════════════════════════════════════════
    PRD: docs/tema/showa.md. "昭和 = コンクリートの時代" (zaman beton).
    ⚠️ PRINSIP #0 (§0): Shōwa = tema ASLI app. Ia MENG-ECHO base (shadow keras,
