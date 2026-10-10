@@ -965,6 +965,19 @@ const THEME_BGM_PLANS = {
     // gitar bersih: pentatonik + blues (A C D E G) — Jepang-modern/melankolis.
     pluck: { notes: [196, 220, 261.63, 293.66, 349.23], everyMs: 1250, dur: 1.1, gain: 0.16 },
   },
+  // 多元 (§9): chiptune 8-bit — SQUARE wave arpeggio (warna game/anime).
+  // Satu-satunya era berpad SQUARE (gelombang kotak retro), ritmis & ceria.
+  anime: {
+    level: 0.12,
+    fadeInMs: 1400,       // masuk cerah-gesit (Shōwa 1600)
+    fadeOutMs: 900,
+    // Drone bass ringan, dasar cerah (city-pop) — A2/E3.
+    drone: { freqs: [55, 110, 164.81], detune: [0, -4, 4], gain: 0.44 },
+    // Pad: SQUARE 8-bit (bukan triangle/sawtooth era lain) + lowpass terbuka.
+    pad: { type: 'square', freqs: [261.63, 329.63, 392, 523.25], filterHz: 1500, lfoHz: 0.14, lfoDepth: 240, gain: 0.22 },
+    // arpeggio 8-bit: tangga mayor cerah (C D E G A), ritmis seperti game.
+    pluck: { notes: [261.63, 293.66, 329.63, 392, 440, 523.25], everyMs: 1000, dur: 0.8, gain: 0.16 },
+  },
 };
 
 export const themeBgmPlan = (era = 'heian') => THEME_BGM_PLANS[era] || THEME_BGM_PLANS.heian;

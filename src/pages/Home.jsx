@@ -15,6 +15,7 @@ import { MeijiPrintArt } from "../components/MeijiArtwork";
 import { EdoLantern, EdoNoren } from "../components/EdoOrnament";
 import { MeijiGaslight, MeijiBunsen } from "../components/MeijiOrnament";
 import { ShowaDenchu, ShowaKanban, ShowaTower } from "../components/ShowaOrnament";
+import { AnimeFilm, AnimePanel, AnimeGate } from "../components/AnimeOrnament";
 import { ShowaPrintArt } from "../components/ShowaArtwork";
 
 import { StreakIndicator } from "../components/StreakIndicator";
@@ -191,6 +192,16 @@ export function Home() {
             <ShowaDenchu className="showa-hero-denchu" />
             <ShowaKanban className="showa-hero-kanban absolute bottom-3 right-3 sm:right-8 w-24 sm:w-32 z-20" />
             <ShowaTower className="showa-hero-tower absolute bottom-0 right-28 sm:right-40 w-10 sm:w-14 z-0" />
+
+            {/* Hiasan 多元 ANIME MULTIVERSE — フィルム＋セル画 strip film bergoyang
+                (analog 提灯/瓦斯灯/電柱: gantung & berayun, tapi paling CERIA;
+                sel bercahaya saat malam 深夜アニメ) + コマ割り題字 panel manga
+                (題字 多元 + balon KOSONG = kanvas menunggu) + 多世界の扉 gerbang
+                panel bertumpuk (tiap panel = 1 dunia, siluet generik).
+                HANYA era 多元 (di-gate .anime-ornament). */}
+            <AnimeFilm className="anime-hero-film" />
+            <AnimePanel className="anime-hero-panel absolute bottom-3 right-3 sm:right-8 w-28 sm:w-36 z-20" />
+            <AnimeGate className="anime-hero-gate absolute bottom-0 right-32 sm:right-48 w-14 sm:w-20 z-0" />
 
             <motion.div
               initial={{ opacity: 0, x: -20 }}

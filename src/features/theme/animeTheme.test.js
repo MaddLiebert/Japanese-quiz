@@ -81,3 +81,58 @@ test('多元: tidak menambah IP berhak cipta di CSS (§6.4)', () => {
   const found = terlarang.filter((n) => block.toLowerCase().includes(n));
   assert.deepEqual(found, [], `nama IP berhak cipta di blok 多元: ${found.join(', ')}`);
 });
+
+// ── T3: Ornamen (フィルム＋セル画 / コマ割り題字 / 多世界の扉) ────────────────
+test('多元 T3: ornamen di-gate .anime-ornament (default none, tampil hanya 多元)', () => {
+  assert.ok(/\.anime-ornament\s*\{\s*display:\s*none/.test(block), 'ornamen default none');
+  assert.ok(/\[data-era="anime"\]\s*\.anime-ornament\s*\{\s*display:\s*block/.test(block),
+    'ornamen tampil di era 多元');
+  assert.ok(/\.anime-ornament\s*\{\s*pointer-events:\s*none/.test(block), 'dekoratif: pointer-events none');
+});
+
+test('多元 T3: tiga motif wajib ada (film+sel / panel題字 / gate 多世界)', () => {
+  // 1. フィルム＋セル画 (kinetik)
+  assert.ok(/\.anime-film-strip\b/.test(block), 'ada strip film');
+  assert.ok(/\.anime-film-cel\b/.test(block), 'ada sel berwarna (cel-shade)');
+  assert.ok(/\.anime-film-perf\b/.test(block), 'ada perforasi (lubang sproket)');
+  // 2. コマ割り題字 (panel)
+  assert.ok(/\.anime-panel-cell\b/.test(block), 'ada grid panel manga');
+  assert.ok(/\.anime-panel-title\b/.test(block), 'ada 題字 多元');
+  assert.ok(/\.anime-panel-balloon\b/.test(block), 'ada balon kosong (kanvas menunggu)');
+  assert.ok(/\.anime-panel-seal\b/.test(block), 'ada segel 印');
+  // 3. 多世界の扉 (hero)
+  assert.ok(/\.anime-gate-frame\b/.test(block), 'ada gerbang panel bertumpuk');
+  assert.ok(/\.anime-gate-mountain\b/.test(block), 'ada siluet dunia (gunung)');
+  assert.ok(/\.anime-gate-mech-body\b/.test(block), 'ada siluet dunia (機神)');
+  assert.ok(/\.anime-gate-bldg\b/.test(block), 'ada siluet dunia (kota)');
+});
+
+test('多元 T3: tekstur screentone + 集中線 + オノマトペ ada & ter-gate', () => {
+  assert.ok(/\.anime-tone\b/.test(block), 'ada screentone .anime-tone');
+  assert.ok(/\.anime-burst\b/.test(block), 'ada 集中線 .anime-burst');
+  assert.ok(/\.anime-onoma\b/.test(block), 'ada オノマトペ .anime-onoma');
+  // 集中線 mati saat reduced-motion (WCAG 2.1).
+  assert.ok(/prefers-reduced-motion[\s\S]{0,80}\.anime-burst\s*\{\s*display:\s*none/.test(block),
+    '集中線 mati saat prefers-reduced-motion');
+});
+
+test('多元 T3: ornamen punya varian malam 深夜アニメ (sel bercahaya)', () => {
+  assert.ok(/\.dark\[data-era="anime"\]\s*\.anime-film-cel/.test(block), 'malam: sel film bercahaya');
+  assert.ok(/\.dark\[data-era="anime"\]\s*\.anime-film-glow/.test(block), 'malam: halo sel menyala');
+});
+
+// ── T13: token warna 多元 (--color-sora/--color-sakura) ──────────────────────
+test('多元 T13: token @theme --color-sora/--color-sakura terdaftar', () => {
+  const theme = css.slice(css.indexOf('@theme'), css.indexOf('}', css.indexOf('@theme')));
+  assert.ok(/--color-sora:\s*var\(--sora-val\)/.test(theme), '@theme: --color-sora → var(--sora-val)');
+  assert.ok(/--color-sakura:\s*var\(--sakura-val\)/.test(theme), '@theme: --color-sakura → var(--sakura-val)');
+});
+
+test('多元 T13: default :root punya --sora-val/--sakura-val (aditif, nilai lama utuh)', () => {
+  const root = css.slice(css.indexOf(':root'), css.indexOf('}', css.indexOf(':root')));
+  assert.ok(/--sora-val:\s*#3a8dde/.test(root), ':root default --sora-val = #3a8dde');
+  assert.ok(/--sakura-val:\s*#f18bb0/.test(root), ':root default --sakura-val = #f18bb0');
+  // Nilai DNA lama TIDAK berubah (§0): sumi/ai/shu tetap.
+  assert.ok(/--sumi-val:\s*#1a1a1a/.test(root), 'DNA lama utuh: --sumi-val #1a1a1a');
+  assert.ok(/--shu-val:\s*#d3382f/.test(root), 'DNA lama utuh: --shu-val #d3382f');
+});

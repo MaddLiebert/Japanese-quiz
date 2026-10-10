@@ -90,6 +90,46 @@ test('themeBgmPlan: tiga era saling beda (kontras tema terdengar)', () => {
   assert.ok(themeBgmPlan('meiji').drone.freqs.includes(130.81), 'drone +C3 = lebih terang');
 });
 
+// ── BGM tema 多元 (docs/tema/anime.md §9) ───────────────────────────────────
+
+test('themeBgmPlan anime: level rendah & masuk cerah-gesit', () => {
+  const p = themeBgmPlan('anime');
+  assert.ok(p.level > 0 && p.level <= 0.15, 'level rendah (BGM default)');
+  assert.ok(p.fadeInMs < themeBgmPlan('heian').fadeInMs, '多元 masuk lebih cepat dari Heian');
+  assert.ok(p.fadeInMs >= 800 && p.fadeInMs <= 2000, 'cerah tapi tidak menghentak');
+  assert.ok(p.fadeOutMs > 0 && p.fadeOutMs <= 1200);
+});
+
+test('themeBgmPlan anime: drone bass + pad mid (audible)', () => {
+  const p = themeBgmPlan('anime');
+  assert.ok(p.drone.freqs.length >= 2);
+  assert.ok(p.drone.freqs.some((f) => f <= 60), 'ada bass');
+  assert.ok(p.pad.freqs.length >= 2);
+  const all = [...p.drone.freqs, ...p.pad.freqs];
+  for (const f of all) assert.ok(f >= 30 && f <= 2000, `freq ${f} audible`);
+  assert.ok(all.filter((f) => f >= 150).length >= 2, 'ada konten mid');
+  assert.ok(p.pad.lfoHz > 0 && p.pad.lfoHz <= 0.5, 'LFO napas');
+});
+
+test('themeBgmPlan anime: chiptune 8-bit — pad SQUARE (khas game/anime)', () => {
+  const p = themeBgmPlan('anime');
+  assert.equal(p.pad.type, 'square', '多元 = gelombang kotak 8-bit (era lain triangle/sawtooth)');
+  assert.ok(Array.isArray(p.pluck.notes) && p.pluck.notes.length >= 5, 'tangga nada cukup');
+  for (const n of p.pluck.notes) assert.ok(n >= 200 && n <= 900, `nada ${n} register nyaman`);
+  // Tangga mayor cerah (C D E G A C) — setara derajat 0,2,4,7,9,12.
+  const semis = p.pluck.notes.map((n) => Math.round(12 * Math.log2(n / 261.63)));
+  assert.deepEqual(semis, [0, 2, 4, 7, 9, 12], 'tangga mayor cerah (chiptune)');
+  assert.ok(p.pluck.everyMs < themeBgmPlan('showa').pluck.everyMs, '多元 lebih ritmis (game) dari Shōwa');
+  assert.ok(p.pluck.gain > 0 && p.pluck.gain <= 0.3);
+});
+
+test('themeBgmPlan: 5 era saling beda (kontras tema terdengar)', () => {
+  const eras = ['heian', 'edo', 'meiji', 'showa', 'anime'];
+  const seen = eras.map((e) => JSON.stringify(themeBgmPlan(e)));
+  assert.equal(new Set(seen).size, eras.length, 'tiap era punya plan sendiri');
+  assert.equal(themeBgmPlan('anime').koto, undefined, '多元 memakai pluck, bukan koto');
+});
+
 test('themeBgmPlan heian: level −18 dB (≈0.12), fade lambat & santun', () => {
   const p = themeBgmPlan('heian');
   assert.ok(p.level > 0 && p.level <= 0.13, 'level rendah (BGM default −18 dB)');

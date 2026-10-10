@@ -20,6 +20,14 @@
   /* 鼠 nezumi — abu tikus (teks sekunder/blok aux). Default netral; di-override
      di [data-era="meiji"]. Dipakai TypesettingBoard (M1 活字組み). */
   --nezumi-val: #6b665c;
+  /* 多元 Anime Multiverse — token kanvas (空 sora primer, 桜 sakura aksen,
+     橙 daidai, screentone). Default netral di sini supaya kelas `bg-sora`/
+     `text-sora`/`text-sakura` tetap valid walau dibuka di era lain; di-override
+     penuh di [data-era="anime"]. Lihat docs/tema/anime.md §4. */
+  --sora-val: #3a8dde;
+  --sakura-val: #f18bb0;
+  --daidai-val: #f2872e;
+  --tone-val: #c9d2e0;
   --ink: #1a1a1a;   /* dipakai .packcard — sebelumnya TAK terdefinisi (bug) */
 }
 
@@ -50,6 +58,13 @@
   --color-renga: var(--renga-val);
   --color-gas: var(--gas-val);
   --color-nezumi: var(--nezumi-val);
+  /* 多元 Anime Multiverse — warna kanvas (空 sora primer, 桜 sakura aksen).
+     Hanya terisi penuh di [data-era="anime"]; era lain → var tak terdefinisi
+     (diabaikan, pola sama seperti --color-renga). Lihat docs/tema/anime.md §4. */
+  --color-sora: var(--sora-val);
+  --color-sakura: var(--sakura-val);
+  --color-daidai: var(--daidai-val);
+  --color-tone: var(--tone-val);
   
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-serif: "Noto Serif JP", "Shippori Mincho", "Yu Mincho", serif;
@@ -3336,6 +3351,121 @@ button[data-toji-kill]::after {
   --sakura-val:       var(--fr-2);
   --era-shadow:       5px 5px 0 0 var(--fr-1);
   --era-shadow-hover: 7px 7px 0 0 var(--fr-1);
+}
+
+/* ── ORNAMEN 多元 (hero 日本語学園) — フィルム＋セル画 + コマ割り題字 + 多世界の扉 ──
+   Analog 提灯 (Edo) / 瓦斯灯 (Meiji) / 電柱 (Shōwa). Di-gate `.anime-ornament`
+   (default none). Dekoratif → pointer-events:none + user-select:none.
+   Cel-shade = outline tinta 3px + sudut membulat 6px (kartun), bukan beton tajam. */
+.anime-ornament { display: none; }
+[data-era="anime"] .anime-ornament { display: block; }
+.anime-ornament { pointer-events: none; user-select: none; }
+.anime-ornament svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* フィルム＋セル画 — strip film vertikal bergoyang (benda gantung KINETIK). */
+.anime-film { position: absolute; top: 0; right: 8px; width: 30px; z-index: 15; }
+@media (min-width: 640px) { .anime-film { right: 28px; width: 42px; } }
+.anime-film-strip { fill: var(--sumi-val); opacity: 0.9; }
+.anime-film-frame { fill: var(--kinari-val); stroke: var(--sumi-val); stroke-width: 0.8; opacity: 0.55; }
+.anime-film-cel { fill: var(--sora-val); stroke: var(--sumi-val); stroke-width: 1; }
+.anime-film-perf { fill: var(--kinari-val); opacity: 0.85; }
+.anime-film-glow { display: none; }
+/* Malam 深夜アニメ: sel bercahaya, perforasi jadi siluet terang di kegelapan. */
+.dark[data-era="anime"] .anime-film-cel,
+[data-theme="dark"][data-era="anime"] .anime-film-cel {
+  fill: var(--sora-val); filter: drop-shadow(0 0 4px rgba(95,169,242,0.95));
+}
+.dark[data-era="anime"] .anime-film-strip,
+[data-theme="dark"][data-era="anime"] .anime-film-strip { fill: #05060a; opacity: 1; }
+.dark[data-era="anime"] .anime-film-frame,
+[data-theme="dark"][data-era="anime"] .anime-film-frame { fill: #1a1d27; opacity: 0.7; }
+.dark[data-era="anime"] .anime-film-glow,
+[data-theme="dark"][data-era="anime"] .anime-film-glow { display: block; }
+
+/* コマ割り題字 — grid panel manga + 題字 多元 + balon KOSONG (kanvas menunggu). */
+.anime-panel-cell { fill: var(--kinari-light-val); stroke: var(--sumi-val); stroke-width: 1.6; }
+.anime-panel-title {
+  fill: var(--sumi-val);
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 900;
+  letter-spacing: 0.04em;
+}
+.anime-panel-balloon { fill: var(--kinari-val); stroke: var(--sumi-val); stroke-width: 1.4; }
+.anime-panel-balloon-text {
+  fill: var(--sumi-val);
+  font-family: var(--font-serif);
+  font-size: 11px; font-weight: 700;
+}
+.anime-panel-seal { fill: var(--shu-val); }
+.anime-panel-seal-text {
+  fill: var(--kinari-light-val);
+  font-family: var(--font-serif);
+  font-size: 8px; font-weight: 900;
+}
+.dark[data-era="anime"] .anime-panel-cell,
+[data-theme="dark"][data-era="anime"] .anime-panel-cell { fill: #1a1d27; }
+
+/* 多世界の扉 — gerbang panel bertumpuk; tiap panel = 1 dunia (siluet generik). */
+.anime-gate-frame { fill: var(--kinari-light-val); stroke: var(--sumi-val); stroke-width: 2; }
+.anime-gate-sky { fill: var(--sora-val); opacity: 0.14; }
+.anime-gate-bldg { fill: var(--sumi-val); opacity: 0.72; }
+.anime-gate-mech-head,
+.anime-gate-mech-body,
+.anime-gate-mech-arm,
+.anime-gate-mech-leg { fill: var(--sumi-val); opacity: 0.78; }
+.anime-gate-mountain { fill: var(--sumi-val); opacity: 0.82; }
+.anime-gate-sun { fill: var(--daidai-val); }
+.dark[data-era="anime"] .anime-gate-frame,
+[data-theme="dark"][data-era="anime"] .anime-gate-frame { fill: #1a1d27; }
+.dark[data-era="anime"] .anime-gate-sky,
+[data-theme="dark"][data-era="anime"] .anime-gate-sky { fill: var(--sora-val); opacity: 0.3; }
+.dark[data-era="anime"] .anime-gate-bldg,
+[data-theme="dark"][data-era="anime"] .anime-gate-bldg,
+.dark[data-era="anime"] .anime-gate-mountain,
+[data-theme="dark"][data-era="anime"] .anime-gate-mountain { fill: var(--kinari-val); opacity: 0.9; }
+.dark[data-era="anime"] .anime-gate-mech-head,
+[data-theme="dark"][data-era="anime"] .anime-gate-mech-head,
+.dark[data-era="anime"] .anime-gate-mech-body,
+[data-theme="dark"][data-era="anime"] .anime-gate-mech-body,
+.dark[data-era="anime"] .anime-gate-mech-arm,
+[data-theme="dark"][data-era="anime"] .anime-gate-mech-arm,
+.dark[data-era="anime"] .anime-gate-mech-leg,
+[data-theme="dark"][data-era="anime"] .anime-gate-mech-leg { fill: var(--kinari-val); opacity: 0.85; }
+
+/* スクリーントーン + オノマトペ — TEKSTUR (CSS layer, bukan React). */
+.anime-tone { display: none; }
+[data-era="anime"] .anime-tone,
+.dark[data-era="anime"] .anime-tone {
+  display: block;
+  background-image: var(--era-tone);
+  background-size: var(--era-tone-size);
+  pointer-events: none;
+}
+/* 集中線 — garis radial di belakang elemen fokus (jawaban benar, gacha, checkpoint). */
+.anime-burst { display: none; }
+[data-era="anime"] .anime-burst {
+  display: block;
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, var(--sumi-val) 0deg 1.1deg, transparent 1.1deg 6deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 34%, #000 46%, #000 62%, transparent 74%);
+          mask-image: radial-gradient(circle, transparent 34%, #000 46%, #000 62%, transparent 74%);
+  opacity: 0.18;
+}
+/* オノマトペ — teks bunyi (バン！ドキドキ) di momen "wow". Inter 900 italic. */
+.anime-onoma { display: none; }
+[data-era="anime"] .anime-onoma {
+  display: block;
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  user-select: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-era="anime"] .anime-burst { display: none; }
 }
 
 /* ══ TEMA ERA — SHŌWA 昭和 ═══════════════════════════════════════════════════
