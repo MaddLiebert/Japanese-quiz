@@ -117,6 +117,25 @@ test('多元: tipografi MANGA (§5 revisi) — judul Dela Gothic, body Zen Maru'
     'Shōwa memakai font base; 多元 harus punya sendiri');
 });
 
+test('多元: ANTI FAUX-BOLD — font-synthesis-weight:none (glyph jangan "double")', () => {
+  // BUG NYATA (dilaporkan user: "ini font double"). Font display app ini banyak
+  // yang hanya punya 1 weight (Dela Gothic One, Rampart One, Yuji Syuku,
+  // Shippori Mincho B1 = semua 400). Kelas font-black (900) pada font 1-weight
+  // membuat browser menggambar glyph DUA KALI bergeser (synthetic bold) →
+  // stroke membengkak, counter tertutup, teks tampak "double"/ghost/blur.
+  // Diukur: 400 native 24010 px tinta vs 900 synthetic 27928 px (+16%).
+  // Perbaikan: matikan synthetic weight di body → pakai weight asli.
+  const bodyRule = css.slice(css.indexOf('body {'), css.indexOf('body {') + 900);
+  assert.ok(/font-synthesis-weight:\s*none/.test(bodyRule),
+    'body harus font-synthesis-weight:none (cegah bold palsu → glyph "double")');
+  // Judul 多元 dipatok ke 400 (Dela Gothic sudah 極太 secara desain).
+  assert.ok(/\[data-era="anime"\] h1[\s\S]{0,220}font-weight:\s*400/.test(block),
+    'judul 多元 = font-weight 400 (Dela Gothic native, bukan 900 palsu)');
+  // Jangan matikan font-synthesis italic juga: オノマトペ butuh miring.
+  assert.ok(!/font-synthesis:\s*none/.test(bodyRule),
+    'pakai font-synthesis-weight (bukan font-synthesis) agar italic オノマトペ tetap miring');
+});
+
 test('多元: GARIS PANEL MANGA — .anime-manga + gutter, bukan garis mesin', () => {
   // Kartu panel manga: tinta tebal + screentone + cel-shadow.
   assert.ok(/\[data-era="anime"\]\s*\.anime-manga\s*\{[\s\S]{0,400}border:\s*var\(--era-edge-w\) solid var\(--manga-line\)/.test(block),

@@ -76,6 +76,15 @@ body {
   background-color: var(--kinari-val);
   color: var(--sumi-val);
   font-family: var(--font-sans);
+  /* font-synthesis-weight:none — CEGAH "bold palsu" (synthetic bold). Banyak
+     font display di app ini hanya punya 1 weight (Yuji Syuku, Dela Gothic One,
+     Rampart One, Shippori Mincho B1 = semua 400). Saat dipakai dengan kelas
+     font-black (900), Chrome MENGGANDAKAN glyph (digambar 2x bergeser) →
+     teks terlihat "double"/ghost/blur (dilaporkan user pada headline 多元).
+     Dengan none, browser memakai weight asli (400) → teks bersih & tajam.
+     Hanya weight yang dimatikan (italic オノマトペ tetap miring).
+     Tidak mengubah :root (BEKU). */
+  font-synthesis-weight: none;
 }
 
 /* Smooth synchronized theme transition */
@@ -3492,7 +3501,8 @@ button[data-toji-kill]::after {
 [data-era="anime"] h1,
 [data-era="anime"] h2 {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 400;   /* Dela Gothic One hanya punya 400 (sudah 極太 secara desain);
+                         jangan 900 → itu memicu bold palsu (glyph "double"). */
   letter-spacing: -0.015em;
 }
 /* Judul episode / label babak → Rampart One (display manga). */
