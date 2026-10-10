@@ -74,6 +74,31 @@ export function buildEdoStrips(targetIcons, pool = EDO_SLIP_POOL, length = STRIP
   );
 }
 
+// ── Era 多元 Anime Multiverse — クレーンゲーム (UFO catcher arcade) ─────────────
+// Mesin slot 3-reel = bahasa Shōwa. Di 多元, undian = クレーンゲーム: cakar (claw)
+// menjatuhkan 3 figur berurutan. Cakar MEMANTUL (overshoot) → rasa "kartun".
+// Semua konstanta HANYA dipakai saat era === 'anime'.
+export const ANIME_CLAW_COUNT = 3;               // 3 figur (meniru 3 reel)
+export const ANIME_CLAW_MS = [1800, 3000, 4200]; // tiap figur diambil berurutan (ms) — paling cepat
+export const ANIME_CLAW_TICK_MS = 60;            // bunyi mesin arcade (ms)
+export const ANIME_CLAW_EASE = [0.34, 1.56, 0.64, 1]; // overshoot (cakar memantul — "kartun")
+export const ANIME_CLAW_FADE = 28;               // fade tepi jendela cakar (px)
+
+// Simbol yang lewat saat cakar bergerak — motif pop: bintang, hati, not, kilat, bunga.
+export const ANIME_CLAW_POOL = ['star', 'heart', 'note', 'bolt', 'flower', 'crown', 'gem', 'sparkle'];
+
+// Strip untuk SATU figur 多元 (acak dari pool, elemen terakhir = target).
+export function buildClawStrip(targetIcon, pool = ANIME_CLAW_POOL, length = STRIP_LEN, rng = Math.random) {
+  return buildStrip(targetIcon, pool, length, rng);
+}
+
+// Strip untuk SEMUA figur 多元.
+export function buildClawStrips(targetIcons, pool = ANIME_CLAW_POOL, length = STRIP_LEN, rng = Math.random) {
+  return Array.from({ length: ANIME_CLAW_COUNT }, (_, i) =>
+    buildClawStrip(targetIcons[i % targetIcons.length], pool, length, rng)
+  );
+}
+
 // Deretan simbol satu reel: acak dari pool, ELEMEN TERAKHIR = target.
 export function buildStrip(targetIcon, pool = SYMBOL_POOL, length = STRIP_LEN, rng = Math.random) {
   if (length < 1) throw new Error('length minimal 1');
