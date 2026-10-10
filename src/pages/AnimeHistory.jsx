@@ -17,10 +17,10 @@ import { ANIME_STOPS } from '../features/cinematic/anime/animeStops';
 // Perhentian → tujuan navigasi (fitur app). Yang tak punya rute → null.
 const ROUTE_BY_FEATURE = {
   nav: '/',                 // 開幕 — pusat/peta (Home)
-  onoma: '/practice',       // 冒険 — latihan (オノマトペ quiz menyusul)
-  register: '/practice',    // 日常 — tata bahasa/register
-  slang: '/practice',       // 青春 — kosakata/slang
-  loanwords: '/practice',   // 魔法 — kosakata katakana
+  onoma: '/anime-practice?mode=onoma',        // 冒険 — latihan オノマトペ
+  register: '/anime-practice?mode=register',  // 日常 — latihan タメ口↔敬語
+  slang: '/anime-practice?mode=slang',        // 青春 — latihan 若者言葉
+  loanwords: '/anime-practice?mode=loanwords', // 魔法 — latihan カタカナ
   dark: '/settings',        // 怪談 — pengaturan tema (深夜アニメ)
   isekai: '/anime-shop',    // 異世界 — pilih/beli dunia (franchise)
   checkpoint: '/anime-checkpoint', // 最終回 — gerbang naik era

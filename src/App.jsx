@@ -15,6 +15,7 @@ import { AnimeHistory } from "./pages/AnimeHistory";
 import { AnimeShop } from "./pages/AnimeShop";
 import { AnimeClaw } from "./pages/AnimeClaw";
 import { AnimeCheckpoint } from "./pages/AnimeCheckpoint";
+import { AnimePractice } from "./pages/AnimePractice";
 import { Typesetting } from "./pages/Typesetting";
 import { PrintShop } from "./pages/PrintShop";
 import { Neologism } from "./pages/Neologism";
@@ -283,6 +284,7 @@ function App() {
                   <Route path="/anime-shop" element={<AnimeShop />} />
                   <Route path="/anime-claw" element={<AnimeClaw />} />
                   <Route path="/anime-checkpoint" element={<AnimeCheckpoint />} />
+                  <Route path="/anime-practice" element={<AnimePractice />} />
                   <Route path="/hakone-checkpoint" element={<HakoneCheckpoint />} />
                   <Route path="/kokkai-checkpoint" element={<KokkaiCheckpoint />} />
                   <Route path="/sotsugyo-checkpoint" element={<SotsugyoCheckpoint />} />
