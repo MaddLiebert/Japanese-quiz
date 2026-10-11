@@ -126,7 +126,7 @@ export function DeathQuizScreen() {
           className="w-full max-w-lg border-[4px] border-sumi bg-kinari-light shadow-[12px_12px_0_0_rgba(26,26,26,0.1)] p-8 sm:p-12 flex flex-col items-center text-center relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-40 h-40 bg-shu/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-          <span className="text-7xl sm:text-8xl font-serif font-black text-shu/80 mb-4 select-none">死</span>
+          <span className="cyber-glitch-text text-7xl sm:text-8xl font-serif font-black text-shu/80 mb-4 select-none">死</span>
           <h1 className="text-2xl sm:text-3xl font-serif font-black text-sumi mb-2">
             Death Quiz
           </h1>
@@ -415,7 +415,7 @@ export function DeathQuizScreen() {
         >
           <div className="bg-kinari border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] p-8 sm:p-12 flex flex-col items-center gap-4 relative overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle,currentColor_1.5px,transparent_1.5px)] bg-[length:14px_14px] text-sumi/[0.03] pointer-events-none"></div>
-            <h2 className={`font-serif font-black text-sumi leading-tight select-none relative z-10 text-center break-words max-w-full ${isGrammar ? 'text-2xl sm:text-4xl leading-normal' : 'text-5xl sm:text-7xl md:text-8xl'}`}>
+            <h2 className={`cyber-glitch-text font-serif font-black text-sumi leading-tight select-none relative z-10 text-center break-words max-w-full ${isGrammar ? 'text-2xl sm:text-4xl leading-normal' : 'text-5xl sm:text-7xl md:text-8xl'}`}>
               {prompt}
             </h2>
             {isKanji && !isAnswered && (
@@ -445,7 +445,7 @@ export function DeathQuizScreen() {
             const showGreen = isAnswered && isThisCorrect;
             const showRed = isThisClicked && !isThisCorrect;
 
-            let btnClass = "border-[3px] border-sumi shadow-[5px_5px_0_0_#1a1a1a] transition-all p-4 sm:p-5 font-bold text-sumi flex flex-col items-center justify-center rounded-none text-sm sm:text-base leading-snug min-h-[70px] ";
+            let btnClass = "cyber-answer border-[3px] border-sumi shadow-[5px_5px_0_0_#1a1a1a] transition-all p-4 sm:p-5 font-bold text-sumi flex flex-col items-center justify-center rounded-none text-sm sm:text-base leading-snug min-h-[70px] ";
             if (isEliminated && !isAnswered) {
               // Dibuang 六眼: tidak bisa dipilih, dicoret.
               btnClass += "bg-kinari/50 text-sumi/25 line-through opacity-50 cursor-not-allowed";

@@ -3905,11 +3905,18 @@ button[data-toji-kill]::after {
   --era-glow:         inset 0 0 22px rgba(0, 240, 255, 0.06);
   --era-glass:        linear-gradient(160deg, rgba(0, 240, 255, 0.06), rgba(0, 240, 255, 0.015) 45%, rgba(255, 226, 58, 0.02));
 
-  /* ── Tipografi — NOL FONT BARU (§5): display Dela Gothic One (sudah dipakai
-     多元), kanji hero tetap Noto Serif JP, chrome = mono sistem. Body = Inter. */
-  --font-display: "Dela Gothic One", "Noto Serif JP", sans-serif;
-  --font-serif:   "Noto Serif JP", "Shippori Mincho", serif;
-  --font-mono:    ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  /* ── Tipografi 電脳 (revisi user: 「font nya jangan sama kaya anime multiverse」)
+     Sebelumnya 電脳 memakai Dela Gothic One — PERSIS font judul era 多元 (anime),
+     jadi tak punya suara sendiri. Sekarang 電脳 ber-font cyberpunk sungguhan:
+       • Orbitron        — display HUD/geometris (judul, segel, kanji hero)
+       • Rajdhani        — body teknis/condensed; CJK jatuh ke Noto Sans JP
+       • Share Tech Mono — telemetri terminal
+     Orbitron/Rajdhani/Share Tech Mono SUDAH dimuat di index.html (§5 revisi). */
+  --font-sans:    "Rajdhani", "Inter", "Noto Sans JP", system-ui, sans-serif;
+  --font-display: "Orbitron", "Rajdhani", "Noto Sans JP", sans-serif;
+  --font-serif:   "Rajdhani", "Noto Sans JP", "Noto Serif JP", sans-serif;
+  --font-kana:    "Rajdhani", "Noto Sans JP", sans-serif;
+  --font-mono:    "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
 /* ── 電脳 gelap — 真夜中 mayonaka (hitam penuh, malam terdalam) ───────────── */
@@ -3963,12 +3970,12 @@ button[data-toji-kill]::after {
    Memetakan kelas keras hardcoded (shadow-[Npx_Npx_0_0_#1a1a1a], border-4,
    rounded-*) ke token 電脳. Offset KERAS → glow; tepi tebal → hairline 1px. */
 
-/* 1) TIPOGRAFI — judul/HUD = Dela Gothic One (極太, 1 bobot → weight 400). */
+/* 1) TIPOGRAFI — judul/HUD = Orbitron (variable 400–900; 800 = HUD tegas). */
 [data-era="cyberpunk"] h1,
 [data-era="cyberpunk"] h2 {
   font-family: var(--font-display);
-  font-weight: 400;   /* Dela Gothic One hanya 400; 900 → bold palsu (glyph ganda) */
-  letter-spacing: 0.01em;
+  font-weight: 800;   /* Orbitron variable → 800 bobot asli, bukan bold palsu */
+  letter-spacing: 0.02em;
 }
 
 /* 2) TEPI → hairline 1px. Tiap sisi terpisah supaya reset responsif tetap 0. */
@@ -4211,6 +4218,85 @@ button[data-toji-kill]::after {
 [data-era="cyberpunk"] .home-hero-h1-accent {
   color: var(--shu-val) !important;
   text-shadow: 0 0 14px rgba(255, 46, 76, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T7 電脳 — GLITCH & HOLOGRAM (permintaan user):
+     • 「font nya jangan sama kaya anime multiverse」 → tipografi 電脳 = Orbitron
+       (display) / Rajdhani (body) / Share Tech Mono (telemetri). BUKAN Dela
+       Gothic One milik 多元. (token di atas, blok [data-era="cyberpunk"] {})
+     • 「di bagian ujian sama death quiz adain glitch juga」 + 「teks soalnya
+       dibuat glitch」 → kelas .cyber-glitch-text (siklus 3s, RGB-split).
+     • 「quiz card jawaban dibuat kaya hologram」 → kelas .cyber-answer (panel
+       holo: hairline cyan + gradien kaca + scanline + siku HUD).
+   Semua di-gate [data-era="cyberpunk"] (era lain tak tersentuh).
+   Perf: hanya text-shadow + transform (komposit) — bukan repaint seluruh halaman.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── GLITCH TEKS 電脳 — dipakai di soal kuis, judul ujian, Death Quiz, kartu
+   mode di Home. Siklus 3 DETIK: burst 0–5% (≈150ms), sisanya tenang.
+   steps(1,end) = stutter digital diskret (bukan geser halus). RGB-split
+   merah/cyan. Hormati prefers-reduced-motion (WCAG). */
+@keyframes cyber-glitch-text {
+  0%    { text-shadow: 2px 0 0 rgba(255, 46, 76, 0.85), -2px 0 0 rgba(0, 240, 255, 0.85); transform: translate(-1px, 0); }
+  1.6%  { text-shadow: -3px 0 0 rgba(255, 46, 76, 0.85), 3px 0 0 rgba(0, 240, 255, 0.85); transform: translate(1px, 0) skewX(2deg); }
+  3.3%  { text-shadow: 1px 0 0 rgba(255, 46, 76, 0.6), -1px 0 0 rgba(0, 240, 255, 0.6); transform: translate(-1px, 0) skewX(-1deg); }
+  5%    { text-shadow: none; transform: translate(0, 0); }
+  100%  { text-shadow: none; transform: translate(0, 0); }
+}
+[data-era="cyberpunk"] .cyber-glitch-text {
+  animation: cyber-glitch-text 3s steps(1, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-era="cyberpunk"] .cyber-glitch-text { animation: none; }
+}
+
+/* ── KARTU JAWABAN HOLOGRAM 電脳 — panel kaca-semu bercahaya. Bahasa bentuk
+   電脳 (hairline cyan + glow + sudut mati). Glow di-set !important supaya
+   MENANG atas jaring pengaman (yang memetakan shadow-[…] → --era-shadow),
+   dengan spesifisitas setara → sumber lebih akhir (di sini) menang.
+   Status benar/salah (bg !important dari komponen) TIDAK diganggu: latar holo
+   hanya untuk tombol INTERAKTIF (:not(:disabled)). */
+[data-era="cyberpunk"] .cyber-answer {
+  position: relative;
+  border-color: rgba(0, 240, 255, 0.5);
+  border-radius: 0;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.22), inset 0 0 22px rgba(0, 240, 255, 0.07) !important;
+  transition: box-shadow var(--era-motion) var(--era-ease),
+              border-color var(--era-motion) var(--era-ease),
+              background-color var(--era-motion) var(--era-ease);
+  overflow: hidden;
+}
+[data-era="cyberpunk"] .cyber-answer:not(:disabled) {
+  background-color: rgba(4, 10, 20, 0.62);
+  /* Hologram = 3 lapis: garis pindai (scanline) + kilau tepi-atas + kaca semu. */
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.10) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg, rgba(0, 240, 255, 0.14), transparent 42%),
+    var(--era-glass);
+  color: var(--sumi-val);
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+/* Siku HUD GANDA (kanan-atas + kiri-bawah) — tanda tangan panel holo. */
+[data-era="cyberpunk"] .cyber-answer::before,
+[data-era="cyberpunk"] .cyber-answer::after {
+  content: "";
+  position: absolute; width: 12px; height: 12px;
+  opacity: 0.8; pointer-events: none; z-index: 1;
+  filter: drop-shadow(0 0 3px rgba(0, 240, 255, 0.7));
+}
+[data-era="cyberpunk"] .cyber-answer::after {
+  top: 4px; right: 4px;
+  border-top: 2px solid var(--ai-val); border-right: 2px solid var(--ai-val);
+}
+[data-era="cyberpunk"] .cyber-answer::before {
+  bottom: 4px; left: 4px;
+  border-bottom: 2px solid var(--ai-val); border-left: 2px solid var(--ai-val);
+}
+[data-era="cyberpunk"] .cyber-answer:not(:disabled):hover {
+  border-color: var(--ai-val);
+  background-color: rgba(0, 240, 255, 0.12);
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), inset 0 0 26px rgba(0, 240, 255, 0.16) !important;
 }
 
 

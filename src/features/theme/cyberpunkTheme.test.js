@@ -153,3 +153,45 @@ test('電脳: setiap selector ter-gate cyber (tidak bocor ke era lain)', () => {
   const leak = selectors(block).filter((s) => !s.includes('cyber'));
   assert.deepEqual(leak, [], `selector tanpa cyber: ${leak.join(' | ')}`);
 });
+
+// ── T7: Font khas 電脳 (revisi user: 「font nya jangan sama kaya anime multiverse」)
+test('電脳 T7: tipografi = Orbitron/Rajdhani, BUKAN Dela Gothic One milik 多元', () => {
+  const s = css.indexOf('[data-era="cyberpunk"] {');
+  // Buang komentar supaya kalimat penjelas tak ikut terdeteksi sebagai deklarasi.
+  const tok = css.slice(s, css.indexOf('}', s)).replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.ok(/--font-display:\s*"Orbitron"/.test(tok), 'display 電脳 = Orbitron');
+  assert.ok(/--font-mono:\s*"Share Tech Mono"/.test(tok), 'telemetri 電脳 = Share Tech Mono');
+  // Regresi yang dicegah: 電脳 pernah memakai Dela Gothic One (font judul 多元/anime).
+  assert.ok(!/--font-[a-z]+:\s*"Dela Gothic One"/.test(tok), '電脳 TIDAK boleh memakai Dela Gothic One (font anime)');
+});
+
+// ── T7: glitch di ujian/Death Quiz/soal kuis (permintaan user) ──────────────
+test('電脳 T7: glitch teks .cyber-glitch-text — siklus 3 detik, RGB-split', () => {
+  assert.ok(/@keyframes\s+cyber-glitch-text/.test(block), 'ada keyframes glitch teks');
+  assert.ok(/\[data-era="cyberpunk"\]\s*\.cyber-glitch-text\s*\{[\s\S]{0,120}animation:\s*cyber-glitch-text\s+3s/.test(block),
+    'glitch teks 3s');
+  assert.ok(/steps\(1,\s*end\)/.test(block), 'glitch teks pakai steps(1,end)');
+  assert.ok(/@keyframes\s+cyber-glitch-text[\s\S]{0,300}text-shadow:\s*2px 0 0 rgba\(255, 46, 76/.test(block),
+    'glitch teks = RGB-split merah/cyan');
+  assert.ok(/prefers-reduced-motion[\s\S]{0,200}\.cyber-glitch-text[\s\S]{0,80}animation:\s*none/.test(block),
+    'glitch teks dimatikan saat reduced-motion');
+});
+
+// ── T7: kartu jawaban hologram (permintaan user) ───────────────────────────
+test('電脳 T7: kartu jawaban .cyber-answer = panel holo (hairline + glow + scanline)', () => {
+  assert.ok(/\[data-era="cyberpunk"\]\s*\.cyber-answer\s*\{[\s\S]{0,220}box-shadow:[\s\S]{0,120}rgba\(0, 240, 255/.test(block),
+    'kartu jawaban = glow cyan');
+  assert.ok(/\[data-era="cyberpunk"\]\s*\.cyber-answer\s*\{[\s\S]{0,320}border-radius:\s*0/.test(block),
+    'sudut mati (radius 0)');
+  // Scanline holo = lapisan latar di isi kartu (bukan pseudo) supaya dua siku HUD bebas.
+  assert.ok(/\.cyber-answer:not\(:disabled\)\s*\{[\s\S]{0,400}repeating-linear-gradient/.test(block),
+    'kartu jawaban = scanline holo');
+  // Siku HUD GANDA: kanan-atas (::after) + kiri-bawah (::before).
+  assert.ok(/\.cyber-answer::after\s*\{[\s\S]{0,200}border-top:\s*2px solid var\(--ai-val\)/.test(block),
+    'kartu jawaban = siku HUD kanan-atas');
+  assert.ok(/\.cyber-answer::before\s*\{[\s\S]{0,200}border-bottom:\s*2px solid var\(--ai-val\)/.test(block),
+    'kartu jawaban = siku HUD kiri-bawah');
+  // Latar holo HANYA untuk tombol interaktif → status benar/salah tetap jelas.
+  assert.ok(/\.cyber-answer:not\(:disabled\)\s*\{[\s\S]{0,200}background-color:/.test(block),
+    'latar holo hanya saat belum dijawab (:not(:disabled))');
+});

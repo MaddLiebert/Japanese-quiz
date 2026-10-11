@@ -563,7 +563,7 @@ export function Home() {
                   </p>
                 </div>
                 <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${deathUnlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
-                  <span className="text-xl font-serif font-black select-none">死</span>
+                  <span className="cyber-glitch-text text-xl font-serif font-black select-none">死</span>
                 </div>
               </motion.div>
 
@@ -584,7 +584,7 @@ export function Home() {
                   </p>
                 </div>
                 <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${n5Unlocked ? 'border-shu text-shu group-hover:bg-shu group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
-                  <span className="text-lg font-serif font-black select-none">試</span>
+                  <span className="cyber-glitch-text text-lg font-serif font-black select-none">試</span>
                 </div>
               </motion.div>
             </div>

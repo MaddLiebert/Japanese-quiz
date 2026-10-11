@@ -145,7 +145,7 @@ export function MondaiQuiz() {
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
           className="mb-16 sm:mb-24 flex flex-col items-center gap-6 w-full"
         >
-          <h2 className="text-lg sm:text-xl font-serif font-bold text-sumi mb-6 text-center">
+          <h2 className="cyber-glitch-text text-lg sm:text-xl font-serif font-bold text-sumi mb-6 text-center">
             <Furigana text={localized(currentItem, 'questionText', language)} />
           </h2>
 
@@ -165,7 +165,7 @@ export function MondaiQuiz() {
             const isThisCorrect = idx === currentItem.correctIndex;
             const showCorrect = isAnswered && isThisCorrect;
             const showWrong = isAnswered && isThisSelected && !isCorrect;
-            let btnClass = "bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_rgba(26,26,26,1)] transition-all p-4 sm:p-6 font-bold text-sumi flex items-center justify-center rounded-none text-sm sm:text-base tracking-wider";
+            let btnClass = "cyber-answer bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_rgba(26,26,26,1)] transition-all p-4 sm:p-6 font-bold text-sumi flex items-center justify-center rounded-none text-sm sm:text-base tracking-wider";
 
             if (!isAnswered) {
               btnClass += " hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_0_rgba(26,26,26,1)] hover:bg-kinari-light active:bg-ai active:text-kinari-light active:translate-x-[6px] active:translate-y-[6px] active:shadow-none cursor-pointer";

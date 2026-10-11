@@ -100,7 +100,7 @@ export function N5ExamScreen({ owari = false } = {}) {
             <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/4 text-[12rem] font-serif text-sumi opacity-[0.05] pointer-events-none select-none leading-none">試</div>
             <div className="relative z-10">
               <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-sumi/60">{owari ? (id ? 'Gerbang Terakhir' : 'The Last Gate') : (id ? 'Ujian Tiruan' : 'Mock Exam')}</span>
-              <h1 className="text-4xl sm:text-6xl font-serif font-black text-sumi tracking-tighter mt-2">
+              <h1 className="cyber-glitch-text text-4xl sm:text-6xl font-serif font-black text-sumi tracking-tighter mt-2">
                 {owari ? <>N5 <span className="text-shu">終</span></> : <>N5 <span className="text-shu">模擬試験</span></>}
               </h1>
               <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-sumi/60 mt-4">
@@ -216,7 +216,7 @@ export function N5ExamScreen({ owari = false } = {}) {
             </div>
           )}
 
-          <div className="text-base sm:text-lg font-bold text-sumi mb-6 whitespace-pre-line leading-relaxed">
+          <div className="cyber-glitch-text text-base sm:text-lg font-bold text-sumi mb-6 whitespace-pre-line leading-relaxed">
             <Furigana text={it.prompt} />
           </div>
 
@@ -226,7 +226,7 @@ export function N5ExamScreen({ owari = false } = {}) {
               // Mode dingin (終): JANGAN bocorkan benar/salah saat menjawab.
               const showCorrect = !owari && s.isAnswered && idx === it.correctIndex;
               const showWrong = !owari && s.isAnswered && isSel && !isCorrect;
-              let cls = "bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_rgba(26,26,26,1)] transition-all p-4 font-bold text-sumi flex items-start gap-3 text-sm sm:text-base text-left";
+              let cls = "cyber-answer bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_rgba(26,26,26,1)] transition-all p-4 font-bold text-sumi flex items-start gap-3 text-sm sm:text-base text-left";
               if (!s.isAnswered) cls += " hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_0_rgba(26,26,26,1)] hover:bg-kinari-light cursor-pointer";
               else if (showCorrect) cls += " !bg-matcha !text-white translate-x-[2px] translate-y-[2px]";
               else if (showWrong) cls += " !bg-shu !text-white translate-x-[2px] translate-y-[2px]";

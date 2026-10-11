@@ -107,7 +107,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
           <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-shu bg-shu/10 px-3 py-1 w-fit border-[2px] border-shu/20 inline-block mb-2">
             {language === 'id' ? 'Bab' : 'Chapter'} {chapter.chapter}
           </span>
-          <h2 className="text-2xl sm:text-3xl font-serif font-black text-sumi">
+          <h2 className="cyber-glitch-text text-2xl sm:text-3xl font-serif font-black text-sumi">
             {localized(chapter, 'title', language)}
           </h2>
         </div>
@@ -134,7 +134,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
           </div>
 
           {/* Question Text */}
-          <h3 className="text-xl sm:text-2xl font-bold text-sumi mb-8">
+          <h3 className="cyber-glitch-text text-xl sm:text-2xl font-bold text-sumi mb-8">
             <Furigana text={localized(currentQuestion, 'questionText', language)} />
           </h3>
 
@@ -171,6 +171,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
                   data-correct={isCorrect || undefined}
                   disabled={isAnswered || isPlaying}
                   className={`
+                    cyber-answer
                     p-4 sm:p-6 text-left font-bold transition-all
                     border-[3px] shadow-[4px_4px_0_0_rgba(26,26,26,1)] hover:shadow-[2px_2px_0_0_rgba(26,26,26,1)] active:translate-x-[2px] active:translate-y-[2px] rounded-none
                     ${buttonClass}

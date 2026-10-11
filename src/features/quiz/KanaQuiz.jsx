@@ -82,11 +82,11 @@ export function KanaQuiz({
             </button>
           )}
           {isGrammarMode ? (
-            <h2 className="text-3xl sm:text-5xl font-serif font-black text-sumi leading-normal select-none drop-shadow-sm px-2 sm:px-4 text-center break-words max-w-full">
+            <h2 className="cyber-glitch-text text-3xl sm:text-5xl font-serif font-black text-sumi leading-normal select-none drop-shadow-sm px-2 sm:px-4 text-center break-words max-w-full">
               {currentQuestion.question}
             </h2>
           ) : (
-            <h2 className="text-7xl sm:text-9xl md:text-[11rem] lg:text-[13rem] font-serif font-black text-sumi leading-none select-none drop-shadow-sm text-center break-words max-w-full">
+            <h2 className="cyber-glitch-text text-7xl sm:text-9xl md:text-[11rem] lg:text-[13rem] font-serif font-black text-sumi leading-none select-none drop-shadow-sm text-center break-words max-w-full">
               {currentQuestion.char}
             </h2>
           )}
@@ -106,7 +106,7 @@ export function KanaQuiz({
             const showCorrect = isAnswered && isThisCorrect;
             const showWrong = isThisSelected && !isCurrentAnswerCorrect;
 
-            let btnClass = "bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] transition-all p-4 sm:p-6 font-bold text-sumi flex items-center justify-center rounded-none ";
+            let btnClass = "cyber-answer bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] transition-all p-4 sm:p-6 font-bold text-sumi flex items-center justify-center rounded-none ";
             if (isGrammarMode) {
               btnClass += " text-3xl sm:text-4xl font-serif tracking-wider";
             } else {
