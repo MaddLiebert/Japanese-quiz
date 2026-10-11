@@ -4137,25 +4137,62 @@ button[data-toji-kill]::after {
 /* ── HERO 電脳 (header 日本語学園) — warna & latar era, TANPA merah-hitam base ──
    Akar kritik (user): header 電脳 masih ber-DNA Shōwa (merah #FF2E4C + putih,
    flat, tanpa glow). Di sini seluruh lockup merek di-reskin ke palet 常夜:
-   cyan (judul) + kuning (sub) + grid holo (latar), veil pencerah dimatikan. */
+   cyan (judul) + kuning (sub) + grid holo + SKYLINE NEON (latar), veil dimatikan.
+   Urutan layer (pertama = paling ATAS): scanline → grid → skyline (dasar).
+   Skyline duduk di KAKI panel (background-position bottom) → gedung berdiri di
+   tanah, langitnya luluh ke panel (gradien SVG transparan di atas). */
 [data-era="cyberpunk"] .home-hero-bg {
   background-image:
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.05) 0 1px, transparent 1px 3px),
     linear-gradient(rgba(0, 240, 255, 0.10) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 240, 255, 0.10) 1px, transparent 1px),
-    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.05) 0 1px, transparent 1px 3px);
-  background-size: 44px 44px, 44px 44px, 100% 3px;
-  background-repeat: repeat, repeat, repeat;
+    url("/art/cyberpunk-city.svg");
+  background-size: 100% 3px, 44px 44px, 44px 44px, 100% 52%;
+  background-repeat: repeat, repeat, repeat, no-repeat;
+  background-position: 0 0, 0 0, 0 0, center bottom;
   background-color: var(--kinari-val);
 }
 .dark[data-era="cyberpunk"] .home-hero-bg,
 [data-theme="dark"][data-era="cyberpunk"] .home-hero-bg {
   background-image:
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.045) 0 1px, transparent 1px 3px),
     linear-gradient(rgba(0, 240, 255, 0.09) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 240, 255, 0.09) 1px, transparent 1px),
-    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.045) 0 1px, transparent 1px 3px);
+    url("/art/cyberpunk-city-mayonaka.svg");
 }
 /* Veil pencerah bawaan (from-kinari-light/85) memudarkan grid → dimatikan. */
 [data-era="cyberpunk"] .home-hero-veil { background-image: none !important; }
+
+/* ── GLITCH hero 電脳 (setiap 3 detik) — kanji merah & putih ber-RGB-split ────
+   Permintaan user: 「teks kanji merah putih-nya per 3 detik harus glitch」.
+   Siklus 3s: burst singkat di AWAL (0–7% ≈ 210ms), sisanya tenang. `steps(1,end)`
+   → lompatan diskret (stutter digital), bukan geser halus. Hanya text-shadow +
+   transform (murah, tak repaint seluruh halaman). Putih (日本語) & merah (基礎)
+   punya keyframe sendiri supaya GLOW merah saat tenang tidak ikut terhapus. */
+@keyframes cyber-glitch-white {
+  0%    { text-shadow: 3px 0 0 rgba(255, 46, 76, 0.85), -3px 0 0 rgba(0, 240, 255, 0.85); transform: translate(-1px, 0) skewX(-2deg); }
+  2.3%  { text-shadow: -4px 0 0 rgba(255, 46, 76, 0.85), 4px 0 0 rgba(0, 240, 255, 0.85); transform: translate(2px, 0) skewX(2deg); }
+  4.6%  { text-shadow: 2px 0 0 rgba(255, 46, 76, 0.7), -2px 0 0 rgba(0, 240, 255, 0.7); transform: translate(-1px, 0); }
+  7%    { text-shadow: none; transform: translate(0, 0); }
+  100%  { text-shadow: none; transform: translate(0, 0); }
+}
+@keyframes cyber-glitch-red {
+  0%    { text-shadow: 3px 0 0 rgba(0, 240, 255, 0.9), -3px 0 0 rgba(234, 242, 250, 0.85); transform: translate(-1px, 0) skewX(2deg); }
+  2.3%  { text-shadow: -4px 0 0 rgba(0, 240, 255, 0.9), 4px 0 0 rgba(234, 242, 250, 0.85); transform: translate(2px, 0) skewX(-2deg); }
+  4.6%  { text-shadow: 2px 0 0 rgba(0, 240, 255, 0.7), -2px 0 0 rgba(234, 242, 250, 0.6); transform: translate(-1px, 0); }
+  7%    { text-shadow: 0 0 14px rgba(255, 46, 76, 0.5); transform: translate(0, 0); }
+  100%  { text-shadow: 0 0 14px rgba(255, 46, 76, 0.5); transform: translate(0, 0); }
+}
+[data-era="cyberpunk"] .home-hero-h1 {
+  animation: cyber-glitch-white 3s steps(1, end) infinite;
+}
+[data-era="cyberpunk"] .home-hero-h1-accent {
+  animation: cyber-glitch-red 3s steps(1, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-era="cyberpunk"] .home-hero-h1,
+  [data-era="cyberpunk"] .home-hero-h1-accent { animation: none; }
+}
 /* Kotak 学 → panel kaca-semu: hairline cyan + glow, TANPA rotasi kertas. */
 [data-era="cyberpunk"] .home-hero-mark {
   background-color: rgba(0, 240, 255, 0.08) !important;

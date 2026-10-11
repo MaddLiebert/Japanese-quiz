@@ -112,11 +112,41 @@ test('電脳: hero di-reskin ke palet 常夜 (bukan merah-hitam base)', () => {
     'veil pencerah dimatikan di 電脳');
 });
 
-test('電脳: hero latar = grid holo (bukan kertas polos / seigaiha)', () => {
-  assert.ok(/\[data-era="cyberpunk"\]\s*\.home-hero-bg\s*\{[\s\S]{0,400}linear-gradient/.test(block),
+test('電脳: hero latar = grid holo + skyline neon (bukan kertas polos / seigaiha)', () => {
+  assert.ok(/\[data-era="cyberpunk"\]\s*\.home-hero-bg\s*\{[\s\S]{0,600}linear-gradient/.test(block),
     'hero latar 電脳 = grid linear-gradient');
-  assert.ok(/\.dark\[data-era="cyberpunk"\]\s*\.home-hero-bg/.test(block),
-    'hero latar punya varian 真夜中');
+  // Skyline neon 常夜 — aset kota, bukan cuma grid kosong ("di belakangnya diisi
+  // neon city"). Dua varian: 宵 (yoi) & 真夜中 (mayonaka).
+  assert.ok(/\[data-era="cyberpunk"\]\s*\.home-hero-bg[\s\S]{0,600}url\("\/art\/cyberpunk-city\.svg"\)/.test(block),
+    'hero 宵 = skyline /art/cyberpunk-city.svg');
+  assert.ok(/\.dark\[data-era="cyberpunk"\]\s*\.home-hero-bg[\s\S]{0,600}url\("\/art\/cyberpunk-city-mayonaka\.svg"\)/.test(block),
+    'hero 真夜中 = skyline /art/cyberpunk-city-mayonaka.svg');
+  assert.ok(/\bcyberpunk-city\b/.test(block), 'nama aset skyline cyberpunk ada di blok');
+});
+
+test('電脳: skyline duduk di KAKI panel (position bottom, bukan di tengah)', () => {
+  assert.ok(/\[data-era="cyberpunk"\]\s*\.home-hero-bg[\s\S]{0,700}background-position:[^;]*center bottom/.test(block),
+    'skyline nempel bawah (center bottom)');
+  assert.ok(/\[data-era="cyberpunk"\]\s*\.home-hero-bg[\s\S]{0,700}background-repeat:[^;]*no-repeat/.test(block),
+    'skyline no-repeat (bukan tile)');
+});
+
+// ── Glitch hero: kanji merah & putih tiap 3 detik (permintaan user) ──────────
+test('電脳: kanji merah (基礎) & putih (日本語) glitch tiap 3 detik', () => {
+  assert.ok(/@keyframes\s+cyber-glitch-white/.test(block), 'ada keyframes glitch kanji putih');
+  assert.ok(/@keyframes\s+cyber-glitch-red/.test(block), 'ada keyframes glitch kanji merah');
+  // Siklus 3 detik, diskret (steps) → stutter digital, bukan geser halus.
+  assert.ok(/\[data-era="cyberpunk"\]\s*\.home-hero-h1\s*\{[\s\S]{0,120}animation:\s*cyber-glitch-white\s+3s/.test(block),
+    '日本語 glitch 3s');
+  assert.ok(/\[data-era="cyberpunk"\]\s*\.home-hero-h1-accent\s*\{[\s\S]{0,120}animation:\s*cyber-glitch-red\s+3s/.test(block),
+    '基礎 glitch 3s');
+  assert.ok(/steps\(1,\s*end\)/.test(block), 'glitch pakai steps(1,end) — lompatan diskret');
+  // Hormati reduced-motion (WCAG).
+  assert.ok(/prefers-reduced-motion[\s\S]{0,220}\.home-hero-h1[\s\S]{0,120}animation:\s*none/.test(block),
+    'glitch dimatikan saat reduced-motion');
+  // Glitch pakai text-shadow RGB-split (bukan blur full-screen).
+  assert.ok(/@keyframes\s+cyber-glitch-white[\s\S]{0,300}text-shadow:\s*3px 0 0 rgba\(255, 46, 76/.test(block),
+    'split putih = merah/cyan (RGB-split)');
 });
 
 test('電脳: setiap selector ter-gate cyber (tidak bocor ke era lain)', () => {
