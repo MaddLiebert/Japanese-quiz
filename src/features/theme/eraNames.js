@@ -58,6 +58,18 @@ const ERA_NAMES = {
     quest: 'デイリー',     // daily — misi harian = episode
     rank: '戦闘力',       // sentōryoku — "power level" (trope anime)
   },
+  // 電脳 Cyberpunk — era TERAKHIR, paling MAJU: malam abadi 「常夜」, rumah
+  // Nacht & Saku (AI). Paling banyak KATAKANA (kata serapan = zaman paling
+  // modern). Lihat PRD: docs/tema/cyberpunk.md §8.1.
+  cyberpunk: {
+    shop: '闇市',        // yamiichi — pasar gelap
+    gacha: 'ハック',      // hakku — membobol data (undian)
+    medaru: 'クレジット',  // kurejitto — kredit (mata uang)
+    inventory: 'アーカイブ', // ākaibu — arsip data
+    profile: '電脳ID',    // dennō ID — identitas digital
+    quest: '任務',        // ninmu — misi
+    rank: '権限',         // kengen — hak akses
+  },
 };
 
 // Kembalikan nama era untuk `key`, atau `fallback` bila era/key tak punya nama.

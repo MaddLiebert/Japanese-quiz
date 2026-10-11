@@ -23,7 +23,10 @@ const DATASETS = {
 const XP_PER_CORRECT = 15; // konsisten dengan MondaiQuiz
 
 // Fase: 'intro' → 'section' ⇄ 'sectionBreak' → 'results'
-export function useN5Exam() {
+// opts (gerbang 終 電脳): { cold, evaluate, sectionMinutes(fn) }.
+// Default = N5 biasa (cold off, ambang N5, durasi N5) → pemanggil lama tak berubah.
+export function useN5Exam(opts = {}) {
+  const { cold = false, evaluate, sectionMinutes } = opts;
   const [phase, setPhase] = useState('intro');
   const [exam, setExam] = useState([]);
   const [sectionIndex, setSectionIndex] = useState(0);
@@ -56,6 +59,13 @@ export function useN5Exam() {
   const flatOffset = (si) =>
     examRef.current.slice(0, si).reduce((s, x) => s + x.items.length, 0);
 
+  // Durasi seksi (menit): override gerbang 終 (waktu ketat) atau durasi N5.
+  // useCallback → stabil, aman dipakai sebagai dependency useCallback lain.
+  const minutesFor = useCallback(
+    (key) => (sectionMinutes ? sectionMinutes(key) : N5_SECTIONS[key].minutes),
+    [sectionMinutes],
+  );
+
   const start = useCallback(() => {
     const built = buildExam(bank, DATASETS);
     examRef.current = built;
@@ -70,9 +80,9 @@ export function useN5Exam() {
     setIsAnswered(false);
     setLastTimedOut(false);
     setResult(null);
-    setTimeLeft(N5_SECTIONS[N5_SECTION_ORDER[0]].minutes * 60);
+    setTimeLeft(minutesFor(N5_SECTION_ORDER[0]) * 60);
     setPhase('section');
-  }, [resetEffectStreak]);
+  }, [resetEffectStreak, minutesFor]);
 
   // Timer seksi — jalan hanya saat fase 'section'. Reset tiap ganti seksi.
   useEffect(() => {
@@ -84,11 +94,13 @@ export function useN5Exam() {
   }, [phase]);
 
   const finish = useCallback(() => {
-    const scored = scoreExam(examRef.current, answersRef.current);
+    const scored = scoreExam(examRef.current, answersRef.current, evaluate);
     const totalQ = answersRef.current.length;
     const correct = answersRef.current.filter(Boolean).length;
     completeQuiz(scored.passed, 'hard', 1, totalQ - correct, totalQ);
     // Simpan rekor ujian → memicu badge 合格/優良/満点 + sertifikat (sekali per run).
+    // Gerbang 終 (電脳) memakai JALUR YANG SAMA: lulus 終 = hadiah N5Certificate
+    // (PRD §11). Ambangnya beda (lewat `evaluate`), tapi hadiahnya sama.
     recordN5Exam({
       total: scored.total,
       lkrScaled: scored.lkrScaled,
@@ -98,7 +110,7 @@ export function useN5Exam() {
     });
     setResult(scored);
     setPhase('results');
-  }, [completeQuiz, recordN5Exam]);
+  }, [completeQuiz, recordN5Exam, evaluate]);
 
   // Akhiri seksi sekarang: maju ke jeda (seksi berikutnya) atau ke hasil.
   const endSection = useCallback((timedOut) => {
@@ -124,8 +136,10 @@ export function useN5Exam() {
     setSelected(optIndex);
     setIsAnswered(true);
     recordAnswer(currentItem.id, correct, XP_PER_CORRECT);
-    triggerEffect(correct ? 'correct' : 'wrong');
-  }, [isAnswered, currentItem, recordAnswer, triggerEffect]);
+    // Mode dingin (gerbang 終): TANPA umpan balik benar/salah — suara & efek ditahan
+    // sampai hasil akhir, supaya pemain tak bisa menyetel jawaban dari reaksi.
+    if (!cold) triggerEffect(correct ? 'correct' : 'wrong');
+  }, [isAnswered, currentItem, recordAnswer, triggerEffect, cold]);
 
   const nextQuestion = useCallback(() => {
     const cur = examRef.current[sectionRef.current];
@@ -149,9 +163,9 @@ export function useN5Exam() {
     setSelected(null);
     setIsAnswered(false);
     setLastTimedOut(false);
-    setTimeLeft(N5_SECTIONS[key].minutes * 60);
+    setTimeLeft(minutesFor(key) * 60);
     setPhase('section');
-  }, []);
+  }, [minutesFor]);
 
   const quit = useCallback(() => {
     examRef.current = [];

@@ -47,4 +47,18 @@ export const glitchIntensityAnime = (level, minLevel = GLITCH_MIN_LEVEL_ANIME) =
   return Math.min(1, (lv - minLevel) / (300 - minLevel));
 };
 
+// ── 電脳 Cyberpunk — glitch PERMANEN (bukan lagi kebocoran) ──────────────────
+// Lima era sebelumnya: glitch cuma BOCOR sesekali (peluang). Di Lv 300 (era 電脳,
+// rumah Nacht/Saku) glitch jadi PERMANEN — bukan "kebetulan muncul", tapi "terbuka
+// selamanya". Helper ini memutuskan itu; tetap hormati reduced-motion/toggle lewat
+// glitchAllowed(). Frekuensi = 1 (selalu), intensitas = 1 (penuh).
+export const CYBERPUNK_PERMANENT_LEVEL = 300;
+
+export const glitchPermanent = (level, minLevel = CYBERPUNK_PERMANENT_LEVEL) =>
+  (Number(level) || 0) >= minLevel;
+
+// Peluang glitch 電脳: 1 (selalu) saat permanen, else 0 (era ini tak pernah
+// "bocor pelan" — sebelum Lv 300 glitch 電脳 belum ada sama sekali).
+export const glitchChanceCyberpunk = (level) => (glitchPermanent(level) ? 1 : 0);
+
 export default glitchChance;

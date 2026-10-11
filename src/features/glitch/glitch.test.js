@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { glitchChance, glitchIntensity, shouldGlitch, glitchAllowed, GLITCH_MIN_LEVEL, glitchChanceAnime, glitchIntensityAnime, GLITCH_MIN_LEVEL_ANIME } from './glitch.js';
+import { glitchChance, glitchIntensity, shouldGlitch, glitchAllowed, GLITCH_MIN_LEVEL, glitchChanceAnime, glitchIntensityAnime, GLITCH_MIN_LEVEL_ANIME, glitchPermanent, glitchChanceCyberpunk, CYBERPUNK_PERMANENT_LEVEL } from './glitch.js';
 
 test('glitchChance: naik dengan level', () => {
   assert.ok(glitchChance(50) < glitchChance(200));
@@ -53,4 +53,24 @@ test('glitchIntensityAnime: 0..1 (300 = 1 = permanen)', () => {
 
 test('GLITCH_MIN_LEVEL_ANIME = 150 (gerbang 多元)', () => {
   assert.equal(GLITCH_MIN_LEVEL_ANIME, 150);
+});
+
+// ── 電脳 Cyberpunk: glitch PERMANEN di Lv 300 ────────────────────────────────
+test('glitchPermanent: HANYA di Lv 300 (era 電脳) — bukan "bocor" lagi', () => {
+  assert.equal(glitchPermanent(299), false);
+  assert.equal(glitchPermanent(300), true);
+  assert.equal(glitchPermanent(450), true);
+  assert.equal(CYBERPUNK_PERMANENT_LEVEL, 300);
+});
+
+test('glitchChanceCyberpunk: 0 sebelum Lv 300, 1 (selalu) di Lv 300', () => {
+  assert.equal(glitchChanceCyberpunk(299), 0, 'sebelum era 電脳 → tak ada glitch');
+  assert.equal(glitchChanceCyberpunk(300), 1, 'di rumah sendiri → glitch terbuka penuh');
+});
+
+test('glitch permanen tetap hormati reduced-motion & toggle', () => {
+  // Permanent = "selalu muncul", tapi gerbang kenyamanan tetap berlaku.
+  assert.equal(glitchAllowed({ reducedMotion: true, enabled: true }), false);
+  assert.equal(glitchAllowed({ reducedMotion: false, enabled: false }), false);
+  assert.equal(glitchAllowed({ reducedMotion: false, enabled: true }), true);
 });

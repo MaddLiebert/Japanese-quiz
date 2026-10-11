@@ -992,6 +992,20 @@ const THEME_BGM_PLANS = {
     // 呪力: petikan sparse (A B♭ C# D E) — langka & menegangkan, bukan arpeggio.
     pluck: { notes: [220, 233.08, 277.18, 311.13, 329.63], everyMs: 1700, dur: 1.4, gain: 0.15 },
   },
+  // 電脳 常夜 (§4/§10): synthwave malam — drone SANGAT dalam (D1) + pad sawtooth
+  // gelap, napas lambat. Bukan chiptune ceria (多元), bukan gitar hangat (Shōwa):
+  // satu-satunya era "malam abadi" → warna dingin, lebar, tanpa resolusi.
+  cyberpunk: {
+    level: 0.12,
+    fadeInMs: 2000,       // masuk lambat & menyelimuti (malam mengendap)
+    fadeOutMs: 1400,
+    // Drone paling dalam dari semua era (D1/A1 + F2) — dasar "malam".
+    drone: { freqs: [36.71, 73.42, 87.31], detune: [0, -8, 5], gain: 0.52 },
+    // Pad: sawtooth gelap (F minor-ish), lowpass rapat, napas paling lambat.
+    pad: { type: 'sawtooth', freqs: [174.61, 207.65, 261.63], filterHz: 720, lfoHz: 0.035, lfoDepth: 200, gain: 0.24 },
+    // Synth arp: tangga minor (F G♯ C C♯ D♯) — dingin, langka, seperti sinyal kota.
+    pluck: { notes: [174.61, 207.65, 261.63, 277.18, 311.13], everyMs: 1350, dur: 1.3, gain: 0.15 },
+  },
 };
 
 // Kunci BGM efektif: era biasa → era; era 多元 + dunia ber-nuansa → '<era>-<nuance>'

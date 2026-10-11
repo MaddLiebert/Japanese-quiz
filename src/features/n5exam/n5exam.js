@@ -215,7 +215,7 @@ export const buildExam = (bank, datasets, rng = Math.random) =>
   });
 
 // answers = array boolean sejajar exam.flatMap(s => s.items).
-export const scoreExam = (exam, answers) => {
+export const scoreExam = (exam, answers, evaluate = evaluatePass) => {
   let cursor = 0;
   const perSection = {};
   const perMondai = [];
@@ -232,7 +232,8 @@ export const scoreExam = (exam, answers) => {
   }
   const lkrRaw = perSection.vocab.correct + perSection.grammarReading.correct;
   const lkrTotal = perSection.vocab.total + perSection.grammarReading.total;
-  const verdict = evaluatePass({
+  // `evaluate` bisa di-override (mis. gerbang 終 電脳 = ambang NAIK). Default N5.
+  const verdict = evaluate({
     lkrRaw, lkrTotal,
     listeningRaw: perSection.listening.correct,
     listeningTotal: perSection.listening.total,

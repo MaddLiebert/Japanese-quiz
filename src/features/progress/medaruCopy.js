@@ -52,6 +52,14 @@ export const ANIME_MEDARU = {
   aria: 'コイン こいん',    // katakana + furigana untuk pembaca layar
 };
 
+// 電脳 Cyberpunk: クレジット (kurejitto) — kredit data, mata uang era terakhir.
+// Katakana (era paling maju = paling banyak serapan). Lihat PRD cyberpunk §8.2.
+export const CYBERPUNK_MEDARU = {
+  name: 'クレジット',        // kredit — mata uang cyberpunk
+  nameShort: 'クレジット',    // label ringkas untuk chip di top-bar
+  aria: 'クレジット くれじっと', // katakana + furigana untuk pembaca layar
+};
+
 const LEGACY = (id) => ({
   name: 'MEDARU',
   nameShort: 'MEDARU',
@@ -63,14 +71,16 @@ export const isEdoEra = (eraId) => eraId === 'edo';
 export const isMeijiEra = (eraId) => eraId === 'meiji';
 export const isShowaEra = (eraId) => eraId === 'showa';
 export const isAnimeEra = (eraId) => eraId === 'anime';
+export const isCyberpunkEra = (eraId) => eraId === 'cyberpunk';
 
 // Teks mata uang untuk era aktif. Heian → kana; Edo → 両; Meiji → 円;
-// Shōwa → 円; 多元 → コイン; era lain → "MEDARU".
+// Shōwa → 円; 多元 → コイン; 電脳 → クレジット; era lain → "MEDARU".
 export const medaruCopy = (eraId, language) => {
   if (isHeianEra(eraId)) return { ...HEIAN_MEDARU };
   if (isEdoEra(eraId)) return { ...EDO_MEDARU };
   if (isMeijiEra(eraId)) return { ...MEIJI_MEDARU };
   if (isShowaEra(eraId)) return { ...SHOWA_MEDARU };
   if (isAnimeEra(eraId)) return { ...ANIME_MEDARU };
+  if (isCyberpunkEra(eraId)) return { ...CYBERPUNK_MEDARU };
   return LEGACY(language === 'id');
 };

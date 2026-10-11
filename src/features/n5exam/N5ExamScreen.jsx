@@ -6,19 +6,34 @@ import { Furigana } from "../../components/Furigana";
 import { AudioPlayer } from "../../components/MondaiComponents";
 import { useN5Exam } from "./useN5Exam";
 import {
-  N5_SECTIONS, N5_SECTION_ORDER, N5_TOTAL_MINUTES, sectionRawTotal,
-  formatClock, LKR_MAX, LISTENING_MAX, N5_PASS_TOTAL, N5_PASS_LKR, N5_PASS_LISTENING,
+  N5_SECTIONS, N5_SECTION_ORDER, sectionRawTotal,
+  formatClock, LKR_MAX, LISTENING_MAX,
 } from "./n5exam";
 import { mondaiLabel, mondaiGloss } from "./mondaiLabels";
 import { EraPaper } from "../../components/EraPaper";
+import {
+  OWARI_RULES, OWARI_PASS_TOTAL, OWARI_PASS_LKR, OWARI_PASS_LISTENING,
+  gradeOwariCheckpoint, owariSectionMinutes, OWARI_TOTAL_MINUTES,
+} from "../cinematic/cyberpunk/cyberpunkCheckpoint";
 
 // Kartu statistik kecil (neo-brutalist, sama seperti Death Quiz).
-export function N5ExamScreen() {
+// owari=true → gerbang 終 電脳: mode dingin + ambang naik + waktu ketat (PRD §11).
+export function N5ExamScreen({ owari = false } = {}) {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const id = language === 'id';
-  const s = useN5Exam();
+  const s = useN5Exam(
+    owari
+      ? { cold: OWARI_RULES.cold, evaluate: gradeOwariCheckpoint, sectionMinutes: owariSectionMinutes }
+      : {},
+  );
   const [confirmQuit, setConfirmQuit] = useState(false);
+  // Ambang & durasi yang ditampilkan: N5 biasa atau gerbang 終.
+  const PASS_TOTAL = owari ? OWARI_PASS_TOTAL : N5_PASS_TOTAL;
+  const PASS_LKR = owari ? OWARI_PASS_LKR : N5_PASS_LKR;
+  const PASS_LISTENING = owari ? OWARI_PASS_LISTENING : N5_PASS_LISTENING;
+  const totalMinutes = owari ? OWARI_TOTAL_MINUTES : N5_TOTAL_MINUTES;
+  const minutesOf = (key) => (owari ? owariSectionMinutes(key) : N5_SECTIONS[key].minutes);
 
   const shell = (children) => (
     <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
@@ -84,12 +99,12 @@ export function N5ExamScreen() {
           <header className="border-b-[4px] border-sumi p-6 sm:p-10 bg-seigaiha relative overflow-hidden">
             <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/4 text-[12rem] font-serif text-sumi opacity-[0.05] pointer-events-none select-none leading-none">試</div>
             <div className="relative z-10">
-              <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-sumi/60">{id ? 'Ujian Tiruan' : 'Mock Exam'}</span>
+              <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-sumi/60">{owari ? (id ? 'Gerbang Terakhir' : 'The Last Gate') : (id ? 'Ujian Tiruan' : 'Mock Exam')}</span>
               <h1 className="text-4xl sm:text-6xl font-serif font-black text-sumi tracking-tighter mt-2">
-                N5 <span className="text-shu">模擬試験</span>
+                {owari ? <>N5 <span className="text-shu">終</span></> : <>N5 <span className="text-shu">模擬試験</span></>}
               </h1>
               <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-sumi/60 mt-4">
-                {id ? `JLPT N5 · 3 Seksi · ${N5_TOTAL_MINUTES} Menit` : `JLPT N5 · 3 Sections · ${N5_TOTAL_MINUTES} Min`}
+                {id ? `JLPT N5 · 3 Seksi · ${totalMinutes} Menit${owari ? ' · Tersulit' : ''}` : `JLPT N5 · 3 Sections · ${totalMinutes} Min${owari ? ' · Hardest' : ''}`}
               </p>
             </div>
           </header>
@@ -103,16 +118,20 @@ export function N5ExamScreen() {
                     <span className="w-7 h-7 flex items-center justify-center bg-sumi text-kinari-light font-serif font-black text-sm">{i + 1}</span>
                     <span className="text-sm font-bold text-sumi">{N5_SECTIONS[key].label[id ? 'id' : 'en']}</span>
                   </div>
-                  <span className="text-xs font-black tracking-widest text-sumi/60">{N5_SECTIONS[key].minutes} {id ? 'MNT' : 'MIN'} · {sectionRawTotal(key)} {id ? 'SOAL' : 'Q'}</span>
+                  <span className="text-xs font-black tracking-widest text-sumi/60">{minutesOf(key)} {id ? 'MNT' : 'MIN'} · {sectionRawTotal(key)} {id ? 'SOAL' : 'Q'}</span>
                 </div>
               ))}
             </div>
 
             <div className="border-[3px] border-shu bg-shu/5 p-4 mb-8">
               <p className="text-xs font-bold text-sumi/80 leading-relaxed">
-                {id
-                  ? `Aturan: tiap seksi punya waktunya sendiri. Kalau waktu habis, seksi otomatis dikumpul dan TIDAK bisa balik. Lulus = total ≥${N5_PASS_TOTAL}/180 DAN Kosakata+Tata Bahasa+Membaca ≥${N5_PASS_LKR}/120 DAN Menyimak ≥${N5_PASS_LISTENING}/60.`
-                  : `Rules: each section is timed. When time runs out, the section auto-submits and you CANNOT go back. Pass = total ≥${N5_PASS_TOTAL}/180 AND Vocab+Grammar+Reading ≥${N5_PASS_LKR}/120 AND Listening ≥${N5_PASS_LISTENING}/60.`}
+                {owari
+                  ? (id
+                    ? `Aturan tersulit: mode DINGIN (tanpa benar/salah sampai selesai), ambang NAIK (lulus total ≥${PASS_TOTAL}/180, LKR ≥${PASS_LKR}/120, Menyimak ≥${PASS_LISTENING}/60), sekali jalan, dan waktu ketat. Gagal satu seksi = gagal total.`
+                    : `Hardest rules: COLD mode (no right/wrong until the end), RAISED threshold (pass total ≥${PASS_TOTAL}/180, LKR ≥${PASS_LKR}/120, Listening ≥${PASS_LISTENING}/60), one attempt, and tight time. Failing one section = total fail.`)
+                  : (id
+                    ? `Aturan: tiap seksi punya waktunya sendiri. Kalau waktu habis, seksi otomatis dikumpul dan TIDAK bisa balik. Lulus = total ≥${PASS_TOTAL}/180 DAN Kosakata+Tata Bahasa+Membaca ≥${PASS_LKR}/120 DAN Menyimak ≥${PASS_LISTENING}/60.`
+                    : `Rules: each section is timed. When time runs out, the section auto-submits and you CANNOT go back. Pass = total ≥${PASS_TOTAL}/180 AND Vocab+Grammar+Reading ≥${PASS_LKR}/120 AND Listening ≥${PASS_LISTENING}/60.`)}
               </p>
             </div>
 
@@ -142,7 +161,7 @@ export function N5ExamScreen() {
           <p className="text-sm font-bold text-sumi/70 mb-8">
             {id ? 'Seksi berikutnya: ' : 'Next section: '}
             <span className="text-sumi">{nextKey ? N5_SECTIONS[nextKey].label[id ? 'id' : 'en'] : ''}</span>
-            {nextKey ? ` · ${N5_SECTIONS[nextKey].minutes} ${id ? 'menit' : 'min'}` : ''}
+            {nextKey ? ` · ${minutesOf(nextKey)} ${id ? 'menit' : 'min'}` : ''}
           </p>
           <button
             onClick={s.continueToNextSection}
@@ -204,12 +223,14 @@ export function N5ExamScreen() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
             {it.options.map((option, idx) => {
               const isSel = s.selected === idx;
-              const showCorrect = s.isAnswered && idx === it.correctIndex;
-              const showWrong = s.isAnswered && isSel && !isCorrect;
+              // Mode dingin (終): JANGAN bocorkan benar/salah saat menjawab.
+              const showCorrect = !owari && s.isAnswered && idx === it.correctIndex;
+              const showWrong = !owari && s.isAnswered && isSel && !isCorrect;
               let cls = "bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_rgba(26,26,26,1)] transition-all p-4 font-bold text-sumi flex items-start gap-3 text-sm sm:text-base text-left";
               if (!s.isAnswered) cls += " hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_0_rgba(26,26,26,1)] hover:bg-kinari-light cursor-pointer";
               else if (showCorrect) cls += " !bg-matcha !text-white translate-x-[2px] translate-y-[2px]";
               else if (showWrong) cls += " !bg-shu !text-white translate-x-[2px] translate-y-[2px]";
+              else if (owari && isSel) cls += " !border-ai";   // terpilih (dingin) — netral
               else cls += " opacity-50";
               return (
                 <motion.button
@@ -229,11 +250,15 @@ export function N5ExamScreen() {
 
           {s.isAnswered && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full mt-6">
-              <div className={`w-full py-3 px-4 font-bold text-sm border-[3px] mb-4 ${isCorrect ? 'bg-matcha/10 border-matcha text-matcha' : 'bg-shu/10 border-shu text-shu'}`}>
-                {isCorrect ? (id ? '✓ Benar!' : '✓ Correct!') : (id ? '✗ Salah — Jawaban: ' : '✗ Wrong — Answer: ')}
-                {!isCorrect && <Furigana text={it.answer} />}
-              </div>
-              {it.explanation && (
+              {/* Mode dingin (終): TIDAK ada verdict benar/salah & penjelasan —
+                  baru terungkap di layar hasil. Hanya tombol lanjut. */}
+              {!owari && (
+                <div className={`w-full py-3 px-4 font-bold text-sm border-[3px] mb-4 ${isCorrect ? 'bg-matcha/10 border-matcha text-matcha' : 'bg-shu/10 border-shu text-shu'}`}>
+                  {isCorrect ? (id ? '✓ Benar!' : '✓ Correct!') : (id ? '✗ Salah — Jawaban: ' : '✗ Wrong — Answer: ')}
+                  {!isCorrect && <Furigana text={it.answer} />}
+                </div>
+              )}
+              {!owari && it.explanation && (
                 <div className="border-[3px] border-sumi bg-kinari p-4 mb-4 text-xs sm:text-sm text-sumi/80 font-bold leading-relaxed">
                   <Furigana text={it.explanation} />
                 </div>
@@ -260,7 +285,7 @@ export function N5ExamScreen() {
         {backBtn}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="border-[4px] border-sumi bg-kinari-light shadow-[10px_10px_0_0_rgba(26,26,26,0.1)] relative z-10">
           <header className={`border-b-[4px] border-sumi p-8 text-center ${r.passed ? 'bg-matcha' : 'bg-shu'}`}>
-            <div className="text-[10px] uppercase tracking-[0.4em] font-black text-kinari-light/80">{id ? 'Hasil Ujian N5' : 'N5 Exam Result'}</div>
+            <div className="text-[10px] uppercase tracking-[0.4em] font-black text-kinari-light/80">{owari ? (id ? 'Hasil Gerbang 終' : 'The 終 Gate Result') : (id ? 'Hasil Ujian N5' : 'N5 Exam Result')}</div>
             <div className="text-5xl sm:text-6xl font-serif font-black text-kinari-light tracking-tighter mt-2">{verdict}</div>
             <div className="text-kinari-light/90 font-bold mt-2 text-sm tracking-widest">{r.total} / 180</div>
           </header>
@@ -273,21 +298,21 @@ export function N5ExamScreen() {
                   <span className="text-sm font-bold text-sumi">{id ? 'Kosakata + Tata Bahasa + Membaca' : 'Vocab + Grammar + Reading'}</span>
                   <span className={`text-lg font-serif font-black ${r.lkrOk ? 'text-matcha' : 'text-shu'}`}>{r.lkrScaled} / {LKR_MAX}</span>
                 </div>
-                <div className="text-[10px] uppercase tracking-widest font-bold text-sumi/50 mt-1">{id ? `Ambang ${N5_PASS_LKR}` : `Pass ${N5_PASS_LKR}`} {r.lkrOk ? '✓' : '✗'} · {r.lkrRaw}/{r.lkrTotal} {id ? 'benar' : 'correct'}</div>
+                <div className="text-[10px] uppercase tracking-widest font-bold text-sumi/50 mt-1">{id ? `Ambang ${PASS_LKR}` : `Pass ${PASS_LKR}`} {r.lkrOk ? '✓' : '✗'} · {r.lkrRaw}/{r.lkrTotal} {id ? 'benar' : 'correct'}</div>
               </div>
               <div className="border-[3px] border-sumi bg-kinari px-4 py-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-sumi">{id ? 'Menyimak' : 'Listening'}</span>
                   <span className={`text-lg font-serif font-black ${r.listeningOk ? 'text-matcha' : 'text-shu'}`}>{r.listeningScaled} / {LISTENING_MAX}</span>
                 </div>
-                <div className="text-[10px] uppercase tracking-widest font-bold text-sumi/50 mt-1">{id ? `Ambang ${N5_PASS_LISTENING}` : `Pass ${N5_PASS_LISTENING}`} {r.listeningOk ? '✓' : '✗'} · {r.listeningRaw}/{r.listeningTotal} {id ? 'benar' : 'correct'}</div>
+                <div className="text-[10px] uppercase tracking-widest font-bold text-sumi/50 mt-1">{id ? `Ambang ${PASS_LISTENING}` : `Pass ${PASS_LISTENING}`} {r.listeningOk ? '✓' : '✗'} · {r.listeningRaw}/{r.listeningTotal} {id ? 'benar' : 'correct'}</div>
               </div>
               <div className={`border-[3px] px-4 py-3 ${r.totalOk ? 'border-matcha bg-matcha/10' : 'border-shu bg-shu/10'}`}>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-black text-sumi">{id ? 'TOTAL' : 'TOTAL'}</span>
                   <span className={`text-lg font-serif font-black ${r.totalOk ? 'text-matcha' : 'text-shu'}`}>{r.total} / 180</span>
                 </div>
-                <div className="text-[10px] uppercase tracking-widest font-bold text-sumi/50 mt-1">{id ? `Ambang ${N5_PASS_TOTAL}` : `Pass ${N5_PASS_TOTAL}`} {r.totalOk ? '✓' : '✗'}</div>
+                <div className="text-[10px] uppercase tracking-widest font-bold text-sumi/50 mt-1">{id ? `Ambang ${PASS_TOTAL}` : `Pass ${PASS_TOTAL}`} {r.totalOk ? '✓' : '✗'}</div>
               </div>
             </div>
 
@@ -305,12 +330,20 @@ export function N5ExamScreen() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={s.start}
-                className="flex-1 py-4 border-[4px] border-sumi bg-ai text-kinari-light font-black uppercase tracking-[0.25em] text-sm shadow-[6px_6px_0_0_#1a1a1a] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[3px_3px_0_0_#1a1a1a] transition-all cursor-pointer"
-              >
-                {id ? 'Ulangi Ujian' : 'Retry Exam'}
-              </button>
+              {!owari ? (
+                <button
+                  onClick={s.start}
+                  className="flex-1 py-4 border-[4px] border-sumi bg-ai text-kinari-light font-black uppercase tracking-[0.25em] text-sm shadow-[6px_6px_0_0_#1a1a1a] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[3px_3px_0_0_#1a1a1a] transition-all cursor-pointer"
+                >
+                  {id ? 'Ulangi Ujian' : 'Retry Exam'}
+                </button>
+              ) : (
+                <div className="flex-1 py-4 border-[3px] border-sumi/40 bg-kinari/60 px-4 text-center font-sans text-xs font-bold leading-relaxed text-sumi/70">
+                  {id
+                    ? `Sekali jalan — 終 tidak bisa diulang. ${r.passed ? 'Kamu lulus. 完.' : 'Malam belum berakhir.'}`
+                    : `One attempt — 終 cannot be retried. ${r.passed ? 'You passed. 完.' : 'The night is not over.'}`}
+                </div>
+              )}
               {r.passed && (
                 <button
                   onClick={() => { s.quit(); navigate('/profile'); }}

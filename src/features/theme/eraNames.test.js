@@ -52,12 +52,21 @@ test('eraName: 多元 Anime Multiverse memetakan nama UI budaya pop (PRD anime �
   assert.equal(eraName('rank', 'anime'), '戦闘力');
 });
 
+test('eraName: 電脳 Cyberpunk memetakan nama UI era TERAKHIR (PRD cyberpunk §8.1)', () => {
+  assert.equal(eraName('shop', 'cyberpunk'), '闇市');
+  assert.equal(eraName('gacha', 'cyberpunk'), 'ハック');
+  assert.equal(eraName('medaru', 'cyberpunk'), 'クレジット');
+  assert.equal(eraName('inventory', 'cyberpunk'), 'アーカイブ');
+  assert.equal(eraName('profile', 'cyberpunk'), '電脳ID');
+  assert.equal(eraName('quest', 'cyberpunk'), '任務');
+  assert.equal(eraName('rank', 'cyberpunk'), '権限');
+});
+
 test('eraName: era lain → fallback (nama sekarang)', () => {
-  assert.equal(eraName('shop', 'cyberpunk', 'Warung'), 'Warung');
+  assert.equal(eraName('shop', 'era-belum-ada', 'Warung'), 'Warung');
 });
 
 test('eraName: default fallback = string kosong', () => {
-  assert.equal(eraName('shop', 'cyberpunk'), '');
   assert.equal(eraName('shop', 'era-belum-ada'), '');
 });
 

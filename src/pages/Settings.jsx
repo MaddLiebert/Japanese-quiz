@@ -395,6 +395,9 @@ export function Settings() {
                 { id: 'anime', kanji: '多元', name: 'Multiverse', route: '/anime-history',
                   desc_id: 'Peta 8 dunia 多元: 物販 (beli dunia), クレーンゲーム (koleksi karakter), dan gerbang 最終回.',
                   desc_en: 'The 8-world 多元 map: 物販 (buy worlds), クレーンゲーム (character collection), and the 最終回 gate.' },
+                { id: 'cyberpunk', kanji: '電脳', name: 'Cyberpunk', route: '/cyberpunk-history', cine: false,
+                  desc_id: 'Peta 「家」 電脳: 5 sudut rumah Nacht & Saku di kota neon, dan gerbang terakhir 終.',
+                  desc_en: 'The 電脳 「家」 map: five angles of Nacht & Saku\u2019s home in a neon city, and the final 終 gate.' },
               ].map((c) => {
                 const open = unlocked.some((e) => e.id === c.id);
                 return (
@@ -411,7 +414,8 @@ export function Settings() {
                       <button
                         type="button"
                         onClick={() => play(c.id)}
-                        disabled={!open}
+                        disabled={!open || c.cine === false}
+                        title={c.cine === false ? (language === 'id' ? 'Cinematic segera hadir' : 'Cinematic coming soon') : undefined}
                         className="py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer bg-kinari-light text-sumi hover:bg-sumi hover:text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         {language === 'id' ? `Putar ${c.kanji}` : `Play ${c.kanji}`}

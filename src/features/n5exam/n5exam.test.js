@@ -175,3 +175,15 @@ test('scoreExam: semua salah → 0 poin, gagal', () => {
   assert.equal(r.total, 0);
   assert.equal(r.passed, false);
 });
+
+test('scoreExam: evaluator bisa di-inject (gerbang 終) — ambang naik mengubah verdict', () => {
+  const exam = buildExam(BANK, DATASETS, lcg(8));
+  const answers = exam.flatMap((s) => s.items.map(() => true));
+  // N5 biasa: 180/180 → lulus.
+  assert.equal(scoreExam(exam, answers).passed, true);
+  // 終: pakai ambang keras yang tak mungkin dicapai → gagal walau jawaban sempurna.
+  const impossible = () => ({ lkrScaled: 120, listeningScaled: 60, total: 180, lkrOk: false, listeningOk: true, totalOk: true, passed: false });
+  assert.equal(scoreExam(exam, answers, impossible).passed, false);
+  // Evaluator bawaan tetap dipakai bila argumen ke-3 kosong.
+  assert.equal(scoreExam(exam, answers, undefined).passed, true);
+});

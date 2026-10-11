@@ -180,6 +180,28 @@ export function DevPanel() {
     reload();
   };
 
+  // Gerbang 終 電脳: Lv 300 DAN sudah lulus 多元 最終回 (n5Exam.passed).
+  // Level disimpan (bukan dihitung ulang saat load) → cukup tulis langsung.
+  const unlockOwari = () => {
+    const cur = readJSON(PROGRESS_KEY, {});
+    const exam = cur.n5Exam || {};
+    writeProgress({
+      xp: 29900,                       // floor(29900/100)+1 = Lv 300
+      level: 300,
+      n5Exam: {
+        ...exam,
+        attempts: Math.max(exam.attempts || 0, 1),
+        passed: true,
+        passedAt: exam.passedAt || new Date().toISOString(),
+        bestTotal: Math.max(exam.bestTotal || 0, 180),
+        bestLkr: Math.max(exam.bestLkr || 0, 120),
+        bestListening: Math.max(exam.bestListening || 0, 60),
+        lastPassed: true,
+      },
+    });
+    reload();
+  };
+
   const resetAndCheat = () => {
     localStorage.removeItem(PROGRESS_KEY);
     localStorage.removeItem(ACHIEVEMENTS_KEY);
@@ -445,6 +467,9 @@ export function DevPanel() {
           </button>
           <button type="button" onClick={maxXp} className={`${btn} bg-ai text-kinari-light`}>
             ⭐ {id ? "XP 25000 / Lv 100" : "XP 25000 / Lv 100"}
+          </button>
+          <button type="button" onClick={unlockOwari} className={`${btn} bg-[#00f0ff] text-sumi`}>
+            🌃 {id ? "Lv 300 + 多元 Lulus" : "Lv 300 + 多元 Passed"}
           </button>
           <button type="button" onClick={resetAndCheat} className={`${btn} bg-sumi text-kinari-light col-span-2 sm:col-span-1`}>
             ♻️ {id ? "Reset + Cheat Ulang" : "Reset + Re-cheat"}

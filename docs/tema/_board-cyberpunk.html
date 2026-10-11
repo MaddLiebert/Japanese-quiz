@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cyberpunk 電脳 Visual Language Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Serif+JP:wght@400;700;900&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+
+  /* ════════════════════════════════════════════════════════════════
+     電脳 CYBERPUNK — "kebocoran yang akhirnya jadi kenyataan"
+     Satu-satunya era dengan material KACA & CAHAYA (holo-sem, tanpa blur).
+     Primer: cyan #00F0FF · Segel: kuning #FAF803 · Alert: merah #FF003C
+     ⚠️ ATURAN BENTUK: hairline 1px + glow BERLAPIS, radius 0. BUKAN offset
+        hitam (itu bahasa Shōwa). Glow di sini SAH — satu-satunya era.
+     ════════════════════════════════════════════════════════════════ */
+  :root {
+    --kinari-val:       #05060A;   /* 闇 yami — dasar (layar mati) */
+    --kinari-light-val: #0A0E16;   /* panel kaca-semu */
+    --sumi-val:         #E8F4F8;   /* teks terang (tinta dibalik) */
+    --ai-val:           #00F0FF;   /* cyan — primer/info */
+    --kin-val:          #FAF803;   /* kuning — segel/LEVEL/CTA */
+    --shu-val:          #FF003C;   /* merah — alert/hazard SAJA */
+    --nezumi-val:       #8F9CA8;   /* teks telemetri sekunder */
+    --backdrop-val:     #020305;   /* latar luar (lebih gelap dari dasar) */
+
+    /* Bentuk — KACA & CAHAYA */
+    --era-shadow:       0 0 22px rgba(0,240,255,.22), 0 0 46px rgba(0,240,255,.10); /* glow berlapis */
+    --era-shadow-hover: 0 0 30px rgba(0,240,255,.34), 0 0 60px rgba(0,240,255,.16);
+    --era-edge-w:       1px;        /* hairline, bukan tinta tebal */
+    --era-radius:       0px;        /* cut — sudut mati */
+    --era-motion:       110ms;      /* paling cepat dari semua era */
+    --era-ease:         cubic-bezier(.2,.8,.2,1);
+  }
+
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    background: var(--backdrop-val);
+    color: var(--sumi-val);
+    padding: 40px 24px 90px;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
+  }
+  /* grid + scanline — STATIS (jangan animasi background-position: itu penyebab "berat pas scroll") */
+  .cp-grid {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .5;
+    background-image:
+      linear-gradient(rgba(0,240,255,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,.06) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .cp-scan {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .6;
+    background: repeating-linear-gradient(to bottom, rgba(0,240,255,.035) 0 1px, transparent 1px 3px);
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ── tipografi: Dela Gothic (HUD/judul) · mono (chrome) · Noto Serif (kanji) ── */
+  .gothic { font-family: 'Dela Gothic One', 'Noto Serif JP', sans-serif; }
+  .serifjp { font-family: 'Noto Serif JP', serif; }
+  .mono { font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+
+  h1 { font-family: 'Dela Gothic One', sans-serif; font-size: 40px; line-height: 1.05; letter-spacing: .02em; }
+  h2 {
+    font-family: 'Dela Gothic One', sans-serif; font-size: 18px; letter-spacing: .04em;
+    display: flex; align-items: center; gap: 12px; margin: 0 0 20px;
+    color: var(--sumi-val);
+  }
+  h2 .num {
+    font-family: ui-monospace, monospace; font-size: 12px; color: var(--ai-val);
+    border: 1px solid rgba(0,240,255,.4); padding: 3px 8px; background: rgba(0,240,255,.07);
+  }
+  h2 .line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,240,255,.4), transparent); }
+  section { margin-bottom: 56px; }
+  .muted { color: var(--nezumi-val); }
+  .lead { color: var(--nezumi-val); font-size: 14px; line-height: 1.7; max-width: 760px; margin-bottom: 20px; }
+  p.note { font-size: 12.5px; line-height: 1.7; color: var(--nezumi-val); margin-top: 10px; }
+  .tag { font-family: ui-monospace, monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; }
+
+  /* ── panel kaca-semu (holo TANPA backdrop-blur) ── */
+  .panel {
+    border: 1px solid rgba(0,240,255,.32);
+    background: linear-gradient(160deg, rgba(0,240,255,.06), rgba(0,240,255,.015) 45%, rgba(250,248,3,.02));
+    box-shadow: 0 0 24px rgba(0,240,255,.10), inset 0 0 26px rgba(0,240,255,.04);
+    padding: 22px;
+  }
+  .panel-kin { border-color: rgba(250,248,3,.5); background: linear-gradient(160deg, rgba(250,248,3,.14), rgba(250,248,3,.04) 50%, transparent); box-shadow: 0 0 22px rgba(250,248,3,.16), inset 0 0 22px rgba(250,248,3,.06); }
+  .panel-shu { border-color: rgba(255,0,60,.5); background: linear-gradient(160deg, rgba(255,0,60,.15), transparent 62%); box-shadow: 0 0 22px rgba(255,0,60,.16); }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; font-family: ui-monospace, monospace;
+    font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+    padding: 3px 9px; border: 1px solid rgba(0,240,255,.4); color: var(--ai-val); background: rgba(0,240,255,.07);
+  }
+  .chip.kin { border-color: rgba(250,248,3,.5); color: var(--kin-val); background: rgba(250,248,3,.08); }
+  .chip.shu { border-color: rgba(255,0,60,.5); color: var(--shu-val); background: rgba(255,0,60,.1); }
+
+  .dot { width: 7px; height: 7px; display: inline-block; background: var(--ai-val); box-shadow: 0 0 8px var(--ai-val); }
+
+  /* ── grid utilitas board ── */
+  .row { display: grid; gap: 16px; }
+  .r2 { grid-template-columns: repeat(2, 1fr); }
+  .r3 { grid-template-columns: repeat(3, 1fr); }
+  .r4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 760px) { .r2, .r3, .r4 { grid-template-columns: 1fr; } }
+
+  /* ── swatch ── */
+  .sw { border: 1px solid rgba(255,255,255,.14); padding: 16px 14px; min-height: 104px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .sw .nm { font-family: ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+  .sw .hex { font-family: ui-monospace, monospace; font-size: 13px; font-weight: 700; margin-top: 4px; }
+  .sw .role { font-size: 11px; opacity: .82; margin-top: 4px; }
+
+  /* ── segel (hanko holo) ── */
+  .seal {
+    position: relative; width: 92px; height: 92px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border: 2px solid var(--kin-val); color: var(--kin-val);
+    background: rgba(5,6,10,.72);
+    box-shadow: inset 0 0 14px rgba(250,248,3,.16), 0 0 20px rgba(250,248,3,.22);
+  }
+  .seal::before { content: ""; position: absolute; inset: 4px; border: 1px dashed rgba(250,248,3,.55); }
+  .seal .lbl { font-family: ui-monospace, monospace; font-size: 9px; letter-spacing: .22em; }
+  .seal .val { font-family: 'Noto Serif JP', serif; font-weight: 900; font-size: 34px; line-height: 1; }
+
+  /* ── CTA ── */
+  .cta {
+    display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+    font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+    background: var(--kin-val); color: #05060A; border: 1px solid var(--kin-val);
+    padding: 14px 26px; box-shadow: 0 0 22px rgba(250,248,3,.35);
+  }
+  .cta.ghost { background: transparent; color: var(--ai-val); border-color: rgba(0,240,255,.5); box-shadow: 0 0 16px rgba(0,240,255,.16); }
+
+  /* ── baris aksi (contoh menu) ── */
+  .act {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    border: 1px solid rgba(0,240,255,.28); background: linear-gradient(120deg, rgba(0,240,255,.05), transparent 60%);
+    padding: 16px 18px; cursor: pointer;
+  }
+  .act .go { width: 40px; height: 40px; border: 1px solid rgba(0,240,255,.5); background: rgba(0,240,255,.1); color: var(--ai-val); display: grid; place-items: center; font-size: 18px; }
+
+  /* ── glitch: HANYA di momen (hover), transform+opacity ── */
+  @keyframes cpglitch {
+    0% { transform: translate(0,0); }
+    25% { transform: translate(-1.5px, 1px); }
+    50% { transform: translate(1.5px, -1px); }
+    75% { transform: translate(-1px, -1.5px); }
+    100% { transform: translate(0,0); }
+  }
+  .glitch:hover { animation: cpglitch .3s steps(2, jump-none) infinite; }
+  .rgbsplit { text-shadow: 2px 0 0 rgba(255,0,60,.65), -2px 0 0 rgba(0,240,255,.65); }
+
+  code, pre { font-family: ui-monospace, monospace; }
+  pre {
+    background: #04050a; border: 1px solid rgba(0,240,255,.28); color: #cfe9f2;
+    padding: 18px; overflow-x: auto; font-size: 12px; line-height: 1.7;
+  }
+  pre .k { color: var(--ai-val); } pre .v { color: var(--kin-val); } pre .c { color: #5d6b78; }
+
+  /* strip perbandingan terang vs gelap */
+  .cmp { border: 1px solid rgba(255,255,255,.12); padding: 18px; }
+
+  .foot { border-top: 1px solid rgba(0,240,255,.2); padding-top: 18px; color: var(--nezumi-val); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="cp-grid"></div>
+<div class="cp-scan"></div>
+
+<div class="wrap">
+
+  <!-- masthead -->
+  <header style="margin-bottom:40px">
+    <div class="mono" style="font-size:11px; letter-spacing:.24em; color:var(--nezumi-val); text-transform:uppercase; display:flex; gap:14px; align-items:center; flex-wrap:wrap">
+      <span style="color:var(--ai-val)">電脳 CYBERPUNK</span>
+      <span>·</span>
+      <span>VISUAL LANGUAGE BOARD</span>
+      <span>·</span>
+      <span>TEMA #6 dari 6</span>
+      <span>·</span>
+      <span style="color:var(--kin-val)">GERBANG Lv 300</span>
+    </div>
+    <h1 style="margin-top:16px">電脳 <span class="serifjp" style="color:var(--ai-val)">電脳</span> <span class="serifjp" style="color:var(--kin-val); font-size:26px">常夜</span></h1>
+    <div class="mono" style="font-size:12px; letter-spacing:.2em; color:var(--kin-val); margin-top:10px">常夜 とこよ — MALAM YANG ABADI</div>
+    <p class="lead" style="margin-top:14px">
+      <strong style="color:var(--sumi-val)">Tema terkunci:</strong> <strong style="color:var(--kin-val)">malam yang abadi</strong> — di sini <em>tidak ada siang</em>.
+      Satu-satunya era yang materialnya <strong style="color:var(--sumi-val)">kaca &amp; cahaya</strong>.
+      Lawan langsung 多元 — yang putih, kanvas kosong, banyak dunia. 電脳 hitam, satu dunia, rumah.
+      Sumbu: <em>「kebocoran yang akhirnya jadi kenyataan」</em> — glitch yang lima era cuma bocor sekilas, di sini <strong style="color:var(--sumi-val)">tak mati lagi</strong>, karena malamnya tak pernah berakhir.
+    </p>
+  </header>
+
+  <!-- 01 kontras -->
+  <section>
+    <h2><span class="num">01</span> Kontras — 多元 (manga putih) → 電脳 (layar hitam) <span class="line"></span></h2>
+    <p class="lead">Dua era ini bercermin. Kalau 多元 = halaman yang <em>melebar</em> jadi banyak dunia, 電脳 = layar yang <em>menyempit</em> jadi satu titik.</p>
+    <div class="row r2">
+      <div class="panel" style="background:#fdfcf8; border-color:#171a22; box-shadow:none; color:#171a22">
+        <div class="tag muted" style="color:#6b7280">Tema #5 — 多元</div>
+        <div class="serifjp" style="font-size:56px; font-weight:900; line-height:1; margin:10px 0">多元</div>
+        <div style="font-size:12px; line-height:1.7; color:#3a3f4a">
+          白紙 halaman putih · outline tinta 3px · <strong>cel-shadow BERWARNA</strong> 5px 5px · radius 6px · snap 140ms<br>
+          Rasa: <strong>cerah, hidup, ramai</strong> — banyak dunia
+        </div>
+      </div>
+      <div class="panel" style="border-color:rgba(0,240,255,.4)">
+        <div class="tag" style="color:var(--ai-val)">Tema #6 — 電脳</div>
+        <div class="serifjp" style="font-size:56px; font-weight:900; line-height:1; margin:10px 0; color:var(--sumi-val)">電脳</div>
+        <div style="font-size:12px; line-height:1.7; color:var(--nezumi-val)">
+          闇 layar hitam · <strong style="color:var(--sumi-val)">hairline 1px</strong> · <strong style="color:var(--sumi-val)">glow berlapis</strong> · radius 0 · snap 110ms<br>
+          Rasa: <strong style="color:var(--sumi-val)">gelap, digital, sunyi</strong> — satu dunia (rumah)
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      ⚠️ <strong>Peringatan bentuk:</strong> di semua era lain, glow &amp; gradien = tanda "kartu web modern" (Heian pernah ditolak karena itu).
+      Di sini <strong>glow memang materialnya</strong> — jadi sah. Tapi harus terasa <em>sengaja &amp; terkendali</em> (hairline + glow), bukan bayangan biru lembut default.
+    </p>
+  </section>
+
+  <!-- 02 palet -->
+  <section>
+    <h2><span class="num">02</span> Palet — triad cyan · kuning · merah <span class="line"></span></h2>
+    <p class="lead">Dipetakan ke <strong>token app yang sudah ada</strong> supaya guard, varian gelap, dan seluruh komponen ikut otomatis.</p>
+    <div class="row r4" style="margin-bottom:18px">
+      <div class="sw" style="background:#05060A"><div class="nm muted">--kinari-val</div><div class="hex" style="color:var(--sumi-val)">#05060A</div><div class="role muted">dasar · layar mati</div></div>
+      <div class="sw" style="background:#0A0E16"><div class="nm muted">--kinari-light-val</div><div class="hex" style="color:var(--sumi-val)">#0A0E16</div><div class="role muted">panel kaca-semu</div></div>
+      <div class="sw" style="background:#E8F4F8"><div class="nm" style="color:#5d6b78">--sumi-val</div><div class="hex" style="color:#05060A">#E8F4F8</div><div class="role" style="color:#5d6b78">teks terang</div></div>
+      <div class="sw" style="background:#8F9CA8"><div class="nm" style="color:#20262c">--nezumi-val</div><div class="hex" style="color:#20262c">#8F9CA8</div><div class="role" style="color:#20262c">telemetri</div></div>
+      <div class="sw" style="background:#00F0FF"><div class="nm" style="color:#04262b">--ai-val</div><div class="hex" style="color:#04262b">#00F0FF</div><div class="role" style="color:#04262b">cyan · primer/info</div></div>
+      <div class="sw" style="background:#FAF803"><div class="nm" style="color:#2b2b04">--kin-val</div><div class="hex" style="color:#2b2b04">#FAF803</div><div class="role" style="color:#2b2b04">kuning · segel/CTA</div></div>
+      <div class="sw" style="background:#FF003C"><div class="nm" style="color:#fff">--shu-val</div><div class="hex" style="color:#fff">#FF003C</div><div class="role" style="color:#fff">merah · alert SAJA</div></div>
+      <div class="sw" style="background:#020305"><div class="nm muted">--backdrop-val</div><div class="hex" style="color:var(--sumi-val)">#020305</div><div class="role muted">latar luar</div></div>
+    </div>
+    <p class="note"><strong>Disiplin aksen:</strong> cyan = informasi &amp; navigasi · kuning = segel/LEVEL/CTA (peran "emas" app) · merah <strong>hanya</strong> untuk bahaya/alert (`3 DETECTED`). Merah jangan pernah jadi warna dekoratif.</p>
+  </section>
+
+  <!-- 03 bentuk -->
+  <section>
+    <h2><span class="num">03</span> Bentuk — kaca &amp; cahaya (holo-sem, TANPA blur) <span class="line"></span></h2>
+    <p class="lead">Holonya <strong>disimulasikan</strong>: gradien tipis + hairline + glow berlapis + sudut mati. <strong>Nol <code>backdrop-blur</code></strong> — panel kaca ber-blur di banyak tempat = repaint tiap frame = "berat pas scroll" (app ini pernah kena).</p>
+    <div class="row r3">
+      <div class="panel">
+        <div class="tag" style="color:var(--ai-val)">PANEL KACA-SEMU</div>
+        <p class="note" style="margin-top:10px">hairline 1px cyan α.32 + gradien diagonal halus + glow luar &amp; dalam. Terasa "melayang", tanpa biaya blur.</p>
+      </div>
+      <div class="panel panel-kin">
+        <div class="tag" style="color:var(--kin-val)">PANEL SEGEL</div>
+        <p class="note" style="margin-top:10px">Varian kuning untuk blok yang "terverifikasi"/hadiah — peran emas app.</p>
+      </div>
+      <div class="panel panel-shu">
+        <div class="tag" style="color:var(--shu-val)">PANEL ALERT</div>
+        <p class="note" style="margin-top:10px">Varian merah untuk soal lemah / bahaya. Dipakai hemat.</p>
+      </div>
+    </div>
+    <div class="row r2" style="margin-top:16px">
+      <div class="cmp" style="border-color:rgba(255,0,60,.4)">
+        <div class="tag" style="color:var(--shu-val)">✕ SALAH — bahasa Shōwa</div>
+        <div style="margin-top:12px; border:2px solid #1a1a1a; background:#0A0E16; box-shadow:6px 6px 0 0 #1a1a1a; padding:16px; color:var(--sumi-val)">
+          offset keras hitam <code class="mono" style="color:var(--nezumi-val)">6px 6px 0 0</code> — cap karet, bukan cahaya
+        </div>
+      </div>
+      <div class="cmp" style="border-color:rgba(0,240,255,.4)">
+        <div class="tag" style="color:var(--ai-val)">✓ BENAR — bahasa 電脳</div>
+        <div style="margin-top:12px; border:1px solid rgba(0,240,255,.32); background:linear-gradient(160deg, rgba(0,240,255,.06), transparent); box-shadow:var(--era-shadow); padding:16px; color:var(--sumi-val)">
+          glow berlapis <code class="mono" style="color:var(--ai-val)">0 0 22px, 0 0 46px</code> — memancar, bukan mengeras
+        </div>
+      </div>
+    </div>
+    <p class="note">Radius <strong>0</strong> di semua (kecuali lingkaran semantik). Gerak <strong>110ms</strong> — paling cepat dari semua era: "digital snap", bukan mengapung.</p>
+  </section>
+
+  <!-- 04 tipografi -->
+  <section>
+    <h2><span class="num">04</span> Tipografi — nol font baru <span class="line"></span></h2>
+    <p class="lead">Pakai yang <strong>sudah di-load</strong> app. Tidak tambah font (app sudah load 10 keluarga; 多元 aja "nol font baru").</p>
+    <div class="row r3">
+      <div class="panel">
+        <div class="tag muted">JUDUL / HUD / SEGEL</div>
+        <div class="gothic" style="font-size:30px; margin-top:10px; color:var(--sumi-val)">電脳 ナハト</div>
+        <p class="note">Dela Gothic One — gothic 極太 techno, <strong>sudah dipakai 多元 untuk 題字</strong>. Ini pengganti peran "Chakra Petch" di referensi, tanpa font baru.</p>
+      </div>
+      <div class="panel">
+        <div class="tag muted">KANJI HERO</div>
+        <div class="serifjp" style="font-size:30px; margin-top:10px; color:var(--sumi-val)">日本語 合格 絵巻</div>
+        <p class="note">Noto Serif JP — DNA Jepang app. Kanji besar tetap <strong>serif</strong> (hero), bukan gothic — biar tetap "app ini".</p>
+      </div>
+      <div class="panel">
+        <div class="tag muted">CHROME TELEMETRI</div>
+        <div class="mono" style="font-size:13px; margin-top:10px; color:var(--ai-val)">SYS.VER 2.0.77 · LV.300 · 78%</div>
+        <p class="note">Mono sistem (<code>ui-monospace</code>) untuk label sistem/angka — kesan terminal, nol unduhan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 motif -->
+  <section>
+    <h2><span class="num">05</span> Motif — grid + scanline (statis) + glitch (momen) <span class="line"></span></h2>
+    <div class="row r2">
+      <div class="panel" style="position:relative; overflow:hidden; min-height:130px">
+        <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(0,240,255,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,.09) 1px, transparent 1px); background-size:26px 26px"></div>
+        <div style="position:relative">
+          <div class="tag" style="color:var(--ai-val)">.era-pattern</div>
+          <p class="note" style="margin-top:8px"><strong>WAJIB didefinisikan</strong> — era yang lupa akan diam-diam mewarisi 青海波 (gelombang laut Edo) sebagai seluruh latar. Grid cyan + scanline 3px, <strong>statis</strong> (jangan animasi <code>background-position</code>).</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="tag" style="color:var(--shu-val)">GLITCH — hanya di momen</div>
+        <p class="note" style="margin-top:8px">RGB-split &amp; slice geser muncul saat <strong>hover / event</strong> (jawaban salah, kebocoran), pakai <code>transform</code>+<code>opacity</code> saja. Glitch = tanda tangan cerita: ini rumahnya. Coba hover kotak di bawah.</p>
+        <div class="glitch rgbsplit gothic" style="display:inline-block; margin-top:12px; font-size:22px; color:var(--sumi-val); border:1px solid rgba(0,240,255,.4); padding:10px 18px; cursor:pointer">絵巻 // ロウ</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 terang vs gelap -->
+  <section>
+    <h2><span class="num">06</span> 常夜 — mode "terang" bukan siang, tapi malam yang lebih awal <span class="line"></span></h2>
+    <p class="lead">
+      Tema = <strong style="color:var(--kin-val)">malam yang abadi</strong> → <strong>tidak ada siang.</strong> Jadi toggle terang/gelap di era ini bukan siang↔malam,
+      tapi <strong>kedalaman malam</strong>: <span class="mono" style="color:var(--ai-val)">宵 yoi</span> (senja awal, lebih terang) ↔ <span class="mono" style="color:var(--ai-val)">真夜中 mayonaka</span> (tengah malam, paling gelap).
+      Dua-duanya neon-di-atas-gelap. Guard cuma wajibkan blok gelap — jadi ini tetap sah.
+    </p>
+    <div class="row r2">
+      <!-- Mode terang = 宵 yoi -->
+      <div class="cmp" style="background:#0E1A2E">
+        <div class="tag" style="color:#7FB4E0">TERANG = 宵 yoi — senja awal</div>
+        <div class="serifjp" style="font-size:34px; margin:12px 0; color:#EAF2FA">電脳</div>
+        <div class="cta" style="font-size:11px; padding:10px 18px; background:#FFE23A; color:#0A1220; border-color:#FFE23A; box-shadow:0 0 18px rgba(255,226,58,.3)">▶ MULAI</div>
+        <p class="note" style="color:#9fb8d0">Biru malam lebih terang, neon lebih redup — "langit belum sepenuhnya gelap".</p>
+      </div>
+      <!-- Mode gelap = 真夜中 -->
+      <div class="cmp" style="background:#04050A">
+        <div class="tag" style="color:var(--ai-val)">GELAP = 真夜中 mayonaka — tengah malam</div>
+        <div class="serifjp" style="font-size:34px; margin:12px 0; color:#E8F4F8">電脳</div>
+        <div class="cta" style="font-size:11px; padding:10px 18px">▶ MULAI</div>
+        <p class="note">Hitam penuh, neon paling menyala. Rumah era ini — malam yang paling dalam.</p>
+      </div>
+    </div>
+    <p class="note">
+      <strong>Kenapa ini bagus:</strong> konsisten dengan tema (nol siang), tapi toggle tetap berfungsi &amp; punya makna.
+      Warna <code>--kinari-val</code> terang <code>#0E1A2E</code> (宵) · gelap <code>#04050A</code> (真夜中).
+      <strong>Alternatif</strong> kalau mau kontras lebih kuat: terang = 夕暮れ (#1A2233, ungu-biru) — tetap malam, lebih terang lagi.
+    </p>
+  </section>
+
+  <!-- 07 kosakata cerita -->
+  <section>
+    <h2><span class="num">07</span> Kosakata cerita (locked) — bukan "street runner" generik <span class="line"></span></h2>
+    <p class="lead">Chrome HUD pakai bahasa app, bukan cyberpunk generik. Ini nyambung ke <code>docs/story.md</code> yang sudah terkunci.</p>
+    <div class="row r3">
+      <div class="panel"><div class="gothic" style="font-size:22px; color:var(--ai-val)">電脳</div><p class="note">era · kanji era</p></div>
+      <div class="panel"><div class="gothic" style="font-size:22px; color:var(--sumi-val)">ナハト / サク</div><p class="note">Nacht / Saku — rumah mereka</p></div>
+      <div class="panel"><div class="gothic" style="font-size:22px; color:var(--sumi-val)">ロウ</div><p class="note">"hukum" — wujud asli AI (「俺たちは、ロウだ」)</p></div>
+      <div class="panel"><div class="gothic" style="font-size:22px; color:var(--sumi-val)">絵巻</div><p class="note">gulungan — pembungkus cerita</p></div>
+      <div class="panel"><div class="gothic" style="font-size:22px; color:var(--shu-val)">終</div><p class="note">akhir / TAMAT — checkpoint era ini</p></div>
+      <div class="panel"><div class="gothic" style="font-size:22px; color:var(--kin-val)">別れ</div><p class="note">perpisahan — nada penutup</p></div>
+    </div>
+
+    <h3 class="gothic" style="font-size:16px; margin:26px 0 10px; color:var(--ai-val)">Nama UI per era (eraNames.js) — TERKUNCI</h3>
+    <div class="row r4">
+      <div class="panel"><div class="tag muted">shop</div><div class="serifjp" style="font-size:26px; color:var(--sumi-val)">闇市</div><p class="note">yamiichi — pasar gelap</p></div>
+      <div class="panel"><div class="tag muted">gacha</div><div class="serifjp" style="font-size:26px; color:var(--sumi-val)">ハック</div><p class="note">hack — undian membobol data</p></div>
+      <div class="panel"><div class="tag muted">medaru</div><div class="serifjp" style="font-size:26px; color:var(--kin-val)">クレジット</div><p class="note">credit — mata uang</p></div>
+      <div class="panel"><div class="tag muted">inventory</div><div class="serifjp" style="font-size:26px; color:var(--sumi-val)">アーカイブ</div><p class="note">arsip data</p></div>
+      <div class="panel"><div class="tag muted">profile</div><div class="serifjp" style="font-size:26px; color:var(--sumi-val)">電脳ID</div><p class="note">identitas</p></div>
+      <div class="panel"><div class="tag muted">quest</div><div class="serifjp" style="font-size:26px; color:var(--sumi-val)">任務</div><p class="note">ninmu — misi</p></div>
+      <div class="panel"><div class="tag muted">rank</div><div class="serifjp" style="font-size:26px; color:var(--sumi-val)">権限</div><p class="note">kengen — hak akses</p></div>
+      <div class="panel panel-shu"><div class="tag" style="color:var(--shu-val)">checkpoint</div><div class="serifjp" style="font-size:26px; color:var(--shu-val)">終</div><p class="note">TAMAT — ujian akhir era</p></div>
+    </div>
+    <p class="note">
+      ⚠ <strong>Catatan implementasi:</strong> <code>medaru</code> TIDAK cukup di <code>eraNames.js</code> — mata uang juga lewat
+      <code>medaruCopy.js</code> (perlu <code>CYBERPUNK_MEDARU</code>; <code>nameShort</code> mungkin perlu versi pendek dari
+      <code>クレジット</code> untuk chip top-bar). Streak punya modul sendiri (<code>streakCopy.js</code>).
+    </p>
+  </section>
+
+  <!-- 08 contoh HUD -->
+  <section>
+    <h2><span class="num">08</span> Contoh komposisi — HUD 電脳 <span class="line"></span></h2>
+    <p class="lead">Bukan reskin Home jadi "netrunner generik": ini versi 電脳 dengan bahasa app — segel kanji, cap, dan chrome cerita.</p>
+
+    <div class="panel" style="padding:0; overflow:hidden">
+      <!-- top telemetry -->
+      <div class="mono" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:10px 16px; border-bottom:1px solid rgba(0,240,255,.25); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--nezumi-val)">
+        <span style="display:inline-flex; align-items:center; gap:8px"><span class="dot"></span> NODE: <span style="color:var(--ai-val)">絵巻 // ONLINE</span></span>
+        <span><span class="chip" style="font-size:9px">SYS.VER 2.0.77</span> &nbsp; <span style="color:var(--kin-val)">電脳 NODE // LIVE</span></span>
+      </div>
+
+      <!-- hero -->
+      <div style="display:grid; grid-template-columns:2fr 1fr">
+        <div style="padding:26px; border-right:1px solid rgba(0,240,255,.22)">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px">
+            <div style="width:44px; height:44px; border:1px solid var(--kin-val); color:var(--kin-val); display:grid; place-items:center; font-family:'Noto Serif JP'; font-size:22px; box-shadow:0 0 12px rgba(250,248,3,.28)">学</div>
+            <div><div class="mono" style="font-size:10px; letter-spacing:.3em; color:var(--ai-val); text-transform:uppercase">日本語学園</div><div class="mono" style="font-size:9px; color:var(--nezumi-val); letter-spacing:.2em">NEURAL INTERFACE // N5</div></div>
+          </div>
+          <div class="serifjp" style="font-size:58px; font-weight:900; line-height:.95; color:var(--sumi-val)">日本語<br><span style="color:var(--kin-val); text-shadow:0 0 22px rgba(250,248,3,.35)">基礎</span></div>
+          <div style="margin-top:16px"><span class="chip">CYBER_HUD</span> <span class="mono muted" style="font-size:10px; letter-spacing:.18em">STAN_PROTOCOL_READY</span></div>
+        </div>
+        <div style="padding:22px; display:flex; flex-direction:column; align-items:center; gap:14px">
+          <div class="seal"><div class="lbl">LEVEL</div><div class="val">300</div></div>
+          <div class="mono" style="width:100%; font-size:10px; color:var(--nezumi-val); text-align:center">NACHT // 読み手</div>
+          <div style="width:100%; height:8px; border:1px solid rgba(0,240,255,.4); background:#05060A; position:relative"><div style="position:absolute; inset:0; width:78%; background:linear-gradient(90deg,#00F0FF,#FAF803); box-shadow:0 0 10px rgba(0,240,255,.5)"></div></div>
+          <div class="chip kin">◈ 1.240 クレジット</div>
+        </div>
+      </div>
+
+      <!-- aksi -->
+      <div style="border-top:1px solid rgba(0,240,255,.22); padding:16px; display:flex; flex-direction:column; gap:10px">
+        <div class="act"><div><div class="mono" style="font-size:10px; color:var(--ai-val)">01 //</div><div class="gothic" style="font-size:16px; color:var(--sumi-val)">Kuis Latihan</div></div><div class="go">›</div></div>
+        <div class="act"><div><div class="mono" style="font-size:10px; color:var(--kin-val)">02 //</div><div class="gothic" style="font-size:16px; color:var(--sumi-val)">Ujian Chōkai</div></div><div class="go">›</div></div>
+        <div class="act" style="border-color:rgba(255,0,60,.4); background:linear-gradient(120deg, rgba(255,0,60,.06), transparent 60%)">
+          <div><div class="mono" style="font-size:10px; color:var(--shu-val)">03 //</div><div class="gothic" style="font-size:16px; color:var(--sumi-val)">Ulang Soal Lemah <span class="chip shu" style="font-size:9px">3 DETECTED</span></div></div>
+          <div class="go" style="border-color:rgba(255,0,60,.5); background:rgba(255,0,60,.12); color:var(--shu-val)">›</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- cap -->
+    <div style="display:flex; gap:22px; flex-wrap:wrap; margin-top:24px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px">
+        <div class="seal"><div class="lbl" style="color:var(--kin-val)">初</div><div class="val" style="font-size:26px">初</div></div>
+        <span class="mono muted" style="font-size:9px; letter-spacing:.16em; text-transform:uppercase">First Breach</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px">
+        <div class="seal"><div class="lbl" style="color:var(--kin-val)">百</div><div class="val" style="font-size:26px">百</div></div>
+        <span class="mono muted" style="font-size:9px; letter-spacing:.16em; text-transform:uppercase">100 XP Data</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px">
+        <div class="seal"><div class="lbl" style="color:var(--kin-val)">清</div><div class="val" style="font-size:26px">清</div></div>
+        <span class="mono muted" style="font-size:9px; letter-spacing:.16em; text-transform:uppercase">Clean Protocol</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px">
+        <div class="seal"><div class="lbl" style="color:var(--kin-val)">速</div><div class="val" style="font-size:26px">速</div></div>
+        <span class="mono muted" style="font-size:9px; letter-spacing:.16em; text-transform:uppercase">Speed Demon</span>
+      </div>
+      <div style="align-self:center">
+        <button class="cta glitch">▶ MULAI LATIHAN</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 token css -->
+  <section>
+    <h2><span class="num">09</span> Token CSS usulan (untuk docs/tema/cyberpunk.md) <span class="line"></span></h2>
+<pre><span class="c">/* 電脳 CYBERPUNK 「常夜」 — malam yang abadi (tak ada siang)</span>
+<span class="c">   ⚠ PRINSIP #0: :root BEKU. Blok ini hanya MENAMBAH.</span>
+<span class="c">   Terang = 宵 yoi (senja awal) · Gelap = 真夜中 mayonaka (tengah malam). */</span>
+[data-era=<span class="v">"cyberpunk"</span>] {
+  <span class="c">/* mode TERANG = 宵 yoi — malam yang belum dalam */</span>
+  --kinari-val:       <span class="v">#0E1A2E</span>;   <span class="c">/* dasar (biru malam) */</span>
+  --kinari-light-val: <span class="v">#12213A</span>;   <span class="c">/* panel kaca-semu */</span>
+  --backdrop-val:     <span class="v">#0A1424</span>;
+  --sumi-val:         <span class="v">#EAF2FA</span>;   <span class="c">/* teks terang */</span>
+  --ai-val:           <span class="v">#00F0FF</span>;   <span class="c">/* cyan — primer/info */</span>
+  --kin-val:          <span class="v">#FFE23A</span>;   <span class="c">/* kuning — segel/CTA */</span>
+  --shu-val:          <span class="v">#FF003C</span>;   <span class="c">/* merah — alert SAJA */</span>
+  --nezumi-val:       <span class="v">#8F9CA8</span>;
+
+  <span class="c">/* Bentuk — kaca &amp; cahaya (glow, BUKAN offset hitam) */</span>
+  --era-shadow:       <span class="v">0 0 22px rgba(0,240,255,.22), 0 0 46px rgba(0,240,255,.10)</span>;
+  --era-edge-w:       <span class="v">1px</span>;
+  --era-radius:       <span class="v">0px</span>;
+  --era-motion:       <span class="v">110ms</span>;
+  --era-ease:         <span class="v">cubic-bezier(.2,.8,.2,1)</span>;
+
+  <span class="c">/* Tipografi — nol font baru */</span>
+  --font-display:     <span class="v">"Dela Gothic One", "Noto Serif JP", sans-serif</span>;
+  --font-serif:       <span class="v">"Noto Serif JP", serif</span>;   <span class="c">/* kanji hero */</span>
+  --font-mono:        <span class="v">ui-monospace, "SFMono-Regular", Menlo, monospace</span>;
+}
+
+<span class="c">/* mode GELAP = 真夜中 mayonaka — WAJIB (guard) */</span>
+.dark[data-era=<span class="v">"cyberpunk"</span>], [data-theme=<span class="v">"dark"</span>][data-era=<span class="v">"cyberpunk"</span>] {
+--kinari-val:       <span class="v">#04050A</span>;   <span class="c">/* hitam penuh */</span>
+--kinari-light-val: <span class="v">#080B12</span>;
+--backdrop-val:     <span class="v">#020305</span>;
+--shu-val:          <span class="v">#FF2E4C</span>;   <span class="c">/* merah naik dikit biar ≥4.5 di 宵 & 真夜中 */</span>
+}
+
+<span class="c">/* motif WAJIB — kalau lupa → mewarisi 青海波 (Edo). STATIS. */</span>
+[data-era=<span class="v">"cyberpunk"</span>] .era-pattern {
+  background-image:
+    linear-gradient(rgba(0,240,255,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,255,.06) 1px, transparent 1px);
+  background-size: <span class="v">44px 44px</span>;
+  animation: <span class="v">none</span>;
+}</pre>
+  </section>
+
+  <!-- 10 materi endgame -->
+  <section>
+    <h2><span class="num">10</span> Materi endgame — 総復習 &amp; checkpoint 終 <span class="line"></span></h2>
+    <p class="lead">
+      Isi app ini <strong>100% N5</strong> (kana+kanji+kotoba+grammar+mondai). Jadi endgame 電脳 = <strong>総復習</strong> —
+      bukan stok konten baru, tapi <strong>ujian campuran semua era</strong>. N5 itu sendiri = jumlah dari semua yang
+      diajarin tiap era, jadi "campur semua" memang puncaknya.
+    </p>
+    <div class="row r2">
+      <div class="panel">
+        <div class="tag" style="color:var(--ai-val)">終 owari — GERBANG TERAKHIR</div>
+        <ul class="note" style="list-style:none; margin-top:10px; line-height:2">
+          <li>· <strong>Gerbang:</strong> Lv 300 <strong>+ sudah lulus 多元 最終回</strong> (berurutan)</li>
+          <li>· <strong>Isi:</strong> ujian campur semua materi (reuse mesin <code>n5exam</code>)</li>
+          <li>· <strong>"Tersulit" lewat ATURAN, bukan konten baru:</strong>
+            <br>&nbsp;&nbsp;1. <strong>mode dingin</strong> — tanpa benar/salah sampai selesai
+            <br>&nbsp;&nbsp;2. <strong>ambang lulus naik</strong> di atas standar N5
+            <br>&nbsp;&nbsp;3. <strong>sekali jalan</strong> — tanpa retry dalam sesi
+            <br>&nbsp;&nbsp;4. <strong>waktu ketat</strong> + semua seksi digabung</li>
+          <li>· <strong>Lulus → 完</strong> (tamat, era terakhir) · gagal → tetap di 終</li>
+          <li>· Hadiah: sertifikat <code>N5Certificate</code></li>
+        </ul>
+      </div>
+      <div class="panel panel-kin">
+        <div class="tag" style="color:var(--kin-val)">POLA IMPLEMENTASI (reuse, bukan bikin dari nol)</div>
+        <p class="note" style="margin-top:10px">
+          Ikut pola checkpoint era lain — modul <strong>tipis</strong> yang jadi gerbang ke mesin ujian N5 yang sudah ada:
+        </p>
+        <pre style="margin-top:10px"><span class="c">// modul murni (dites)</span>
+<span class="v">cyberpunkCheckpoint.js</span>  → gerbang + verdict
+<span class="v">OwariCheckpoint.jsx</span>      → halaman 終
+route <span class="v">/owari-checkpoint</span></pre>
+        <p class="note">
+          Mesin ujian (<code>features/n5exam/</code>, 78 soal, 3 seksi, skor 0–180) <strong>dipakai ulang</strong> —
+          sama seperti <code>SotsugyoCheckpoint</code> (Shōwa 卒業) &amp; <code>AnimeCheckpoint</code> (多元 最終回).
+          Nol konten baru.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 status -->
+  <section>
+    <h2><span class="num">11</span> Yang sudah terkunci &amp; masih terbuka <span class="line"></span></h2>
+    <div class="row r2">
+      <div class="panel panel-kin">
+        <div class="tag" style="color:var(--kin-val)">TERKUNCI</div>
+        <ul class="note" style="list-style:none; margin-top:10px; line-height:2">
+          <li>· <strong>Tema: 「常夜」 malam yang abadi</strong> — tak ada siang</li>
+          <li>· Era #6, kanji <strong>電脳</strong>, gerbang <strong>Lv 300</strong></li>
+          <li>· Visual = <strong>holo-sem</strong> (hairline+glow, radius 0, <strong>tanpa blur</strong>)</li>
+          <li>· Terang = <strong>宵 yoi</strong> · Gelap = <strong>真夜中 mayonaka</strong> (kedalaman malam, bukan siang)</li>
+          <li>· <strong>Nama UI:</strong> 闇市 · ハック · クレジット · アーカイブ · 電脳ID · 任務 · 権限 · 終</li>
+          <li>· <strong>Materi endgame = 総復習</strong> (nol konten baru) · <strong>終</strong> = ujian campur semua era, tersulit</li>
+          <li>· Kosakata = <strong>cerita app</strong> (ナハト/サク/ロウ/絵巻/終)</li>
+          <li>· Font = <strong>nol baru</strong> (Dela + Noto Serif + mono)</li>
+          <li>· Palet = triad <strong>cyan/kuning/merah</strong> di atas malam</li>
+          <li>· Cerita = <strong>rumah Nacht &amp; Saku</strong>, penyamaran terbuka, berpisah, TAMAT</li>
+        </ul>
+      </div>
+      <div class="panel panel-shu">
+        <div class="tag" style="color:var(--shu-val)">MASIH TERBUKA</div>
+        <ul class="note" style="list-style:none; margin-top:10px; line-height:2">
+          <li>· <strong>Isi gacha ハック</strong> (pool hadiah era ini)</li>
+          <li>· <strong>Audio</strong> (BGM) · <strong>NPC</strong> · <strong>cinematic perkenalan</strong></li>
+          <li>· Nama/lore era lain + daftar franchise (konteks 多元)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot mono">
+    電脳 BOARD · arah visual, bukan spec final · sumber terkunci: eras.js · story.md §6 · glitch.js · anime.md §3
+  </div>
+</div>
+</body>
+</html>
