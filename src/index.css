@@ -3865,5 +3865,316 @@ button[data-toji-kill]::after {
 .dark[data-era="showa"] .showa-art-ground,
 [data-theme="dark"][data-era="showa"] .showa-art-ground { fill: #55554f; }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   電脳 CYBERPUNK — 「常夜」 MALAM YANG ABADI (era #6, Lv 300, TERAKHIR)
+   Tesis: 「常夜 = 光だけが残った時代」 — zaman yang hanya menyisakan cahaya.
+   Satu-satunya era yang materialnya KACA & CAHAYA (lawan 多元 yang putih/kertas).
+   Sumbu: 多元 = dunia MENYEMPIT jadi SATU → rumah Nacht & Saku.
+   ⚠ PRINSIP #0 (§0 Shōwa): :root TIDAK disentuh. Blok ini hanya MENAMBAH.
+   ⚠ GLOW SAH di sini (di era lain glow = "kartu web modern" → ditolak). Yang
+     tetap dilarang: offset KERAS `Npx Npx 0 0` (tanda tangan Shōwa) & blur kaca.
+   ⚠ Tema 常夜 → TIDAK ADA SIANG. "terang" = 宵 yoi (biru malam) · "gelap" =
+     真夜中 mayonaka (hitam penuh). Toggle = kedalaman malam, bukan siang/malam.
+   ⚠ Perf: grid/scanline STATIS (animation:none). Glitch hanya momen (transform).
+   Lihat PRD: docs/tema/cyberpunk.md §4.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+[data-era="cyberpunk"] {
+  /* ── Warna — 宵 yoi (senja awal malam). Dasar = LAYAR, bukan kertas. ──── */
+  --kinari-val:       #0e1a2e;  /* dasar — biru malam (bukan kertas) */
+  --kinari-light-val: #12213a;  /* panel kaca-semu */
+  --backdrop-val:     #0a1424;  /* latar luar */
+  --sumi-val:         #eaf2fa;  /* "tinta" dibalik → teks terang */
+  --ai-val:           #00f0ff;  /* cyan — PRIMER/info/navigasi */
+  --kin-val:          #ffe23a;  /* kuning — segel/LEVEL/CTA */
+  --kin-ink-val:      #ffe23a;  /* emas sebagai TEKS di atas malam */
+  --shu-val:          #ff2e4c;  /* merah — ALERT SAJA (≥4.5:1 di 宵) */
+  --matcha-val:       #3ddc97;  /* hijau — status positif */
+  --nezumi-val:       #8f9ca8;  /* teks telemetri sekunder */
+
+  /* ── Bentuk — KACA & CAHAYA (glow berlapis, hairline, sudut mati) ──────── */
+  --era-shadow:       0 0 20px rgba(0, 240, 255, 0.22), 0 0 44px rgba(0, 240, 255, 0.10);
+  --era-shadow-hover: 0 0 28px rgba(0, 240, 255, 0.34), 0 0 60px rgba(0, 240, 255, 0.16);
+  --era-edge-w:       1px;                       /* hairline, BUKAN tinta tebal */
+  --era-edge-color:   rgba(0, 240, 255, 0.32);
+  --era-radius:       0px;                        /* cut — sudut mati */
+  --era-radius-sm:    0px;
+  --era-radius-pill:  9999px;
+  --era-motion:       110ms;                      /* tercepat dari semua era */
+  --era-ease:         cubic-bezier(0.2, 0.8, 0.2, 1);
+  --era-glow:         inset 0 0 22px rgba(0, 240, 255, 0.06);
+  --era-glass:        linear-gradient(160deg, rgba(0, 240, 255, 0.06), rgba(0, 240, 255, 0.015) 45%, rgba(255, 226, 58, 0.02));
+
+  /* ── Tipografi — NOL FONT BARU (§5): display Dela Gothic One (sudah dipakai
+     多元), kanji hero tetap Noto Serif JP, chrome = mono sistem. Body = Inter. */
+  --font-display: "Dela Gothic One", "Noto Serif JP", sans-serif;
+  --font-serif:   "Noto Serif JP", "Shippori Mincho", serif;
+  --font-mono:    ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+/* ── 電脳 gelap — 真夜中 mayonaka (hitam penuh, malam terdalam) ───────────── */
+.dark[data-era="cyberpunk"], [data-theme="dark"][data-era="cyberpunk"] {
+  --kinari-val:       #04050a;
+  --kinari-light-val: #080b12;
+  --backdrop-val:     #020305;
+  --sumi-val:         #e8f4f8;
+  --shu-val:          #ff2e4c;
+  --nezumi-val:       #7f8b98;
+}
+
+/* ── MOTIF 電脳: grid cyan + scanline (WAJIB sendiri). Kalau lupa, lapisan
+   latar (`.bg-seigaiha.era-pattern` di App.jsx) diam-diam mewarisi gelombang
+   laut 青海波 punya Edo → "dinding" 電脳 salah tanpa error. STATIS (animation:
+   none) — layer fullscreen beranimasi = "berat pas scroll". */
+[data-era="cyberpunk"] .era-pattern {
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.10) 1px, transparent 1px),
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.05) 0 1px, transparent 1px 3px);
+  background-size: 44px 44px, 44px 44px, 100% 3px;
+  background-repeat: repeat, repeat, repeat;
+  opacity: 0.85 !important;          /* kontainer pakai opacity-10 → terlalu samar */
+  animation: none !important;        /* STATIS — hemat, tidak repaint tiap frame */
+  top: 0; left: 0; width: 100%; height: 100%;
+  will-change: auto;
+}
+.dark[data-era="cyberpunk"] .era-pattern,
+[data-theme="dark"][data-era="cyberpunk"] .era-pattern {
+  opacity: 0.7 !important;
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.09) 1px, transparent 1px),
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.045) 0 1px, transparent 1px 3px);
+}
+
+/* Kabut kota neon — gradien tipis biar latar tak rata. */
+[data-era="cyberpunk"] body {
+  background-image: radial-gradient(120% 90% at 78% -8%, rgba(0, 240, 255, 0.10) 0%, transparent 55%),
+                    radial-gradient(100% 80% at 12% 108%, rgba(255, 0, 60, 0.07) 0%, transparent 55%);
+  background-attachment: fixed;
+}
+.dark[data-era="cyberpunk"] body,
+[data-theme="dark"][data-era="cyberpunk"] body {
+  background-image: radial-gradient(120% 90% at 78% -8%, rgba(0, 240, 255, 0.09) 0%, transparent 55%),
+                    radial-gradient(100% 80% at 12% 108%, rgba(255, 0, 60, 0.06) 0%, transparent 55%);
+}
+
+/* ── JARING PENGAMAN 電脳 — bahasa bentuk KACA & CAHAYA (anti-brutalism Shōwa).
+   Memetakan kelas keras hardcoded (shadow-[Npx_Npx_0_0_#1a1a1a], border-4,
+   rounded-*) ke token 電脳. Offset KERAS → glow; tepi tebal → hairline 1px. */
+
+/* 1) TIPOGRAFI — judul/HUD = Dela Gothic One (極太, 1 bobot → weight 400). */
+[data-era="cyberpunk"] h1,
+[data-era="cyberpunk"] h2 {
+  font-family: var(--font-display);
+  font-weight: 400;   /* Dela Gothic One hanya 400; 900 → bold palsu (glyph ganda) */
+  letter-spacing: 0.01em;
+}
+
+/* 2) TEPI → hairline 1px. Tiap sisi terpisah supaya reset responsif tetap 0. */
+[data-era="cyberpunk"] [class*="border-4"],
+[data-era="cyberpunk"] [class*="border-3"],
+[data-era="cyberpunk"] [class*="border-2"],
+[data-era="cyberpunk"] [class*="border-["] {
+  border-width: var(--era-edge-w) !important;
+}
+[data-era="cyberpunk"] [class*="border-t-["] { border-top-width:    var(--era-edge-w) !important; }
+[data-era="cyberpunk"] [class*="border-b-["] { border-bottom-width: var(--era-edge-w) !important; }
+[data-era="cyberpunk"] [class*="border-l-["] { border-left-width:   var(--era-edge-w) !important; }
+[data-era="cyberpunk"] [class*="border-r-["] { border-right-width:  var(--era-edge-w) !important; }
+@media (min-width: 640px) {
+  [data-era="cyberpunk"] [class*="border-t-0"] { border-top-width:    0 !important; }
+  [data-era="cyberpunk"] [class*="border-b-0"] { border-bottom-width: 0 !important; }
+  [data-era="cyberpunk"] [class*="border-l-0"] { border-left-width:   0 !important; }
+  [data-era="cyberpunk"] [class*="border-r-0"] { border-right-width:  0 !important; }
+}
+
+/* 3) SUDUT → 0 (cut). Lingkaran semantik (avatar/segel) tetap bulat. */
+[data-era="cyberpunk"] :where([class*="border"]) { border-radius: var(--era-radius); }
+[data-era="cyberpunk"] [class*="rounded-"]:not(.rounded-full) { border-radius: var(--era-radius) !important; }
+[data-era="cyberpunk"] .rounded-full { border-radius: 9999px !important; }
+
+/* 4) BAYANGAN → GLOW BERLAPIS (memancar), BUKAN offset hitam keras Shōwa.
+      Tanda tangan 電脳 (§4.4): cahaya, bukan blok. */
+[data-era="cyberpunk"] [class*="shadow-["],
+[data-era="cyberpunk"] .shadow-2xs,
+[data-era="cyberpunk"] .shadow-xs,
+[data-era="cyberpunk"] .shadow-sm,
+[data-era="cyberpunk"] .shadow-md,
+[data-era="cyberpunk"] .shadow-lg,
+[data-era="cyberpunk"] .shadow-xl,
+[data-era="cyberpunk"] .shadow-2xl,
+[data-era="cyberpunk"] .shadow-inner {
+  box-shadow: var(--era-shadow) !important;
+}
+/* Nama shadow & drop-shadow punya titik buta yang sama (jaring hanya menangkap
+   arbitrary value). */
+[data-era="cyberpunk"] [class*="drop-shadow"] { filter: none !important; }
+
+/* 5) TOMBOL — glow menguat saat hover (bukan turun-mengempis ala Shōwa). */
+[data-era="cyberpunk"] :where(button, a)[class*="hover:translate-"]:hover { transform: none !important; }
+[data-era="cyberpunk"] :where(button, a)[class*="shadow-["] {
+  transition: box-shadow var(--era-motion) var(--era-ease);
+}
+[data-era="cyberpunk"] :where(button, a)[class*="shadow-["]:hover {
+  box-shadow: var(--era-shadow-hover) !important;
+}
+
+/* 6) HAPUS MOTIF ERA LAIN (seigaiha/asanoha/ichimatsu) — kecualikan .era-pattern
+      supaya grid 電脳 tak ikut dimatikan (jebakan motif #1). */
+[data-era="cyberpunk"] .bg-seigaiha:not(.era-pattern),
+[data-era="cyberpunk"] .bg-asanoha:not(.era-pattern),
+[data-era="cyberpunk"] .bg-ichimatsu { background-image: none !important; }
+
+/* ── PANEL KACA-SEMU (holo) — dipakai lewat kelas .cyber-glass. TANPA
+   backdrop-filter (blur kaca = repaint tiap frame = berat pas scroll). Kaca
+   disimulasikan dari gradien tipis + hairline cyan + glow. */
+[data-era="cyberpunk"] .cyber-glass {
+  position: relative;
+  border: 1px solid var(--era-edge-color) !important;
+  border-radius: var(--era-radius) !important;
+  background-image: var(--era-glass);
+  box-shadow: var(--era-shadow), var(--era-glow);
+}
+
+/* ── GLITCH (momen saja) — RGB-split. Hanya transform/opacity → murah.
+   Di-gate `.cyber-glitch` (dipakai komponen saat hover/event); hormati
+   prefers-reduced-motion. */
+@keyframes cyber-rgb-split {
+  0%   { text-shadow: 2px 0 0 rgba(255, 0, 60, 0.75), -2px 0 0 rgba(0, 240, 255, 0.75); transform: translateX(0); }
+  25%  { text-shadow: -2px 0 0 rgba(255, 0, 60, 0.75), 2px 0 0 rgba(0, 240, 255, 0.75); transform: translateX(1px); }
+  50%  { text-shadow: 3px 0 0 rgba(255, 0, 60, 0.6), -3px 0 0 rgba(0, 240, 255, 0.6); transform: translateX(-1px); }
+  75%  { text-shadow: -1px 0 0 rgba(255, 0, 60, 0.7), 1px 0 0 rgba(0, 240, 255, 0.7); transform: translateX(0); }
+  100% { text-shadow: 2px 0 0 rgba(255, 0, 60, 0.75), -2px 0 0 rgba(0, 240, 255, 0.75); transform: translateX(0); }
+}
+[data-era="cyberpunk"] .cyber-glitch:hover {
+  animation: cyber-rgb-split 0.32s steps(4, end) 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-era="cyberpunk"] .cyber-glitch:hover { animation: none; }
+}
+
+/* ── Segel holo 電脳 — kanji ber-glow kuning (tanda tangan era, analog segel
+   merah Heian/Edo). Dekoratif. */
+.cyber-seal { display: none; }
+[data-era="cyberpunk"] .cyber-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  color: var(--kin-val);
+  border: 2px solid var(--kin-val);
+  box-shadow: 0 0 16px rgba(255, 226, 58, 0.35), inset 0 0 14px rgba(255, 226, 58, 0.14);
+  text-shadow: 0 0 10px rgba(255, 226, 58, 0.5);
+}
+
+/* ── ORNAMEN 電脳 (hero 日本語学園) — 光ファイバーケーブル + ホログラム HUD +
+   電脳塔 ── Analog 提灯 (Edo) / 瓦斯灯 (Meiji) / 電柱 (Shōwa) / フィルム (多元).
+   Di-gate `.cyber-ornament` (default none). Dekoratif → pointer-events:none +
+   user-select:none. Bahasa bentuk 電脳: hairline + glow + sudut mati (radius 0),
+   BUKAN tinta tebal/offset keras ala Shōwa. Perf: hanya rotasi kabel yang
+   beranimasi (transform) — grid/scanline tetap STATIS. */
+.cyber-ornament { display: none; }
+[data-era="cyberpunk"] .cyber-ornament { display: block; }
+.cyber-ornament { pointer-events: none; user-select: none; }
+.cyber-ornament svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* 光ファイバーケーブル — kabel serat optik TINGGI menjuntai (benda gantung
+   KINETIK). SVG full-hero (preserveAspectRatio none) → kabel melintang penuh;
+   tiang tetap di kanan, berdiri di tanah. */
+.cyber-cable { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 15; }
+.cyber-cable svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.cyber-cable-mast { fill: #0a1424; stroke: rgba(0, 240, 255, 0.55); stroke-width: 1.2; }
+.cyber-cable-brace { fill: none; stroke: rgba(0, 240, 255, 0.32); stroke-width: 1.1; }
+.cyber-cable-arm { fill: rgba(0, 240, 255, 0.5); }
+.cyber-cable-insulator { fill: var(--kin-val); }
+/* Kabel = CAHAYA: lapis glow lebar (halo) + inti terang (serat). */
+.cyber-cable-glowline { fill: none; stroke: rgba(0, 240, 255, 0.26); stroke-width: 6; stroke-linecap: round; }
+.cyber-cable-core { fill: none; stroke: rgba(0, 240, 255, 0.9); stroke-width: 1.6; stroke-linecap: round; }
+.cyber-cable-node { fill: var(--kin-val); filter: drop-shadow(0 0 4px rgba(255, 226, 58, 0.9)); }
+.cyber-cable-lamp-arm { fill: none; stroke: rgba(0, 240, 255, 0.6); stroke-width: 1.4; }
+.cyber-cable-lamp { fill: #0a1424; stroke: rgba(0, 240, 255, 0.55); stroke-width: 1; }
+.cyber-cable-lamp-glass { fill: var(--kin-val); opacity: 0.9; filter: drop-shadow(0 0 5px rgba(255, 226, 58, 0.9)); }
+.cyber-cable-glow { opacity: 0.5; }
+/* 真夜中 mayonaka: cahaya lebih kuat di kegelapan penuh. */
+.dark[data-era="cyberpunk"] .cyber-cable-glowline,
+[data-theme="dark"][data-era="cyberpunk"] .cyber-cable-glowline { stroke: rgba(0, 240, 255, 0.34); }
+.dark[data-era="cyberpunk"] .cyber-cable-glow,
+[data-theme="dark"][data-era="cyberpunk"] .cyber-cable-glow { opacity: 0.7; }
+
+/* ホログラム HUD — papan holografik (panel statis ber-kanji). */
+.cyber-hud-frame { fill: rgba(0, 240, 255, 0.04); stroke: rgba(0, 240, 255, 0.42); stroke-width: 1; }
+.cyber-hud-corner { fill: none; stroke: var(--ai-val); stroke-width: 2; }
+.cyber-hud-bar { fill: rgba(0, 240, 255, 0.12); }
+.cyber-hud-title {
+  fill: var(--sumi-val);
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 400; letter-spacing: 0.06em;
+}
+.cyber-hud-code {
+  fill: var(--kin-val);
+  font-family: var(--font-mono);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.04em;
+}
+.cyber-hud-meter-track { fill: rgba(0, 240, 255, 0.08); stroke: rgba(0, 240, 255, 0.25); stroke-width: 0.5; }
+.cyber-hud-meter-fill { fill: rgba(0, 240, 255, 0.55); }
+.cyber-hud-meter-fill--lit { fill: var(--kin-val); filter: drop-shadow(0 0 3px rgba(255, 226, 58, 0.8)); }
+.cyber-hud-gridline { stroke: rgba(0, 240, 255, 0.4); stroke-width: 0.6; }
+
+/* 電脳塔 — menara antena transmisi 常夜 (rangka kisi + dish + cincin + beacon). */
+.cyber-spire-wave { opacity: 0.45; }
+.cyber-spire-mast { fill: #0a1424; stroke: rgba(0, 240, 255, 0.6); stroke-width: 1.2; }
+.cyber-spire-frame { fill: none; stroke: rgba(0, 240, 255, 0.5); stroke-width: 1.6; }
+.cyber-spire-brace { fill: none; stroke: rgba(0, 240, 255, 0.42); stroke-width: 0.9; opacity: 0.8; }
+.cyber-spire-dish { fill: rgba(0, 240, 255, 0.12); stroke: rgba(0, 240, 255, 0.7); stroke-width: 1.2; }
+.cyber-spire-feed { stroke: var(--kin-val); stroke-width: 1; }
+.cyber-spire-needle { fill: rgba(0, 240, 255, 0.7); }
+.cyber-spire-beacon { fill: var(--shu-val); filter: drop-shadow(0 0 5px rgba(255, 46, 76, 0.95)); }
+.cyber-spire-base { fill: #0a1424; stroke: rgba(0, 240, 255, 0.4); stroke-width: 1; }
+.dark[data-era="cyberpunk"] .cyber-spire-wave,
+[data-theme="dark"][data-era="cyberpunk"] .cyber-spire-wave { opacity: 0.65; }
+
+/* ── HERO 電脳 (header 日本語学園) — warna & latar era, TANPA merah-hitam base ──
+   Akar kritik (user): header 電脳 masih ber-DNA Shōwa (merah #FF2E4C + putih,
+   flat, tanpa glow). Di sini seluruh lockup merek di-reskin ke palet 常夜:
+   cyan (judul) + kuning (sub) + grid holo (latar), veil pencerah dimatikan. */
+[data-era="cyberpunk"] .home-hero-bg {
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.10) 1px, transparent 1px),
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.05) 0 1px, transparent 1px 3px);
+  background-size: 44px 44px, 44px 44px, 100% 3px;
+  background-repeat: repeat, repeat, repeat;
+  background-color: var(--kinari-val);
+}
+.dark[data-era="cyberpunk"] .home-hero-bg,
+[data-theme="dark"][data-era="cyberpunk"] .home-hero-bg {
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.09) 1px, transparent 1px),
+    repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.045) 0 1px, transparent 1px 3px);
+}
+/* Veil pencerah bawaan (from-kinari-light/85) memudarkan grid → dimatikan. */
+[data-era="cyberpunk"] .home-hero-veil { background-image: none !important; }
+/* Kotak 学 → panel kaca-semu: hairline cyan + glow, TANPA rotasi kertas. */
+[data-era="cyberpunk"] .home-hero-mark {
+  background-color: rgba(0, 240, 255, 0.08) !important;
+  color: var(--ai-val) !important;
+  border: 1px solid var(--era-edge-color);
+  box-shadow: var(--era-shadow) !important;
+  transform: none !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.65);
+}
+[data-era="cyberpunk"] .home-hero-title {
+  color: var(--ai-val) !important;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.45);
+}
+[data-era="cyberpunk"] .home-hero-sub   { color: var(--kin-val) !important; opacity: 0.85; }
+[data-era="cyberpunk"] .home-hero-h1    { color: var(--sumi-val) !important; }
+[data-era="cyberpunk"] .home-hero-h1-accent {
+  color: var(--shu-val) !important;
+  text-shadow: 0 0 14px rgba(255, 46, 76, 0.5);
+}
+
 
 

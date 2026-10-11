@@ -16,6 +16,7 @@ import { EdoLantern, EdoNoren } from "../components/EdoOrnament";
 import { MeijiGaslight, MeijiBunsen } from "../components/MeijiOrnament";
 import { ShowaDenchu, ShowaKanban, ShowaTower } from "../components/ShowaOrnament";
 import { AnimeFilm, AnimePanel, AnimeGate } from "../components/AnimeOrnament";
+import { CyberCable, CyberHud, CyberSpire } from "../components/CyberpunkOrnament";
 import { ShowaPrintArt } from "../components/ShowaArtwork";
 
 import { StreakIndicator } from "../components/StreakIndicator";
@@ -202,6 +203,16 @@ export function Home() {
             <AnimeFilm className="anime-hero-film" />
             <AnimePanel className="anime-hero-panel absolute bottom-3 right-3 sm:right-8 w-28 sm:w-36 z-20" />
             <AnimeGate className="anime-hero-gate absolute bottom-0 right-32 sm:right-48 w-14 sm:w-20 z-0" />
+
+            {/* Hiasan 電脳 CYBERPUNK — 光ファイバーケーブル kabel serat optik
+                bergoyang (analog 提灯/瓦斯灯/電柱/フィルム: gantung & berayun,
+                tapi paling DINGIN & presisi) + ホログラム HUD papan holografik
+                (segel 電脳 + bar telemetri; analog 看板/文選/コマ割り) +
+                電脳塔 menara antena 常夜 (analog 東京タワー/多世界の扉).
+                HANYA era 電脳 (di-gate .cyber-ornament). */}
+            <CyberCable className="cyber-hero-cable" />
+            <CyberHud className="cyber-hero-hud absolute bottom-3 right-3 sm:right-8 w-28 sm:w-36 z-20" />
+            <CyberSpire className="cyber-hero-spire absolute bottom-0 right-32 sm:right-48 w-14 sm:w-20 z-0" />
 
             <motion.div
               initial={{ opacity: 0, x: -20 }}

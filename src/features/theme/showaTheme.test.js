@@ -14,9 +14,13 @@ import { dirname, join } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const css = readFileSync(join(here, '..', '..', 'index.css'), 'utf8');
-// Blok Shōwa = dari header tema sampai AKHIR file (ia seksi terakhir).
+// Blok Shōwa = dari header tema sampai blok tema era BERIKUTNYA (電脳).
+// ⚠️ Shōwa dulu seksi terakhir; sejak era 電脳 (常夜) ditambahkan, blok Shōwa
+// BUKAN lagi ujung file → slice harus dibatasi, kalau tidak selector 電脳 ikut
+// terbaca sebagai "bocor" dari Shōwa.
 const start = css.indexOf('SHŌWA 昭和');
-const block = css.slice(start);
+const nextEra = css.indexOf('電脳 CYBERPUNK');
+const block = css.slice(start, nextEra > start ? nextEra : undefined);
 
 // Ambil daftar selector unik dari blok Shōwa (buang komentar & at-rule).
 function selectors(text) {
