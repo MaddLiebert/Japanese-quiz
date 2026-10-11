@@ -25,6 +25,7 @@ import { EdoCinematic } from './edo/EdoCinematic';
 import { MeijiCinematic } from './meiji/MeijiCinematic';
 import { ShowaCinematic } from './showa/ShowaCinematic';
 import { AnimeCinematic } from './anime/AnimeCinematic';
+import { CyberCinematic } from './cyberpunk/CyberCinematic';
 import { isAudioRunning, enableHeianAudio } from './heian/heianHistoryAudio';
 
 const CinematicContext = createContext(null);
@@ -46,6 +47,9 @@ function CinematicStage({ cinematic, onDone, onExplore, onSeen }) {
     }
     if (cinematic.era === 'anime') {
       return <AnimeCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
+    }
+    if (cinematic.era === 'cyberpunk') {
+      return <CyberCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
     }
     return <HeianCinematic onDone={onDone} onExplore={onExplore} onSeen={onSeen} />;
   }

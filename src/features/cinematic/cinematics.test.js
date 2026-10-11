@@ -62,7 +62,8 @@ test('cinematicForEra / nextCinematic: auto-play HANYA kalau belum dilihat', () 
   assert.equal(nextCinematic('showa', { showa: true }), null, 'Shōwa sudah dilihat → jangan');
   assert.equal(nextCinematic('anime', {}), 'anime', '多元 punya cinematic → putar');
   assert.equal(nextCinematic('anime', { anime: true }), null, '多元 sudah dilihat → jangan');
-  assert.equal(nextCinematic('cyberpunk', {}), null, 'era tanpa cinematic → null');
+  assert.equal(nextCinematic('cyberpunk', {}), 'cyberpunk', '電脳 punya cinematic → putar');
+  assert.equal(nextCinematic('cyberpunk', { cyberpunk: true }), null, '電脳 sudah dilihat → jangan');
 });
 
 test('getCinematic: ambil by id, id tak dikenal → null', () => {
@@ -71,5 +72,6 @@ test('getCinematic: ambil by id, id tak dikenal → null', () => {
   assert.equal(getCinematic('meiji')?.route, '/meiji-history');
   assert.equal(getCinematic('showa')?.route, '/showa-history');
   assert.equal(getCinematic('anime')?.route, '/anime-history');
+  assert.equal(getCinematic('cyberpunk')?.route, '/cyberpunk-history');
   assert.equal(getCinematic('nope'), null);
 });

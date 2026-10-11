@@ -395,9 +395,9 @@ export function Settings() {
                 { id: 'anime', kanji: '多元', name: 'Multiverse', route: '/anime-history',
                   desc_id: 'Peta 8 dunia 多元: 物販 (beli dunia), クレーンゲーム (koleksi karakter), dan gerbang 最終回.',
                   desc_en: 'The 8-world 多元 map: 物販 (buy worlds), クレーンゲーム (character collection), and the 最終回 gate.' },
-                { id: 'cyberpunk', kanji: '電脳', name: 'Cyberpunk', route: '/cyberpunk-history', cine: false,
-                  desc_id: 'Peta 「家」 電脳: 5 sudut rumah Nacht & Saku di kota neon, dan gerbang terakhir 終.',
-                  desc_en: 'The 電脳 「家」 map: five angles of Nacht & Saku\u2019s home in a neon city, and the final 終 gate.' },
+                { id: 'cyberpunk', kanji: '電脳', name: 'Cyberpunk', route: '/cyberpunk-history',
+                  desc_id: 'Cinematic 「常夜」: puncak peradaban dan malam tanpa akhir — masuk lewat glitch. Putar ulang kapan saja di sini.',
+                  desc_en: 'The 「常夜」 cinematic: the peak of civilization and an endless night — entering through glitch. Replay it any time here.' },
               ].map((c) => {
                 const open = unlocked.some((e) => e.id === c.id);
                 return (

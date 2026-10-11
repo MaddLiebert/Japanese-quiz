@@ -17,6 +17,7 @@ export const CINEMATICS = {
   meiji: { id: 'meiji', era: 'meiji', kind: 'history', title: '明治', route: '/meiji-history' },
   showa: { id: 'showa', era: 'showa', kind: 'history', title: '昭和', route: '/showa-history' },
   anime: { id: 'anime', era: 'anime', kind: 'history', title: '多元', route: '/anime-history' },
+  cyberpunk: { id: 'cyberpunk', era: 'cyberpunk', kind: 'history', title: '電脳', route: '/cyberpunk-history' },
 };
 
 // ── State "sudah dilihat" (objek { [cinematicId]: true }) ────────────────────

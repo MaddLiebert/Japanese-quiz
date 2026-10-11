@@ -230,6 +230,28 @@ export const HEIAN_SFX_PARAMS = {
   portal: { kind: 'drone', from: 60, to: 120, dur: 2.0, gain: 0.2, padGain: 0.1 },
   // ファンファーレ fanfare penutup (題字 多元).
   fanfarePop: { kind: 'bell', baseHz: 523.25, partials: [1, 2.0, 2.76, 4.0], dur: 2.2, gain: 0.13 },
+
+  // ── 電脳 Cyberpunk (kota neon, 常夜) — listrik, data, hujan, hologram ──────
+  // ネオン dengung papan neon (listrik tinggi, lembut & terus-menerus).
+  neonHum: { kind: 'noise', dur: 2.6, gain: 0.06, type: 'bandpass', fromHz: 3000, toHz: 3400, q: 6.0, curve: 'soft' },
+  // グリッチ GLITCH masuk — ledakan noise lebar (RGB-split terdengar).
+  glitchBurst: { kind: 'noise', dur: 0.42, gain: 0.16, type: 'highpass', fromHz: 600, toHz: 5200, q: 0.7 },
+  // グリッチ tik digital pendek (potongan sinyal).
+  glitchTick: { kind: 'wood', from: 2600, to: 1800, dur: 0.045, gain: 0.12, noiseGain: 0.06 },
+  // データ aliran data naik (streak cepat, seperti unduhan).
+  dataRush: { kind: 'noise', dur: 1.5, gain: 0.1, type: 'bandpass', fromHz: 800, toHz: 4200, q: 1.2, curve: 'soft' },
+  // ホログラム hologram menyala (bel kaca tinggi, ekor pendek).
+  hologram: { kind: 'bell', baseHz: 1046.5, partials: [1, 2.4, 4.1], dur: 1.6, gain: 0.09 },
+  // 雨 hujan neon (desis lebar, panjang).
+  rain: { kind: 'noise', dur: 3.2, gain: 0.05, type: 'highpass', fromHz: 1800, toHz: 2400, q: 0.5, curve: 'soft' },
+  // 電源 naik (daya kota hidup) — drone NAIK tajam.
+  powerUp: { kind: 'drone', from: 60, to: 180, dur: 1.8, gain: 0.18, padGain: 0.09 },
+  // 電源落ち daya turun (kota padam) — drone TURUN, berat.
+  powerDown: { kind: 'drone', from: 180, to: 36, dur: 2.2, gain: 0.22, padGain: 0.1 },
+  // スライス potongan glitch horizontal (gesekan tajam).
+  glitchSlice: { kind: 'noise', dur: 0.3, gain: 0.14, type: 'bandpass', fromHz: 4200, toHz: 900, q: 2.2 },
+  // 印 segel hanko holo (ketukan logam + resonansi).
+  sealStamp: { kind: 'wood', from: 480, to: 220, dur: 0.16, gain: 0.26, noiseGain: 0.08 },
 };
 
 export const heianSfxParams = (key) => HEIAN_SFX_PARAMS[key] || null;
@@ -490,6 +512,30 @@ export const AMBIENCE_PLANS = {
     drone: { freqs: [49, 98], detune: [0, -4], gain: 0.42 },
     pad: { type: 'triangle', freqs: [261.63, 329.63, 392], filterHz: 1300, lfoHz: 0.09, lfoDepth: 220, gain: 0.3 },
     air: { type: 'lowpass', hz: 1000, gain: 0.05 },
+  },
+
+  // ── 電脳 Cyberpunk 常夜: malam abadi — drone SANGAT dalam, pad sawtooth dingin,
+  // napas paling lambat. Bukan chiptune cerah (多元), bukan beton (Shōwa). ─────
+  // neon: kota hidup malam — dasar 常夜, drone dalam (F1/C2) + saw dingin.
+  neon: {
+    level: 0.11, fadeInMs: 2000, fadeOutMs: 1200,
+    drone: { freqs: [43.65, 87.31, 65.41], detune: [0, -8, 4], gain: 0.5 },
+    pad: { type: 'sawtooth', freqs: [174.61, 207.65, 261.63], filterHz: 720, lfoHz: 0.035, lfoDepth: 200, gain: 0.26 },
+    air: { type: 'bandpass', hz: 2800, gain: 0.05 },
+  },
+  // peak 頂: puncak peradaban — paling terang & padat (denyut lebih cepat, tinggi).
+  peak: {
+    level: 0.12, fadeInMs: 1400, fadeOutMs: 1000,
+    drone: { freqs: [49, 98, 73.42], detune: [0, -6, 4], gain: 0.48 },
+    pad: { type: 'sawtooth', freqs: [220, 261.63, 329.63, 392], filterHz: 1100, lfoHz: 0.14, lfoDepth: 240, gain: 0.28 },
+    air: { type: 'bandpass', hz: 3200, gain: 0.055 },
+  },
+  // endless 終: malam tanpa akhir — paling gelap & lapang, hampir padam.
+  endless: {
+    level: 0.1, fadeInMs: 2600, fadeOutMs: 1600,
+    drone: { freqs: [36.71, 73.42], detune: [0, -9], gain: 0.52 },
+    pad: { type: 'sawtooth', freqs: [146.83, 174.61], filterHz: 560, lfoHz: 0.025, lfoDepth: 260, gain: 0.24 },
+    air: { type: 'lowpass', hz: 320, gain: 0.06 },
   },
 };
 
