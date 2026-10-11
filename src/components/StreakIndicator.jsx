@@ -5,12 +5,13 @@ import { useEra } from '../features/theme/EraContext';
 import { streakUnit } from '../features/progress/streak';
 import { streakCopy } from '../features/progress/streakCopy';
 import { StreakCandle } from './StreakCandle';
-import { StreakLantern, StreakGaslight } from './StreakSigil';
+import { StreakLantern, StreakGaslight, StreakHologram } from './StreakSigil';
 
 // Kartu streak belajar. Ikon (sigil) BEDA TIAP ERA — lihat streakCopy.js `sigil`:
 //   • Heian 平安 → 和蝋燭 (lilin)   — MENYALA 灯 tiap hari, PADAM 消 kalau bolong
 //   • Edo   江戸 → 提灯 (lentera)   — menyala tiap malam
 //   • Meiji 明治 → 瓦斯灯 (lampu gas) — dinyalakan tiap senja
+//   • 電脳  電脳 → ホログラム (hologram) — proyeksi HUD; koneksi stabil/putus
 //   • Era lain   → kotak segel 炎/灰 (legacy, belum didesain)
 export const StreakIndicator = ({ count = 0, isActive = false }) => {
   const { language } = useLanguage();
@@ -24,6 +25,7 @@ export const StreakIndicator = ({ count = 0, isActive = false }) => {
     if (sigil === 'candle') return <StreakCandle lit={isActive} size={44} label={isActive ? T.candleLit : T.candleOut} />;
     if (sigil === 'lantern') return <StreakLantern lit={isActive} size={44} label={isActive ? T.candleLit : T.candleOut} />;
     if (sigil === 'gaslight') return <StreakGaslight lit={isActive} size={44} label={isActive ? T.candleLit : T.candleOut} />;
+    if (sigil === 'hologram') return <StreakHologram lit={isActive} size={44} label={isActive ? T.candleLit : T.candleOut} />;
     return null;
   };
 

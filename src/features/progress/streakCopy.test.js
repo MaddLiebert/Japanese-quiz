@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  HEIAN_STREAK, EDO_STREAK, MEIJI_STREAK, STREAK_BY_ERA, streakCopy, isHeianEra,
+  HEIAN_STREAK, EDO_STREAK, MEIJI_STREAK, CYBERPUNK_STREAK, STREAK_BY_ERA, streakCopy, isHeianEra,
 } from './streakCopy.js';
 
 const KANJI = /[\u4e00-\u9fff]/;
@@ -35,10 +35,21 @@ test('label utama Heian BEBAS kanji (kana saja)', () => {
   assert.ok(KANJI.test(T.sigilOn) && KANJI.test(T.sigilOff));
 });
 
-test('TIAP ERA punya sigil sendiri (Heian/Edo/Meiji beda) — anti Shōwa bocor', () => {
-  const sigils = [HEIAN_STREAK.sigil, EDO_STREAK.sigil, MEIJI_STREAK.sigil];
-  assert.deepEqual(sigils, ['candle', 'lantern', 'gaslight']);
-  assert.equal(new Set(sigils).size, 3, 'sigil tiap era harus unik');
+test('TIAP ERA punya sigil sendiri (Heian/Edo/Meiji/電脳 beda) — anti Shōwa bocor', () => {
+  const sigils = [HEIAN_STREAK.sigil, EDO_STREAK.sigil, MEIJI_STREAK.sigil, CYBERPUNK_STREAK.sigil];
+  assert.deepEqual(sigils, ['candle', 'lantern', 'gaslight', 'hologram']);
+  assert.equal(new Set(sigils).size, 4, 'sigil tiap era harus unik');
+});
+
+test('電脳 punya copy sendiri (接続/hologram), bukan legacy 炎', () => {
+  const T = streakCopy('cyberpunk', 'id');
+  assert.equal(T.title, '接続');
+  assert.equal(T.sigil, 'hologram');
+  assert.equal(T.unit, '日');
+  assert.notEqual(T.sigilOn, '炎');
+  assert.notEqual(T.title, 'Streak Belajar');
+  // bebas bahasa (seperti era lain)
+  assert.deepEqual(streakCopy('cyberpunk', 'id'), streakCopy('cyberpunk', 'en'));
 });
 
 test('Meiji punya copy sendiri (tidak mewarisi era lain / legacy 炎)', () => {
@@ -56,8 +67,8 @@ test('Edo punya copy sendiri (提灯), bukan legacy', () => {
   assert.notEqual(T.sigilOn, '炎');
 });
 
-test('STREAK_BY_ERA: berisi heian/edo/meiji', () => {
-  assert.deepEqual(Object.keys(STREAK_BY_ERA).sort(), ['edo', 'heian', 'meiji']);
+test('STREAK_BY_ERA: berisi heian/edo/meiji/cyberpunk', () => {
+  assert.deepEqual(Object.keys(STREAK_BY_ERA).sort(), ['cyberpunk', 'edo', 'heian', 'meiji']);
 });
 
 test('streakCopy: era yang belum didesain → teks lama (炎/灰, ID/EN)', () => {
@@ -68,13 +79,13 @@ test('streakCopy: era yang belum didesain → teks lama (炎/灰, ID/EN)', () =>
   assert.equal(id.sigilOn, '炎');
   assert.equal(id.sigil, 'legacy');
 
-  const en = streakCopy('cyberpunk', 'en');
+  const en = streakCopy('anime', 'en');
   assert.equal(en.title, 'Study Streak');
   assert.equal(en.bonusOff, 'Bonus Inactive');
 });
 
 test('streakCopy: era ber-copy tidak bergantung bahasa', () => {
-  for (const era of ['heian', 'edo', 'meiji']) {
+  for (const era of ['heian', 'edo', 'meiji', 'cyberpunk']) {
     assert.deepEqual(streakCopy(era, 'id'), streakCopy(era, 'en'));
   }
 });

@@ -55,11 +55,28 @@ export const MEIJI_STREAK = {
   sigil: 'gaslight',
 };
 
+// 電脳 Cyberpunk — ホログラム (proyeksi hologram). Streak = UPTIME KONEKSI:
+// selama pemain belajar tiap hari, proyeksi tetap terhubung & stabil; bolong
+// sehari → proyeksi padam (接続 断 / 切断).
+// Satuan 日 (hari). Ikon: panel HUD holo melayang dari proyektor di bawah.
+export const CYBERPUNK_STREAK = {
+  title: '接続',               // koneksi (streak = uptime terhubung)
+  unit: '日',                  // satuan hari
+  bonusOn: '接続 安定',         // koneksi stabil
+  bonusOff: '接続 断',          // koneksi terputus
+  sigilOn: '電',
+  sigilOff: '断',
+  candleLit: 'ホログラム が 起動して いる',
+  candleOut: 'ホログラム が 停止して いる',
+  sigil: 'hologram',
+};
+
 // Peta era → copy. Era yang belum punya desain jatuh ke LEGACY (kotak 炎/灰).
 export const STREAK_BY_ERA = {
   heian: HEIAN_STREAK,
   edo: EDO_STREAK,
   meiji: MEIJI_STREAK,
+  cyberpunk: CYBERPUNK_STREAK,
 };
 
 export const isHeianEra = (eraId) => eraId === 'heian';

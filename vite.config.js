@@ -38,6 +38,10 @@ export default defineConfig({
         // Precache app shell + data ringan (strokes json, art svg, font).
         // Media BERAT (mp3/gif/webp/jpg) TIDAK di sini → lewat runtimeCaching.
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2}'],
+        // Bundle app-shell sudah ~2.1 MB (di atas batas default workbox 2 MiB) →
+        // naikkan limit supaya app-shell TETAP ter-precache (offline utuh).
+        // Media berat tetap keluar dari precache lewat globPatterns + runtimeCaching.
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         // Media berat: cache saat PERTAMA dipakai (CacheFirst), bukan diunduh
         // semua saat install. Klip yang sudah diputar tetap tersedia offline.
         runtimeCaching: [
