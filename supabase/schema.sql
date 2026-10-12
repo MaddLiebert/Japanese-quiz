@@ -27,10 +27,15 @@ create table if not exists public.profiles (
   max_streak      integer not null default 0,
   accuracy        numeric not null default 0,
   total_answered  integer not null default 0,
+  avatar          text not null default '',               -- foto profil (data URL kecil)
   data            jsonb   not null default '{}'::jsonb,   -- bundle progres penuh
   updated_at      timestamptz not null default now(),
   created_at      timestamptz not null default now()
 );
+
+-- Untuk DB yang sudah ada: tambahkan kolom avatar (create table if not exists
+-- TIDAK menambah kolom ke tabel lama).
+alter table public.profiles add column if not exists avatar text not null default '';
 
 create table if not exists public.xp_events (
   id          bigint generated always as identity primary key,
@@ -95,12 +100,12 @@ create trigger profiles_xp_delta
 
 -- ── 4. Leaderboard (SECURITY DEFINER → tembus RLS, tapi hanya kolom aman) ───
 create or replace function public.leaderboard_all_time(p_limit int default 100)
-returns table (id uuid, display_name text, xp int, level int, streak int, updated_at timestamptz)
+returns table (id uuid, display_name text, xp int, level int, streak int, avatar text, updated_at timestamptz)
 language sql
 security definer
 set search_path = public
 as $$
-  select p.id, p.display_name, p.xp, p.level, p.streak, p.updated_at
+  select p.id, p.display_name, p.xp, p.level, p.streak, p.avatar, p.updated_at
   from public.profiles p
   where p.xp > 0
   order by p.xp desc, p.updated_at asc
@@ -108,19 +113,19 @@ as $$
 $$;
 
 create or replace function public.leaderboard_weekly(p_limit int default 100)
-returns table (id uuid, display_name text, weekly_xp bigint, level int)
+returns table (id uuid, display_name text, weekly_xp bigint, level int, avatar text)
 language sql
 security definer
 set search_path = public
 as $$
   select p.id, p.display_name,
          coalesce(sum(e.amount), 0)::bigint as weekly_xp,
-         p.level
+         p.level, p.avatar
   from public.profiles p
   left join public.xp_events e
     on e.user_id = p.id
    and e.created_at >= date_trunc('week', now())
-  group by p.id, p.display_name, p.level, p.updated_at
+  group by p.id, p.display_name, p.level, p.avatar, p.updated_at
   having coalesce(sum(e.amount), 0) > 0
   order by weekly_xp desc, p.updated_at asc
   limit greatest(1, least(coalesce(p_limit, 100), 200));

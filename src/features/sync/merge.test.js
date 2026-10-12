@@ -74,3 +74,12 @@ test('mergeBundles: input kosong/null tidak meledak', () => {
   assert.deepEqual(bundle.itemProgress, {});
   assert.deepEqual(bundle.achievements, []);
 });
+
+test('mergeBundles: avatar diambil dari yang non-kosong', () => {
+  const local = { updatedAt: 100, username: 'A', progress: {}, itemProgress: {}, achievements: [], selectedBadges: [], avatar: '' };
+  const remote = { updatedAt: 50, username: 'A', progress: {}, itemProgress: {}, achievements: [], selectedBadges: [], avatar: 'data:image/jpeg;base64,R' };
+  assert.equal(mergeBundles(local, remote).bundle.avatar, 'data:image/jpeg;base64,R');
+  // Dua-duanya ada → ikut pemenang (lokal lebih baru).
+  const local2 = { ...local, avatar: 'data:image/jpeg;base64,L', updatedAt: 200 };
+  assert.equal(mergeBundles(local2, remote).bundle.avatar, 'data:image/jpeg;base64,L');
+});

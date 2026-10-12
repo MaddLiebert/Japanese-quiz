@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useUserStats, useItemProgress, useAchievements, ACHIEVEMENT_META } from '../progress/ProgressContext';
@@ -19,6 +19,9 @@ import poemsData from '../../data/poems.json';
 import n5ExamData from '../../data/n5-exam.json';
 import { buildSubjectMastery, flattenExamData, SUBJECT_LABEL_ID } from './subjectMastery';
 import { EraPaper } from '../../components/EraPaper';
+import { readAvatar, writeAvatar, clearAvatar, resizeImageToDataURL, isValidAvatarFile, initials } from './avatar';
+import { useSync } from '../sync/SyncContext';
+import { fetchMyRank } from '../leaderboard/leaderboardApi';
 
 // Hanko Stamp component matching Home.jsx
 const HankoStamp = ({ text, label, delay = 0.2 }) => (
@@ -42,6 +45,49 @@ export function Profile() {
   const { itemProgress } = useItemProgress();
   const { achievements, selectedBadges, setSelectedBadges } = useAchievements();
   const [isEditingBadges, setIsEditingBadges] = useState(false);
+
+  // ── Foto profil (disimpan lokal + ikut tersinkron ke cloud) ────────────────
+  const [avatar, setAvatar] = useState(() => readAvatar());
+  const [avatarMsg, setAvatarMsg] = useState('');
+  const avatarInputRef = useRef(null);
+
+  const handlePickAvatar = () => avatarInputRef.current?.click();
+  const handleAvatarFile = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    const v = isValidAvatarFile(file);
+    if (!v.ok) {
+      setAvatarMsg(v.reason === 'size' ? 'File terlalu besar (maks 8MB)' : 'Format harus PNG/JPG/WebP/GIF');
+      return;
+    }
+    try {
+      const dataUrl = await resizeImageToDataURL(file);
+      setAvatar(dataUrl);
+      writeAvatar(localStorage, dataUrl);
+      setAvatarMsg('Foto tersimpan ✓');
+    } catch {
+      setAvatarMsg('Gagal memproses gambar');
+    }
+  };
+  const handleRemoveAvatar = () => {
+    setAvatar('');
+    clearAvatar(localStorage);
+    setAvatarMsg('Foto dihapus');
+  };
+
+  // ── Peringkat global (tampil kalau sync aktif) ─────────────────────────────
+  const { configured, enabled, user } = useSync();
+  const [rank, setRank] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    if (configured && enabled && user) {
+      fetchMyRank().then((r) => { if (alive) setRank(r.rank); }).catch(() => {});
+    } else {
+      setRank(null);
+    }
+    return () => { alive = false; };
+  }, [configured, enabled, user, progress.xp]);
 
   // Radar "Subject Mastery" — 8 subjek (termasuk Puisi & Ujian N5 yang dulu
   // tercatat tapi tak pernah tampil). Logika murni + tes di subjectMastery.js.
@@ -203,9 +249,39 @@ export function Profile() {
             <div className="space-y-8">
               {/* Name & Avatar card */}
               <div className="border-[4px] border-sumi bg-kinari p-6 shadow-[6px_6px_0_0_#1a1a1a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 bg-ai text-kinari-light border-[4px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] flex items-center justify-center">
-                    <Glyph name="mask" size={40} />
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="flex flex-col items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handlePickAvatar}
+                      title={language === 'id' ? 'Ganti foto profil' : 'Change profile photo'}
+                      className="w-20 h-20 bg-ai text-kinari-light border-[4px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] flex items-center justify-center overflow-hidden relative cursor-pointer group"
+                    >
+                      {avatar ? (
+                        <img src={avatar} alt="Foto profil" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="font-serif font-black text-2xl">{initials(realProfileData.name)}</span>
+                      )}
+                      <span className="absolute inset-0 bg-sumi/60 text-kinari-light text-[9px] font-black uppercase tracking-widest items-center justify-center hidden group-hover:flex">
+                        {language === 'id' ? 'Ganti' : 'Change'}
+                      </span>
+                    </button>
+                    <input
+                      ref={avatarInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarFile}
+                    />
+                    {avatar && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveAvatar}
+                        className="text-[9px] font-black uppercase tracking-widest text-shu hover:underline cursor-pointer"
+                      >
+                        {language === 'id' ? 'Hapus Foto' : 'Remove'}
+                      </button>
+                    )}
                   </div>
                   <div>
                     <span className="text-[10px] uppercase font-bold tracking-widest text-sumi/60">Nickname</span>
@@ -251,6 +327,15 @@ export function Profile() {
                 <div className="text-left sm:text-right">
                   <div className="text-[10px] uppercase tracking-widest font-bold text-sumi/60">Total XP</div>
                   <div className="text-2xl font-serif font-black text-sumi">{progress.xp.toLocaleString()} XP</div>
+                  {rank != null && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 bg-shu text-kinari-light text-[11px] font-black px-3 py-1 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
+                      <Glyph name="trophy" className="text-xs" />
+                      {language === 'id' ? 'Peringkat' : 'Rank'} #{rank}
+                    </div>
+                  )}
+                  {avatarMsg && (
+                    <div className="text-[10px] font-bold text-sumi/50 mt-2">{avatarMsg}</div>
+                  )}
                 </div>
               </div>
 

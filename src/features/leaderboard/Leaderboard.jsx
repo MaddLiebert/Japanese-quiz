@@ -6,6 +6,7 @@ import { useSync } from '../sync/SyncContext';
 import { useUserStats } from '../progress/ProgressContext';
 import { EraPaper } from '../../components/EraPaper';
 import { fetchAllTime, fetchWeekly, fetchMyRank, rankMedal } from './leaderboardApi';
+import { initials } from '../profile/avatar';
 
 // Papan Peringkat 番付 — global. Dua papan: sepanjang masa (XP) & mingguan.
 export function Leaderboard() {
@@ -163,6 +164,11 @@ export function Leaderboard() {
                       >
                         <span className="w-10 text-center font-serif font-black text-lg text-sumi shrink-0">
                           {rankMedal(i)}
+                        </span>
+                        <span className="w-9 h-9 shrink-0 border-[2px] border-sumi bg-ai text-kinari-light flex items-center justify-center overflow-hidden font-serif font-black text-xs">
+                          {r.avatar
+                            ? <img src={r.avatar} alt="" className="w-full h-full object-cover" />
+                            : initials(r.display_name)}
                         </span>
                         <span className="flex-1 min-w-0 truncate font-bold text-sumi">
                           {r.display_name || '旅人'}

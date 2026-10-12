@@ -66,6 +66,11 @@ export const mergeBundles = (local, remote) => {
 
   const achievements = Array.from(new Set([...asArr(l.achievements), ...asArr(r.achievements)]));
 
+  // Avatar: data URL; ambil yang non-kosong (utamakan pemenang kalau dua-duanya ada).
+  const lAvatar = typeof l.avatar === 'string' ? l.avatar : '';
+  const rAvatar = typeof r.avatar === 'string' ? r.avatar : '';
+  const avatar = winner === 'remote' ? (rAvatar || lAvatar) : (lAvatar || rAvatar);
+
   return {
     winner,
     bundle: {
@@ -75,6 +80,7 @@ export const mergeBundles = (local, remote) => {
       itemProgress: mergeItemProgress(l.itemProgress, r.itemProgress),
       achievements,
       selectedBadges: winBadges.slice(0, 8),
+      avatar,
       updatedAt: Math.max(lt, rt),
       deviceId: l.deviceId || r.deviceId || '',
     },

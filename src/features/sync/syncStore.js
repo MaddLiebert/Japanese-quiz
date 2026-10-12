@@ -16,6 +16,7 @@ export const SYNC_KEYS = {
   itemProgress: 'item_progress_v2',
   achievements: 'achievements_unlocked_v2',
   selectedBadges: 'selected_badges',
+  avatar: 'user_avatar_v1',
 };
 
 // Daftar key localStorage yang perubahannya memicu push (untuk storageBus).
@@ -54,6 +55,7 @@ export const emptyBundle = () => ({
   itemProgress: {},
   achievements: [],
   selectedBadges: [],
+  avatar: '',
   updatedAt: 0,
   deviceId: '',
 });
@@ -93,6 +95,8 @@ export const readBundle = (storage = defaultStorage()) => {
     itemProgress: safeParse(storage.getItem(SYNC_KEYS.itemProgress), {}),
     achievements: safeParse(storage.getItem(SYNC_KEYS.achievements), []),
     selectedBadges: safeParse(storage.getItem(SYNC_KEYS.selectedBadges), []),
+    // avatar disimpan sebagai data URL MENTAH (bukan JSON) — sama seperti username.
+    avatar: storage.getItem(SYNC_KEYS.avatar) || '',
     updatedAt: meta.updatedAt,
     deviceId: meta.deviceId || ensureDeviceId(storage),
   };
@@ -106,6 +110,7 @@ export const writeBundle = (storage = defaultStorage(), bundle = {}) => {
   storage.setItem(SYNC_KEYS.itemProgress, JSON.stringify(bundle.itemProgress ?? {}));
   storage.setItem(SYNC_KEYS.achievements, JSON.stringify(bundle.achievements ?? []));
   storage.setItem(SYNC_KEYS.selectedBadges, JSON.stringify(bundle.selectedBadges ?? []));
+  storage.setItem(SYNC_KEYS.avatar, bundle.avatar || '');
 };
 
 // Payload untuk tabel `profiles` (denormalisasi skor + bundle JSONB).
@@ -121,6 +126,7 @@ export const bundleToProfile = (bundle = {}, userId) => {
     accuracy: Number(p.accuracy) || 0,
     total_answered: Number(p.totalAnswered) || 0,
     updated_at: new Date(Number(bundle.updatedAt) || Date.now()).toISOString(),
+    avatar: bundle.avatar || '',
     data: {
       version: bundle.version || SYNC_VERSION,
       username: bundle.username || '',
@@ -128,6 +134,7 @@ export const bundleToProfile = (bundle = {}, userId) => {
       itemProgress: bundle.itemProgress || {},
       achievements: bundle.achievements || [],
       selectedBadges: bundle.selectedBadges || [],
+      avatar: bundle.avatar || '',
     },
   };
 };
@@ -143,6 +150,7 @@ export const profileToBundle = (row = {}) => {
     itemProgress: d.itemProgress || {},
     achievements: Array.isArray(d.achievements) ? d.achievements : [],
     selectedBadges: Array.isArray(d.selectedBadges) ? d.selectedBadges : [],
+    avatar: row.avatar || d.avatar || '',
     updatedAt: Number.isFinite(updatedAt) ? updatedAt : 0,
     deviceId: '',
   };

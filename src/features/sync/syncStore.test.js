@@ -16,12 +16,12 @@ const fakeStorage = () => {
   };
 };
 
-test('SYNCED_KEYS: 5 key sinkron, konsisten dengan SYNC_KEYS', () => {
+test('SYNCED_KEYS: 6 key sinkron, konsisten dengan SYNC_KEYS', () => {
   assert.deepEqual(SYNCED_KEYS, [
     'username', 'user_progress_v2', 'item_progress_v2',
-    'achievements_unlocked_v2', 'selected_badges',
+    'achievements_unlocked_v2', 'selected_badges', 'user_avatar_v1',
   ]);
-  assert.equal(SYNCED_KEYS.length, 5);
+  assert.equal(SYNCED_KEYS.length, 6);
 });
 
 test('ensureDeviceId: dibuat sekali lalu stabil', () => {
@@ -42,6 +42,7 @@ test('writeBundle → readBundle: round-trip (username mentah, sisanya JSON)', (
     itemProgress: { hira_a: { lastReviewed: '2026-01-01', correctCount: 3 } },
     achievements: ['novice'],
     selectedBadges: ['novice'],
+    avatar: 'data:image/jpeg;base64,ZZZ',
     updatedAt: 1000,
     deviceId: 'dev1',
   };
@@ -54,6 +55,7 @@ test('writeBundle → readBundle: round-trip (username mentah, sisanya JSON)', (
   assert.equal(back.itemProgress.hira_a.correctCount, 3);
   assert.deepEqual(back.achievements, ['novice']);
   assert.deepEqual(back.selectedBadges, ['novice']);
+  assert.equal(back.avatar, 'data:image/jpeg;base64,ZZZ');
 });
 
 test('touchMeta + readMeta: updatedAt naik, deviceId ikut terisi', () => {
@@ -103,12 +105,14 @@ test('profileToBundle: kebalikan dari bundleToProfile (round-trip inti)', () => 
     progress: { xp: 500, level: 6 },
     itemProgress: { a: { lastReviewed: '2026-01-01' } },
     achievements: ['novice'], selectedBadges: ['novice'],
+    avatar: 'data:image/jpeg;base64,QQ',
   };
   const bundle = profileToBundle(bundleToProfile(original, 'u1'));
   assert.equal(bundle.username, 'Madd');
   assert.equal(bundle.progress.xp, 500);
   assert.deepEqual(bundle.achievements, ['novice']);
   assert.equal(bundle.itemProgress.a.lastReviewed, '2026-01-01');
+  assert.equal(bundle.avatar, 'data:image/jpeg;base64,QQ');
 });
 
 test('profileToBundle: baris kosong → bundle default (tanpa crash)', () => {
