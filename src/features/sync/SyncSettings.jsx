@@ -9,7 +9,7 @@ export function SyncSettings() {
   const id = language === 'id';
   const {
     configured, enabled, status, lastSyncedAt, user, isAnon,
-    enableSync, disableSync, syncNow, upgradeToEmail, signOut, getQuota,
+    enableSync, disableSync, syncNow, upgradeToEmail, signInWithGoogle, signOut, getQuota,
   } = useSync();
 
   const [email, setEmail] = useState('');
@@ -34,6 +34,13 @@ export function SyncSettings() {
     setBusy(true);
     const r = await enableSync();
     setNote(r.ok ? null : { ok: false, msg: r.message || r.reason });
+    setBusy(false);
+  };
+
+  const doGoogle = async () => {
+    setBusy(true);
+    const r = await signInWithGoogle();
+    if (!r.ok) setNote({ ok: false, msg: r.message || r.reason });
     setBusy(false);
   };
 
@@ -114,6 +121,33 @@ export function SyncSettings() {
                 </button>
               </>
             )}
+          </div>
+
+          {/* Login Google — supaya akun & progres bisa dibuka di perangkat/alamat lain */}
+          <div className="border-t-[3px] border-sumi/10 pt-4">
+            <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/60 mb-2">
+              {id ? 'Masuk dengan Google' : 'Sign in with Google'}
+            </label>
+            <p className="text-[11px] text-sumi/60 font-semibold mb-3 leading-relaxed">
+              {isAnon
+                ? (id
+                    ? 'Tautkan akun Google supaya progresmu bisa dibuka di perangkat atau alamat (domain) lain — tidak hilang walau ganti alamat.'
+                    : 'Link your Google account so your progress opens on other devices or addresses (domains) — it won’t vanish when the address changes.')
+                : (id
+                    ? 'Akun ini sudah tertaut ke Google.'
+                    : 'This account is already linked to Google.')}
+            </p>
+            <button
+              type="button"
+              onClick={doGoogle}
+              disabled={busy}
+              className="inline-flex items-center gap-2 py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-50 cursor-pointer"
+            >
+              <span className="font-black text-sm">G</span>
+              {isAnon
+                ? (id ? 'Tautkan / Masuk Google' : 'Link / Sign in Google')
+                : (id ? 'Ganti akun Google' : 'Switch Google account')}
+            </button>
           </div>
 
           {/* Upgrade ke email (hanya kalau anonim & sync aktif) */}

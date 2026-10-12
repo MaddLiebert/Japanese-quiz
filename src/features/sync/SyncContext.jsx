@@ -308,6 +308,33 @@ export function SyncProvider({ children }) {
     }
   }, []);
 
+  // Login dengan Google (OAuth). Progres TIDAK hilang:
+  //   • sudah ada sesi (anonim) → TAUTKAN identitas Google ke akun itu
+  //     (linkIdentity) → akun yang sama bisa dibuka di perangkat/domain lain.
+  //   • belum ada sesi → sign-in Google biasa.
+  const signInWithGoogle = useCallback(async () => {
+    if (!isSupabaseConfigured) return { ok: false, reason: 'unconfigured' };
+    const redirectTo = typeof location !== 'undefined' ? location.origin : undefined;
+    try {
+      if (userRef.current) {
+        const { error } = await supabase.auth.linkIdentity({
+          provider: 'google',
+          options: { redirectTo },
+        });
+        if (error) throw error;
+        return { ok: true, linked: true };
+      }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo },
+      });
+      if (error) throw error;
+      return { ok: true, linked: false };
+    } catch (e) {
+      return { ok: false, reason: 'oauth', message: String(e?.message || e) };
+    }
+  }, []);
+
   const signOut = useCallback(async () => {
     if (!isSupabaseConfigured) return;
     try { await supabase.auth.signOut(); } catch { /* noop */ }
@@ -327,7 +354,7 @@ export function SyncProvider({ children }) {
     ready, enabled, status, lastSyncedAt,
     user, isAnon,
     configured: isSupabaseConfigured,
-    enableSync, disableSync, syncNow, upgradeToEmail, signOut, getQuota,
+    enableSync, disableSync, syncNow, upgradeToEmail, signInWithGoogle, signOut, getQuota,
   };
 
   return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;
