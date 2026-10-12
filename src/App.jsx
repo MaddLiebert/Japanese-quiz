@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Home } from "./pages/Home";
 import { Learn } from "./pages/Learn";
 import { Practice } from "./pages/Practice";
@@ -58,15 +58,15 @@ import { medaruCopy } from "./features/progress/medaruCopy";
 import { SyncProvider } from "./features/sync/SyncContext";
 import { Leaderboard } from "./features/leaderboard/Leaderboard";
 
-// Floating top controls (Shop + Backpack + Profile + Theme) — shown on every page.
-// Digabung jadi SATU bar menyatu (border & shadow tunggal) supaya hemat tempat,
-// tiap tombol tetap punya ikon + tooltip yang jelas fungsinya.
+// Floating top controls — collapsible biar hemat tempat. Default: tombol menu +
+// saldo medaru. Klik → mekar semua tombol (nav + tema); klik lagi → kempes.
 function TopControls() {
   const { language } = useLanguage();
   const { era } = useEra();
   const { theme, toggleTheme } = useTheme();
   const { progress } = useUserStats();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   // Nama mata uang ikut era (Heian → もん, era lain → MEDARU).
   const money = medaruCopy(era, language);
 
@@ -75,11 +75,28 @@ function TopControls() {
     'flex items-center justify-center gap-1.5 h-8 px-2.5 transition-colors hover:bg-sumi/10 active:bg-sumi/15 cursor-pointer select-none';
   const divider = <span className="w-[2px] self-stretch bg-sumi/15" aria-hidden="true" />;
 
+  // Navigasi + langsung kempes bar (biar nggak nyangkut kebuka di halaman baru).
+  const go = (path) => { setOpen(false); navigate(path); };
+
   return (
     <div className="fixed top-4 right-4 z-50 flex items-stretch border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] overflow-hidden era-brocade">
-      {/* Shop / Medaru chip */}
+      {/* Tombol menu (≡ / ✕) — buka/tutup bar */}
       <button
-        onClick={() => navigate('/shop')}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={itemCls}
+        title={open ? (language === 'id' ? 'Sembunyikan menu' : 'Hide menu') : (language === 'id' ? 'Buka menu' : 'Open menu')}
+        aria-label={open ? (language === 'id' ? 'Sembunyikan menu' : 'Hide menu') : (language === 'id' ? 'Buka menu' : 'Open menu')}
+        aria-expanded={open}
+      >
+        <Glyph name={open ? 'x' : 'menu'} className="text-sm" />
+      </button>
+
+      {divider}
+
+      {/* Shop / Medaru chip — SELALU tampil (penting) */}
+      <button
+        onClick={() => go('/shop')}
         className={itemCls}
         title={eraName('shop', era, language === 'id' ? 'Warung Kakek' : "Grandpa's Shop")}
         aria-label={eraName('shop', era, language === 'id' ? 'Warung Kakek' : "Grandpa's Shop")}
@@ -89,56 +106,61 @@ function TopControls() {
         <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()} {money.nameShort}</span>
       </button>
 
-      {divider}
+      {/* Sisa tombol — hanya tampil saat bar dibuka */}
+      {open && (
+        <>
+          {divider}
 
-      {/* Backpack / Inventory */}
-      <button
-        onClick={() => navigate('/inventory')}
-        className={itemCls}
-        title={eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack')}
-        aria-label={eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack')}
-      >
-        <Glyph name="backpack" className="text-sm" />
-        <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('inventory', era)}</span>
-      </button>
+          {/* Backpack / Inventory */}
+          <button
+            onClick={() => go('/inventory')}
+            className={itemCls}
+            title={eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack')}
+            aria-label={eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack')}
+          >
+            <Glyph name="backpack" className="text-sm" />
+            <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('inventory', era)}</span>
+          </button>
 
-      {divider}
+          {divider}
 
-      {/* Profile */}
-      <button
-        onClick={() => navigate('/profile')}
-        className={itemCls}
-        title={eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile')}
-        aria-label={eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile')}
-      >
-        <Glyph name="mask" className="text-sm" />
-        <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('profile', era)}</span>
-      </button>
+          {/* Profile */}
+          <button
+            onClick={() => go('/profile')}
+            className={itemCls}
+            title={eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile')}
+            aria-label={eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile')}
+          >
+            <Glyph name="mask" className="text-sm" />
+            <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('profile', era)}</span>
+          </button>
 
-      {divider}
+          {divider}
 
-      {/* Leaderboard / Papan Peringkat 番付 */}
-      <button
-        onClick={() => navigate('/leaderboard')}
-        className={itemCls}
-        title={language === 'id' ? 'Papan Peringkat' : 'Leaderboard'}
-        aria-label={language === 'id' ? 'Papan Peringkat' : 'Leaderboard'}
-      >
-        <Glyph name="trophy" className="text-sm" />
-        <span className="text-[11px] font-black tracking-wider text-sumi hidden sm:inline">番付</span>
-      </button>
+          {/* Leaderboard / Papan Peringkat 番付 */}
+          <button
+            onClick={() => go('/leaderboard')}
+            className={itemCls}
+            title={language === 'id' ? 'Papan Peringkat' : 'Leaderboard'}
+            aria-label={language === 'id' ? 'Papan Peringkat' : 'Leaderboard'}
+          >
+            <Glyph name="trophy" className="text-sm" />
+            <span className="text-[11px] font-black tracking-wider text-sumi">番付</span>
+          </button>
 
-      {divider}
+          {divider}
 
-      {/* Theme toggle */}
-      <button
-        onClick={toggleTheme}
-        className={itemCls}
-        title={theme === 'dark' ? 'Ganti ke Mode Terang / Light Mode' : 'Ganti ke Mode Gelap / Dark Mode'}
-        aria-label={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-      >
-        <Glyph name={theme === 'dark' ? 'sun' : 'moon'} className="text-sm" />
-      </button>
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            className={itemCls}
+            title={theme === 'dark' ? 'Ganti ke Mode Terang / Light Mode' : 'Ganti ke Mode Gelap / Dark Mode'}
+            aria-label={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          >
+            <Glyph name={theme === 'dark' ? 'sun' : 'moon'} className="text-sm" />
+          </button>
+        </>
+      )}
     </div>
   );
 }
