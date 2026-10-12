@@ -99,6 +99,13 @@ create trigger profiles_xp_delta
   for each row execute function public.log_xp_delta();
 
 -- ── 4. Leaderboard (SECURITY DEFINER → tembus RLS, tapi hanya kolom aman) ───
+-- DROP dulu: `create or replace` TIDAK bisa mengubah tipe return (OUT params)
+-- saat kolom hasil berubah (mis. menambah `avatar`). Aman: fungsi dibuat ulang
+-- di bawah + grant diulang.
+drop function if exists public.leaderboard_all_time(int);
+drop function if exists public.leaderboard_weekly(int);
+drop function if exists public.my_rank_all_time();
+
 create or replace function public.leaderboard_all_time(p_limit int default 100)
 returns table (id uuid, display_name text, xp int, level int, streak int, avatar text, updated_at timestamptz)
 language sql
