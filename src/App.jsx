@@ -56,6 +56,7 @@ import { Glyph } from "./components/icons/Glyph";
 import { MedaruCoin } from "./components/MedaruCoin";
 import { medaruCopy } from "./features/progress/medaruCopy";
 import { SyncProvider } from "./features/sync/SyncContext";
+import { MoveBanner } from "./features/backup/MoveBanner";
 import { Leaderboard } from "./features/leaderboard/Leaderboard";
 
 // Floating top controls — collapsible biar hemat tempat. Default: tombol menu +
@@ -321,6 +322,9 @@ function App() {
 
               {/* Tombol Tutorial 指南 (mengapung kanan-bawah, context-aware) */}
               <TutorialButton />
+
+              {/* Banner pindah alamat (hanya tampil di origin lama) */}
+              <MoveBanner />
 
               <main className="relative z-10 w-full h-full">
                 <Routes>
