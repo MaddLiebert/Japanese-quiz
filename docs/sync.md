@@ -34,8 +34,16 @@ Ini membuat tabel `profiles` & `xp_events`, RLS, trigger XP, dan fungsi leaderbo
 
 ## 2. Cara kerja
 
-- **Akun**: anonim per-device (`signInAnonymously`). Bisa di-upgrade ke email tanpa
-  kehilangan progres (**Pengaturan → Akun & Sinkronisasi → Simpan ke Email**).
+- **Akun**: anonim per-device (`signInAnonymously`). Bisa diamankan ke **email +
+  password** (Pengaturan → Akun & Sinkronisasi → *Buat Akun & Amankan Progres*) —
+  akun anonim saat ini **ditautkan** (`updateUser({ email, password })`), jadi
+  **progres tidak hilang**. Setelah punya akun, buka di perangkat/alamat (domain)
+  lain dengan **Masuk** (`signInWithPassword`). Ada **Lupa password?**
+  (`resetPasswordForEmail`).
+  - **Penting (Supabase):** matikan **Authentication → Providers → Email →
+    Confirm email** supaya user langsung bisa masuk tanpa verifikasi. Tambahkan
+    origin app ke **Authentication → URL Configuration → Redirect URLs** (untuk
+    tautan reset password).
 - **Push**: setiap key sync berubah (`username`, `user_progress_v2`,
   `item_progress_v2`, `achievements_unlocked_v2`, `selected_badges`) → ditandai
   "dirty" → dikirim ke cloud (debounce 4 dtk, berkala 60 dtk, saat tab kembali fokus).
