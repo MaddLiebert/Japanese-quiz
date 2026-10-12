@@ -55,6 +55,8 @@ import { TutorialButton } from "./features/tutorial/TutorialButton";
 import { Glyph } from "./components/icons/Glyph";
 import { MedaruCoin } from "./components/MedaruCoin";
 import { medaruCopy } from "./features/progress/medaruCopy";
+import { SyncProvider } from "./features/sync/SyncContext";
+import { Leaderboard } from "./features/leaderboard/Leaderboard";
 
 // Floating top controls (Shop + Backpack + Profile + Theme) — shown on every page.
 // Digabung jadi SATU bar menyatu (border & shadow tunggal) supaya hemat tempat,
@@ -115,6 +117,19 @@ function TopControls() {
 
       {divider}
 
+      {/* Leaderboard / Papan Peringkat 番付 */}
+      <button
+        onClick={() => navigate('/leaderboard')}
+        className={itemCls}
+        title={language === 'id' ? 'Papan Peringkat' : 'Leaderboard'}
+        aria-label={language === 'id' ? 'Papan Peringkat' : 'Leaderboard'}
+      >
+        <Glyph name="trophy" className="text-sm" />
+        <span className="text-[11px] font-black tracking-wider text-sumi hidden sm:inline">番付</span>
+      </button>
+
+      {divider}
+
       {/* Theme toggle */}
       <button
         onClick={toggleTheme}
@@ -167,6 +182,7 @@ function App() {
     <ThemeProvider>
       <LanguageProvider>
         <ProgressProvider>
+          <SyncProvider>
           <EraProvider>
           <VoiceSync />
           <ThemeAudioHost />
@@ -299,6 +315,7 @@ function App() {
                   <Route path="/death-quiz" element={<DeathQuizScreen />} />
                   <Route path="/n5-exam" element={<N5ExamScreen />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/leaderboard" element={<Leaderboard />} />
                   <Route path="/heian-history" element={<HeianHistory />} />
                   <Route path="/edo-history" element={<EdoHistory />} />
                   <Route path="/meiji-history" element={<MeijiHistory />} />
@@ -326,6 +343,7 @@ function App() {
             </CinematicProvider>
           </BrowserRouter>
           </EraProvider>
+          </SyncProvider>
         </ProgressProvider>
       </LanguageProvider>
     </ThemeProvider>

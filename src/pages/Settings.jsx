@@ -13,6 +13,7 @@ import { tutorialButtonVisible } from "../features/tutorial/tutorials";
 import { readMeijiSettings, writeMeijiSettings } from "../features/meiji/meijiSettings";
 import { DevPanel } from "../features/dev/DevPanel"; // DEV-ONLY — hapus baris ini untuk membuang panel cheat
 import { EraPaper } from "../components/EraPaper";
+import { SyncSettings } from "../features/sync/SyncSettings";
 
 export function Settings() {
   const { resetProgress, progress, setTutorialHidden } = useUserStats();
@@ -368,6 +369,18 @@ export function Settings() {
                 </div>
               </div>
             </div>
+          </section>
+
+          {/* Akun & Sinkronisasi 同期 — simpan progres ke cloud + leaderboard */}
+          <section>
+            <div className="flex items-center gap-4 mb-8">
+              <h2 className="text-2xl font-serif font-bold text-sumi">
+                {language === 'id' ? 'Akun & Sinkronisasi' : 'Account & Sync'}
+              </h2>
+              <div className="h-[2px] flex-1 bg-sumi/10"></div>
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">同期</span>
+            </div>
+            <SyncSettings />
           </section>
 
           {/* Cinematic perkenalan era — putar ulang manual */}
