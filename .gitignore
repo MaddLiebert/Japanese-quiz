@@ -49,3 +49,7 @@ tmp/
 # Scratch di public/ (mis. _shotboot.html — set localStorage lalu redirect).
 # Prefiks "_" = sekali pakai, tidak untuk deploy.
 public/_*
+
+# ── Audio MNN dipindah ke Supabase Storage (lihat docs/audio-storage.md) ──
+# TIDAK di-track & TIDAK ikut deploy. File tetap ada lokal untuk dev.
+public/audio/

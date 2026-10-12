@@ -2,12 +2,40 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { rmSync, existsSync } from 'node:fs'
+import { resolve, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
+// Audio MNN (87 file, 165 MB) dilayani Supabase Storage, BUKAN dari deploy.
+// Vite menyalin SELURUH public/ ke dist/ → tanpa ini tiap deployment ~181 MB dan
+// jatah Deployment Storage Hobby (10 GB) cepat habis.
+//
+// AMAN: hanya buang dist/audio kalau VITE_AUDIO_BASE_URL di-set. Kalau belum
+// (env belum dikonfigurasi), audio LOKAL dipertahankan supaya app tetap bunyi.
+const stripDeployedAudio = () => ({
+  name: 'strip-deployed-audio',
+  apply: 'build',
+  closeBundle() {
+    if (!process.env.VITE_AUDIO_BASE_URL) {
+      console.log('[strip-deployed-audio] VITE_AUDIO_BASE_URL kosong → audio lokal dipertahankan di dist/')
+      return
+    }
+    const dir = resolve(__dirname, 'dist/audio')
+    if (existsSync(dir)) {
+      rmSync(dir, { recursive: true, force: true })
+      console.log('[strip-deployed-audio] dist/audio dihapus (dilayani Supabase Storage)')
+    }
+  },
+})
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(), 
     tailwindcss(),
+    stripDeployedAudio(),
     VitePWA({
       registerType: 'autoUpdate',
       // ⚠️ JANGAN pakai ['**/*'] — itu menyapu SELURUH public/ ke precache (semua
