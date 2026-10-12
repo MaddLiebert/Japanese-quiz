@@ -9,10 +9,15 @@ export function SyncSettings() {
   const id = language === 'id';
   const {
     configured, enabled, status, lastSyncedAt, user, isAnon,
-    enableSync, disableSync, syncNow, upgradeToEmail, signInWithGoogle, signOut, getQuota,
+    enableSync, disableSync, syncNow,
+    registerWithPassword, signInWithPassword, resetPassword,
+    signOut, getQuota,
   } = useSync();
 
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState(null);
   const quota = getQuota ? getQuota() : null;
@@ -37,23 +42,38 @@ export function SyncSettings() {
     setBusy(false);
   };
 
-  const doGoogle = async () => {
-    setBusy(true);
-    const r = await signInWithGoogle();
-    if (!r.ok) setNote({ ok: false, msg: r.message || r.reason });
-    setBusy(false);
-  };
-
-  const doUpgrade = async (e) => {
+  // Buat akun & amankan progres (tautkan email+password ke akun anonim saat ini).
+  const doRegister = async (e) => {
     e.preventDefault();
-    if (!email.trim()) return;
     setBusy(true);
-    const r = await upgradeToEmail(email.trim());
+    const r = await registerWithPassword(email, password);
     setNote(r.ok
-      ? { ok: true, msg: id ? 'Tautkan email terkirim — cek kotak masuk untuk konfirmasi.' : 'Email link sent — check your inbox to confirm.' }
+      ? { ok: true, msg: id ? 'Akun dibuat — progresmu aman. Bisa dibuka di perangkat lain.' : 'Account created — your progress is safe. Open it on another device.' }
       : { ok: false, msg: r.message || r.reason });
     setBusy(false);
-    if (r.ok) setEmail('');
+    if (r.ok) { setEmail(''); setPassword(''); }
+  };
+
+  // Masuk ke akun yang sudah ada (progres akun itu ditarik otomatis).
+  const doSignIn = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    const r = await signInWithPassword(loginEmail, loginPassword);
+    setNote(r.ok
+      ? { ok: true, msg: id ? 'Masuk berhasil.' : 'Signed in.' }
+      : { ok: false, msg: r.message || r.reason });
+    setBusy(false);
+    if (r.ok) { setLoginEmail(''); setLoginPassword(''); }
+  };
+
+  const doReset = async () => {
+    if (!loginEmail.trim()) return;
+    setBusy(true);
+    const r = await resetPassword(loginEmail);
+    setNote(r.ok
+      ? { ok: true, msg: id ? 'Tautan reset terkirim — cek email kamu.' : 'Reset link sent — check your email.' }
+      : { ok: false, msg: r.message || r.reason });
+    setBusy(false);
   };
 
   return (
@@ -123,60 +143,101 @@ export function SyncSettings() {
             )}
           </div>
 
-          {/* Login Google — supaya akun & progres bisa dibuka di perangkat/alamat lain */}
+          {/* Akun (email + password) — supaya progres bisa dibuka di perangkat/alamat lain */}
           <div className="border-t-[3px] border-sumi/10 pt-4">
             <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/60 mb-2">
-              {id ? 'Masuk dengan Google' : 'Sign in with Google'}
+              {isAnon
+                ? (id ? 'Amankan Progresmu (buat akun)' : 'Save Your Progress (create account)')
+                : (id ? 'Akun' : 'Account')}
             </label>
             <p className="text-[11px] text-sumi/60 font-semibold mb-3 leading-relaxed">
               {isAnon
                 ? (id
-                    ? 'Tautkan akun Google supaya progresmu bisa dibuka di perangkat atau alamat (domain) lain — tidak hilang walau ganti alamat.'
-                    : 'Link your Google account so your progress opens on other devices or addresses (domains) — it won’t vanish when the address changes.')
+                    ? 'Buat email + password supaya progresmu bisa dibuka di perangkat atau alamat (domain) lain. Email tidak perlu diverifikasi.'
+                    : 'Create an email + password so your progress opens on other devices or addresses (domains). Email needs no verification.')
                 : (id
-                    ? 'Akun ini sudah tertaut ke Google.'
-                    : 'This account is already linked to Google.')}
+                    ? `Sudah masuk sebagai ${user?.email || 'akun'}. Progresmu aman & bisa dibuka di perangkat lain.`
+                    : `Signed in as ${user?.email || 'account'}. Your progress is safe and opens on other devices.`)}
             </p>
-            <button
-              type="button"
-              onClick={doGoogle}
-              disabled={busy}
-              className="inline-flex items-center gap-2 py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-50 cursor-pointer"
-            >
-              <span className="font-black text-sm">G</span>
-              {isAnon
-                ? (id ? 'Tautkan / Masuk Google' : 'Link / Sign in Google')
-                : (id ? 'Ganti akun Google' : 'Switch Google account')}
-            </button>
-          </div>
 
-          {/* Upgrade ke email (hanya kalau anonim & sync aktif) */}
-          {enabled && isAnon && (
-            <form onSubmit={doUpgrade} className="border-t-[3px] border-sumi/10 pt-4">
-              <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/60 mb-2">
-                {id ? 'Simpan ke Email (opsional)' : 'Save to Email (optional)'}
-              </label>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="kamu@email.com"
-                  className="flex-1 border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  disabled={busy || !email.trim()}
-                  className="py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-40 cursor-pointer"
-                >
-                  {id ? 'Tautkan' : 'Link'}
-                </button>
-              </div>
-              <p className="text-[10px] uppercase tracking-[0.15em] font-bold text-sumi/40 mt-2">
-                {id ? 'Progresmu tetap, cuma ditautkan ke email.' : 'Your progress stays — just linked to an email.'}
-              </p>
-            </form>
-          )}
+            {isAnon ? (
+              <>
+                <form onSubmit={doRegister} className="space-y-3">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="kamu@email.com"
+                    autoComplete="email"
+                    className="w-full border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none"
+                  />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={id ? 'Password (min. 6 huruf)' : 'Password (min. 6 chars)'}
+                    autoComplete="new-password"
+                    className="w-full border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={busy || !email.trim() || password.length < 6}
+                    className="py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-ai text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all disabled:opacity-40 cursor-pointer"
+                  >
+                    {id ? 'Buat Akun & Amankan Progres' : 'Create Account & Save Progress'}
+                  </button>
+                </form>
+
+                <form onSubmit={doSignIn} className="mt-4 border-t-[3px] border-sumi/10 pt-4 space-y-3">
+                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-sumi/50">
+                    {id ? 'Sudah punya akun? Masuk di sini' : 'Already have an account? Sign in here'}
+                  </p>
+                  <input
+                    type="email"
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    placeholder="kamu@email.com"
+                    autoComplete="email"
+                    className="w-full border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none"
+                  />
+                  <input
+                    type="password"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    placeholder={id ? 'Password' : 'Password'}
+                    autoComplete="current-password"
+                    className="w-full border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none"
+                  />
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <button
+                      type="submit"
+                      disabled={busy || !loginEmail.trim() || !loginPassword}
+                      className="py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-40 cursor-pointer"
+                    >
+                      {id ? 'Masuk' : 'Sign in'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={doReset}
+                      disabled={busy || !loginEmail.trim()}
+                      className="text-[10px] uppercase tracking-[0.15em] font-bold text-sumi/50 hover:text-shu underline disabled:opacity-40 cursor-pointer"
+                    >
+                      {id ? 'Lupa password?' : 'Forgot password?'}
+                    </button>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={async () => { setBusy(true); await signOut(); setBusy(false); }}
+                disabled={busy}
+                className="py-3 px-5 border-[3px] border-sumi/40 font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi/60 hover:text-shu transition-all disabled:opacity-50 cursor-pointer"
+              >
+                {id ? 'Keluar / Ganti Akun' : 'Sign out / Switch account'}
+              </button>
+            )}
+          </div>
 
           {/* Info user */}
           {user && (

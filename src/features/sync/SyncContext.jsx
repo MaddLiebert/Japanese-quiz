@@ -296,42 +296,62 @@ export function SyncProvider({ children }) {
     return { ok: true, changed };
   }, [pullAndMerge, safeReload]);
 
-  // Upgrade anonim → email (progres TIDAK hilang; identitas ditautkan).
-  const upgradeToEmail = useCallback(async (email) => {
+  // Masuk ke akun yang sudah ada (email + password). Sesi anonim saat ini
+  // digantikan; setelah masuk, tarik progres akun itu (merge) lalu reload bila
+  // data remote menang. Dipakai untuk buka akun di perangkat/alamat (domain) lain.
+  const signInWithPassword = useCallback(async (email, password) => {
     if (!isSupabaseConfigured) return { ok: false, reason: 'unconfigured' };
     try {
-      const { error } = await supabase.auth.updateUser({ email });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: String(email).trim(), password,
+      });
       if (error) throw error;
-      return { ok: true };
+      localStorage.setItem(ENABLED_KEY, '1');
+      localStorage.setItem(SIGNED_IN_FLAG, '1');
+      enabledRef.current = true;
+      setEnabled(true);
+      userRef.current = data?.user || null;
+      setUser(data?.user || null);
+      const changed = await pullAndMerge();
+      if (changed) safeReload();
+      return { ok: true, changed };
     } catch (e) {
-      return { ok: false, reason: 'update', message: String(e?.message || e) };
+      return { ok: false, reason: 'auth', message: String(e?.message || e) };
     }
-  }, []);
+  }, [pullAndMerge, safeReload]);
 
-  // Login dengan Google (OAuth). Progres TIDAK hilang:
-  //   • sudah ada sesi (anonim) → TAUTKAN identitas Google ke akun itu
-  //     (linkIdentity) → akun yang sama bisa dibuka di perangkat/domain lain.
-  //   • belum ada sesi → sign-in Google biasa.
-  const signInWithGoogle = useCallback(async () => {
+  // Daftar / amankan progres: kalau ada sesi (anonim) → TAUTKAN email+password ke
+  // akun itu (progres TETAP, jadi akun tetap sama); kalau tidak ada sesi → akun baru.
+  const registerWithPassword = useCallback(async (email, password) => {
     if (!isSupabaseConfigured) return { ok: false, reason: 'unconfigured' };
-    const redirectTo = typeof location !== 'undefined' ? location.origin : undefined;
     try {
       if (userRef.current) {
-        const { error } = await supabase.auth.linkIdentity({
-          provider: 'google',
-          options: { redirectTo },
+        const { error } = await supabase.auth.updateUser({
+          email: String(email).trim(), password,
         });
         if (error) throw error;
         return { ok: true, linked: true };
       }
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo },
+      const { error } = await supabase.auth.signUp({
+        email: String(email).trim(), password,
       });
       if (error) throw error;
       return { ok: true, linked: false };
     } catch (e) {
-      return { ok: false, reason: 'oauth', message: String(e?.message || e) };
+      return { ok: false, reason: 'auth', message: String(e?.message || e) };
+    }
+  }, []);
+
+  // Kirim tautan reset password ke email (butuh email asli).
+  const resetPassword = useCallback(async (email) => {
+    if (!isSupabaseConfigured) return { ok: false, reason: 'unconfigured' };
+    const redirectTo = typeof location !== 'undefined' ? location.origin : undefined;
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(String(email).trim(), { redirectTo });
+      if (error) throw error;
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, reason: 'auth', message: String(e?.message || e) };
     }
   }, []);
 
@@ -354,7 +374,9 @@ export function SyncProvider({ children }) {
     ready, enabled, status, lastSyncedAt,
     user, isAnon,
     configured: isSupabaseConfigured,
-    enableSync, disableSync, syncNow, upgradeToEmail, signInWithGoogle, signOut, getQuota,
+    enableSync, disableSync, syncNow,
+    registerWithPassword, signInWithPassword, resetPassword,
+    signOut, getQuota,
   };
 
   return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;
