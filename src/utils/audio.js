@@ -1,5 +1,4 @@
 // Pre-load and cache voices
-import { resolveAudioUrl, audioBaseFromEnv } from './audioBase';
 let cachedVoices = [];
 
 const loadVoices = () => {
@@ -56,7 +55,6 @@ export const playDramaticAudio = (text) => {
 };
 
 // Play audio file from static path (e.g. /audio/filename.mp3)
-// Dukung Supabase Storage lewat VITE_AUDIO_BASE_URL (lihat utils/audioBase.js).
 export const playAudioFile = (audioPath) => {
   if (typeof window === 'undefined') return null;
 
@@ -65,7 +63,7 @@ export const playAudioFile = (audioPath) => {
     window.speechSynthesis.cancel();
   }
 
-  const audio = new Audio(resolveAudioUrl(audioPath, audioBaseFromEnv()));
+  const audio = new Audio(audioPath);
   audio.play().catch((err) => {
     console.warn('Audio play error:', err);
   });

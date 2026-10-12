@@ -5,7 +5,6 @@ import { useLanguage } from "../context/LanguageContext";
 import { localized } from "../utils/localize";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 import { EraPaper } from "./EraPaper";
-import { resolveAudioUrl, audioBaseFromEnv } from "../utils/audioBase";
 
 export function AudioPlayer({
   audioSrc = "/audio/sample.mp3",
@@ -16,9 +15,6 @@ export function AudioPlayer({
 }) {
   const { language } = useLanguage();
   const id = language === 'id';
-  // Audio bisa dilayani dari Supabase Storage (env VITE_AUDIO_BASE_URL) atau
-  // lokal (/audio/…). Lihat src/utils/audioBase.js.
-  const resolvedSrc = resolveAudioUrl(audioSrc, audioBaseFromEnv());
   const [internalIsPlaying, setInternalIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0); // 0 sampai 100
   const [playbackRate, setPlaybackRate] = useState(1.0);
@@ -126,7 +122,7 @@ export function AudioPlayer({
     <div className="w-full bg-kinari border-sumi p-6 sm:p-8 shadow-[6px_6px_0_0_rgba(var(--sumi-val),1)] flex flex-col items-center">
       <audio
         ref={audioRef}
-        src={resolvedSrc}
+        src={audioSrc}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
       />
