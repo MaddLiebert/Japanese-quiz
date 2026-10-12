@@ -17,6 +17,7 @@
 // kalau dimasukkan, "mae"/"san" bisa salah lolos sebagai "ma"/"sa" (false
 // positive). Beberapa kanji muncul di >1 baris karena memang berbilang bacaan
 // tunggal (火=か/ひ/ほ, 日=ひ/にち, 四=し/よ).
+import { WORD_KANJI_READINGS } from './wordReadings.js';
 
 export const KANA_KANJI = {
   'あ': '亜阿唖娃',
@@ -119,6 +120,15 @@ export const WORD_READINGS = {
   '土曜日': 'どようび', '日曜日': 'にちようび',
 };
 
+// Angka (digit) → bacaan kana. ASR Jepang kadang menulis ANGKA sebagai digit
+// (いち → "1"), padahal target latihan kana. Hanya token angka utuh yang dipetakan.
+export const NUMERAL_READINGS = {
+  '0': ['れい', 'ぜろ'], '1': ['いち'], '2': ['に'], '3': ['さん'],
+  '4': ['よん', 'し'], '5': ['ご'], '6': ['ろく'], '7': ['なな', 'しち'],
+  '8': ['はち'], '9': ['きゅう', 'く'], '10': ['じゅう'],
+  '100': ['ひゃく'], '1000': ['せん'], '10000': ['まん'],
+};
+
 // kanji → [bacaan kana] (dari KANA_KANJI; satu kanji bisa punya beberapa).
 export const KANJI_TO_KANA = (() => {
   const m = Object.create(null);
@@ -139,14 +149,23 @@ export const readingsFor = (ch) => KANJI_TO_KANA[ch] || [];
 
 // Perluas satu hasil ASR menjadi kandidat bacaan (dedupe, teks asli dulu):
 //  1. teks asli (mis. "蚊")
-//  2. bacaan kata penuh kalau terdaftar (mis. "お早う" → "おはよう")
+//  2. bacaan kata penuh — peta tangan (mis. "お早う" → "おはよう") + KAMUS AUTO
+//     (mis. "本" → "ほん", "車" → "くるま", "元気" → "げんき")
 //  3. bentuk bacaan: tiap kanji dikenal → bacaan pertamanya ("古池" → "ふるいけ")
 //  4. bacaan tiap kanji tunggal ("火" → "か", "ひ") — untuk kanji berbilang bacaan
-export const readingCandidates = (text, map = KANJI_TO_KANA, words = WORD_READINGS) => {
+export const readingCandidates = (
+  text,
+  map = KANJI_TO_KANA,
+  words = WORD_READINGS,
+  wordKanji = WORD_KANJI_READINGS,
+  numerals = NUMERAL_READINGS
+) => {
   const raw = String(text || '');
   if (!raw) return [];
   const out = new Set([raw]);
   if (words[raw]) out.add(words[raw]);
+  for (const r of (wordKanji[raw] || [])) out.add(r);
+  for (const r of (numerals[raw] || [])) out.add(r);
   const chars = [...raw];
   const form = chars.map((ch) => (map[ch] && map[ch][0]) || ch).join('');
   if (form !== raw) out.add(form);

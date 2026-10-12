@@ -90,6 +90,8 @@ test('matchSpeech: kata ber-kanji vs kotoba kana', () => {
 });
 
 test('matchSpeech: kata TAK dikenal tidak salah lolos', () => {
-  // 犬 tak ada di peta → target いぬ tetap gagal (jujur), tapi tak error
-  assert.equal(matchSpeech(['犬'], ['いぬ']).score, 0);
+  // 拳 tak ada di kamus → target けん tetap gagal (jujur), tapi tak error.
+  assert.equal(matchSpeech(['拳'], ['けん']).score, 0);
+  // 犬 kini ADA di kamus auto → memang lolos (bukan false positive).
+  assert.equal(matchSpeech(['犬'], ['いぬ']).score, 1);
 });
