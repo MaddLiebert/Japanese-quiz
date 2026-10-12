@@ -9,19 +9,21 @@ export function SyncSettings() {
   const id = language === 'id';
   const {
     configured, enabled, status, lastSyncedAt, user, isAnon,
-    enableSync, disableSync, syncNow, upgradeToEmail, signOut,
+    enableSync, disableSync, syncNow, upgradeToEmail, signOut, getQuota,
   } = useSync();
 
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState(null);
+  const quota = getQuota ? getQuota() : null;
 
   const statusLabel = {
     idle: id ? 'Nonaktif' : 'Off',
     syncing: id ? 'Menyinkron…' : 'Syncing…',
     synced: id ? 'Tersinkron' : 'Synced',
     offline: id ? 'Luring' : 'Offline',
-    error: id ? 'Gagal' : 'Error',
+    error: id ? 'Gagal (dicoba ulang otomatis)' : 'Error (auto-retrying)',
+    quota: id ? 'Kuota harian tercapai' : 'Daily quota reached',
   }[status] || status;
 
   const lastLabel = lastSyncedAt
@@ -162,6 +164,39 @@ export function SyncSettings() {
 
           {note && (
             <p className={`text-[11px] font-bold ${note.ok ? 'text-ai' : 'text-shu'}`}>{note.msg}</p>
+          )}
+
+          {/* Kuota harian — pengaman tier gratis (transparan ke user) */}
+          {quota && (
+            <div className="border-t-[3px] border-sumi/10 pt-4">
+              <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/60 mb-2">
+                {id ? 'Kuota Harian Perangkat Ini' : 'Daily Quota (This Device)'}
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { k: 'write', label: id ? 'Simpan' : 'Save' },
+                  { k: 'read', label: id ? 'Baca' : 'Read' },
+                  { k: 'auth', label: id ? 'Masuk' : 'Sign-in' },
+                ].map(({ k, label }) => {
+                  const q = quota[k];
+                  const pct = q.limit ? Math.min(100, Math.round((q.used / q.limit) * 100)) : 0;
+                  return (
+                    <div key={k} className="border-[3px] border-sumi/20 bg-kinari-light px-3 py-2">
+                      <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-sumi/50 block">{label}</span>
+                      <span className="text-xs font-black text-sumi tabular-nums">{q.used}/{q.limit}</span>
+                      <div className="h-1.5 bg-sumi/10 mt-1.5 overflow-hidden">
+                        <div className={`h-full ${pct > 80 ? 'bg-shu' : 'bg-ai'}`} style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-[10px] font-bold text-sumi/40 mt-2 leading-relaxed">
+                {id
+                  ? 'Batas harian otomatis per-perangkat — melindungi kuota gratis Supabase dari lonjakan. Reset tiap tengah malam UTC. Sinkronisasi hemat: jeda min. 15 dtk antar simpan, backoff saat gagal.'
+                  : 'Automatic per-device daily caps — protect the free Supabase quota from spikes. Resets daily at UTC midnight. Thrifty sync: min. 15s between saves, backoff on failure.'}
+              </p>
+            </div>
           )}
         </div>
       )}

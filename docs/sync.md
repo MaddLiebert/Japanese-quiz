@@ -54,7 +54,43 @@ Modul: `src/features/sync/*` (logika murni `merge.js` + `syncStore.js`, diuji vi
 
 ---
 
-## 3. Troubleshooting
+## 3. Pengaman kuota tier GRATIS (Vercel Hobby + Supabase Free)
+
+Supaya app **tidak meledak request/kuota** (baik karena bug maupun pemakaian liar),
+semua akses jaringan lewat rem di **`src/features/sync/rateLimit.js`** &
+**`src/features/sync/requestCache.js`** (keduanya murni, diuji `node --test`):
+
+| Rem | Nilai | Fungsi |
+|---|---|---|
+| Kuota harian tulis | **300**/hari/perangkat | Batas upsert profil |
+| Kuota harian baca | **900**/hari/perangkat | Batas RPC leaderboard/select |
+| Kuota harian auth | **40**/hari/perangkat | Batas sign-in anonim/refresh |
+| Jeda minimum tulis | **15 dtk** | Main kuis tidak jadi ratusan upsert |
+| Backoff gagal | 15 dtk → 15 mnt (eksponensial + jitter) | Berhenti hammering saat error |
+| Guard reload-loop | **60 dtk** | Merge salah tidak memicu badai reload/request |
+| Cache leaderboard | **60 dtk** + dedup in-flight | Buka/ganti tab berulang = 0 request baru |
+
+Semua batas **per-perangkat** (localStorage `net_quota_v1`), **fail-open**: kalau
+localStorage tidak ada, app tetap jalan (hanya tanpa rem). Reset otomatis tiap
+**tengah malam UTC**. Pemakaian tampil di **Pengaturan → Akun & Sinkronisasi →
+Kuota Harian**.
+
+**Di sisi Vercel** (`vercel.json`): aset ber-hash (`/assets/*`) di-cache
+`immutable` 1 tahun, gambar/audio cache panjang — jadi kunjungan ulang **tidak**
+mengunduh ulang (hemat bandwidth Hobby 100 GB/bln). `index.html` & `sw.js` selalu
+`must-revalidate` agar user tetap dapat versi terbaru.
+
+> Angka di atas sengaja **jauh di bawah** kuota gratis, tapi **longgar** untuk
+> pemakaian normal (main kuis seharian). Naikkan/turunkan di `rateLimit.js`
+> (`DAILY_LIMIT`, `MIN_INTERVAL`) sesuai kebutuhan.
+
+**Cara memastikan hemat**: buka **Settings → Kuota Harian** — angka `used/limit`
+harusnya tumbuh pelan. Kalau cepat mendekati limit padahal pemakaian normal,
+naikkan limit atau periksa loop.
+
+---
+
+## 4. Troubleshooting
 
 **`permission denied for table profiles`** (kode `42501`) saat menulis profil:
 Supabase baru **tidak auto-grant** tabel buatan SQL Editor ke role API. Jalankan:
@@ -75,7 +111,7 @@ Anonymous Sign-Ins = ON**.
 
 ---
 
-## 4. Privasi & batasan
+## 5. Privasi & batasan
 
 - Yang tampil di papan peringkat: **nama, XP, level, streak**. Isi progres
   (daftar item, jawaban, koleksi) **tidak** pernah dibaca fungsi publik.
@@ -87,7 +123,7 @@ Anonymous Sign-Ins = ON**.
 
 ---
 
-## 5. Verifikasi cepat
+## 6. Verifikasi cepat
 
 ```bash
 npm test    # termasuk tes murni merge/syncStore/leaderboard

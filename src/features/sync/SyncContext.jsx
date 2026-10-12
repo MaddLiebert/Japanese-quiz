@@ -11,17 +11,24 @@
 //   3. Setiap key sync berubah (storageBus) → tandai "dirty" → PUSH (debounce).
 //   4. Interval berkala + saat tab kembali fokus → push kalau dirty.
 //
-// `enabled` default: true kalau Supabase dikonfigurasi DAN sudah ada progres lokal
-// (supaya user yang sudah main otomatis ikut cloud tanpa langkah manual).
+// ── PENGAMAN KUOTA (tier GRATIS Vercel + Supabase) ──────────────────────────
+// Semua request lewat rem di rateLimit.js supaya TIDAK meledak:
+//   • Kuota HARIAN per-perangkat (write/read/auth) — fail-open, jaring terakhir.
+//   • Jeda MINIMUM antar tulis (15 dtk) → main kuis tidak jadi ratusan upsert.
+//   • BACKOFF eksponensial saat gagal beruntun (bukan hammering tiap 60 dtk).
+//   • GUARD reload-loop → merge yang salah tidak memicu badai reload/request.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 import { onStorageChange } from './storageBus';
 import {
-  readBundle, writeBundle, touchMeta, readMeta, ENABLED_KEY,
+  readBundle, writeBundle, touchMeta, ENABLED_KEY,
 } from './syncStore';
 import { mergeBundles } from './merge';
+import {
+  consume, writeCooldown, markWrite, backoffDelay, canReload, markReload, quotaSummary,
+} from './rateLimit';
 
 const SyncContext = createContext(null);
 
@@ -35,11 +42,15 @@ const PUSH_DEBOUNCE_MS = 4000;      // jeda setelah perubahan terakhir
 const PERIODIC_MS = 60000;          // push berkala kalau masih dirty
 const SIGNED_IN_FLAG = 'sync_was_signed_in_v1';
 
+const storage = () => {
+  try { return typeof localStorage !== 'undefined' ? localStorage : null; } catch { return null; }
+};
+
 export function SyncProvider({ children }) {
   const [ready, setReady] = useState(!isSupabaseConfigured); // siap = tidak ada Supabase
   const [enabled, setEnabled] = useState(false);
   const [user, setUser] = useState(null);
-  const [status, setStatus] = useState('idle'); // idle|syncing|synced|offline|error
+  const [status, setStatus] = useState('idle'); // idle|syncing|synced|offline|error|quota
   const [lastSyncedAt, setLastSyncedAt] = useState(0);
 
   const dirtyRef = useRef(false);
@@ -47,21 +58,48 @@ export function SyncProvider({ children }) {
   const busyRef = useRef(false);
   const enabledRef = useRef(false);
   const userRef = useRef(null);
+  const failRef = useRef(0);         // gagal beruntun → dasar backoff
+  const lastFailAtRef = useRef(0);
+  const schedulePushRef = useRef(null); // diisi di bawah (hindari siklus dependensi)
 
   useEffect(() => { enabledRef.current = enabled; }, [enabled]);
   useEffect(() => { userRef.current = user; }, [user]);
 
-  const schedulePush = useCallback((delay = PUSH_DEBOUNCE_MS) => {
-    if (!enabledRef.current || !userRef.current) return;
-    dirtyRef.current = true;
-    clearTimeout(pushTimerRef.current);
-    pushTimerRef.current = setTimeout(() => { pushNow(); }, delay);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Reload aman: hanya kalau guard mengizinkan (cegah reload-loop = badai request).
+  const safeReload = useCallback(() => {
+    const s = storage();
+    if (canReload(s)) {
+      markReload(s);
+      window.location.reload();
+      return true;
+    }
+    return false; // dalam jeda → lewati reload, cukup andalkan state lokal
   }, []);
 
   // Push bundle lokal → tabel profiles. Bump updatedAt dulu (data kita = terbaru).
-  const pushNow = useCallback(async () => {
-    if (!enabledRef.current || !userRef.current || busyRef.current) return;
+  const pushNow = useCallback(async (opts = {}) => {
+    if (!enabledRef.current || !userRef.current || busyRef.current) return { ok: false };
+
+    // 1) Backoff setelah gagal beruntun.
+    const wait = backoffDelay(failRef.current);
+    if (wait > 0 && Date.now() - lastFailAtRef.current < wait) {
+      return { ok: false, reason: 'backoff' };
+    }
+
+    // 2) Jeda minimum antar tulis (kecuali dipaksa, mis. user klik manual).
+    const cd = writeCooldown(storage());
+    if (cd > 0 && !opts.force) {
+      schedulePushRef.current?.(cd + 500); // coba lagi setelah jeda
+      return { ok: false, reason: 'cooldown' };
+    }
+
+    // 3) Kuota harian (jaring terakhir).
+    const q = consume(storage(), 'write');
+    if (!q.ok) {
+      setStatus('quota');
+      return { ok: false, reason: 'quota' };
+    }
+
     busyRef.current = true;
     setStatus('syncing');
     try {
@@ -71,20 +109,38 @@ export function SyncProvider({ children }) {
       const row = bundleToProfile(bundle, userRef.current.id);
       const { error } = await supabase.from('profiles').upsert(row, { onConflict: 'id' });
       if (error) throw error;
+      markWrite(storage());
+      failRef.current = 0;
       dirtyRef.current = false;
       setLastSyncedAt(Date.now());
       setStatus('synced');
-    } catch {
+      return { ok: true };
+    } catch (e) {
+      failRef.current += 1;
+      lastFailAtRef.current = Date.now();
       setStatus('error');
-      // biarkan dirty=true → dicoba lagi di interval berikutnya
+      // biarkan dirty=true → dicoba lagi (dengan backoff) di interval berikutnya
+      return { ok: false, reason: 'error', message: String(e?.message || e) };
     } finally {
       busyRef.current = false;
     }
   }, []);
 
+  const schedulePush = useCallback((delay = PUSH_DEBOUNCE_MS) => {
+    if (!enabledRef.current || !userRef.current) return;
+    dirtyRef.current = true;
+    clearTimeout(pushTimerRef.current);
+    pushTimerRef.current = setTimeout(() => { pushNow(); }, delay);
+  }, [pushNow]);
+
+  // Simpan ref agar pushNow bisa menjadwalkan ulang tanpa siklus dependensi.
+  useEffect(() => { schedulePushRef.current = schedulePush; }, [schedulePush]);
+
   // Pull remote → merge → tulis lokal. Return true kalau data lokal diganti remote.
   const pullAndMerge = useCallback(async () => {
     if (!userRef.current) return false;
+    const q = consume(storage(), 'read');
+    if (!q.ok) { setStatus('quota'); return false; }
     setStatus('syncing');
     try {
       const { data, error } = await supabase
@@ -98,7 +154,7 @@ export function SyncProvider({ children }) {
       if (!data) {
         // Belum ada baris remote → push data lokal.
         busyRef.current = false;
-        await pushNow();
+        await pushNow({ force: true });
         return false;
       }
 
@@ -109,17 +165,19 @@ export function SyncProvider({ children }) {
       if (winner === 'remote') {
         writeBundle(localStorage, bundle);
         touchMeta(localStorage, bundle.updatedAt || Date.now());
-        return true; // pemanggil sebaiknya reload
+        return true; // pemanggil sebaiknya reload (lewat guard)
       }
 
       // lokal menang / seri → pastikan remote ikut (kalau seri & berbeda, dorong lokal).
       dirtyRef.current = true;
       busyRef.current = false;
-      await pushNow();
+      await pushNow({ force: true });
       setLastSyncedAt(Date.now());
       setStatus('synced');
       return false;
-    } catch {
+    } catch (e) {
+      failRef.current += 1;
+      lastFailAtRef.current = Date.now();
       setStatus('error');
       return false;
     } finally {
@@ -144,10 +202,13 @@ export function SyncProvider({ children }) {
       // Ambil/segarkan sesi anonim kalau perlu.
       let session = (await supabase.auth.getSession()).data.session;
       if (!session && (initialEnabled || hasLocalData)) {
-        try {
-          const { data, error } = await supabase.auth.signInAnonymously();
-          if (!error) session = data.session;
-        } catch { /* offline → coba lagi nanti */ }
+        const aq = consume(storage(), 'auth'); // kuota auth (sign-in anonim)
+        if (aq.ok) {
+          try {
+            const { data, error } = await supabase.auth.signInAnonymously();
+            if (!error) session = data.session;
+          } catch { /* offline → coba lagi nanti */ }
+        }
       }
 
       if (!alive) return;
@@ -160,7 +221,7 @@ export function SyncProvider({ children }) {
       if (initialEnabled && session) {
         localStorage.setItem(SIGNED_IN_FLAG, '1');
         const changed = await pullAndMerge();
-        if (alive && changed) window.location.reload();
+        if (alive && changed) safeReload();
       }
     })();
 
@@ -198,6 +259,8 @@ export function SyncProvider({ children }) {
     try {
       let session = (await supabase.auth.getSession()).data.session;
       if (!session) {
+        const aq = consume(storage(), 'auth');
+        if (!aq.ok) return { ok: false, reason: 'quota' };
         const { data, error } = await supabase.auth.signInAnonymously();
         if (error) throw error;
         session = data.session;
@@ -208,7 +271,7 @@ export function SyncProvider({ children }) {
       setEnabled(true);
       userRef.current = session?.user || null;
       setUser(session?.user || null);
-      await pushNow();
+      await pushNow({ force: true });
       return { ok: true };
     } catch (e) {
       setStatus('error');
@@ -225,13 +288,13 @@ export function SyncProvider({ children }) {
     setStatus('idle');
   }, []);
 
-  // Sync manual: tarik remote → merge; kalau remote menang, reload.
+  // Sync manual: tarik remote → merge; kalau remote menang, reload (lewat guard).
   const syncNow = useCallback(async () => {
     if (!isSupabaseConfigured || !userRef.current) return { ok: false, reason: 'no-user' };
     const changed = await pullAndMerge();
-    if (changed) window.location.reload();
+    if (changed) safeReload();
     return { ok: true, changed };
-  }, [pullAndMerge]);
+  }, [pullAndMerge, safeReload]);
 
   // Upgrade anonim → email (progres TIDAK hilang; identitas ditautkan).
   const upgradeToEmail = useCallback(async (email) => {
@@ -255,13 +318,16 @@ export function SyncProvider({ children }) {
     // otomatis pada bootstrap berikutnya.
   }, []);
 
+  // Ringkasan kuota harian untuk ditampilkan di Settings.
+  const getQuota = useCallback(() => quotaSummary(storage()), []);
+
   const isAnon = Boolean(user && (user.is_anonymous === true || (user.is_anonymous == null && !user.email)));
 
   const value = {
     ready, enabled, status, lastSyncedAt,
     user, isAnon,
     configured: isSupabaseConfigured,
-    enableSync, disableSync, syncNow, upgradeToEmail, signOut,
+    enableSync, disableSync, syncNow, upgradeToEmail, signOut, getQuota,
   };
 
   return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;

@@ -134,7 +134,8 @@ export const bundleToProfile = (bundle = {}, userId) => {
       itemProgress: bundle.itemProgress || {},
       achievements: bundle.achievements || [],
       selectedBadges: bundle.selectedBadges || [],
-      avatar: bundle.avatar || '',
+      // Avatar TIDAK diduplikasi di sini — cukup di kolom `avatar` (payload &
+      // baris DB jadi separuh; data URL ~5–10 KB tidak dikirim dua kali).
     },
   };
 };

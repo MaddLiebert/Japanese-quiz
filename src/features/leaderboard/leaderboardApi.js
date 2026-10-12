@@ -3,29 +3,57 @@
 // (SECURITY DEFINER, lihat supabase/schema.sql). Tidak ada state; murni I/O.
 // (Namanya diberi akhiran "Api" supaya tidak bentrok case-insensitive dengan
 // komponen Leaderboard.jsx di Windows.)
+//
+// PENGAMAN KUOTA (penting untuk tier GRATIS):
+//   • Setiap read lewat CACHE TTL 60 dtk + dedup → buka/ganti tab berulang
+//     tidak memicu RPC baru selama data masih segar.
+//   • Tiap RPC tetap dihitung ke kuota harian (rateLimit) sebagai jaring kedua.
+//   • `force` (tombol Segarkan) melewati cache, tapi tetap dihitung kuota.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { supabase, isSupabaseConfigured } from '../sync/supabaseClient';
+import { createRequestCache } from '../sync/requestCache';
+import { consume } from '../sync/rateLimit';
 
 const clean = (rows) => (Array.isArray(rows) ? rows : []);
 
-export const fetchAllTime = async (limit = 100) => {
-  if (!isSupabaseConfigured) return { rows: [], error: 'unconfigured' };
-  const { data, error } = await supabase.rpc('leaderboard_all_time', { p_limit: limit });
-  return { rows: clean(data), error: error ? error.message : null };
+// Cache per-sesi tab (dibagi semua pemanggil leaderboard).
+const cache = createRequestCache({ ttlMs: 60000 });
+
+const storage = () => {
+  try { return typeof localStorage !== 'undefined' ? localStorage : null; } catch { return null; }
 };
 
-export const fetchWeekly = async (limit = 100) => {
-  if (!isSupabaseConfigured) return { rows: [], error: 'unconfigured' };
-  const { data, error } = await supabase.rpc('leaderboard_weekly', { p_limit: limit });
-  return { rows: clean(data), error: error ? error.message : null };
+// Jalankan satu RPC dengan cache + hitung kuota. `force` melewati cache.
+const rpcCached = async (key, rpcName, args, { force = false } = {}) => {
+  if (!isSupabaseConfigured) return { rows: [], error: 'unconfigured', cached: false };
+  const { value, cached } = await cache.run(
+    key,
+    async () => {
+      const quota = consume(storage(), 'read');
+      if (!quota.ok) return { data: null, error: { message: 'quota' } };
+      return supabase.rpc(rpcName, args);
+    },
+    { force },
+  );
+  const error = value?.error ? (value.error.message || String(value.error)) : null;
+  return { rows: clean(value?.data), error, cached };
 };
 
-export const fetchMyRank = async () => {
+export const fetchAllTime = (limit = 100, opts) =>
+  rpcCached(`all:${limit}`, 'leaderboard_all_time', { p_limit: limit }, opts);
+
+export const fetchWeekly = (limit = 100, opts) =>
+  rpcCached(`week:${limit}`, 'leaderboard_weekly', { p_limit: limit }, opts);
+
+export const fetchMyRank = async (opts) => {
   if (!isSupabaseConfigured) return { rank: null, xp: 0, error: 'unconfigured' };
-  const { data, error } = await supabase.rpc('my_rank_all_time');
-  const row = clean(data)[0];
-  return { rank: row?.rank ?? null, xp: row?.xp ?? 0, error: error ? error.message : null };
+  const { rows, error } = await rpcCached('myrank', 'my_rank_all_time', undefined, opts);
+  const row = rows[0];
+  return { rank: row?.rank ?? null, xp: row?.xp ?? 0, error };
 };
+
+// Bersihkan cache (dipakai setelah push lokal supaya peringkat sendiri segar).
+export const clearLeaderboardCache = () => cache.clear();
 
 export { rankMedal } from './medals';

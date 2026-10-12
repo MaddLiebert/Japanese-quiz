@@ -4,5 +4,41 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "headers": [
+    {
+      "//": "Aset ber-hash (nama berubah tiap build) → cache selamanya. Kunjungan ulang TIDAK mengunduh lagi = hemat bandwidth Vercel (kuota Hobby 100 GB/bln).",
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "//": "Ikon & aset statis jarang berubah → cache 1 minggu (revalidate).",
+      "source": "/(.*)\\.(png|jpg|jpeg|svg|ico|webp|woff|woff2)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "//": "Audio & efek (mp3/gif) besar → cache lama, agar tidak diunduh berulang.",
+      "source": "/(.*)\\.(mp3|gif|wav|ogg)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "//": "index.html & service worker JANGAN di-cache → user selalu dapat versi terbaru (tapi aset ber-hash tetap dari cache).",
+      "source": "/(index.html)?",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
   ]
 }

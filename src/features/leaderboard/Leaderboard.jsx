@@ -5,7 +5,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useSync } from '../sync/SyncContext';
 import { useUserStats } from '../progress/ProgressContext';
 import { EraPaper } from '../../components/EraPaper';
-import { fetchAllTime, fetchWeekly, fetchMyRank, rankMedal } from './leaderboardApi';
+import { fetchAllTime, fetchWeekly, fetchMyRank, rankMedal, clearLeaderboardCache } from './leaderboardApi';
 import { initials } from '../profile/avatar';
 
 // Papan Peringkat 番付 — global. Dua papan: sepanjang masa (XP) & mingguan.
@@ -22,18 +22,22 @@ export function Leaderboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (force = false) => {
     setLoading(true);
     setError(null);
-    const res = tab === 'week' ? await fetchWeekly(100) : await fetchAllTime(100);
+    const opts = force ? { force: true } : undefined;
+    const res = tab === 'week' ? await fetchWeekly(100, opts) : await fetchAllTime(100, opts);
     setRows(res.rows);
-    setError(res.error && res.error !== 'unconfigured' ? res.error : null);
+    const friendly = res.error === 'quota'
+      ? (language === 'id' ? 'Kuota harian tercapai — coba lagi besok.' : 'Daily quota reached — try again tomorrow.')
+      : res.error;
+    setError(friendly && friendly !== 'unconfigured' ? friendly : null);
     if (tab === 'all' && user) {
-      const r = await fetchMyRank();
+      const r = await fetchMyRank(opts);
       setMyRank(r.rank);
     }
     setLoading(false);
-  }, [tab, user]);
+  }, [tab, user, language]);
 
   useEffect(() => { if (configured) load(); }, [configured, load]);
 
@@ -117,7 +121,11 @@ export function Leaderboard() {
                   )}
                 </div>
                 <button
-                  onClick={async () => { await syncNow(); await load(); }}
+                  onClick={async () => {
+                    await syncNow();              // dorong progres dulu
+                    clearLeaderboardCache();      // buang cache agar angka segar
+                    await load(true);             // muat paksa (bypass cache)
+                  }}
                   disabled={status === 'syncing'}
                   className="px-5 py-3 border-[3px] border-sumi bg-kinari-light text-sumi font-black text-xs tracking-widest uppercase shadow-[3px_3px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-50 cursor-pointer"
                 >
