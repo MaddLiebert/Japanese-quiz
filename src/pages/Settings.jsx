@@ -14,6 +14,7 @@ import { readMeijiSettings, writeMeijiSettings } from "../features/meiji/meijiSe
 import { DevPanel } from "../features/dev/DevPanel"; // DEV-ONLY — hapus baris ini untuk membuang panel cheat
 import { EraPaper } from "../components/EraPaper";
 import { SyncSettings } from "../features/sync/SyncSettings";
+import { BackupSettings } from "../features/backup/BackupSettings";
 
 export function Settings() {
   const { resetProgress, progress, setTutorialHidden } = useUserStats();
@@ -498,6 +499,18 @@ export function Settings() {
                 </div>
               </div>
             </div>
+          </section>
+
+          {/* Cadangkan & Pindahkan Data 引っ越し — ekspor/impor JSON antar-domain */}
+          <section>
+            <div className="flex items-center gap-4 mb-8">
+              <h2 className="text-2xl font-serif font-bold text-sumi">
+                {language === 'id' ? 'Manajemen Data' : 'Data Management'}
+              </h2>
+              <div className="h-[2px] flex-1 bg-sumi/10"></div>
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">引っ越し</span>
+            </div>
+            <BackupSettings />
           </section>
 
           {/* Danger zone */}
