@@ -10,10 +10,10 @@ import { useLanguage } from '../../context/LanguageContext';
 // datanya lalu (2) buka alamat baru.
 //
 // Cara pakai: isi domain BARU di MOVE_TARGET (atau lewat env
-// VITE_MOVE_NOTICE_TO). Daftar origin lama di LEGACY_HOSTS. Di origin baru,
-// hostname tidak cocok → banner otomatis tidak muncul (tanpa perlu config).
+// VITE_MOVE_NOTICE_TO). Origin lama dideteksi lewat pola LEGACY_PATTERN. Di
+// origin baru, hostname tidak cocok → banner otomatis tidak muncul.
 //
-// Kalau MOVE_TARGET kosong & LEGACY_HOSTS kosong → banner tidak pernah tampil.
+// Kalau MOVE_TARGET kosong → banner tidak pernah tampil.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Alamat baru yang dituju (domain Vercel stabil). Bisa ditimpa via env.
@@ -21,14 +21,15 @@ const MOVE_TARGET =
   import.meta.env.VITE_MOVE_NOTICE_TO ||
   'https://japanese-quiz-maddoharaa-7635s-projects.vercel.app';
 
-// Origin lama yang harus menampilkan banner (hostname saja, tanpa protokol).
-const LEGACY_HOSTS = ['japanese-quiz2222.vercel.app'];
+// Origin lama yang harus menampilkan banner. Pola: project duplikat berakhiran
+// angka (mis. japanese-quiz2222, japanese-quiz2112). Dicek via hostname.
+const LEGACY_PATTERN = /^japanese-quiz\d+\.vercel\.app$/;
 
 const DISMISS_KEY = 'move_banner_dismissed_v1';
 
 const isLegacyOrigin = () => {
   if (typeof location === 'undefined') return false;
-  return LEGACY_HOSTS.includes(location.hostname);
+  return LEGACY_PATTERN.test(location.hostname);
 };
 
 export function MoveBanner() {
