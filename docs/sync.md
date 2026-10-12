@@ -54,7 +54,28 @@ Modul: `src/features/sync/*` (logika murni `merge.js` + `syncStore.js`, diuji vi
 
 ---
 
-## 3. Privasi & batasan
+## 3. Troubleshooting
+
+**`permission denied for table profiles`** (kode `42501`) saat menulis profil:
+Supabase baru **tidak auto-grant** tabel buatan SQL Editor ke role API. Jalankan:
+
+```sql
+grant usage on schema public to anon, authenticated;
+grant select, insert, update on public.profiles  to authenticated;
+grant select, insert          on public.xp_events to authenticated;
+```
+
+**Tombol "Aktifkan Sinkronisasi" gagal**: pastikan **Authentication → Providers →
+Anonymous Sign-Ins = ON**.
+
+**Leaderboard kosong**: belum ada user dengan `xp > 0`; selesaikan 1 sesi kuis lalu
+**Sync Sekarang**.
+
+**Project ter-pause (free tier)**: dashboard → **Restore**.
+
+---
+
+## 4. Privasi & batasan
 
 - Yang tampil di papan peringkat: **nama, XP, level, streak**. Isi progres
   (daftar item, jawaban, koleksi) **tidak** pernah dibaca fungsi publik.
@@ -66,7 +87,7 @@ Modul: `src/features/sync/*` (logika murni `merge.js` + `syncStore.js`, diuji vi
 
 ---
 
-## 4. Verifikasi cepat
+## 5. Verifikasi cepat
 
 ```bash
 npm test    # termasuk tes murni merge/syncStore/leaderboard

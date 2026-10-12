@@ -58,6 +58,14 @@ drop policy if exists xp_insert_own on public.xp_events;
 create policy xp_select_own on public.xp_events for select using (auth.uid() = user_id);
 create policy xp_insert_own on public.xp_events for insert with check (auth.uid() = user_id);
 
+-- ── 2b. GRANT tabel ke role API ────────────────────────────────────────────
+-- Supabase baru TIDAK auto-grant tabel yang dibuat via SQL Editor ke role
+-- `authenticated`/`anon` → tanpa ini muncul "permission denied for table".
+-- RLS di atas tetap yang membatasi BARIS (user hanya barisnya sendiri).
+grant usage on schema public to anon, authenticated;
+grant select, insert, update on public.profiles  to authenticated;
+grant select, insert          on public.xp_events to authenticated;
+
 -- ── 3. Trigger: catat kenaikan XP → xp_events (server-side, tak bisa dipalsukan
 --        dari klien; juga jadi sumber leaderboard mingguan) ──────────────────
 create or replace function public.log_xp_delta()
