@@ -8,6 +8,7 @@ import { useN5Exam } from "./useN5Exam";
 import {
   N5_SECTIONS, N5_SECTION_ORDER, sectionRawTotal,
   formatClock, LKR_MAX, LISTENING_MAX,
+  N5_PASS_TOTAL, N5_PASS_LKR, N5_PASS_LISTENING, N5_TOTAL_MINUTES,
 } from "./n5exam";
 import { mondaiLabel, mondaiGloss } from "./mondaiLabels";
 import { EraPaper } from "../../components/EraPaper";
