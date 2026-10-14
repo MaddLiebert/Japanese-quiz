@@ -52,6 +52,7 @@ import { characterVoice } from "./features/anime/characters";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { TutorialButton } from "./features/tutorial/TutorialButton";
+import { FirstRunGate } from "./features/onboarding/FirstRunGate";
 import { Glyph } from "./components/icons/Glyph";
 import { MedaruCoin } from "./components/MedaruCoin";
 import { medaruCopy } from "./features/progress/medaruCopy";
@@ -212,6 +213,8 @@ function App() {
           <BrowserRouter>
             <CinematicProvider>
             <EffectProvider>
+            {/* Gerbang pertama kali: pilih cara masuk → tanya nama (sekali saja). */}
+            <FirstRunGate />
             <div className="min-h-screen relative font-sans selection:bg-ai/20 overflow-x-hidden bg-[var(--backdrop-val)]">
           
               {/* 1. Global Washi Texture overlay */}
