@@ -127,6 +127,9 @@ export const bundleToProfile = (bundle = {}, userId) => {
     total_answered: Number(p.totalAnswered) || 0,
     updated_at: new Date(Number(bundle.updatedAt) || Date.now()).toISOString(),
     avatar: bundle.avatar || '',
+    // Profil publik 訪問 — opt-in, default TERTUTUP. Satu sumber kebenaran:
+    // state lokal `progress.publicProfile` (docs/public-profile.md §5.4).
+    is_public: Boolean(p.publicProfile),
     data: {
       version: bundle.version || SYNC_VERSION,
       username: bundle.username || '',

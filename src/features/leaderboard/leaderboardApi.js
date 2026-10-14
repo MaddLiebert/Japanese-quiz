@@ -53,6 +53,17 @@ export const fetchMyRank = async (opts) => {
   return { rank: row?.rank ?? null, xp: row?.xp ?? 0, error };
 };
 
+// Profil publik 訪問 (docs/public-profile.md §8) — profil pemain lain lewat RPC
+// ber-whitelist `public_profile(uuid)` (SECURITY DEFINER). Pakai cache TTL 60 dtk
+// + kuota read yang SUDAH ADA (rpcCached) — jangan bikin jalur baru.
+// Return { row, error, cached }; `row === null` = privat / tidak ada (sengaja
+// TIDAK dibedakan — hindari bocor keberadaan akun).
+export const fetchPublicProfile = async (id, opts) => {
+  if (!id) return { row: null, error: null, cached: false };
+  const { rows, error, cached } = await rpcCached(`pub:${id}`, 'public_profile', { p_id: id }, opts);
+  return { row: rows[0] ?? null, error, cached };
+};
+
 // Bersihkan cache (dipakai setelah push lokal supaya peringkat sendiri segar).
 export const clearLeaderboardCache = () => cache.clear();
 

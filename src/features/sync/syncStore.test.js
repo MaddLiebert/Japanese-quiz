@@ -99,6 +99,22 @@ test('bundleToProfile: username kosong → "旅人" (default)', () => {
   assert.equal(row.display_name, '旅人');
 });
 
+// ── Profil publik 訪問 (docs/public-profile.md §5.4) ────────────────────────
+// `is_public` HARUS ditulis dari progress.publicProfile — satu sumber kebenaran.
+// Default TERTUTUP: apa pun yang bukan true → false.
+test('bundleToProfile: is_public dari progress.publicProfile (default false)', () => {
+  assert.equal(bundleToProfile({ progress: {} }, 'u').is_public, false);
+  assert.equal(bundleToProfile({ progress: { publicProfile: false } }, 'u').is_public, false);
+  assert.equal(bundleToProfile({ progress: { publicProfile: true } }, 'u').is_public, true);
+});
+
+test('bundleToProfile: is_public = Boolean(publicProfile) — nilai truthy/kotor jadi boolean', () => {
+  assert.equal(bundleToProfile({ progress: { publicProfile: 1 } }, 'u').is_public, true);
+  assert.equal(bundleToProfile({ progress: { publicProfile: 0 } }, 'u').is_public, false);
+  assert.equal(bundleToProfile({ progress: { publicProfile: null } }, 'u').is_public, false);
+  assert.equal(bundleToProfile({ progress: { publicProfile: 'yes' } }, 'u').is_public, true);
+});
+
 test('profileToBundle: kebalikan dari bundleToProfile (round-trip inti)', () => {
   const original = {
     version: 1, username: 'Madd', updatedAt: 1710000000000,

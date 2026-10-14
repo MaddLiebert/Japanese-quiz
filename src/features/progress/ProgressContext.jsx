@@ -78,7 +78,10 @@ const DEFAULT_PROGRESS = {
   weekly: emptyWeekly(),
   tutorialSeen: emptySeen(),
   tutorialHidden: false,
-  cinematicsSeen: emptyCinematics()
+  cinematicsSeen: emptyCinematics(),
+  // Profil publik 訪問 — opt-in, default TERTUTUP (docs/public-profile.md §3).
+  // Satu sumber kebenaran: ditulis ke kolom server `is_public` lewat bundleToProfile.
+  publicProfile: false
 };
 
 const DIFFICULTY_MAP = { easy: 0.8, medium: 1.0, hard: 1.2 };
@@ -782,6 +785,12 @@ export const ProgressProvider = ({ children }) => {
     setProgress(prev => ({ ...prev, tutorialHidden: ensureTutorialHidden(hidden) }));
   }, []);
 
+  // Profil publik 訪問 — sakelar opt-in (default mati). Satu jalur menulis;
+  // nilainya dikirim ke server sebagai `is_public` lewat bundleToProfile.
+  const setPublicProfile = useCallback((on) => {
+    setProgress(prev => ({ ...prev, publicProfile: Boolean(on) }));
+  }, []);
+
   const resetProgress = useCallback(() => {
     localStorage.removeItem('user_progress_v2');
     localStorage.removeItem('item_progress_v2');
@@ -799,7 +808,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, buyFranchise, equipFranchise, equipCosmetic, pullCharacter, setOshi, ownedCharacterList, characterPool, markTutorialSeen, setTutorialHidden, markCinematicSeen, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, buyFranchise, equipFranchise, equipCosmetic, pullCharacter, setOshi, ownedCharacterList, characterPool, markTutorialSeen, setTutorialHidden, markCinematicSeen, setPublicProfile, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}
