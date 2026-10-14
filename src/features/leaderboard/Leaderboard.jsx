@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { useSync } from '../sync/SyncContext';
+import { AuthModal } from '../sync/AuthModal';
 import { useUserStats } from '../progress/ProgressContext';
 import { EraPaper } from '../../components/EraPaper';
 import { fetchAllTime, fetchWeekly, fetchMyRank, rankMedal, clearLeaderboardCache } from './leaderboardApi';
@@ -15,6 +16,7 @@ export function Leaderboard() {
   const { configured, enabled, user, enableSync, syncNow, status } = useSync();
   const { progress } = useUserStats();
   const id = language === 'id';
+  const [authOpen, setAuthOpen] = useState(false);
 
   const [tab, setTab] = useState('all');       // 'all' | 'week'
   const [rows, setRows] = useState([]);
@@ -88,15 +90,23 @@ export function Leaderboard() {
             <div className="border-[3px] border-sumi bg-kinari p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
               <p className="text-sm font-bold text-sumi/80">
                 {id
-                  ? 'Aktifkan sinkronisasi untuk masuk papan peringkat. Progresmu tidak diubah.'
-                  : 'Enable sync to join the leaderboard. Your progress is untouched.'}
+                  ? 'Masuk atau daftar untuk ikut papan peringkat. Progresmu tidak diubah.'
+                  : 'Sign in or sign up to join the leaderboard. Your progress is untouched.'}
               </p>
-              <button
-                onClick={() => enableSync()}
-                className="flex-shrink-0 px-8 py-4 border-[3px] border-sumi bg-ai text-kinari-light font-black text-xs tracking-widest uppercase shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] transition-all cursor-pointer"
-              >
-                {id ? 'Aktifkan Sync' : 'Enable Sync'}
-              </button>
+              <div className="flex-shrink-0 flex flex-wrap gap-3">
+                <button
+                  onClick={() => setAuthOpen(true)}
+                  className="px-8 py-4 border-[3px] border-sumi bg-ai text-kinari-light font-black text-xs tracking-widest uppercase shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] transition-all cursor-pointer"
+                >
+                  {id ? 'Masuk / Daftar' : 'Sign in / Sign up'}
+                </button>
+                <button
+                  onClick={() => enableSync()}
+                  className="px-6 py-4 border-[3px] border-sumi/40 text-sumi/60 font-bold text-xs tracking-widest uppercase hover:text-sumi transition-all cursor-pointer"
+                >
+                  {id ? 'Lewati' : 'Skip'}
+                </button>
+              </div>
             </div>
           )}
 
@@ -201,6 +211,9 @@ export function Leaderboard() {
           )}
         </div>
       </motion.div>
+
+      {/* Popup Masuk / Daftar */}
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </div>
   );
 }
