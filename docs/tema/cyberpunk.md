@@ -351,16 +351,18 @@ Test/lint/build + `:root` bersih + perf (glitch/scanline tidak berat pas scroll,
 
 ## 13. Kriteria Penerimaan
 
-- [ ] `[data-era="cyberpunk"]` + `.dark[data-era="cyberpunk"]` + `--era-shadow` ada; `cyberpunk` di `DIDESAIN`.
-- [ ] `:root` **tidak berubah** (diff kosong).
-- [ ] `.era-pattern` 電脳 sendiri (BUKAN seigaiha Edo).
-- [ ] Tidak ada satu pun `box-shadow` offset keras `Npx Npx 0 0` milik 電脳.
-- [ ] Tidak ada `backdrop-filter` (holo-sem, bukan kaca-blur).
-- [ ] Semua aksen ≥4.5:1 di **宵 yoi** DAN **真夜中 mayonaka**.
-- [ ] Nama UI: 闇市/ハック/クレジット/アーカイブ/電脳ID/任務/権限 + checkpoint 終.
-- [ ] Checkpoint 終: gerbang Lv 300 + lulus 多元 最終回; mode dingin + ambang naik + sekali jalan + waktu ketat; lulus → 完.
-- [ ] Glitch Lv 300 permanen; hormati reduced-motion + toggle.
-- [ ] Nol emoji (ikon = kanji glyph).
+- [x] `[data-era="cyberpunk"]` + `.dark[data-era="cyberpunk"]` + `--era-shadow` ada; `cyberpunk` di `DIDESAIN`.
+- [x] `:root` **tidak berubah** (diff kosong).
+- [x] `.era-pattern` 電脳 sendiri (BUKAN seigaiha Edo).
+- [x] Tidak ada satu pun `box-shadow` offset keras `Npx Npx 0 0` milik 電脳.
+- [x] Tidak ada `backdrop-filter` (holo-sem, bukan kaca-blur).
+- [x] Semua aksen ≥4.5:1 di **宵 yoi** DAN **真夜中 mayonaka**.
+- [x] Nama UI: 闇市/ハック/クレジット/アーカイブ/電脳ID/任務/権限 + checkpoint 終.
+- [x] Checkpoint 終: gerbang Lv 300 + lulus 多元 最終回; mode dingin + ambang naik + sekali jalan + waktu ketat; lulus → 完.
+- [x] Glitch Lv 300 permanen; hormati reduced-motion + toggle.
+- [x] Nol emoji (ikon = kanji glyph).
+
+> **Status (2026-10-14):** semua ✅ diverifikasi — `cyberpunkTheme.test.js` + `eraThemeCoverage.test.js` + `cyberpunkCheckpoint.test.js` hijau (37 tes). Emoji 🔒 di badge Shop diganti `<Glyph name="lock" />` (commit `206b854`).
 
 ---
 
@@ -381,7 +383,7 @@ Test/lint/build + `:root` bersih + perf (glitch/scanline tidak berat pas scroll,
 ## 15. Yang TIDAK termasuk PRD ini
 
 - **Isi POOL gacha ハック** (daftar hadiah) — ✅ SUDAH: 6 kosmetik 電脳 (§16).
-- **Naskah NPC non-cinematic** — TBD.
+- **Naskah NPC non-cinematic** — di luar cakupan (電脳 belum punya companion; fitur baru, butuh keputusan pemilik).
 - **Konten N4** — ditolak (proyek sendiri).
 - **Franchise/karakter lapis 2/3** — 電脳 = satu dunia, tidak berlaku.
 - **Implementasi kode** — dokumen ini spec; eksekusi di terminal (T0–T12).
