@@ -52,6 +52,29 @@ function PasswordField({ value, onChange, placeholder, autoComplete, id }) {
   );
 }
 
+// ── Terjemahkan pesan error Supabase → bahasa manusia ───────────────────────
+// Khusus: rate limit email (bawaan Supabase ~2-4 email/jam tanpa SMTP sendiri).
+function humanError(raw, id) {
+  const m = String(raw || '');
+  if (/over_email_send_rate_limit|email rate limit exceeded|rate limit/i.test(m)) {
+    return id
+      ? 'Terlalu banyak permintaan email. Tunggu ±1 jam lalu coba lagi. (Sementara: pakai email + sandi di tab Daftar — tidak perlu email sama sekali.)'
+      : 'Too many email requests. Wait about an hour and retry. (Meanwhile: use email + password in the Sign up tab — no email needed.)';
+  }
+  if (/over_request_rate_limit|Too many requests/i.test(m)) {
+    return id ? 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.' : 'Too many attempts. Wait a moment and retry.';
+  }
+  if (/Invalid login credentials/i.test(m)) return id ? 'Email atau sandi salah.' : 'Wrong email or password.';
+  if (/already registered|already been registered|User already registered/i.test(m)) {
+    return id ? 'Email ini sudah terdaftar — coba tab Masuk.' : 'This email is already registered — try the Sign in tab.';
+  }
+  if (/Password should be at least/i.test(m)) return id ? 'Sandi minimal 6 karakter.' : 'Password must be at least 6 characters.';
+  if (/invalid-email|invalid email/i.test(m)) return id ? 'Format email tidak valid.' : 'Invalid email format.';
+  if (/Email not confirmed/i.test(m)) return id ? 'Email belum dikonfirmasi — cek inbox lalu klik tautannya.' : 'Email not confirmed — check your inbox and click the link.';
+  if (/unconfigured/i.test(m)) return id ? 'Backend belum dikonfigurasi.' : 'Backend not configured.';
+  return m || (id ? 'Gagal. Coba lagi.' : 'Failed. Try again.');
+}
+
 // ── Modal Masuk / Daftar 同期 ────────────────────────────────────────────────
 // Popup dengan dua tab (Masuk / Daftar), sandi + ikon mata, dan opsi
 // "kirim tautan masuk" (magic link) tanpa sandi.
@@ -67,6 +90,14 @@ export function AuthModal({ open, onClose, initialTab = 'signin' }) {
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState(null);
+  const [cooldown, setCooldown] = useState(0); // detik sisa sebelum boleh kirim email lagi
+
+  // Hitung mundur cooldown (cegah spam email → hindari limit Supabase).
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
 
   // Reset isi tiap kali modal dibuka.
   useEffect(() => {
@@ -109,13 +140,7 @@ export function AuthModal({ open, onClose, initialTab = 'signin' }) {
         : (id ? 'Masuk berhasil.' : 'Signed in.') });
       setTimeout(() => onClose(), 900);
     } else {
-      const m = r.message || '';
-      let msg = m || (id ? 'Gagal. Coba lagi.' : 'Failed. Try again.');
-      if (/Invalid login credentials/i.test(m)) msg = id ? 'Email atau sandi salah.' : 'Wrong email or password.';
-      if (/already registered|already been registered/i.test(m)) msg = id ? 'Email ini sudah terdaftar — coba tab Masuk.' : 'This email is already registered — try the Sign in tab.';
-      if (/Password should be at least/i.test(m)) msg = id ? 'Sandi minimal 6 karakter.' : 'Password must be at least 6 characters.';
-      if (/invalid-email/i.test(m)) msg = id ? 'Format email tidak valid.' : 'Invalid email format.';
-      setNote({ ok: false, msg });
+      setNote({ ok: false, msg: humanError(r.message || r.reason, id) });
     }
     setBusy(false);
   };
@@ -125,11 +150,12 @@ export function AuthModal({ open, onClose, initialTab = 'signin' }) {
     setBusy(true); setNote(null);
     const r = await signInWithEmailLink(email);
     if (r.ok) {
+      setCooldown(60);
       setNote({ ok: true, msg: id
         ? `Tautan masuk terkirim ke ${r.email}. Buka inbox (cek Spam) lalu klik tautannya.`
         : `Sign-in link sent to ${r.email}. Open your inbox (check Spam) and click the link.` });
     } else {
-      setNote({ ok: false, msg: r.message || (id ? 'Gagal mengirim tautan.' : 'Failed to send link.') });
+      setNote({ ok: false, msg: humanError(r.message || r.reason, id) });
     }
     setBusy(false);
   };
@@ -138,9 +164,10 @@ export function AuthModal({ open, onClose, initialTab = 'signin' }) {
     if (!emailOk) { setNote({ ok: false, msg: id ? 'Isi emailmu dulu untuk reset.' : 'Enter your email to reset.' }); return; }
     setBusy(true);
     const r = await resetPassword(email);
+    if (r.ok) setCooldown(60);
     setNote(r.ok
       ? { ok: true, msg: id ? 'Tautan reset terkirim — cek email.' : 'Reset link sent — check your email.' }
-      : { ok: false, msg: r.message || (id ? 'Gagal mengirim tautan reset.' : 'Failed to send reset link.') });
+      : { ok: false, msg: humanError(r.message || r.reason, id) });
     setBusy(false);
   };
 
@@ -247,10 +274,12 @@ export function AuthModal({ open, onClose, initialTab = 'signin' }) {
           <button
             type="button"
             onClick={sendLink}
-            disabled={busy || !emailOk}
+            disabled={busy || !emailOk || cooldown > 0}
             className="w-full py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-40 cursor-pointer"
           >
-            ✉️ {id ? 'Kirim Tautan Masuk (tanpa sandi)' : 'Send Sign-in Link (no password)'}
+            {cooldown > 0
+              ? `⏳ ${id ? 'Tunggu' : 'Wait'} ${cooldown}s`
+              : <>✉️ {id ? 'Kirim Tautan Masuk (tanpa sandi)' : 'Send Sign-in Link (no password)'}</>}
           </button>
           <p className="text-[10px] text-sumi/45 font-semibold mt-2 leading-relaxed">
             {id

@@ -44,13 +44,16 @@ Ini membuat tabel `profiles` & `xp_events`, RLS, trigger XP, dan fungsi leaderbo
     Sign In / Providers → Email = ON**). Tidak perlu Google Cloud Console.
   - **Penting:** tambahkan origin app ke **Authentication → URL Configuration →
     Redirect URLs** (untuk balik dari tautan email & tautan reset password).
-  - Cadangan: **email + password** masih tersedia (di balik "Atau pakai email +
-    password") — `updateUser({email,password})`, `signInWithPassword`,
-    `resetPasswordForEmail`. Kalau pakai ini, matikan **Email → Confirm email**
-    supaya user langsung bisa masuk tanpa verifikasi.
-  - **Email kustom (opsional):** default Supabase hanya kirim ~3–4 email/jam ke
-    alamat yang bukan anggota tim (batas bawaan). Untuk produksi, sambungkan SMTP
-    sendiri (mis. Resend/SendGrid) di **Project Settings → Auth → SMTP**.
+  - Cadangan: **email + password** masih tersedia (tab **Daftar** di popup) —
+    `updateUser({email,password})`, `signInWithPassword`, `resetPasswordForEmail`.
+    **Ini tidak butuh email sama sekali** → tidak kena limit email. Kalau pakai
+    ini, matikan **Email → Confirm email** supaya user langsung bisa masuk.
+  - **⚠️ LIMIT EMAIL (penting):** layanan email bawaan Supabase hanya boleh
+    **~2–4 email/jam** per project (error `429 over_email_send_rate_limit`).
+    Cukup untuk tes, **tidak cukup untuk produksi**. Solusi permanen: sambungkan
+    SMTP sendiri di **Project Settings → Auth → SMTP** (gratis: Resend 3000/bln,
+    atau Brevo). Setelah SMTP aktif, limit naik drastis.
+    UI sudah menampilkan pesan ramah + cooldown 60 dtk + saran pakai email+sandi.
 
 - **Push**: setiap key sync berubah (`username`, `user_progress_v2`,
   `item_progress_v2`, `achievements_unlocked_v2`, `selected_badges`) → ditandai
