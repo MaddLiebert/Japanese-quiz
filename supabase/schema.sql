@@ -36,6 +36,9 @@ create table if not exists public.profiles (
 -- Untuk DB yang sudah ada: tambahkan kolom avatar (create table if not exists
 -- TIDAK menambah kolom ke tabel lama).
 alter table public.profiles add column if not exists avatar text not null default '';
+-- Profil publik (opt-in): default TERTUTUP. Hanya baris dengan is_public = true
+-- (atau baris milik sendiri) yang boleh keluar lewat RPC public_profile().
+alter table public.profiles add column if not exists is_public boolean not null default false;
 
 create table if not exists public.xp_events (
   id          bigint generated always as identity primary key,
@@ -156,5 +159,34 @@ $$;
 grant execute on function public.leaderboard_all_time(int) to anon, authenticated;
 grant execute on function public.leaderboard_weekly(int)   to anon, authenticated;
 grant execute on function public.my_rank_all_time()        to authenticated;
+
+-- ── 4b. Profil publik 訪問 (SECURITY DEFINER → tembus RLS, WHITELIST kolom) ──
+-- RLS `profiles_select_own` (auth.uid() = id) memblokir baca baris orang lain,
+-- jadi baca profil orang WAJIB lewat fungsi SECURITY DEFINER ini.
+--
+-- PENTING (privasi): kolom disebut SATU PER SATU. JANGAN `select p.*` — itu
+-- membocorkan bundle `data` (jsonb progres penuh), email, dll. Yang boleh keluar
+-- HANYA data dasar yang sudah publik di papan: nama, avatar, xp, level, streak,
+-- akurasi, updated_at. Medaru, isi tas, badge mentah, `data` = TIDAK PERNAH.
+--
+-- Baris hanya keluar bila `is_public = true` ATAU milik sendiri (`auth.uid()`).
+-- Kembalian KOSONG = tidak publik / tidak ada (jangan dibedakan — hindari bocor
+-- keberadaan akun). id = UUID acak (tak bisa ditebak) → enumerasi tak berguna.
+drop function if exists public.public_profile(uuid);
+
+create or replace function public.public_profile(p_id uuid)
+returns table (id uuid, display_name text, avatar text, xp int, level int,
+               streak int, accuracy numeric, updated_at timestamptz)
+language sql
+security definer
+set search_path = public
+as $$
+  select p.id, p.display_name, p.avatar, p.xp, p.level, p.streak, p.accuracy, p.updated_at
+  from public.profiles p
+  where p.id = p_id
+    and (p.is_public = true or p.id = auth.uid());
+$$;
+
+grant execute on function public.public_profile(uuid) to anon, authenticated;
 
 -- Selesai. Verifikasi: SQL Editor → select * from public.leaderboard_all_time();
