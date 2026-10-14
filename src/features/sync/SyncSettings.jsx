@@ -11,7 +11,7 @@ export function SyncSettings() {
     configured, enabled, status, lastSyncedAt, user, isAnon,
     enableSync, disableSync, syncNow,
     registerWithPassword, signInWithPassword, resetPassword,
-    signInWithGoogle,
+    signInWithEmailLink,
     signOut, getQuota,
   } = useSync();
 
@@ -19,6 +19,8 @@ export function SyncSettings() {
   const [password, setPassword] = useState('');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [linkEmail, setLinkEmail] = useState('');
+  const [linkSent, setLinkSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState(null);
   const quota = getQuota ? getQuota() : null;
@@ -77,15 +79,22 @@ export function SyncSettings() {
     setBusy(false);
   };
 
-  // Masuk / tautkan akun Google. Halaman akan dialihkan ke Google lalu balik.
-  const doGoogle = async () => {
+  // Kirim tautan masuk ke email (magic link) — Gmail, tanpa sandi.
+  const doSendLink = async (e) => {
+    if (e) e.preventDefault();
+    if (!linkEmail.trim()) return;
     setBusy(true);
-    const r = await signInWithGoogle();
-    if (!r.ok) {
+    setNote(null);
+    const r = await signInWithEmailLink(linkEmail);
+    if (r.ok) {
+      setLinkSent(true);
+      setNote({ ok: true, msg: id
+        ? `Tautan masuk terkirim ke ${r.email}. Buka inbox (cek juga folder Spam) lalu klik tautannya.`
+        : `Sign-in link sent to ${r.email}. Open your inbox (check Spam too) and click the link.` });
+    } else {
       setNote({ ok: false, msg: r.message || r.reason });
-      setBusy(false);
     }
-    // kalau ok → browser dialihkan ke Google, tombol tetap nonaktif sampai pindah.
+    setBusy(false);
   };
 
   return (
@@ -165,8 +174,8 @@ export function SyncSettings() {
             <p className="text-[11px] text-sumi/60 font-semibold mb-3 leading-relaxed">
               {isAnon
                 ? (id
-                    ? 'Masuk dengan Google supaya progresmu bisa dibuka di perangkat atau alamat (domain) lain — tidak hilang walau ganti alamat.'
-                    : 'Sign in with Google so your progress opens on other devices or addresses (domains) — it won’t vanish when the address changes.')
+                    ? 'Masukkan email Gmail kamu — kami kirim TAUTAN MASUK ke inbox. Klik tautannya dan kamu langsung masuk. Tidak perlu sandi, tidak perlu daftar.'
+                    : 'Enter your Gmail — we send a SIGN-IN LINK to your inbox. Click it and you’re in. No password, no sign-up.')
                 : (id
                     ? `Sudah masuk sebagai ${user?.email || 'akun'}. Progresmu aman & bisa dibuka di perangkat lain.`
                     : `Signed in as ${user?.email || 'account'}. Your progress is safe and opens on other devices.`)}
@@ -181,18 +190,42 @@ export function SyncSettings() {
               >
                 {id ? 'Keluar / Ganti Akun' : 'Sign out / Switch account'}
               </button>
-            ) : (
-              <>
-                {/* Tombol Google — cara utama */}
+            ) : linkSent ? (
+              <div className="border-[3px] border-ai bg-ai/5 p-4">
+                <p className="text-sm font-black text-ai mb-1">{id ? '✓ Tautan terkirim!' : '✓ Link sent!'}</p>
+                <p className="text-[11px] font-semibold text-sumi/70 leading-relaxed mb-3">
+                  {id
+                    ? <>Buka Gmail <span className="font-black">{linkEmail}</span> → cari email dari Supabase → klik <span className="font-black">tautan masuk</span>. Cek folder <span className="font-black">Spam</span> kalau tidak ada.</>
+                    : <>Open Gmail <span className="font-black">{linkEmail}</span> → find the email from Supabase → click the <span className="font-black">sign-in link</span>. Check <span className="font-black">Spam</span> if missing.</>}
+                </p>
                 <button
                   type="button"
-                  onClick={doGoogle}
-                  disabled={busy}
-                  className="inline-flex items-center gap-3 py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-50 cursor-pointer"
+                  onClick={() => { setLinkSent(false); setNote(null); }}
+                  className="text-[10px] uppercase tracking-[0.15em] font-bold text-sumi/50 hover:text-shu underline cursor-pointer"
                 >
-                  <span className="font-black text-base leading-none">G</span>
-                  {id ? 'Masuk dengan Google' : 'Sign in with Google'}
+                  {id ? 'Kirim ulang / ganti email' : 'Resend / change email'}
                 </button>
+              </div>
+            ) : (
+              <>
+                {/* Form magic link — cara utama, tanpa sandi */}
+                <form onSubmit={doSendLink} className="space-y-3">
+                  <input
+                    type="email"
+                    value={linkEmail}
+                    onChange={(e) => setLinkEmail(e.target.value)}
+                    placeholder="kamu@gmail.com"
+                    autoComplete="email"
+                    className="w-full border-[3px] border-sumi bg-kinari-light px-4 py-3 text-sm font-bold text-sumi placeholder:text-sumi/40 focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={busy || !linkEmail.trim()}
+                    className="inline-flex items-center gap-2 py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-ai text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all disabled:opacity-40 cursor-pointer"
+                  >
+                    ✉️ {id ? 'Kirim Tautan Masuk' : 'Send Sign-in Link'}
+                  </button>
+                </form>
 
                 {/* Alternatif email+password (cadangan) */}
                 <details className="mt-4 border-t-[3px] border-sumi/10 pt-3">

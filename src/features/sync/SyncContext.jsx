@@ -398,6 +398,38 @@ export function SyncProvider({ children }) {
     }
   }, []);
 
+  // ── LOGIN LEWAT TAUTAN EMAIL (magic link) — GANTI Google OAuth ─────────────
+  // Supabase kirim TAUTAN MASUK ke inbox Gmail user; user klik → langsung masuk.
+  // TIDAK perlu sandi Gmail, TIDAK perlu Google Cloud Console / OAuth client.
+  // Kalau sudah ada sesi (anonim) → tautkan email ke akun itu (updateUser) supaya
+  // progres TIDAK hilang. Kalau belum ada → signInWithOtp (buat akun baru).
+  const signInWithEmailLink = useCallback(async (email) => {
+    if (!isSupabaseConfigured) return { ok: false, reason: 'unconfigured' };
+    const clean = String(email).trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(clean)) {
+      return { ok: false, reason: 'invalid-email' };
+    }
+    const redirectTo = typeof location !== 'undefined' ? location.origin : undefined;
+    const q = consume(storage(), 'auth');
+    if (!q.ok) return { ok: false, reason: 'quota' };
+    try {
+      if (userRef.current) {
+        // Tautkan email ke akun anonim saat ini → progres tetap, akun jadi aman.
+        const { error } = await supabase.auth.updateUser({ email: clean });
+        if (error) throw error;
+        return { ok: true, linked: true, email: clean };
+      }
+      const { error } = await supabase.auth.signInWithOtp({
+        email: clean,
+        options: { emailRedirectTo: redirectTo, shouldCreateUser: true },
+      });
+      if (error) throw error;
+      return { ok: true, linked: false, email: clean };
+    } catch (e) {
+      return { ok: false, reason: 'auth', message: String(e?.message || e) };
+    }
+  }, []);
+
   const signOut = useCallback(async () => {
     if (!isSupabaseConfigured) return;
     try { await supabase.auth.signOut(); } catch { /* noop */ }
@@ -411,15 +443,19 @@ export function SyncProvider({ children }) {
   // Ringkasan kuota harian untuk ditampilkan di Settings.
   const getQuota = useCallback(() => quotaSummary(storage()), []);
 
-  const isAnon = Boolean(user && (user.is_anonymous === true || (user.is_anonymous == null && !user.email)));
+  // "Belum aman" = belum ada sesi sama sekali ATAU sesi masih anonim.
+  // Dipakai UI untuk menampilkan form login (magic link). Kalau user null
+  // (sync belum aktif), tetap tampilkan form supaya user bisa langsung masuk.
+  const isAnon = !user || Boolean(user.is_anonymous === true || (user.is_anonymous == null && !user.email));
+  const isSignedIn = Boolean(user && !isAnon);
 
   const value = {
     ready, enabled, status, lastSyncedAt,
-    user, isAnon,
+    user, isAnon, isSignedIn,
     configured: isSupabaseConfigured,
     enableSync, disableSync, syncNow,
     registerWithPassword, signInWithPassword, resetPassword,
-    signInWithGoogle,
+    signInWithGoogle, signInWithEmailLink,
     signOut, getQuota,
   };
 

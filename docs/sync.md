@@ -35,43 +35,22 @@ Ini membuat tabel `profiles` & `xp_events`, RLS, trigger XP, dan fungsi leaderbo
 ## 2. Cara kerja
 
 - **Akun**: anonim per-device (`signInAnonymously`). Bisa diamankan dengan
-  **Masuk dengan Google** (Pengaturan → Akun & Sinkronisasi) — akun anonim saat
-  ini **ditautkan** (`linkIdentity`), jadi **progres tidak hilang**; setelah
-  tertaut, buka di perangkat/alamat (domain) lain dengan tombol Google yang sama.
-  - **Wajib (Supabase):** aktifkan **Authentication → Sign In / Providers →
-    Google** (isi Client ID + Secret dari Google Cloud Console). Lihat bagian 2b.
+  **Masuk lewat tautan email (magic link)** (Pengaturan → Akun & Sinkronisasi):
+  user masukkan Gmail → Supabase kirim **tautan masuk** ke inbox → klik → masuk.
+  **Tanpa sandi, tanpa daftar.** Kalau sudah ada sesi anonim, email **ditautkan**
+  (`updateUser({ email })`) → **progres tidak hilang**; kalau belum ada sesi,
+  `signInWithOtp({ shouldCreateUser: true })`.
+  - **Wajib (Supabase):** provider **Email** harus aktif (**Authentication →
+    Sign In / Providers → Email = ON**). Tidak perlu Google Cloud Console.
+  - **Penting:** tambahkan origin app ke **Authentication → URL Configuration →
+    Redirect URLs** (untuk balik dari tautan email & tautan reset password).
   - Cadangan: **email + password** masih tersedia (di balik "Atau pakai email +
-    password") — `updateUser({email,password})` menautkan ke akun anonim saat ini,
-    `signInWithPassword` untuk masuk, `resetPasswordForEmail` untuk lupa password.
-  - **Penting (Supabase):** untuk email+password, matikan **Authentication →
-    Providers → Email → Confirm email** supaya user langsung bisa masuk tanpa
-    verifikasi. Tambahkan origin app ke **Authentication → URL Configuration →
-    Redirect URLs** (untuk balik dari Google & tautan reset password).
-
-### 2b. Setup Login Google (OAuth)
-
-**Kode app sudah siap.** Yang perlu disiapkan sekali di dashboard:
-
-1. **Google Cloud Console** (<https://console.cloud.google.com>):
-   - Buat project (atau pakai yang ada) → **APIs & Services → OAuth consent screen**
-     → pilih **External** → isi nama app + email → Save (mode *Testing* cukup;
-     tambahkan email Google kamu sebagai *Test user*).
-   - **APIs & Services → Credentials → Create Credentials → OAuth client ID** →
-     tipe **Web application**.
-   - **Authorized redirect URIs** → tambahkan:
-     `https://<ref>.supabase.co/auth/v1/callback`
-     (`<ref>` = subdomain project Supabase, mis. `ctuhlesygdovmsrmyvmx`).
-   - Catat **Client ID** & **Client Secret**.
-2. **Supabase Dashboard** → **Authentication → Sign In / Providers → Google** →
-   **Enable** → tempel **Client ID** + **Client Secret** → **Save**.
-3. **Authentication → URL Configuration → Redirect URLs** → tambahkan
-   `https://<domain-app-kamu>/` (dan `http://localhost:5173/` untuk dev).
-4. Pastikan `VITE_SUPABASE_URL` & `VITE_SUPABASE_ANON_KEY` benar di Vercel, lalu
-   redeploy. Buka Pengaturan → **Masuk dengan Google**.
-
-> ⚠️ Klien Supabase **harus** `detectSessionInUrl: true` (sudah di-set di
-> `supabaseClient.js`). Kalau `false`, token OAuth di URL tak pernah dibaca →
-> login Google diam-diam gagal. Ini penyebab fitur Google lama dibuang.
+    password") — `updateUser({email,password})`, `signInWithPassword`,
+    `resetPasswordForEmail`. Kalau pakai ini, matikan **Email → Confirm email**
+    supaya user langsung bisa masuk tanpa verifikasi.
+  - **Email kustom (opsional):** default Supabase hanya kirim ~3–4 email/jam ke
+    alamat yang bukan anggota tim (batas bawaan). Untuk produksi, sambungkan SMTP
+    sendiri (mis. Resend/SendGrid) di **Project Settings → Auth → SMTP**.
 
 - **Push**: setiap key sync berubah (`username`, `user_progress_v2`,
   `item_progress_v2`, `achievements_unlocked_v2`, `selected_badges`) → ditandai
