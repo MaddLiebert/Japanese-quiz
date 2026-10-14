@@ -255,21 +255,28 @@ export const CYBERPUNK_MEDARU = { name: 'クレジット', nameShort: 'クレジ
 ```
 `nameShort` dipakai chip di top-bar (panjang — pertimbangkan versi pendek bila chip sempit).
 
-### 8.3 Streak (`streakCopy.js`)
+### 8.3 Streak (`streakCopy.js`) — ✅ SUDAH
 
-Streak punya modul sendiri — **belum ditentukan** untuk 電脳 (TBD).
-
----
-
-## 9. Audio — TBD
-
-**Belum ditentukan.** Arah: **synthwave / ambient kota neon** + SFX glitch. BGM bebas royalti (generate sendiri), pola `THEME_BGM_PLANS`. Nada tema: **sunyi** (常夜), bukan ramai (itu 多元).
+`CYBERPUNK_STREAK` di `streakCopy.js`: title 接続 (koneksi/uptime), sigil 電/断,
+ikon `hologram` — streak = koneksi yang tetap tersambung. Terdaftar di peta era.
 
 ---
 
-## 10. Cinematic Perkenalan — TBD
+## 9. Audio — ✅ SUDAH (plan `cyberpunk`)
 
-**Belum ditentukan.** Ikut pola `cinematics.js` (`{ id, era, kind, title, route }`). Narator: **Nacht** (wujud asli). Nada: kota neon dari kejauhan, kamera masuk pelan, satu layar menyala.
+`THEME_BGM_PLANS.cyberpunk` sudah ada di `src/utils/sfx.js`: drone paling dalam dari
+semua era (36.71/73.42/87.31 Hz), pad sawtooth gelap F-minor, arp synth minor dingin
+(F G♯ C C♯ D♯, tiap 1.35 s), level 0.12 — **sunyi** (常夜), bukan ramai. BGM
+disintesis Web Audio (nol aset), default OFF, ikut preferensi global.
+
+---
+
+## 10. Cinematic Perkenalan — ✅ SUDAH (`/cyberpunk-history`)
+
+`cinematics.js` + `src/features/cinematic/cyberpunk/` lengkap: 5 babak (gate → city →
+peak → endless → home), narator **Nacht** (wujud asli), voice 9 klip di
+`/voices/cyberpunk/` (edge-tts). Route `/cyberpunk-history` terdaftar di `App.jsx`,
+replay dari Pengaturan.
 
 ---
 
@@ -315,8 +322,9 @@ Blok `[data-era="cyberpunk"]` (宵 yoi) + `.dark[data-era="cyberpunk"]` (真夜�
 ### T4 — Tipografi
 Override `--font-display` (Dela Gothic One) / `--font-serif` / `--font-mono` di scope era. Nol font baru.
 
-### T5 — Cinematic 電脳 (TBD)
-`cinematics.js` + scenes. Naskah nanti.
+### T5 — Cinematic 電脳 ✅
+`cinematics.js` + `cyberpunk/data/scenes.js` (5 babak) + `CyberCinematic.jsx` +
+voice Nacht. Route `/cyberpunk-history`.
 
 ### T6 — Peta 「家」
 `cyberpunkStops.js` (5 titik, §7) + test.
@@ -330,8 +338,8 @@ Verifikasi `glitch.js` Lv 300 → glitch permanen benar-benar tampil (glitchAllo
 ### T9 — Dark mode 宵/真夜中
 Uji 2 kedalaman malam × komponen. Kontras tiap aksen ≥4.5 di KEDUA-nya.
 
-### T10 — Audio tema (TBD)
-`THEME_BGM_PLANS.cyberpunk`.
+### T10 — Audio tema ✅
+`THEME_BGM_PLANS.cyberpunk` ada (drone 常夜, level 0.12, arp minor dingin).
 
 ### T11 — Wiring app
 Route + Settings + pemilih era (terkunci Lv 300). Entry point di `TopControls`.
@@ -372,17 +380,24 @@ Test/lint/build + `:root` bersih + perf (glitch/scanline tidak berat pas scroll,
 
 ## 15. Yang TIDAK termasuk PRD ini
 
-- **Konten gacha ハック** (pool hadiah) — TBD, dibahas terpisah.
-- **Audio & NPC & cinematic naskah** — TBD (§9/§10).
+- **Isi POOL gacha ハック** (daftar hadiah) — TBD, dibahas terpisah (§16 teks UI sudah).
+- **Naskah NPC non-cinematic** — TBD.
 - **Konten N4** — ditolak (proyek sendiri).
 - **Franchise/karakter lapis 2/3** — 電脳 = satu dunia, tidak berlaku.
 - **Implementasi kode** — dokumen ini spec; eksekusi di terminal (T0–T12).
 
 ---
 
-## 16. Isi ハック (Gacha) — TBD
+## 16. Isi ハック (Gacha) — teks ✅, POOL ⏳
 
-Belum ditentukan. Arah: barang era 電脳 (bukan merch arcade 多元). Kandidat: skin HUD, frame ID, voice Nacht/Saku, potongan memori. **Tunggu keputusan user.**
+**Teks UI ✅** — `src/features/gacha/cyberpunkCopy.js` (`CYBERPUNK_GACHA`):
+kicker 侵入, title **ハック**, watermark 電, hasil masuk アーカイブ (selaras
+`eraNames.js` + §8.1). Sebelumnya `gachaCopy('cyberpunk')` jatuh ke LEGACY →
+teks Indonesia "Gashapon Berkarat" bocor ke era 電脳; kini tidak.
+
+**Isi POOL hadiah ⏳ TBD.** Arah: barang era 電脳 (bukan merch arcade 多元).
+Kandidat: skin HUD, frame ID, voice Nacht/Saku, potongan memori. **Tunggu
+keputusan user.**
 
 ---
 
@@ -425,14 +440,14 @@ Sajikan datar, **tanpa drama** (pola Meiji §19 & Shōwa §19). Aturan nada: **�
 
 ---
 
-## 20. Identitas suara — TBD
+## 20. Identitas suara — ✅ sebagian besar SUDAH
 
-| Elemen | Usulan |
+| Elemen | Status |
 |---|---|
-| BGM | synthwave / ambient kota (§9) |
-| SFX | glitch, blip, hum neon |
-| Segel/LEVEL | nada rendah "sistem" |
-| Voice | Nacht/Saku — **wujud asli** (beda dari penyamaran roh) |
+| BGM | ✅ `THEME_BGM_PLANS.cyberpunk` (§9) — synthwave/ambient 常夜 |
+| SFX | ✅ pola glitch/blip/hum (glitch.js, sfx.js) |
+| Segel/LEVEL | ✅ nada rendah "sistem" |
+| Voice | ✅ Nacht/Saku **wujud asli** — cinematic `/voices/cyberpunk/` (9 klip) |
 
 ---
 
