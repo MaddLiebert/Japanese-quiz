@@ -1,7 +1,7 @@
 # PRD — Tema Era: **SHŌWA 昭和** (Tema #4 dari 6)
 
 **Versi:** v0.1 · **Dibuat:** 2026-10-10
-**Status:** SPEC — belum diimplementasikan
+**Status:** ✅ TERPASANG di kode — tema sudah aktif (blok CSS era + checkpoint/cinematic + gacha). Dokumen ini tetap **SPEC acuan**; §12 = rencana task.
 **Induk:** sistem "Tema Era" (lihat `docs/tema/heian.md` §13)
 **Target implementasi:** terminal baru (task T0–T12 di §12)
 **Prasyarat:** `src/features/theme/eras.js` sudah memuat `{ id:'showa', kanji:'昭和', minLevel:100 }` ✅ (sudah ada).

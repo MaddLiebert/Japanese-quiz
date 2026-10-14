@@ -1,7 +1,7 @@
 # SPEC MEKANIK — Tema Era **ANIME MULTIVERSE 多元** (sistem kode)
 
 **Versi:** v0.1 · **Dibuat:** 2026-10-10
-**Status:** SPEC — belum diimplementasikan
+**Status:** ✅ TERPASANG di kode — sistem mekanik sudah aktif (lihat modul + test). Dokumen ini tetap **SPEC acuan**.
 **Induk visual/konten:** `docs/tema/anime.md` (PRD tema 多元)
 **Pola arsitektur:** mengikuti Meiji/Shōwa — **modul MURNI** (tanpa React/DOM) + test `node --test`, lalu UI React yang menipis.
 **Prasyarat:** `docs/tema/anime.md` T1–T4 (eraNames + token CSS) sudah jalan.

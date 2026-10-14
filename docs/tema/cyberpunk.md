@@ -1,7 +1,7 @@
 # PRD — Tema Era: **CYBERPUNK 電脳** (Tema #6 dari 6)
 
 **Versi:** v0.1 · **Dibuat:** 2026-10-11
-**Status:** SPEC — belum diimplementasikan
+**Status:** ✅ TERPASANG di kode — tema sudah aktif (blok CSS era + checkpoint 終/cinematic + gacha ハック). Dokumen ini tetap **SPEC acuan**; §12 = rencana task.
 **Induk:** sistem "Tema Era" (lihat `docs/tema/heian.md` §13)
 **Target implementasi:** terminal baru (task T0–T12 di §12)
 **Prasyarat:** `src/features/theme/eras.js` sudah memuat `{ id:'cyberpunk', kanji:'電脳', minLevel:300 }` ✅ (sudah ada).

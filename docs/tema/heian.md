@@ -1,7 +1,7 @@
 # PRD — Tema Era: **HEIAN 平安** (Tema #1 dari 6)
 
 **Versi:** v1.0 · **Dibuat:** 2026-10-02
-**Status:** SPEC — belum diimplementasikan
+**Status:** ✅ TERPASANG di kode — tema sudah aktif (blok CSS era + cinematic + gacha; Heian sengaja **tanpa checkpoint**). Dokumen ini tetap **SPEC acuan**; §12 = rencana task.
 **Induk:** sistem "Anime Multiverse / Tema Era" (lihat §13)
 **Target implementasi:** terminal baru (task T0–T14 di §12)
 

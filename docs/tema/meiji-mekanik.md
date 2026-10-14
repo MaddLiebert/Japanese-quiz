@@ -1,7 +1,7 @@
 # SPEC MEKANIK — Tema Era **MEIJI 明治** (sistem kode)
 
 **Versi:** v0.1 · **Dibuat:** 2026-10-08
-**Status:** SPEC — belum diimplementasikan
+**Status:** ✅ TERPASANG di kode — sistem mekanik sudah aktif (lihat modul + test). Dokumen ini tetap **SPEC acuan**.
 **Induk visual/konten:** `docs/tema/meiji.md` (PRD tema Meiji)
 **Pola arsitektur:** mengikuti Heian/Edo — **modul MURNI** (tanpa React/DOM) + test `node --test`, lalu UI React yang menipis.
 **Prasyarat:** `docs/tema/meiji.md` T1–T4 (eraNames + token CSS) sudah jalan.
