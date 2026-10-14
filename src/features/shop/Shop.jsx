@@ -39,10 +39,10 @@ export function Shop() {
   const MT = medaruCopy(era, language);   // nama mata uang ikut era (Heian → もん)
   const ownedItems = progress.ownedItems || {};
   const ownedPacks = progress.ownedPacks || [];
-  const pool = gachaPoolInfo(ownedPacks);
+  const pool = gachaPoolInfo(ownedPacks, era);
 
   // Teks odds dihitung dari pool (bukan hardcode) — aman saat pack bertambah.
-  const oddsText = rarityOdds().map((o) => `${o.label.toLowerCase()} ${o.chance}%`).join(' · ');
+  const oddsText = rarityOdds(era).map((o) => `${o.label.toLowerCase()} ${o.chance}%`).join(' · ');
 
   const handlePurchase = (item) => {
     const res = buyItem(item.id);
@@ -53,7 +53,7 @@ export function Shop() {
 
   const handleRoll = (count) => {
     const price = count >= 10 ? GACHA_PRICE_10X : GACHA_PRICE_1X;
-    const res = rollGacha(count);
+    const res = rollGacha(count, era);
     if (!res.ok) {
       alert(language === 'id' ? `${MT.name} kurang! Butuh ${price}, saldo kamu ${medaru}.` : `Not enough ${MT.name}! Need ${price}, you have ${medaru}.`);
       return;
@@ -202,7 +202,7 @@ export function Shop() {
                   <span className={`text-[11px] font-black uppercase tracking-[0.2em] ${(heian || edo) ? '' : 'text-kinari-light'}`}>
                     <Glyph name="gift" className="mr-2" />{T.contents}
                     <span className={`ml-2 font-bold normal-case tracking-normal ${(heian || edo) ? 'opacity-60' : 'text-kinari-light/70'}`}>
-                      ({pool.filter((p) => p.owned).length}/{pool.length} {T.ownedSuffix})
+                      ({pool.filter((p) => p.owned && p.winnable !== false).length}/{pool.filter((p) => p.winnable !== false).length} {T.ownedSuffix})
                     </span>
                   </span>
                   <span className={`text-xs font-black transition-transform ${(heian || edo) ? '' : 'text-kinari-light'} ${showPool ? 'rotate-180' : ''}`}>
@@ -215,7 +215,7 @@ export function Shop() {
                     {pool.map((p) => (
                       <li
                         key={p.id}
-                        className={`border-[2px] px-3 py-2 flex items-center gap-3 ${(heian || edo) ? 'border-sumi/25 bg-sumi/5' : 'border-sumi/40 bg-kinari-light/10'} ${p.owned ? 'opacity-70' : ''}`}
+                        className={`border-[2px] px-3 py-2 flex items-center gap-3 ${(heian || edo) ? 'border-sumi/25 bg-sumi/5' : 'border-sumi/40 bg-kinari-light/10'} ${p.owned ? 'opacity-70' : ''} ${p.winnable === false ? 'opacity-40' : ''}`}
                       >
                         <span className="shrink-0 text-sumi"><Glyph name={p.icon} size={24} /></span>
                         <div className="min-w-0 flex-grow">
@@ -248,7 +248,9 @@ export function Shop() {
                             {language === 'id' ? p.desc : (p.desc_en || p.desc)}
                           </p>
                         </div>
-                        <span className={`text-sm font-black shrink-0 tabular-nums ${(heian || edo) ? '' : 'text-kinari-light'}`}>{p.chance}%</span>
+                        <span className={`text-sm font-black shrink-0 tabular-nums ${(heian || edo) ? '' : 'text-kinari-light'}`}>
+                          {p.winnable === false ? '🔒 多元' : `${p.chance}%`}
+                        </span>
                       </li>
                     ))}
                   </ul>

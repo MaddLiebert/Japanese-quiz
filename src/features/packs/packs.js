@@ -131,17 +131,38 @@ export const packAllowedInEra = (pack, era) => !pack?.era || pack.era === era;
 // Pack "siap pakai" = punya visual & voice (termasuk placeholder 'dummy').
 export const isPackReady = (pack) => Boolean(pack && pack.visual && pack.voice);
 
+// ── Pool SADAR-ERA ───────────────────────────────────────────────────────────
+// Keputusan pemilik: "tiap tema cuma bisa menang pack miliknya sendiri (+ sedikit
+// pack dasar bersama)". Pack dasar = pack tanpa `era` (bebas di semua era);
+// pack ber-era (mis. JJK 'anime') hanya ikut di era-nya.
+//
+// `era` kosong/null → SEMUA pack (perilaku lama, backward-compatible) supaya
+// pemanggil lama yang tak mengirim era tidak berubah perilakunya.
+export const packsForEra = (era = null) => {
+  const pool = PACKS.filter(isPackReady);
+  if (!era) return pool;
+  return pool.filter((p) => packAllowedInEra(p, era));
+};
+
+// Daftar ID pool era — bentuk siap pakai untuk rollPackId(rng, poolIds).
+export const packIdsForEra = (era = null) => packsForEra(era).map((p) => p.id);
+
 // Info isi gacha untuk ditampilkan di Shop: semua pack ready + peluang (%) + status milik.
 // `ownedIds` boleh null / bukan array / berisi id hantu — semua aman.
+// `era` (opsional) = pool sadar-era: peluang dihitung HANYA dari pack yang bisa
+// menang di era itu; pack yang tak bisa menang tetap DITAMPILKAN (biar pemain tahu
+// isinya) tapi `chance: 0` + `winnable: false`.
 // Peluang dihitung dari bobot rarity, dibulatkan 1 desimal, lalu total dikoreksi
 // ke 100% supaya tidak ada selisih pembulatan yang bikin bingung pemain.
-export const gachaPoolInfo = (ownedIds = []) => {
+export const gachaPoolInfo = (ownedIds = [], era = null) => {
   const pool = PACKS.filter(isPackReady);
   if (pool.length === 0) return [];
+  const winnable = packsForEra(era);   // era null → semua pack (perilaku lama)
+  if (winnable.length === 0) return [];
   const owned = Array.isArray(ownedIds) ? ownedIds : [];
-  const total = pool.reduce((sum, p) => sum + (PACK_RARITY[p.rarity]?.weight ?? 1), 0);
+  const total = winnable.reduce((sum, p) => sum + (PACK_RARITY[p.rarity]?.weight ?? 1), 0);
   if (total <= 0) return [];
-  const raw = pool.map((p) => (PACK_RARITY[p.rarity]?.weight ?? 1) / total * 100);
+  const raw = winnable.map((p) => (PACK_RARITY[p.rarity]?.weight ?? 1) / total * 100);
   const rounded = raw.map((c) => Math.round(c * 10) / 10);
   // Selisih pembulatan dibebankan ke entri terbesar (biasanya common) biar total pas 100.
   const drift = Math.round((100 - rounded.reduce((s, c) => s + c, 0)) * 10) / 10;
@@ -150,7 +171,8 @@ export const gachaPoolInfo = (ownedIds = []) => {
     for (let i = 1; i < rounded.length; i++) if (rounded[i] > rounded[idx]) idx = i;
     rounded[idx] = Math.round((rounded[idx] + drift) * 10) / 10;
   }
-  return pool.map((p, i) => ({
+  const chanceOf = new Map(winnable.map((p, i) => [p.id, rounded[i]]));
+  return pool.map((p) => ({
     id: p.id,
     name: p.name,
     kanji: p.kanji,
@@ -160,16 +182,18 @@ export const gachaPoolInfo = (ownedIds = []) => {
     era: p.era,             // gerbang era (mis. 'anime') — untuk label 「多元」
     desc: p.desc,
     desc_en: p.desc_en,
-    chance: rounded[i],
+    chance: chanceOf.get(p.id) ?? 0,
+    winnable: chanceOf.has(p.id),
     owned: owned.includes(p.id),
   }));
 };
 
 // Peluang AGREGAT per rarity (%), dihitung dari pool yang siap — dipakai teks
 // odds di Shop supaya tidak pernah basi saat pack baru ditambah.
+// `era` (opsional) = hitung dari pool era (sama seperti yang bisa keluar).
 export const RARITY_ORDER = ['common', 'rare', 'legendary', 'special'];
-export const rarityOdds = () => {
-  const pool = PACKS.filter(isPackReady);
+export const rarityOdds = (era = null) => {
+  const pool = packsForEra(era);
   const total = pool.reduce((s, p) => s + (PACK_RARITY[p.rarity]?.weight ?? 1), 0);
   if (total <= 0) return [];
   return RARITY_ORDER

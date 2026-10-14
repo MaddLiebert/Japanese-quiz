@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { rollPackId } from '../packs/packs';
+import { rollPackId, packIdsForEra } from '../packs/packs';
 import { getItem, addItem, removeItem } from '../items/items';
 import { applyStreakBonus } from './streak';
 import { WRITE_GATE_KEY } from '../writing/writeGate';
@@ -699,18 +699,21 @@ export const ProgressProvider = ({ children }) => {
     [],
   );
 
-  // Undian gacha. count = 1 atau 10.
+  // Undian gacha. count = 1 atau 10. `era` = era aktif → pool SADAR-ERA
+  // (keputusan pemilik: tiap tema cuma bisa menang pack miliknya + pack dasar).
+  // Tanpa era → semua pack (perilaku lama, kompatibel).
   // Return { ok, results:[{id,isNew}], refunded }.
-  const rollGacha = useCallback((count = 1) => {
+  const rollGacha = useCallback((count = 1, era = null) => {
     const price = count >= 10 ? GACHA_PRICE_10X : GACHA_PRICE_1X;
     const balance = progressRef.current?.medaru || 0;
     if (balance < price) return { ok: false, reason: 'poor', results: [], refunded: 0 };
 
+    const poolIds = packIdsForEra(era);
     const ownedNow = progressRef.current?.ownedPacks || [];
     const seen = new Set(ownedNow);
     const results = [];
     for (let i = 0; i < count; i++) {
-      const id = rollPackId();
+      const id = rollPackId(Math.random, poolIds);
       if (!id) break;
       const isNew = !seen.has(id);
       results.push({ id, isNew });
