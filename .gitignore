@@ -56,3 +56,6 @@ public/audio/
 
 # Supabase CLI scratch
 supabase/.temp/
+
+# Kredensial lokal (JANGAN commit)
+.env.local
