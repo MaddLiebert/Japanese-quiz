@@ -7,13 +7,14 @@ import { RankBadge } from '../progress/RankBadge';
 import { useLanguage } from "../../context/LanguageContext";
 import { PACKS, isPackReady } from "../packs/packs";
 import { PackCard } from "../packs/PackCard";
+import { cosmeticsForEra, COSMETIC_KIND_LABEL } from "../cosmetics/cosmetics";
 import { inventoryList, countItems, itemName, itemDesc } from "../items/items";
 import { EraPaper } from "../../components/EraPaper";
 import { MedaruBadge } from "../../components/MedaruBadge";
 import { useEra } from "../theme/EraContext";
 
 export function Inventory() {
-  const { progress, togglePack, consumeItem } = useUserStats();
+  const { progress, togglePack, consumeItem, equipCosmetic } = useUserStats();
   const { language } = useLanguage();
   const { era } = useEra();
   const navigate = useNavigate();
@@ -26,6 +27,9 @@ export function Inventory() {
   const totalItems = countItems(progress.ownedItems);
 
   const packs = PACKS.filter((p) => ownedPacks.includes(p.id) && isPackReady(p));
+  // 電脳 — kosmetik yang dimiliki (Frame ID 電脳ID + Skin HUD).
+  const ownedCosmetics = progress.ownedCosmetics || [];
+  const cosmetics = cosmeticsForEra(era).filter((c) => ownedCosmetics.includes(c.id));
   // Total isi tas = pack + barang (angka di badge harus mencerminkan keduanya).
   const totalSlots = packs.length + totalItems;
 
@@ -125,6 +129,44 @@ export function Inventory() {
               </div>
             )}
           </section>
+
+          {/* 電脳 — Kosmetik (Frame ID 電脳ID + Skin HUD), isi gacha ハック */}
+          {cosmetics.length > 0 && (
+            <section>
+              <div className="flex items-center gap-4 mb-8">
+                <h2 className="text-2xl font-serif font-black text-sumi tracking-tight">
+                  {id ? 'Kosmetik 電脳' : '電脳 Cosmetics'}
+                </h2>
+                <div className="h-[2px] flex-1 bg-sumi/10"></div>
+                <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">装</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {cosmetics.map((c) => {
+                  const equipped = (c.kind === 'hud' ? progress.activeHud : progress.activeFrame) === c.id;
+                  const kindLabel = COSMETIC_KIND_LABEL[c.kind]?.[id ? 'id' : 'en'] || c.kind;
+                  return (
+                    <div key={c.id} className="bg-kinari border-[4px] border-sumi shadow-[6px_6px_0_0_#1a1a1a] flex flex-col p-6 relative overflow-hidden">
+                      <span className="absolute top-3 right-3 text-[9px] font-black px-2 py-1 border-[2px] border-sumi" style={{ background: c.palette.accent, color: '#0a0a0a' }}>
+                        {kindLabel}
+                      </span>
+                      <div className="mb-4 flex justify-center" style={{ color: c.palette.accent }}><Glyph name={c.icon} size={56} /></div>
+                      <h3 className="text-xl font-serif font-black border-b-4 border-sumi pb-2 mb-2 text-sumi">
+                        {c.kanji} · {c.name}
+                      </h3>
+                      <p className="text-sm font-bold mb-6 flex-grow text-sumi/80">{id ? c.desc : (c.desc_en || c.desc)}</p>
+                      <button
+                        type="button"
+                        onClick={() => equipCosmetic(c.id)}
+                        className={`py-3 font-black text-lg w-full border-4 border-sumi shadow-[4px_4px_0_0_#1a1a1a] active:translate-y-1 active:shadow-none transition-all ${equipped ? 'bg-matcha text-kinari-light' : 'bg-ai text-kinari-light'}`}
+                      >
+                        {equipped ? (id ? 'TERPASANG ✓' : 'EQUIPPED ✓') : (id ? 'PASANG' : 'EQUIP')}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
 
           {/* Consumables */}
           <section>

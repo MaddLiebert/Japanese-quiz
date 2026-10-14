@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { rollPackId, packIdsForEra } from '../packs/packs';
+import { cosmeticIdsForEra, getCosmetic, rollCosmeticId, COSMETIC_KIND } from '../cosmetics/cosmetics';
 import { getItem, addItem, removeItem } from '../items/items';
 import { applyStreakBonus } from './streak';
 import { WRITE_GATE_KEY } from '../writing/writeGate';
@@ -67,6 +68,10 @@ const DEFAULT_PROGRESS = {
   activeFranchise: null,
   ownedCharacters: {},
   oshiId: null,
+  // 電脳 — kosmetik (isi gacha ハック): Frame ID 電脳ID + Skin HUD.
+  ownedCosmetics: [],
+  activeFrame: null,
+  activeHud: null,
   n5Exam: emptyExamRecord(),
   lastActiveDate: getLocalDateString(),
   quests: emptyQuests(),
@@ -666,6 +671,19 @@ export const ProgressProvider = ({ children }) => {
     setProgress(prev => equipFranchiseState(prev, id));
   }, []);
 
+  // 電脳 — pasang/lepas KOSMETIK (frame / hud). Satu aktif per jenis.
+  // Mengembalikan jenis yang berubah, atau null kalau id tak dikenal.
+  const equipCosmetic = useCallback((id) => {
+    const c = getCosmetic(id);
+    if (!c) return null;
+    const slot = c.kind === COSMETIC_KIND.HUD ? 'activeHud' : 'activeFrame';
+    setProgress(prev => {
+      if (!(prev.ownedCosmetics || []).includes(id)) return prev;
+      return { ...prev, [slot]: prev[slot] === id ? null : id };
+    });
+    return slot;
+  }, []);
+
   // ── 多元 LAPIS 3: gacha karakter (クレーンゲーム). Return { ok, isNew }.
   const pullCharacter = useCallback((id) => {
     const cur = progressRef.current || {};
@@ -702,18 +720,23 @@ export const ProgressProvider = ({ children }) => {
   // Undian gacha. count = 1 atau 10. `era` = era aktif → pool SADAR-ERA
   // (keputusan pemilik: tiap tema cuma bisa menang pack miliknya + pack dasar).
   // Tanpa era → semua pack (perilaku lama, kompatibel).
-  // Return { ok, results:[{id,isNew}], refunded }.
+  // Era 電脳 → yang keluar KOSMETIK (ハック = Skin HUD / Frame ID), bukan pack.
+  // Return { ok, results:[{id,isNew}], refunded, kind }.
   const rollGacha = useCallback((count = 1, era = null) => {
     const price = count >= 10 ? GACHA_PRICE_10X : GACHA_PRICE_1X;
     const balance = progressRef.current?.medaru || 0;
-    if (balance < price) return { ok: false, reason: 'poor', results: [], refunded: 0 };
+    if (balance < price) return { ok: false, reason: 'poor', results: [], refunded: 0, kind: 'pack' };
 
-    const poolIds = packIdsForEra(era);
-    const ownedNow = progressRef.current?.ownedPacks || [];
+    // 電脳: pool KOSMETIK. Era lain: pool pack (sadar-era).
+    const cosmeticIds = cosmeticIdsForEra(era);
+    const isCosmetic = cosmeticIds.length > 0;
+    const poolIds = isCosmetic ? cosmeticIds : packIdsForEra(era);
+    const ownedKey = isCosmetic ? 'ownedCosmetics' : 'ownedPacks';
+    const ownedNow = progressRef.current?.[ownedKey] || [];
     const seen = new Set(ownedNow);
     const results = [];
     for (let i = 0; i < count; i++) {
-      const id = rollPackId(Math.random, poolIds);
+      const id = isCosmetic ? rollCosmeticId(Math.random, poolIds) : rollPackId(Math.random, poolIds);
       if (!id) break;
       const isNew = !seen.has(id);
       results.push({ id, isNew });
@@ -724,12 +747,12 @@ export const ProgressProvider = ({ children }) => {
     setProgress(prev => {
       const bal = prev.medaru || 0;
       if (bal < price) return prev;
-      const merged = [...(prev.ownedPacks || [])];
+      const merged = [...(prev[ownedKey] || [])];
       results.forEach((r) => { if (!merged.includes(r.id)) merged.push(r.id); });
-      return { ...prev, medaru: bal - price + refunded, ownedPacks: merged };
+      return { ...prev, medaru: bal - price + refunded, [ownedKey]: merged };
     });
 
-    return { ok: true, results, refunded };
+    return { ok: true, results, refunded, kind: isCosmetic ? 'cosmetic' : 'pack' };
   }, []);
 
   const unlockAchievement = useCallback((id) => {
@@ -776,7 +799,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, buyFranchise, equipFranchise, pullCharacter, setOshi, ownedCharacterList, characterPool, markTutorialSeen, setTutorialHidden, markCinematicSeen, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, buyFranchise, equipFranchise, equipCosmetic, pullCharacter, setOshi, ownedCharacterList, characterPool, markTutorialSeen, setTutorialHidden, markCinematicSeen, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}

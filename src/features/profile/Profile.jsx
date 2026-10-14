@@ -22,6 +22,8 @@ import { EraPaper } from '../../components/EraPaper';
 import { readAvatar, writeAvatar, clearAvatar, resizeImageToDataURL, isValidAvatarFile, initials } from './avatar';
 import { useSync } from '../sync/SyncContext';
 import { fetchMyRank } from '../leaderboard/leaderboardApi';
+import { getCosmetic } from '../cosmetics/cosmetics';
+import { useEra } from '../theme/EraContext';
 
 // Hanko Stamp component matching Home.jsx
 const HankoStamp = ({ text, label, delay = 0.2 }) => (
@@ -45,6 +47,12 @@ export function Profile() {
   const { itemProgress } = useItemProgress();
   const { achievements, selectedBadges, setSelectedBadges } = useAchievements();
   const [isEditingBadges, setIsEditingBadges] = useState(false);
+
+  // 電脳 — kosmetik terpasang (Frame ID 電脳ID + Skin HUD). GERBANG ERA: hanya
+  // tampil di era 電脳 (dihitung hidup dari `era` → otomatis mati di era lain).
+  const { era } = useEra();
+  const activeFrame = era === 'cyberpunk' ? getCosmetic(progress.activeFrame) : null;
+  const activeHud = era === 'cyberpunk' ? getCosmetic(progress.activeHud) : null;
 
   // ── Foto profil (disimpan lokal + ikut tersinkron ke cloud) ────────────────
   const [avatar, setAvatar] = useState(() => readAvatar());
@@ -201,6 +209,23 @@ export function Profile() {
               <span className="bg-ai text-kinari-light text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]">
                 {realProfileData.stats.winRate}% WIN RATE
               </span>
+              {/* 電脳 — kosmetik terpasang (Frame ID + Skin HUD) */}
+              {activeFrame && (
+                <span
+                  className="text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]"
+                  style={{ background: activeFrame.palette.accent, color: '#0a0a0a' }}
+                >
+                  <Glyph name={activeFrame.icon} className="mr-1" />{activeFrame.kanji}
+                </span>
+              )}
+              {activeHud && (
+                <span
+                  className="text-xs font-black px-3 py-1.5 border-[2px] border-sumi shadow-[3px_3px_0_0_#1a1a1a]"
+                  style={{ background: activeHud.palette.accent, color: '#0a0a0a' }}
+                >
+                  <Glyph name={activeHud.icon} className="mr-1" />{activeHud.kanji}
+                </span>
+              )}
             </div>
           </div>
 
@@ -256,6 +281,7 @@ export function Profile() {
                       onClick={handlePickAvatar}
                       title={language === 'id' ? 'Ganti foto profil' : 'Change profile photo'}
                       className="w-20 h-20 bg-ai text-kinari-light border-[4px] border-sumi shadow-[4px_4px_0_0_#1a1a1a] flex items-center justify-center overflow-hidden relative cursor-pointer group"
+                      style={activeFrame ? { borderColor: activeFrame.palette.accent, boxShadow: `0 0 0 3px ${activeFrame.palette.accent2}, 4px 4px 0 0 #1a1a1a` } : undefined}
                     >
                       {avatar ? (
                         <img src={avatar} alt="Foto profil" className="w-full h-full object-cover" />

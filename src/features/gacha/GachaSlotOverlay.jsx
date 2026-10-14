@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { PACK_RARITY, getPack } from "../packs/packs";
+import { getCosmetic } from "../cosmetics/cosmetics";
 import { packPalette, accentInk } from "../packs/rarityStyle";
 import { useLanguage } from "../../context/LanguageContext";
 import { useEra } from "../theme/EraContext";
@@ -36,8 +37,16 @@ import {
 const ITEM_H = 120; // px — tinggi satu sel reel (era lain)
 const SHELL_H = 96; // px — tinggi jendela satu keping kerang (Heian)
 
-const iconOf = (r) => getPack(r?.id)?.icon || 'coin';
-const rarityOf = (r) => getPack(r?.id)?.rarity || 'common';
+// Satu hasil bisa berupa PACK (era lain) atau KOSMETIK (電脳). Ambil seragam.
+const itemOf = (id) => {
+  const pack = getPack(id);
+  if (pack) return { name: pack.name, icon: pack.icon, rarity: pack.rarity, palette: packPalette(pack.visual) };
+  const cos = getCosmetic(id);
+  if (cos) return { name: cos.name, icon: cos.icon, rarity: cos.rarity, palette: cos.palette };
+  return { name: id, icon: 'coin', rarity: 'common', palette: packPalette('dummy') };
+};
+const iconOf = (r) => itemOf(r?.id).icon;
+const rarityOf = (r) => itemOf(r?.id).rarity;
 
 // Cek sekali: user minta animasi dikurangi?
 const prefersReduced = () =>
@@ -347,8 +356,8 @@ export function GachaSlotOverlay({ result, onClose }) {
             </h3>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               {results.map((p, i) => {
-                const pack = getPack(p.id);
-                const pal = packPalette(pack?.visual);
+                const it = itemOf(p.id);
+                const pal = it.palette;
                 return (
                   <motion.li
                     key={i}
@@ -358,13 +367,13 @@ export function GachaSlotOverlay({ result, onClose }) {
                     className="border-[3px] border-sumi px-4 py-3 flex items-center gap-3"
                     style={{ background: pal.deep, color: '#fdfcf9' }}
                   >
-                    <span className="text-kinari-light"><Glyph name={pack?.icon || 'coin'} size={24} /></span>
-                    <span className="font-black flex-grow">{pack?.name || p.id}</span>
+                    <span className="text-kinari-light"><Glyph name={it.icon || 'coin'} size={24} /></span>
+                    <span className="font-black flex-grow">{it.name}</span>
                     <span
                       className="text-[10px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5"
                       style={{ background: pal.accent, color: accentInk(pal.accent) }}
                     >
-                      {PACK_RARITY[pack?.rarity]?.label || 'COMMON'}
+                      {PACK_RARITY[it.rarity]?.label || 'COMMON'}
                     </span>
                     {!p.isNew && (
                       <span className="text-[10px] font-black bg-sumi text-kinari-light px-2 py-1">

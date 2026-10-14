@@ -380,7 +380,7 @@ Test/lint/build + `:root` bersih + perf (glitch/scanline tidak berat pas scroll,
 
 ## 15. Yang TIDAK termasuk PRD ini
 
-- **Isi POOL gacha ハック** (daftar hadiah) — TBD, dibahas terpisah (§16 teks UI sudah).
+- **Isi POOL gacha ハック** (daftar hadiah) — ✅ SUDAH: 6 kosmetik 電脳 (§16).
 - **Naskah NPC non-cinematic** — TBD.
 - **Konten N4** — ditolak (proyek sendiri).
 - **Franchise/karakter lapis 2/3** — 電脳 = satu dunia, tidak berlaku.
@@ -395,9 +395,13 @@ kicker 侵入, title **ハック**, watermark 電, hasil masuk アーカイブ (
 `eraNames.js` + §8.1). Sebelumnya `gachaCopy('cyberpunk')` jatuh ke LEGACY →
 teks Indonesia "Gashapon Berkarat" bocor ke era 電脳; kini tidak.
 
-**Isi POOL hadiah ⏳ TBD.** Arah: barang era 電脳 (bukan merch arcade 多元).
-Kandidat: skin HUD, frame ID, voice Nacht/Saku, potongan memori. **Tunggu
-keputusan user.**
+**Isi POOL hadiah ✅** — `src/features/cosmetics/cosmetics.js`: **6 kosmetik**
+(3 Frame ID 電脳ID: ネオン枠/雨枠/終枠 + 3 Skin HUD: 走査線/ホログラム/常夜),
+tampilan saja TANPA suara (keputusan pemilik 2026-10-14). Terikat era 電脳:
+`gachaCopy` ハック di 電脳 mengeluarkan kosmetik (`rollGacha` bercabang →
+`rollCosmeticId`), tersimpan di `progress.ownedCosmetics`, dipasang lewat
+`equipCosmetic` (`activeFrame`/`activeHud`) → tampil di Profil (bingkai avatar +
+chip) & Inventory. Digate era: di luar 電脳 otomatis mati.
 
 ---
 

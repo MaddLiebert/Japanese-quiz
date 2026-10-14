@@ -7,6 +7,7 @@ import { RankBadge } from '../progress/RankBadge';
 import { useLanguage } from "../../context/LanguageContext";
 import { SHOP_ITEMS, itemName, itemDesc } from "../items/items";
 import { gachaPoolInfo, PACK_RARITY, rarityOdds } from "../packs/packs";
+import { cosmeticPoolInfo } from "../cosmetics/cosmetics";
 import { packPalette, accentInk } from "../packs/rarityStyle";
 import { GachaSlotOverlay } from "../gacha/GachaSlotOverlay";
 import { EraPaper } from "../../components/EraPaper";
@@ -39,10 +40,23 @@ export function Shop() {
   const MT = medaruCopy(era, language);   // nama mata uang ikut era (Heian → もん)
   const ownedItems = progress.ownedItems || {};
   const ownedPacks = progress.ownedPacks || [];
-  const pool = gachaPoolInfo(ownedPacks, era);
+  const isCyber = era === 'cyberpunk';
+  const ownedCosmetics = progress.ownedCosmetics || [];
+  // 電脳 → pool KOSMETIK (isi ハック). Era lain → pool pack sadar-era.
+  const pool = isCyber ? cosmeticPoolInfo(ownedCosmetics) : gachaPoolInfo(ownedPacks, era);
 
   // Teks odds dihitung dari pool (bukan hardcode) — aman saat pack bertambah.
-  const oddsText = rarityOdds(era).map((o) => `${o.label.toLowerCase()} ${o.chance}%`).join(' · ');
+  // 電脳 → agregat dari pool kosmetik; era lain → pool pack sadar-era.
+  const oddsText = isCyber
+    ? (() => {
+        const total = pool.reduce((s, c) => s + c.chance, 0) || 1;
+        const byR = {};
+        for (const c of pool) byR[c.rarity] = (byR[c.rarity] || 0) + c.chance;
+        return Object.entries(byR)
+          .map(([r, ch]) => `${(PACK_RARITY[r]?.label || r).toLowerCase()} ${Math.round((ch / total) * 1000) / 10}%`)
+          .join(' · ');
+      })()
+    : rarityOdds(era).map((o) => `${o.label.toLowerCase()} ${o.chance}%`).join(' · ');
 
   const handlePurchase = (item) => {
     const res = buyItem(item.id);
@@ -224,7 +238,10 @@ export function Shop() {
                             {/* Badge pakai WARNA KANON karakter (bukan warna rarity) — v1.1 */}
                             <span
                               className="text-[8px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5 border-[1.5px] border-sumi/60"
-                              style={{ background: packPalette(p.visual).accent, color: accentInk(packPalette(p.visual).accent) }}
+                              style={{
+                                background: p.palette ? p.palette.accent : packPalette(p.visual).accent,
+                                color: accentInk(p.palette ? p.palette.accent : packPalette(p.visual).accent),
+                              }}
                             >
                               {PACK_RARITY[p.rarity]?.label || 'COMMON'}
                             </span>
@@ -234,13 +251,19 @@ export function Shop() {
                               </span>
                             )}
                             {/* Gerbang era: pack anime (JJK) hanya bisa dipakai di 多元 */}
-                            {p.era && (
+                            {p.era === 'anime' && (
                               <span
                                 className="text-[8px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5 border-[1.5px] border-sumi/60 bg-ai/20"
                                 title="Khusus era Anime Multiverse 多元"
                                 aria-label="Khusus era Anime Multiverse 多元"
                               >
                                 多元
+                              </span>
+                            )}
+                            {/* 電脳: tandai jenis kosmetik (Frame ID / Skin HUD) */}
+                            {p.kind && (
+                              <span className="text-[8px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5 border-[1.5px] border-sumi/60 bg-shu/20">
+                                {p.kind === 'hud' ? 'HUD' : 'ID'}
                               </span>
                             )}
                           </div>
