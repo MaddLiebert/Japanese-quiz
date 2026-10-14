@@ -225,9 +225,21 @@ export function SyncProvider({ children }) {
       }
     })();
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((evt, session) => {
       userRef.current = session?.user || null;
       setUser(session?.user || null);
+
+      // Balik dari login Google (OAuth) → sesi baru muncul di sini.
+      // Aktifkan sync + tarik progres akun itu (merge), lalu reload bila perlu.
+      const u = session?.user;
+      const isAnonUser = u && (u.is_anonymous === true || (u.is_anonymous == null && !u.email));
+      if (u && !isAnonUser && (evt === 'SIGNED_IN' || evt === 'USER_UPDATED')) {
+        localStorage.setItem(ENABLED_KEY, '1');
+        localStorage.setItem(SIGNED_IN_FLAG, '1');
+        enabledRef.current = true;
+        setEnabled(true);
+        pullAndMerge().then((changed) => { if (alive && changed) safeReload(); }).catch(() => {});
+      }
     });
 
     return () => { alive = false; sub?.subscription?.unsubscribe?.(); };
@@ -355,6 +367,37 @@ export function SyncProvider({ children }) {
     }
   }, []);
 
+  // Login dengan Google (OAuth). Progres TIDAK hilang:
+  //   • sudah ada sesi (anonim) → TAUTKAN identitas Google ke akun itu
+  //     (linkIdentity) → akun yang sama bisa dibuka di perangkat/domain lain.
+  //   • belum ada sesi → sign-in Google biasa.
+  // Catatan: redirect kembali ke origin ini. Token dibaca karena
+  // supabaseClient memakai detectSessionInUrl: true.
+  const signInWithGoogle = useCallback(async () => {
+    if (!isSupabaseConfigured) return { ok: false, reason: 'unconfigured' };
+    const redirectTo = typeof location !== 'undefined' ? location.origin : undefined;
+    const q = consume(storage(), 'auth');
+    if (!q.ok) return { ok: false, reason: 'quota' };
+    try {
+      if (userRef.current) {
+        const { error } = await supabase.auth.linkIdentity({
+          provider: 'google',
+          options: { redirectTo },
+        });
+        if (error) throw error;
+        return { ok: true, linked: true };
+      }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo },
+      });
+      if (error) throw error;
+      return { ok: true, linked: false };
+    } catch (e) {
+      return { ok: false, reason: 'oauth', message: String(e?.message || e) };
+    }
+  }, []);
+
   const signOut = useCallback(async () => {
     if (!isSupabaseConfigured) return;
     try { await supabase.auth.signOut(); } catch { /* noop */ }
@@ -376,6 +419,7 @@ export function SyncProvider({ children }) {
     configured: isSupabaseConfigured,
     enableSync, disableSync, syncNow,
     registerWithPassword, signInWithPassword, resetPassword,
+    signInWithGoogle,
     signOut, getQuota,
   };
 

@@ -20,8 +20,12 @@ export const supabase = isSupabaseConfigured
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        // Anonim → tidak ada redirect OAuth; deteksi sesi di URL tidak perlu.
-        detectSessionInUrl: false,
+        // WAJIB true untuk login Google (OAuth): token balik lewat URL
+        // (?code=… / #access_token=…). Kalau false, client tak pernah membaca
+        // hasil redirect → login Google gagal (penyebab dulu fitur ini dibuang).
+        // Untuk alur email+password & anonim: tak ada parameter di URL → no-op.
+        detectSessionInUrl: true,
+        flowType: 'pkce',
       },
     })
   : null;
