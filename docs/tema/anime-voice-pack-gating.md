@@ -1,7 +1,7 @@
 # SPEC — Gerbang Era untuk Voice Pack Anime (多元-only)
 
 **Versi:** 1.0
-**Status:** Rencana (belum dieksekusi)
+**Status:** ✅ DIEKSEKUSI (commit `87899ba`)
 **Tanggal:** 2026-10-14
 **Pemilik:** pemilik proyek
 **Induk:** `docs/tema/anime.md` §11 (arsitektur 3 lapis) · `docs/tema/anime-mekanik.md` §A16 (karakter/voice)
