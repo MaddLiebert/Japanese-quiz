@@ -10,7 +10,7 @@
 
 ## Ringkasan Satu Layar
 
-Enam era berbagi **satu inti yang sama** (kuis, Shop, Inventory, Profile, Settings, Leaderboard, Sync, Death Quiz, Ujian N5). Yang membedakan = **mekanik khas + halaman khas + ornamen + varian gacha + nama UI**. Tiap era punya **tepat satu varian gacha**, **tepat satu checkpoint**, **satu cinematic perkenalan**, dan **satu mata uang**. Anime Multiverse = paling kaya (sistem 3 lapis); Cyberpunk = paling unik aturannya (ujian campuran semua era + glitch permanen) tapi **gacha & audio masih TBD**.
+Enam era berbagi **satu inti yang sama** (kuis, Shop, Inventory, Profile, Settings, Leaderboard, Sync, Death Quiz, Ujian N5). Yang membedakan = **mekanik khas + halaman khas + ornamen + varian gacha + nama UI**. Tiap era punya **tepat satu varian gacha**, **tepat satu checkpoint**, **satu cinematic perkenalan**, dan **satu mata uang**. Anime Multiverse = paling kaya (sistem 3 lapis); Cyberpunk = paling unik aturannya (ujian campuran semua era + glitch permanen). **Semua gacha/audio/cinematic 6 era kini SUDAH terisi.**
 
 ---
 
@@ -36,7 +36,7 @@ Enam era berbagi **satu inti yang sama** (kuis, Shop, Inventory, Profile, Settin
 | 3 | **Meiji 明治** | 50 | Grammar + Reading | **福引** | **国会** | 明治 | 円 | Typesetting · Neologism · Koseki · PrintShop · Codex |
 | 4 | **Shōwa 昭和** | 100 | Ujian N5 | **ガチャガチャ** (kapsul) | **卒業** (= N5) | 昭和 | 円 | — |
 | 5 | **Anime 多元** | 150 | Budaya pop | **クレーンゲーム** (cakar) | **最終回** | 多元 | コイン | Shop dunia · Claw · 5 mode latihan |
-| 6 | **Cyberpunk 電脳** | 300 | Endgame | **ハック** ⚠️TBD | **終** | 電脳 | クレジット | Owari exam |
+| 6 | **Cyberpunk 電脳** | 300 | Endgame | **ハック** | **終** | 電脳 | クレジット | Owari exam |
 
 ---
 
@@ -137,8 +137,8 @@ Era **paling kaya** — bukan sekadar tema, tapi **sistem 3 lapis**.
 | **宵/真夜中** dark mode (senja → tengah malam) | `index.css` |
 | Ornamen **kabel serat optik, HUD, spire** | `CyberCable/Hud/Spire` |
 | Mata uang **クレジット** | `medaruCopy.js` |
-| **ハック** gacha | ⚠️ **TBD** (`cyberpunk.md §16`) |
-| Audio tema | ⚠️ **TBD** |
+| **ハック** gacha | ✅ 6 kosmetik 電脳 (`cosmetics.js`, `cyberpunk.md §16`) |
+| Audio tema | ✅ `THEME_BGM_PLANS.cyberpunk` (`sfx.js`) |
 
 > **Unik:** satu-satunya era **tanpa 8 perhentian** (5 titik "rumah"), **satu-satunya checkpoint yang memakai aturan khusus**, dan **satu-satunya ending** (完).
 
@@ -153,7 +153,7 @@ Era **paling kaya** — bukan sekadar tema, tapi **sistem 3 lapis**.
 | Gacha 福引 | | | ✅ | | | |
 | Gacha カプセル | | | | ✅ | | |
 | Gacha クレーン (cakar) | | | | | ✅ | |
-| Gacha ハック | | | | | | ⚠️TBD |
+| Gacha ハック | | | | | | ✅ |
 | Checkpoint | | ✅箱根 | ✅国会 | ✅卒業 | ✅最終回 | ✅終 |
 | Cinematic perkenalan | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Codex つながり** | | | ✅(mulai) | | ✅(lanjut) | |
@@ -191,13 +191,16 @@ Era **paling kaya** — bukan sekadar tema, tapi **sistem 3 lapis**.
 
 | Item | Status |
 |---|---|
-| Gacha **ハック** Cyberpunk | ⚠️ TBD (`cyberpunk.md §16`) |
-| Audio tema Cyberpunk | ⚠️ TBD |
-| Cinematic Cyberpunk | ⚠️ TBD (route ada, isi TBD) |
-| Gerbang era untuk voice pack anime | 📄 rencana (`anime-voice-pack-gating.md`) |
+| Gacha **ハック** Cyberpunk | ✅ SELESAI — 6 kosmetik 電脳 (`cosmetics.js`) |
+| Audio tema Cyberpunk | ✅ SELESAI — `THEME_BGM_PLANS.cyberpunk` |
+| Cinematic Cyberpunk | ✅ SELESAI — 5 babak + route `/cyberpunk-history` |
+| Gerbang era untuk voice pack anime | ✅ SELESAI (commit `87899ba`) |
+| Pool gacha sadar-era | ✅ SELESAI (commit `a066a23`) |
+
+> **Tidak ada celah gacha/audio/cinematic tersisa.** Sisa yang jujur: **aset voice/efek** untuk sebagian pack masih sintetis (fallback synth) — bukan blokir fitur.
 
 ---
 
 ## Ringkasan Satu Layar (ulang)
 
-**Tiap era punya satu gacha, satu checkpoint, satu cinematic, satu mata uang.** Pembeda terkuat: **Meiji** (4 halaman khas: Typesetting/Neologism/Koseki/PrintShop + mulai Codex & GLITCH), **Anime** (sistem 3 lapis: beli dunia → gacha karakter → 推し + 5 mode latihan pop), **Cyberpunk** (ujian campuran semua era + 4 aturan tersulit + glitch permanen + ending 完). **Heian** satu-satunya tanpa checkpoint & satu-satunya berbentuk lembut. **Shōwa** satu-satunya "echo base". Celah: gacha/audio/cinematic Cyberpunk masih TBD.
+**Tiap era punya satu gacha, satu checkpoint, satu cinematic, satu mata uang.** Pembeda terkuat: **Meiji** (4 halaman khas: Typesetting/Neologism/Koseki/PrintShop + mulai Codex & GLITCH), **Anime** (sistem 3 lapis: beli dunia → gacha karakter → 推し + 5 mode latihan pop), **Cyberpunk** (ujian campuran semua era + 4 aturan tersulit + glitch permanen + ending 完). **Heian** satu-satunya tanpa checkpoint & satu-satunya berbentuk lembut. **Shōwa** satu-satunya "echo base". **Gacha/audio/cinematic 6 era kini lengkap** (pool gacha sadar-era; ハック = 6 kosmetik 電脳).

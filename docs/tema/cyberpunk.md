@@ -388,7 +388,7 @@ Test/lint/build + `:root` bersih + perf (glitch/scanline tidak berat pas scroll,
 
 ---
 
-## 16. Isi ハック (Gacha) — teks ✅, POOL ⏳
+## 16. Isi ハック (Gacha) — ✅ SELESAI
 
 **Teks UI ✅** — `src/features/gacha/cyberpunkCopy.js` (`CYBERPUNK_GACHA`):
 kicker 侵入, title **ハック**, watermark 電, hasil masuk アーカイブ (selaras
