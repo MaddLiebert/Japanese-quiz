@@ -5,7 +5,8 @@ import { useUserStats } from '../progress/ProgressContext';
 import { playCorrectSound, playWrongSound, playStreakSound, answerFeedbackKind, hinaGifHoldMs, playDomainBoom, playGojoTechnique, playGojoCast, playBallSound, playMurasakiRiser, playCurseTick, playCurseReady, playDomainCollapse } from '../../utils/sfx';
 import { startDomainBgm, stopDomainBgm, setBallHum, stopBallHum, duckAmbience, stopAllAmbience } from '../../utils/gojoAmbience';
 import { startSukunaDomainBgm, stopSukunaDomainBgm, duckSukunaAmbience } from '../../utils/sukunaAmbience';
-import { getPack } from '../packs/packs';
+import { getPack, packAllowedInEra } from '../packs/packs';
+import { useEra } from '../theme/EraContext';
 import { getVisual } from './visuals';
 import { isQuietRoute } from './effectGate';
 import { hinaGifForAnswer } from './hinaGifs';
@@ -184,6 +185,8 @@ let seq = 0;
 
 export function EffectProvider({ children }) {
   const { progress } = useUserStats();
+  // Era aktif — untuk GERBANG pack terikat era (anime/JJK hanya hidup di 多元).
+  const { era } = useEra();
   // Gerbang senyap efek: rute tertentu (mis. Ujian N5) mematikan SEMUA efek JJK
   // (klip suara karakter + visual). Audio ISI halaman (soal Choukai) tidak lewat
   // sini → tetap bunyi.
@@ -371,8 +374,11 @@ export function EffectProvider({ children }) {
   }, []);
 
   // Visual aktif hanya kalau activePack punya visual yang terdaftar.
+  // GERBANG ERA: pack terikat era (mis. anime/JJK) hanya hidup di era-nya —
+  // di era lain `activeVisual` = null → semua cabang triggerEffect/cast mati
+  // sendiri, pack tetap tersimpan & hidup lagi otomatis saat masuk 多元.
   const activePack = getPack(progress.activePack);
-  const activeVisual = activePack?.visual || null;
+  const activeVisual = packAllowedInEra(activePack, era) ? (activePack?.visual || null) : null;
   const active = Boolean(getVisual(activeVisual));
 
   // Splash: tinta terlempar ke luar, memanjang searah gerak, lalu jatuh.

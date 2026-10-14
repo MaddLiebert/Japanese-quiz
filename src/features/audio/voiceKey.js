@@ -18,15 +18,20 @@
  * @param {string}   o.era               era aktif ('anime', 'heian', …)
  * @param {string}   o.oshiId            id karakter 推し (null bila tak ada)
  * @param {string}   o.packVoice         key voice Theme Pack aktif (null bila tak ada)
+ * @param {string}   o.packEra           era yang DIIKAT pack (mis. 'anime'; null = bebas)
  * @param {Function} o.voiceOfCharacter  id → key voice karakter (mis. characterVoice)
  * @returns {string|null} key voice yang dipakai setActiveVoice()
  */
-export const resolveVoiceKey = ({ era, oshiId, packVoice, voiceOfCharacter } = {}) => {
+export const resolveVoiceKey = ({ era, oshiId, packVoice, packEra, voiceOfCharacter } = {}) => {
   // 推し hanya menang di era 多元 — era lain tetap pakai voice pack (tidak bocor).
   if (era === 'anime' && oshiId && typeof voiceOfCharacter === 'function') {
     const cv = voiceOfCharacter(oshiId);
     if (cv) return cv;
   }
+  // Pack yang TERIKAT era (mis. anime) hanya bunyi di era-nya. Di luar itu →
+  // null (sfx.js memakai synth dasar sebagai default). Gerbang dihitung hidup
+  // dari `era` → pack anime mati di era lain & hidup lagi otomatis di 多元.
+  if (packEra && packEra !== era) return null;
   return packVoice || null;
 };
 

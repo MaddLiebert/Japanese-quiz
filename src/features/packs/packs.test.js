@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PACKS, PACK_RARITY, getPack, isPackReady, rollPackId, gachaPoolInfo, rarityOdds } from './packs.js';
+import { PACKS, PACK_RARITY, getPack, isPackReady, rollPackId, gachaPoolInfo, rarityOdds, isEraBoundPack, packAllowedInEra } from './packs.js';
 
 test('PACKS berisi 14 pack dan semuanya ready', () => {
   assert.equal(PACKS.length, 14);
@@ -251,4 +251,51 @@ test('rarityOdds: agregat per rarity, total ~100, special paling kecil', () => {
   const special = odds.find((o) => o.rarity === 'special');
   assert.ok(special && special.chance > 1.5 && special.chance < 2.5, `special ${special?.chance}% harus ~2%`);
   for (const o of odds) assert.ok(o.label && o.chance > 0);
+});
+
+// ── Gerbang era: pack anime (JJK) HANYA untuk era 多元 ───────────────────────
+// Aturan pemilik: "voice pack anime cuma ada & cuma bisa dipakai di tema 多元".
+
+test('pack_07..pack_14 ditandai era "anime" (JJK = pack anime)', () => {
+  const animeIds = ['pack_07', 'pack_08', 'pack_09', 'pack_10', 'pack_11', 'pack_12', 'pack_13', 'pack_14'];
+  for (const id of animeIds) {
+    assert.equal(getPack(id).era, 'anime', `${id} harus era 'anime'`);
+  }
+});
+
+test('pack_01..pack_06 TIDAK terikat era (bebas dipakai di era mana pun)', () => {
+  const bebas = ['kotodama_burst', 'pack_02', 'pack_03', 'pack_04', 'pack_05', 'pack_06'];
+  for (const id of bebas) {
+    assert.ok(!getPack(id).era, `${id} tidak boleh punya era`);
+  }
+});
+
+test('isEraBoundPack: true hanya untuk pack ber-era', () => {
+  assert.equal(isEraBoundPack(getPack('pack_07')), true);
+  assert.equal(isEraBoundPack(getPack('kotodama_burst')), false);
+  assert.equal(isEraBoundPack(null), false);
+});
+
+test('packAllowedInEra: pack anime hanya boleh di era anime', () => {
+  const anime = getPack('pack_07');
+  assert.equal(packAllowedInEra(anime, 'anime'), true);
+  for (const era of ['heian', 'edo', 'meiji', 'showa', 'cyberpunk']) {
+    assert.equal(packAllowedInEra(anime, era), false, `pack anime tidak boleh di ${era}`);
+  }
+});
+
+test('packAllowedInEra: pack tanpa era selalu boleh (semua era)', () => {
+  const bebas = getPack('kotodama_burst');
+  for (const era of ['heian', 'edo', 'meiji', 'showa', 'anime', 'cyberpunk']) {
+    assert.equal(packAllowedInEra(bebas, era), true);
+  }
+  assert.equal(packAllowedInEra(null, 'anime'), true, 'pack null → tidak menghalangi');
+});
+
+test('gachaPoolInfo membawa field era (untuk label "多元" di Shop)', () => {
+  const info = gachaPoolInfo();
+  const gojo = info.find((p) => p.id === 'pack_07');
+  assert.equal(gojo.era, 'anime');
+  const hina = info.find((p) => p.id === 'kotodama_burst');
+  assert.ok(!hina.era, 'pack non-anime tidak punya era');
 });

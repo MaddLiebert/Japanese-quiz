@@ -178,6 +178,7 @@ function VoiceSync() {
       era,
       oshiId: progress.oshiId,
       packVoice: pack?.voice,
+      packEra: pack?.era,          // pack terikat era (anime) hanya bunyi di era-nya
       voiceOfCharacter: characterVoice,
     });
     setActiveVoice(key);

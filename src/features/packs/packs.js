@@ -56,6 +56,7 @@ export const PACKS = [
     desc: 'Domain & Infinity: 蒼→赫→茈→無量空処',
     desc_en: 'Domain & Infinity: Ao→Aka→Murasaki→Domain',
     price: 2500, rarity: 'special', visual: 'gojo', voice: 'gojo',
+    era: 'anime',   // ← gerbang: pack anime hanya aktif di era 多元
   },
 
   // ── Seri Jujutsu Kaisen (pack_08..pack_14) ──────────────────────────────────
@@ -68,45 +69,64 @@ export const PACKS = [
     desc: '芻霊呪法: 簪→簪・連→簪・時限→共鳴り→黒閃 + ultimate 全弾爆発',
     desc_en: 'Straw Doll Technique: Hairpin→Barrage→Delayed→Resonance→Black Flash + All-Out Detonation',
     price: 2500, rarity: 'common', visual: 'nobara', voice: 'nobara',
+    era: 'anime',
   },
   {
     id: 'pack_09', name: 'Yuji Itadori', kanji: '虎杖悠仁', icon: 'hand',
     desc: 'Wadah Sukuna: 逕庭拳→黒閃→穿血→宿儺の器',
     desc_en: "Sukuna's Vessel: Keiteiken→Kokusen→Senketsu→Takeover",
     price: 2500, rarity: 'rare', visual: 'yuji', voice: 'yuji',
+    era: 'anime',
   },
   {
     id: 'pack_10', name: 'Megumi Fushiguro', kanji: '伏黒恵', icon: 'paw',
     desc: '十種影法術: 玉犬→鵺→大蛇→満象→虎葬 + ultimate 魔虚羅·適応',
     desc_en: 'Ten Shadows: Dogs→Nue→Serpent→Elephant→Tiger + Mahoraga·Adaptation',
     price: 2500, rarity: 'rare', visual: 'megumi', voice: 'megumi',
+    era: 'anime',
   },
   {
     id: 'pack_11', name: 'Nanami Kento', kanji: '七海建人', icon: 'shirt',
     desc: '十劃呪法: 七三↔大鉈→瓦落瓦落(10)→黒閃(20)→時間外労働(30) + ultimate 時間外労働・全開 (puing 瓦落瓦落・連鎖)',
     desc_en: 'Ratio Technique: 7:3↔Oonata→Garagara(10)→Black Flash(20)→Overtime(30) + ultimate Overtime: All-Out (rubble chain)',
     price: 2500, rarity: 'rare', visual: 'nanami', voice: 'nanami',
+    era: 'anime',
   },
   {
     id: 'pack_12', name: 'Yuta Okkotsu', kanji: '乙骨憂太', icon: 'gem',
     desc: '模倣・真贋相愛: 3 katana muncul — pilih 1, pakai ultimate siapa pun (Gojo/Sukuna/Nobara/Yuji/Megumi/Nanami/Toji) 30 dtk',
     desc_en: 'Copy: 真贋相愛 — 3 katanas appear, pick 1, wield any ultimate (Gojo/Sukuna/Nobara/Yuji/Megumi/Nanami/Toji) for 30s',
     price: 2500, rarity: 'legendary', visual: 'yuta', voice: 'yuta',
+    era: 'anime',
   },
   {
     id: 'pack_13', name: 'Toji Fushiguro', kanji: '伏黒甚爾', icon: 'sword',
     desc: '天与呪縛: 釈魂刀↔万里ノ鎖→天逆鉾(10)→遊雲(20)→武器庫呪霊(30) + ultimate 天与呪縛・全開 (mekanik 武器庫・一撃離脱 — amunisi bayar salah)',
     desc_en: 'Heavenly Restriction: Shakkontou↔Banri no Kusari→Amanosakahoko(10)→Yuuyun(20)→Bukiko Jurei(30) + ultimate Tenyo Jubaku: Zenkai (armory mechanic — ammo pays for mistakes)',
     price: 2500, rarity: 'legendary', visual: 'toji', voice: 'toji',
+    era: 'anime',
   },
   {
     id: 'pack_14', name: 'Ryomen Sukuna', kanji: '両面宿儺', icon: 'skull',
     desc: 'Voice pack Sukuna + efek 領域展開・伏魔御廚子', desc_en: 'Sukuna voice pack + Malevolent Shrine effect',
     price: 2500, rarity: 'special', visual: 'sukuna', voice: 'sukuna',
+    era: 'anime',
   },
 ];
 
 export const getPack = (id) => PACKS.find((p) => p.id === id) || null;
+
+// ── Gerbang ERA untuk pack ───────────────────────────────────────────────────
+// Sebuah pack boleh DIBATASI ke satu era (`era: 'anime'`). Aturan pemilik:
+// "voice pack anime cuma ada & cuma bisa dipakai di tema 多元". Pack tanpa
+// `era` = bebas dipakai di era mana pun (perilaku lama, tidak berubah).
+//
+// Gerbang dihitung HIDUP dari era aktif → pack anime MATI di era lain, dan
+// hidup lagi OTOMATIS begitu masuk 多元 (tanpa state baru / klik ulang).
+export const isEraBoundPack = (pack) => Boolean(pack && pack.era);
+
+// Boleh dipakai di era ini? Pack tanpa `era` selalu boleh.
+export const packAllowedInEra = (pack, era) => !pack?.era || pack.era === era;
 
 // Pack "siap pakai" = punya visual & voice (termasuk placeholder 'dummy').
 export const isPackReady = (pack) => Boolean(pack && pack.visual && pack.voice);
@@ -137,6 +157,7 @@ export const gachaPoolInfo = (ownedIds = []) => {
     icon: p.icon,
     rarity: p.rarity,
     visual: p.visual,
+    era: p.era,             // gerbang era (mis. 'anime') — untuk label 「多元」
     desc: p.desc,
     desc_en: p.desc_en,
     chance: rounded[i],

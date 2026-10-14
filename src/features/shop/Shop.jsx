@@ -233,6 +233,16 @@ export function Shop() {
                                 ✓
                               </span>
                             )}
+                            {/* Gerbang era: pack anime (JJK) hanya bisa dipakai di 多元 */}
+                            {p.era && (
+                              <span
+                                className="text-[8px] font-black uppercase tracking-[0.15em] px-1.5 py-0.5 border-[1.5px] border-sumi/60 bg-ai/20"
+                                title="Khusus era Anime Multiverse 多元"
+                                aria-label="Khusus era Anime Multiverse 多元"
+                              >
+                                多元
+                              </span>
+                            )}
                           </div>
                           <p className={`text-[10px] font-bold truncate ${(heian || edo) ? 'opacity-60' : 'text-kinari-light/70'}`}>
                             {language === 'id' ? p.desc : (p.desc_en || p.desc)}

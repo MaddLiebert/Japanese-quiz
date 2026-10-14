@@ -69,6 +69,19 @@ export function PackCard({ pack, isActive, onToggle, isId }) {
         <p className="text-xs font-bold uppercase tracking-[0.18em] opacity-70 mb-2">{pack.name}</p>
         <div className="h-[3px] w-12 mb-3" style={{ background: 'var(--accent)' }} aria-hidden="true" />
         <p className="text-sm font-bold mb-3 flex-grow opacity-90">{desc}</p>
+        {/* Gerbang era: pack terikat era (mis. anime/JJK) hanya bisa dipakai di
+            era itu. Ditandai jelas supaya pemain tahu kenapa efeknya mati di
+            era lain. */}
+        {pack.era && (
+          <p
+            className="text-[10px] font-black uppercase tracking-[0.15em] mb-2 inline-flex items-center gap-1 self-start border-[2px] border-sumi px-2 py-0.5 bg-ai/10"
+            title="Khusus era Anime Multiverse 多元"
+            aria-label="Khusus era Anime Multiverse 多元"
+          >
+            <span aria-hidden="true">多元</span>
+            <span>· Khusus Anime Multiverse</span>
+          </p>
+        )}
         <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-4 opacity-60">
           {pack.visual} · {pack.voice}
         </p>

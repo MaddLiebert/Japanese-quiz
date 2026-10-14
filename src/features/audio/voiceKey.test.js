@@ -45,3 +45,40 @@ test('voiceKey: semua kosong → null (sfx.js pakai synth dasar)', () => {
   assert.equal(resolveVoiceKey({ era: 'anime', oshiId: 'hoshi_hikari' }), null,
     'voiceOfCharacter absen → tidak crash, jatuh ke pack (null)');
 });
+
+// ── Gerbang ERA untuk pack anime (JJK): hanya bunyi di era 多元 ──────────────
+// Aturan pemilik: "voice pack anime cuma ada & cuma bisa dipakai di tema 多元".
+test('voiceKey: pack anime (packEra=anime) BUNYI di era 多元', () => {
+  assert.equal(
+    resolveVoiceKey({ era: 'anime', packVoice: 'gojo', packEra: 'anime', voiceOfCharacter: voiceOf }),
+    'gojo',
+  );
+});
+
+test('voiceKey: pack anime TIDAK bocor ke era lain → null (synth default)', () => {
+  for (const era of ['heian', 'edo', 'meiji', 'showa', 'cyberpunk']) {
+    assert.equal(
+      resolveVoiceKey({ era, packVoice: 'gojo', packEra: 'anime', voiceOfCharacter: voiceOf }),
+      null,
+      `${era}: pack anime tidak boleh bunyi`,
+    );
+  }
+});
+
+test('voiceKey: pack TANPA packEra tetap bebas (tidak terpengaruh gerbang)', () => {
+  for (const era of ['heian', 'edo', 'meiji', 'showa', 'anime', 'cyberpunk']) {
+    assert.equal(
+      resolveVoiceKey({ era, packVoice: 'hina', packEra: null, voiceOfCharacter: voiceOf }),
+      'hina',
+      `${era}: pack tanpa era harus tetap bunyi`,
+    );
+  }
+});
+
+test('voiceKey: 推し menang atas pack anime di 多元 (regresi A4/A16)', () => {
+  assert.equal(
+    resolveVoiceKey({ era: 'anime', oshiId: 'hoshi_hikari', packVoice: 'gojo', packEra: 'anime', voiceOfCharacter: voiceOf }),
+    'hoshi_hikari',
+    '推し harus menang walau pack anime aktif di 多元',
+  );
+});
