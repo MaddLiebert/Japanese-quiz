@@ -271,8 +271,10 @@ export function Shop() {
                             {language === 'id' ? p.desc : (p.desc_en || p.desc)}
                           </p>
                         </div>
-                        <span className={`text-sm font-black shrink-0 tabular-nums ${(heian || edo) ? '' : 'text-kinari-light'}`}>
-                          {p.winnable === false ? '🔒 多元' : `${p.chance}%`}
+                        <span className={`text-sm font-black shrink-0 tabular-nums flex items-center gap-1 ${(heian || edo) ? '' : 'text-kinari-light'}`}>
+                          {p.winnable === false
+                            ? (<><Glyph name="lock" className="inline" />多元</>)
+                            : `${p.chance}%`}
                         </span>
                       </li>
                     ))}
