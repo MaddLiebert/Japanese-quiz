@@ -26,6 +26,7 @@ import {
   readBundle, writeBundle, touchMeta, ENABLED_KEY,
 } from './syncStore';
 import { mergeBundles } from './merge';
+import { createSingleFlight } from './singleFlight';
 import {
   consume, writeCooldown, markWrite, backoffDelay, canReload, markReload, quotaSummary,
 } from './rateLimit';
@@ -45,6 +46,20 @@ const SIGNED_IN_FLAG = 'sync_was_signed_in_v1';
 const storage = () => {
   try { return typeof localStorage !== 'undefined' ? localStorage : null; } catch { return null; }
 };
+
+// Buat/segarkan sesi anonim — PALING BANYAK satu kali bersamaan.
+// `signInAnonymously` bikin USER BARU tiap panggilan (tidak idempoten): tanpa
+// penjaga, React StrictMode (mount ganda di dev) atau klik ganda bikin 2 akun
+// → 2 baris leaderboard. Single-flight → panggilan kedua berbagi hasil yang sama.
+const ensureAnonSession = createSingleFlight(async () => {
+  const existing = (await supabase.auth.getSession()).data.session;
+  if (existing) return existing;
+  const aq = consume(storage(), 'auth');
+  if (!aq.ok) return null;
+  const { data, error } = await supabase.auth.signInAnonymously();
+  if (error) throw error;
+  return data.session || null;
+});
 
 export function SyncProvider({ children }) {
   const [ready, setReady] = useState(!isSupabaseConfigured); // siap = tidak ada Supabase
@@ -199,16 +214,12 @@ export function SyncProvider({ children }) {
       const wasSignedIn = localStorage.getItem(SIGNED_IN_FLAG) === '1';
       const initialEnabled = stored == null ? (hasLocalData || wasSignedIn) : stored === '1';
 
-      // Ambil/segarkan sesi anonim kalau perlu.
+      // Ambil/segarkan sesi anonim kalau perlu (single-flight → tak dobel).
       let session = (await supabase.auth.getSession()).data.session;
       if (!session && (initialEnabled || hasLocalData)) {
-        const aq = consume(storage(), 'auth'); // kuota auth (sign-in anonim)
-        if (aq.ok) {
-          try {
-            const { data, error } = await supabase.auth.signInAnonymously();
-            if (!error) session = data.session;
-          } catch { /* offline → coba lagi nanti */ }
-        }
+        try {
+          session = await ensureAnonSession();
+        } catch { /* offline → coba lagi nanti */ }
       }
 
       if (!alive) return;
@@ -273,9 +284,8 @@ export function SyncProvider({ children }) {
       if (!session) {
         const aq = consume(storage(), 'auth');
         if (!aq.ok) return { ok: false, reason: 'quota' };
-        const { data, error } = await supabase.auth.signInAnonymously();
-        if (error) throw error;
-        session = data.session;
+        session = await ensureAnonSession();
+        if (!session) return { ok: false, reason: 'quota' };
       }
       localStorage.setItem(ENABLED_KEY, '1');
       localStorage.setItem(SIGNED_IN_FLAG, '1');
