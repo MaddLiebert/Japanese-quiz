@@ -90,21 +90,21 @@ export function Leaderboard() {
             <div className="border-[3px] border-sumi bg-kinari p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
               <p className="text-sm font-bold text-sumi/80">
                 {id
-                  ? 'Masuk atau daftar untuk ikut papan peringkat. Progresmu tidak diubah.'
-                  : 'Sign in or sign up to join the leaderboard. Your progress is untouched.'}
+                  ? 'Aktifkan sinkronisasi untuk masuk papan peringkat. Tanpa daftar, tanpa email.'
+                  : 'Enable sync to join the leaderboard. No sign-up, no email.'}
               </p>
               <div className="flex-shrink-0 flex flex-wrap gap-3">
                 <button
-                  onClick={() => setAuthOpen(true)}
+                  onClick={() => enableSync()}
                   className="px-8 py-4 border-[3px] border-sumi bg-ai text-kinari-light font-black text-xs tracking-widest uppercase shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] transition-all cursor-pointer"
                 >
-                  {id ? 'Masuk / Daftar' : 'Sign in / Sign up'}
+                  {id ? '⚡ Aktifkan Sync' : '⚡ Enable Sync'}
                 </button>
                 <button
-                  onClick={() => enableSync()}
+                  onClick={() => setAuthOpen(true)}
                   className="px-6 py-4 border-[3px] border-sumi/40 text-sumi/60 font-bold text-xs tracking-widest uppercase hover:text-sumi transition-all cursor-pointer"
                 >
-                  {id ? 'Lewati' : 'Skip'}
+                  {id ? 'Pakai akun' : 'Use account'}
                 </button>
               </div>
             </div>

@@ -4,7 +4,8 @@ import { useSync } from './SyncContext';
 import { AuthModal } from './AuthModal';
 
 // 同期 — kartu "Akun & Sinkronisasi" untuk halaman Pengaturan.
-// Semua form login/daftar kini di dalam popup (AuthModal) supaya rapi.
+// Jalur utama: sinkron TANPA akun (anonim per-device). Akun email opsional,
+// dipakai hanya kalau mau buka progres di perangkat lain.
 export function SyncSettings() {
   const { language } = useLanguage();
   const id = language === 'id';
@@ -28,10 +29,16 @@ export function SyncSettings() {
 
   const lastLabel = lastSyncedAt ? new Date(lastSyncedAt).toLocaleString() : '—';
 
-  // Pakai tanpa akun: sesi anonim (progres tetap, tapi terikat perangkat ini).
+  // Aktifkan sync TANPA akun: bikin sesi anonim → progres masuk cloud.
   const doAnonymous = async () => {
     setBusy(true);
     await enableSync();
+    setBusy(false);
+  };
+
+  const doSyncNow = async () => {
+    setBusy(true);
+    await syncNow();
     setBusy(false);
   };
 
@@ -45,8 +52,8 @@ export function SyncSettings() {
       </div>
       <p className="text-xs text-sumi/70 font-semibold mb-4">
         {id
-          ? 'Simpan progres ke cloud, main di perangkat lain, dan ikut papan peringkat.'
-          : 'Back up progress to the cloud, play across devices, and join the leaderboard.'}
+          ? 'Simpan progres ke cloud & ikut papan peringkat. Tidak perlu daftar atau email.'
+          : 'Back up progress to the cloud & join the leaderboard. No sign-up or email needed.'}
       </p>
 
       {!configured ? (
@@ -73,60 +80,96 @@ export function SyncSettings() {
             </div>
           </div>
 
-          {/* ── Belum punya akun (anonim / belum aktif) ── */}
-          {!isSignedIn && (
+          {/* ── 1. Sync belum aktif: dorong aktifkan (tanpa akun) ── */}
+          {!enabled && (
             <div className="border-t-[3px] border-sumi/10 pt-4">
               <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/60 mb-2">
-                {id ? 'Amankan Progresmu' : 'Save Your Progress'}
+                {id ? 'Simpan Progres ke Cloud' : 'Save Progress to Cloud'}
               </label>
               <p className="text-[11px] text-sumi/60 font-semibold mb-3 leading-relaxed">
                 {id
-                  ? 'Masuk atau daftar supaya progresmu tersimpan ke cloud dan bisa dibuka di perangkat lain.'
-                  : 'Sign in or create an account so your progress is saved to the cloud and opens on other devices.'}
+                  ? 'Sekali klik, langsung jalan — tanpa daftar, tanpa email. Progresmu tersimpan ke cloud otomatis.'
+                  : 'One click and it just works — no sign-up, no email. Your progress is saved to the cloud automatically.'}
               </p>
 
-              <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={doAnonymous}
+                disabled={busy}
+                className="w-full sm:w-auto py-3 px-6 border-[3px] border-sumi font-black text-xs uppercase tracking-widest bg-ai text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all disabled:opacity-50 cursor-pointer"
+              >
+                {busy ? (id ? 'Mengaktifkan…' : 'Enabling…') : (id ? '⚡ Aktifkan Sinkronisasi' : '⚡ Enable Sync')}
+              </button>
+
+              <div className="mt-3">
                 <button
                   type="button"
                   onClick={() => setModalOpen(true)}
-                  className="py-3 px-6 border-[3px] border-sumi font-black text-xs uppercase tracking-widest bg-ai text-kinari-light shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all cursor-pointer"
+                  className="text-[10px] uppercase tracking-[0.15em] font-bold text-sumi/50 hover:text-shu underline cursor-pointer"
                 >
-                  {id ? 'Masuk / Daftar' : 'Sign in / Sign up'}
+                  {id ? 'Sudah punya akun? Masuk / daftar' : 'Already have an account? Sign in / sign up'}
                 </button>
-                {!enabled && (
-                  <button
-                    type="button"
-                    onClick={doAnonymous}
-                    disabled={busy}
-                    className="py-3 px-5 border-[3px] border-sumi/40 font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi/60 hover:text-sumi transition-all disabled:opacity-50 cursor-pointer"
-                  >
-                    {id ? 'Lewati (tanpa akun)' : 'Skip (no account)'}
-                  </button>
-                )}
               </div>
-              <p className="text-[10px] text-sumi/40 font-semibold mt-2 leading-relaxed">
+
+              <p className="text-[10px] text-sumi/40 font-semibold mt-3 leading-relaxed">
                 {id
-                  ? '"Lewati" tetap menyimpan progres, tapi hanya bisa dibuka di perangkat ini.'
-                  : '"Skip" still saves progress, but only on this device.'}
+                  ? 'Tanpa akun, progres terikat ke perangkat ini. Mau dibuka di HP/laptop lain? Bikin akun kapan saja (opsional).'
+                  : 'Without an account, progress is tied to this device. Want it on another phone/laptop? Create an account anytime (optional).'}
               </p>
             </div>
           )}
 
-          {/* ── Sudah punya akun ── */}
-          {isSignedIn && (
+          {/* ── 2. Aktif tapi masih tamu (anonim) ── */}
+          {enabled && !isSignedIn && (
+            <div className="border-t-[3px] border-sumi/10 pt-4">
+              <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/60 mb-2">
+                {id ? 'Tersinkron sebagai Tamu' : 'Synced as Guest'}
+              </label>
+              <p className="text-[11px] text-sumi/60 font-semibold mb-3 leading-relaxed">
+                {id
+                  ? 'Progresmu aman di cloud untuk perangkat ini. Tidak perlu email.'
+                  : 'Your progress is safe in the cloud for this device. No email needed.'}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={doSyncNow}
+                  disabled={busy || status === 'syncing'}
+                  className="py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-50 cursor-pointer"
+                >
+                  {id ? 'Sync Sekarang' : 'Sync Now'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(true)}
+                  className="py-3 px-5 border-[3px] border-sumi/40 font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi/60 hover:text-sumi transition-all cursor-pointer"
+                >
+                  {id ? 'Pakai Akun (opsional)' : 'Use an Account (optional)'}
+                </button>
+              </div>
+              <p className="text-[10px] text-sumi/40 font-semibold mt-2 leading-relaxed">
+                {id
+                  ? 'Akun cuma perlu kalau mau buka progres di perangkat lain atau ganti HP.'
+                  : 'An account is only needed to open your progress on another device or switch phones.'}
+              </p>
+            </div>
+          )}
+
+          {/* ── 3. Sudah pakai akun (email) ── */}
+          {enabled && isSignedIn && (
             <div className="border-t-[3px] border-sumi/10 pt-4">
               <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/60 mb-2">
                 {id ? 'Akun' : 'Account'}
               </label>
               <p className="text-[11px] text-sumi/60 font-semibold mb-3 leading-relaxed">
                 {id
-                  ? <>Masuk sebagai <span className="font-black text-sumi">{user?.email}</span>. Progresmu aman & bisa dibuka di perangkat lain.</>
-                  : <>Signed in as <span className="font-black text-sumi">{user?.email}</span>. Your progress is safe and opens on other devices.</>}
+                  ? <>Masuk sebagai <span className="font-black text-sumi">{user?.email}</span>. Progresmu bisa dibuka di perangkat lain.</>
+                  : <>Signed in as <span className="font-black text-sumi">{user?.email}</span>. Your progress opens on other devices.</>}
               </p>
               <div className="flex flex-wrap gap-3">
                 <button
                   type="button"
-                  onClick={async () => { setBusy(true); await syncNow(); setBusy(false); }}
+                  onClick={doSyncNow}
                   disabled={busy || status === 'syncing'}
                   className="py-3 px-5 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest bg-kinari-light text-sumi shadow-[3px_3px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-50 cursor-pointer"
                 >
@@ -162,13 +205,13 @@ export function SyncSettings() {
           {user && (
             <div className="border-t-[3px] border-sumi/10 pt-4">
               <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-sumi/50 break-all">
-                {id ? 'ID' : 'ID'}: {user.email || (id ? 'Anonim' : 'Anonymous')} · {String(user.id).slice(0, 8)}…
+                {id ? 'ID' : 'ID'}: {user.email || (id ? 'Tamu (perangkat ini)' : 'Guest (this device)')} · {String(user.id).slice(0, 8)}…
               </span>
             </div>
           )}
 
           {/* Kuota harian — pengaman tier gratis (transparan ke user) */}
-          {quota && (
+          {quota && enabled && (
             <div className="border-t-[3px] border-sumi/10 pt-4">
               <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-sumi/60 mb-2">
                 {id ? 'Kuota Harian Perangkat Ini' : 'Daily Quota (This Device)'}
@@ -202,7 +245,7 @@ export function SyncSettings() {
         </div>
       )}
 
-      {/* Popup Masuk / Daftar */}
+      {/* Popup Masuk / Daftar (opsional) */}
       <AuthModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );

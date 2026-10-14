@@ -34,14 +34,20 @@ Ini membuat tabel `profiles` & `xp_events`, RLS, trigger XP, dan fungsi leaderbo
 
 ## 2. Cara kerja
 
-- **Akun**: anonim per-device (`signInAnonymously`). Bisa diamankan dengan
-  **Masuk lewat tautan email (magic link)** (Pengaturan → Akun & Sinkronisasi):
-  user masukkan Gmail → Supabase kirim **tautan masuk** ke inbox → klik → masuk.
-  **Tanpa sandi, tanpa daftar.** Kalau sudah ada sesi anonim, email **ditautkan**
-  (`updateUser({ email })`) → **progres tidak hilang**; kalau belum ada sesi,
-  `signInWithOtp({ shouldCreateUser: true })`.
-  - **Wajib (Supabase):** provider **Email** harus aktif (**Authentication →
-    Sign In / Providers → Email = ON**). Tidak perlu Google Cloud Console.
+- **Akun**: **TAMU per-device** (`signInAnonymously`) — **cara utama & default**.
+  Sekali klik "Aktifkan Sinkronisasi" → progres langsung tersimpan ke cloud
+  **tanpa daftar, tanpa email**. Cukup untuk 1 perangkat.
+  - **Akun email (OPSIONAL)** — hanya perlu kalau user mau buka progres di
+    **perangkat/HP lain**. Lewat popup **Masuk / Daftar**:
+    - **Masuk lewat tautan email (magic link)**: masukkan Gmail → Supabase kirim
+      **tautan masuk** → klik → masuk. Tanpa sandi. Kalau sudah ada sesi tamu,
+      email **ditautkan** (`updateUser({ email })`) → **progres tidak hilang**;
+      kalau belum ada sesi, `signInWithOtp({ shouldCreateUser: true })`.
+    - **Email + password** (tab Daftar): `updateUser({email,password})` /
+      `signInWithPassword` / `resetPasswordForEmail`. **Tidak mengirim email**
+      (kalau Confirm email dimatikan) → tidak kena limit.
+  - **Wajib (Supabase):** provider **Email** aktif + **Anonymous** aktif
+    (**Authentication → Sign In / Providers**). Tidak perlu Google Cloud Console.
   - **Penting:** tambahkan origin app ke **Authentication → URL Configuration →
     Redirect URLs** (untuk balik dari tautan email & tautan reset password).
   - Cadangan: **email + password** masih tersedia (tab **Daftar** di popup) —
