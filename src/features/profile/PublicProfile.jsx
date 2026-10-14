@@ -15,6 +15,7 @@ import { RankBadge } from '../progress/RankBadge';
 import { initials } from './avatar';
 import { fetchPublicProfile } from '../leaderboard/leaderboardApi';
 import { copyText } from '../leaderboard/PublicProfileModal';
+import { profileErrorCopy } from '../leaderboard/profileError';
 
 export function PublicProfile() {
   const { id: targetId } = useParams();
@@ -96,7 +97,14 @@ export function PublicProfile() {
         <div className="p-6 sm:p-12 relative z-10 bg-kinari-light">
           {loading ? (
             <p className="text-sm font-bold text-sumi/50 py-16 text-center">{id ? 'Memuat…' : 'Loading…'}</p>
-          ) : !targetId || (!row && !error) ? (
+          ) : error ? (
+            <div className="border-[4px] border-shu/40 bg-kinari p-8 sm:p-10 text-center">
+              <p className="text-sm font-bold text-shu">{profileErrorCopy(error, language).title}</p>
+              <p className="text-[11px] text-sumi/60 mt-2 max-w-sm mx-auto leading-relaxed">
+                {profileErrorCopy(error, language).hint}
+              </p>
+            </div>
+          ) : !targetId || !row ? (
             // Privat / tidak ada / id kosong — kartu 「非公開」.
             <div className="border-[4px] border-sumi bg-kinari p-8 sm:p-12 text-center shadow-[6px_6px_0_0_#1a1a1a]">
               <div className="mx-auto w-20 h-20 border-[3px] border-dashed border-sumi/30 flex items-center justify-center mb-5">
@@ -108,15 +116,6 @@ export function PublicProfile() {
                 {id
                   ? 'Pemain ini belum menyalakan 「Profil Publik」. Minta dia menyalakannya di Pengaturan agar halaman ini bisa dilihat.'
                   : 'This player has not turned on 「Public Profile」. Ask them to enable it in Settings so this page becomes visible.'}
-              </p>
-            </div>
-          ) : error && error !== 'unconfigured' ? (
-            <div className="border-[4px] border-shu/40 bg-kinari p-8 text-center">
-              <p className="text-sm font-bold text-shu">
-                {id ? 'Gagal memuat profil: ' : 'Failed to load profile: '}{error}
-              </p>
-              <p className="text-[11px] text-sumi/50 mt-2">
-                {id ? 'Cek koneksi lalu coba lagi.' : 'Check your connection and try again.'}
               </p>
             </div>
           ) : (

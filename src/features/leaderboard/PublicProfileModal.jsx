@@ -12,6 +12,7 @@ import { RankBadge } from '../progress/RankBadge';
 import { useLanguage } from '../../context/LanguageContext';
 import { initials } from '../profile/avatar';
 import { fetchPublicProfile } from './leaderboardApi';
+import { profileErrorCopy } from './profileError';
 
 // Salin teks ke clipboard; fallback `prompt` kalau clipboard tak tersedia
 // (mis. konteks non-HTTPS / izin ditolak). Return true kalau "terkirim".
@@ -102,10 +103,13 @@ export function PublicProfileModal({ target, onClose, onOpenPage }) {
             <p className="text-sm font-bold text-sumi/50 py-10 text-center">
               {id ? 'Memuat…' : 'Loading…'}
             </p>
-          ) : error && error !== 'unconfigured' ? (
-            <p className="text-sm font-bold text-shu py-10 text-center">
-              {id ? 'Gagal memuat: ' : 'Failed to load: '}{error}
-            </p>
+          ) : error ? (
+            <div className="py-8 text-center">
+              <p className="text-sm font-bold text-shu">{profileErrorCopy(error, language).title}</p>
+              <p className="text-[11px] text-sumi/60 mt-2 max-w-[20rem] mx-auto leading-relaxed">
+                {profileErrorCopy(error, language).hint}
+              </p>
+            </div>
           ) : !row ? (
             // Privat ATAU tidak ada — sengaja tidak dibedakan.
             <div className="text-center py-6">
