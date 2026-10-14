@@ -51,8 +51,7 @@ Ini membuat tabel `profiles` & `xp_events`, RLS, trigger XP, dan fungsi leaderbo
   - **⚠️ LIMIT EMAIL (penting):** layanan email bawaan Supabase hanya boleh
     **~2–4 email/jam** per project (error `429 over_email_send_rate_limit`).
     Cukup untuk tes, **tidak cukup untuk produksi**. Solusi permanen: sambungkan
-    SMTP sendiri di **Project Settings → Auth → SMTP** (gratis: Resend 3000/bln,
-    atau Brevo). Setelah SMTP aktif, limit naik drastis.
+    SMTP sendiri → **lihat §2b di bawah (panduan Brevo, tanpa perlu domain)**.
     UI sudah menampilkan pesan ramah + cooldown 60 dtk + saran pakai email+sandi.
 
 - **Push**: setiap key sync berubah (`username`, `user_progress_v2`,
@@ -70,6 +69,53 @@ Ini membuat tabel `profiles` & `xp_events`, RLS, trigger XP, dan fungsi leaderbo
 
 Modul: `src/features/sync/*` (logika murni `merge.js` + `syncStore.js`, diuji via
 `node --test`), `src/features/leaderboard/*`, `src/features/sync/SyncSettings.jsx`.
+
+---
+
+## 2b. SMTP sendiri (Brevo) — hilangkan limit email
+
+Layanan email bawaan Supabase dibatasi **~2–4 email/jam** → tidak layak produksi.
+Solusi: pakai **SMTP Brevo** (gratis **300 email/hari**, permanen, **tidak perlu
+domain sendiri** — cukup verifikasi 1 alamat pengirim).
+
+> Kenapa Brevo, bukan Resend? Resend **wajib punya domain sendiri** yang diatur
+> DNS-nya. Kalau app hanya punya alamat `*.vercel.app`, Resend tidak bisa dipakai.
+> Brevo cukup verifikasi satu alamat email (mis. Gmail kamu) sebagai pengirim.
+
+### Langkah
+
+1. **Daftar Brevo** → <https://www.brevo.com> → **Sign up free** (tanpa kartu kredit).
+2. **Verifikasi pengirim**: menu **Senders, Domains & Dedicated IPs → Senders →
+   Add a sender** → isi nama + email Gmail kamu → **Save**. Buka email verifikasi
+   dari Brevo → klik tautan konfirmasi.
+3. **Ambil kredensial SMTP**: klik nama akun (kanan atas) → **SMTP & API** →
+   tab **SMTP** → catat:
+   - **SMTP server**: `smtp-relay.brevo.com`
+   - **Port**: `587` (STARTTLS) atau `465` (SSL)
+   - **Login**: format `xxxxxxx@smtp-brevo.com` (BUKAN email akun Brevo kamu)
+   - **SMTP key**: klik **Generate a new SMTP key** → salin (hanya tampil sekali).
+4. **Pasang di Supabase**: **Project Settings → Auth → SMTP Settings** →
+   aktifkan **Enable Custom SMTP** → isi:
+   | Field | Nilai |
+   |---|---|
+   | Host | `smtp-relay.brevo.com` |
+   | Port | `587` |
+   | Username | `xxxxxxx@smtp-brevo.com` (login SMTP dari langkah 3) |
+   | Password | SMTP key dari langkah 3 |
+   | Sender email | email Gmail yang diverifikasi di langkah 2 |
+   | Sender name | `Japanese Quiz` (bebas) |
+   → **Save**.
+5. **Naikkan rate limit** (opsional, di halaman yang sama): set
+   **Rate limit for sending emails** ke `30` per jam (atau lebih).
+6. **Tes**: buka app → popup → **Kirim Tautan Masuk** → email harus tiba
+   dalam beberapa detik.
+
+> ⚠️ **Keamanan**: SMTP key hanya untuk server Supabase — **jangan** taruh di
+> frontend/env Vercel. Kalau key bocor, hapus & buat baru di Brevo.
+
+> 💡 **Catatan**: pengirim gratis Brevo = Gmail kamu. Email bisa masuk **Spam**
+> di beberapa klien (SPF/DKIM Gmail tidak cocok untuk relay Brevo). Kalau sering
+> masuk Spam, pertimbangkan beli domain murah (~Rp150rb/thn) lalu pakai Resend.
 
 ---
 
@@ -127,6 +173,15 @@ Anonymous Sign-Ins = ON**.
 **Sync Sekarang**.
 
 **Project ter-pause (free tier)**: dashboard → **Restore**.
+
+**`429 over_email_send_rate_limit` / "email rate limit exceeded"**: kamu masih
+pakai email bawaan Supabase (~2–4 email/jam). Pasang SMTP sendiri → **§2b
+(Brevo, tanpa perlu domain)**. Sementara itu, pakai **email + sandi** (tab
+Daftar) yang tidak mengirim email sama sekali.
+
+**Tautan masuk nyasar / balik ke alamat salah**: **Authentication → URL
+Configuration → Site URL** harus alamat app kamu (bukan `localhost:3000`), dan
+tambahkan origin ke **Redirect URLs**.
 
 ---
 
