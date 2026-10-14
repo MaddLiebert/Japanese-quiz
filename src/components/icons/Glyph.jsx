@@ -9,6 +9,7 @@ import {
   HeartPulse, Leaf, Droplet, Pencil, Award, Medal, Languages, Flower, Flower2,
   Sprout, TreePine, Waves, Snowflake, Bell, Wind, Brush, Ruler, CloudMoon,
   Shell, Menu, X, Mail, Cloud,
+  Share2, ExternalLink, Copy, Check,
 } from "lucide-react";
 
 // ── Ikon UI — pengganti emoji ──────────────────────────────────────────────
@@ -106,6 +107,11 @@ const ICONS = {
   // buka/tutup menu (bar kontrol yang bisa dilipat)
   menu: Menu,
   x: X,
+  // bagikan / buka / salin — Profil Publik 訪問
+  share: Share2,
+  external: ExternalLink,
+  copy: Copy,
+  check: Check,
 };
 
 // Nama rank (getRank) → ikon.

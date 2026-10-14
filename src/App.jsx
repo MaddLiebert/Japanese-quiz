@@ -27,6 +27,7 @@ import { EdoNightFestival } from "./features/cinematic/edo/components/EdoNightFe
 import { HakoneCheckpoint } from "./pages/HakoneCheckpoint";
 import { KokkaiCheckpoint } from "./pages/KokkaiCheckpoint";
 import Profile from "./features/profile/Profile";
+import { PublicProfile } from "./features/profile/PublicProfile";
 import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
 import Shop from "./features/shop/Shop";
 import Inventory from "./features/inventory/Inventory";
@@ -341,6 +342,7 @@ function App() {
                   <Route path="/death-quiz" element={<DeathQuizScreen />} />
                   <Route path="/n5-exam" element={<N5ExamScreen />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/u/:id" element={<PublicProfile />} />
                   <Route path="/leaderboard" element={<Leaderboard />} />
                   <Route path="/heian-history" element={<HeianHistory />} />
                   <Route path="/edo-history" element={<EdoHistory />} />

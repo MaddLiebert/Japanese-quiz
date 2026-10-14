@@ -17,7 +17,7 @@ import { SyncSettings } from "../features/sync/SyncSettings";
 import { BackupSettings } from "../features/backup/BackupSettings";
 
 export function Settings() {
-  const { resetProgress, progress, setTutorialHidden } = useUserStats();
+  const { resetProgress, progress, setTutorialHidden, setPublicProfile } = useUserStats();
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { era, setEra, unlocked } = useEra();
@@ -382,6 +382,61 @@ export function Settings() {
               <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40">同期</span>
             </div>
             <SyncSettings />
+
+            {/* Profil Publik 訪問 — opt-in. Default MATI (docs/public-profile.md §7). */}
+            <div className="border-[3px] border-sumi/20 bg-kinari p-6 mt-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-1">
+                    <Glyph name="eye" className="text-sm" />
+                    {language === 'id' ? 'Profil Publik' : 'Public Profile'}
+                  </label>
+                  <p className="text-xs text-sumi/70 font-semibold max-w-md">
+                    {language === 'id'
+                      ? 'Kalau dinyalakan, pemain lain bisa membuka halaman profilmu (nama, level, XP, streak, akurasi). Medaru, isi tas, dan email tetap privat.'
+                      : 'When on, other players can open your profile page (name, level, XP, streak, accuracy). Medaru, bag contents, and email stay private.'}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 min-w-[240px]">
+                  <button
+                    type="button"
+                    onClick={() => setPublicProfile(true)}
+                    aria-pressed={Boolean(progress.publicProfile)}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      progress.publicProfile
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    {language === 'id' ? 'Nyalakan' : 'On'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPublicProfile(false)}
+                    aria-pressed={!progress.publicProfile}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      !progress.publicProfile
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    {language === 'id' ? 'Matikan' : 'Off'}
+                  </button>
+                </div>
+              </div>
+              <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-sumi/50 mt-3">
+                {language === 'id' ? 'Status:' : 'Status:'}{' '}
+                <span className={progress.publicProfile ? 'text-matcha' : 'text-sumi/60'}>
+                  {progress.publicProfile
+                    ? (language === 'id' ? 'PUBLIK' : 'PUBLIC')
+                    : (language === 'id' ? 'PRIVAT (default)' : 'PRIVATE (default)')}
+                </span>
+                {' · '}
+                {language === 'id'
+                  ? 'Papan peringkat tetap publik apa adanya.'
+                  : 'The leaderboard stays public as-is.'}
+              </p>
+            </div>
           </section>
 
           {/* Cinematic perkenalan era — putar ulang manual */}

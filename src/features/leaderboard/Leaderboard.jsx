@@ -8,6 +8,8 @@ import { useUserStats } from '../progress/ProgressContext';
 import { EraPaper } from '../../components/EraPaper';
 import { fetchAllTime, fetchWeekly, fetchMyRank, rankMedal, clearLeaderboardCache } from './leaderboardApi';
 import { initials } from '../profile/avatar';
+import { PublicProfileModal } from './PublicProfileModal';
+import { Glyph } from '../../components/icons/Glyph';
 
 // Papan Peringkat 番付 — global. Dua papan: sepanjang masa (XP) & mingguan.
 export function Leaderboard() {
@@ -23,6 +25,8 @@ export function Leaderboard() {
   const [myRank, setMyRank] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  // Baris leaderboard yang sedang "dikunjungi" (modal 訪問). null = tertutup.
+  const [visit, setVisit] = useState(null);
 
   const load = useCallback(async (force = false) => {
     setLoading(true);
@@ -175,10 +179,20 @@ export function Leaderboard() {
                   {rows.map((r, i) => {
                     const isMe = user && r.id === user.id;
                     const score = tab === 'week' ? r.weekly_xp : r.xp;
+                    // Baris "Kamu" → langsung ke Profil sendiri (tanpa modal).
+                    // Baris orang lain → modal 訪問 (fetchPublicProfile).
                     return (
-                      <div
+                      <button
                         key={r.id}
-                        className={`flex items-center gap-4 px-4 sm:px-6 py-3 ${isMe ? 'bg-ai/15' : ''}`}
+                        type="button"
+                        onClick={() => (isMe ? navigate('/profile') : setVisit(r))}
+                        title={isMe
+                          ? (id ? 'Buka profilmu' : 'Open your profile')
+                          : (id ? `Kunjungi profil ${r.display_name || 'pemain'}` : `Visit ${r.display_name || 'player'}'s profile`)}
+                        aria-label={isMe
+                          ? (id ? 'Buka profilmu' : 'Open your profile')
+                          : (id ? `Kunjungi profil ${r.display_name || 'pemain'}` : `Visit ${r.display_name || 'player'}'s profile`)}
+                        className={`w-full text-left flex items-center gap-4 px-4 sm:px-6 py-3 transition-colors cursor-pointer hover:bg-sumi/[0.06] ${isMe ? 'bg-ai/15' : ''}`}
                       >
                         <span className="w-10 text-center font-serif font-black text-lg text-sumi shrink-0">
                           {rankMedal(i)}
@@ -198,7 +212,10 @@ export function Leaderboard() {
                         <span className="font-serif font-black text-sumi tabular-nums">
                           {Number(score || 0).toLocaleString()} <span className="text-[10px] text-sumi/50">XP</span>
                         </span>
-                      </div>
+                        <span className="shrink-0 text-sumi/30" aria-hidden="true">
+                          <Glyph name={isMe ? 'user' : 'external'} className="text-sm" />
+                        </span>
+                      </button>
                     );
                   })}
                 </div>
@@ -214,6 +231,15 @@ export function Leaderboard() {
 
       {/* Popup Masuk / Daftar */}
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+
+      {/* Modal 訪問 — profil pemain lain (docs/public-profile.md §7) */}
+      {visit && (
+        <PublicProfileModal
+          target={visit}
+          onClose={() => setVisit(null)}
+          onOpenPage={(uid) => { setVisit(null); navigate(`/u/${uid}`); }}
+        />
+      )}
     </div>
   );
 }
