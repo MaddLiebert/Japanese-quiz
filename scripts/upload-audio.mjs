@@ -13,9 +13,16 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const URL_BASE = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').replace(/\/+$/, '');
-const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const KEY = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
 const BUCKET = process.env.AUDIO_BUCKET || 'audio';
 const DIR = process.env.AUDIO_DIR || 'public/audio';
+
+// Key JWT lama mulai dengan "eyJ"; key baru (sb_secret_/sb_publishable_) TIDAK.
+// Key baru harus lewat header `apikey` saja — kalau dipaksa `Bearer` → 403 "Invalid Compact JWS".
+const isLegacyJwt = KEY.startsWith('eyJ');
+const authHeaders = isLegacyJwt
+  ? { apikey: KEY, Authorization: `Bearer ${KEY}` }
+  : { apikey: KEY };
 
 if (!URL_BASE || !KEY) {
   console.error('Butuh SUPABASE_URL (atau VITE_SUPABASE_URL) dan SUPABASE_SERVICE_ROLE_KEY.');
@@ -39,7 +46,7 @@ for (const [i, name] of files.entries()) {
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${KEY}`,
+      ...authHeaders,
       'Content-Type': 'audio/mpeg',
       'x-upsert': 'true',
       'cache-control': 'public, max-age=31536000, immutable',
