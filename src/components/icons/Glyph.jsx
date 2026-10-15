@@ -10,6 +10,7 @@ import {
   Sprout, TreePine, Waves, Snowflake, Bell, Wind, Brush, Ruler, CloudMoon,
   Shell, Menu, X, Mail, Cloud,
   Share2, ExternalLink, Copy, Check,
+  UserPlus, UserCheck, UserMinus, Users, Search, Clock,
 } from "lucide-react";
 
 // ── Ikon UI — pengganti emoji ──────────────────────────────────────────────
@@ -112,6 +113,13 @@ const ICONS = {
   external: ExternalLink,
   copy: Copy,
   check: Check,
+  // 友達 TOMODACHI — tambah teman (follow ala IG)
+  userPlus: UserPlus,
+  userCheck: UserCheck,
+  userMinus: UserMinus,
+  users: Users,
+  search: Search,
+  clock: Clock,
 };
 
 // Nama rank (getRank) → ikon.

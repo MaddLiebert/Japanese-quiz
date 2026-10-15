@@ -10,6 +10,9 @@ import { fetchAllTime, fetchWeekly, fetchMyRank, rankMedal, clearLeaderboardCach
 import { initials } from '../profile/avatar';
 import { PublicProfileModal } from './PublicProfileModal';
 import { Glyph } from '../../components/icons/Glyph';
+import { fetchConnections, clearSocialCache } from '../social/socialApi.js';
+import { stateMap } from '../social/socialView.js';
+import { FollowButton } from '../social/FollowButton.jsx';
 
 // Papan Peringkat 番付 — global. Dua papan: sepanjang masa (XP) & mingguan.
 export function Leaderboard() {
@@ -27,6 +30,9 @@ export function Leaderboard() {
   const [error, setError] = useState(null);
   // Baris leaderboard yang sedang "dikunjungi" (modal 訪問). null = tertutup.
   const [visit, setVisit] = useState(null);
+  // Peta id → rel_state (dari SATU panggilan list_connections) supaya tombol
+  // 友達 di tiap baris tahu statusnya tanpa RPC per-baris (hemat kuota).
+  const [relMap, setRelMap] = useState(() => new Map());
 
   const load = useCallback(async (force = false) => {
     setLoading(true);
@@ -45,7 +51,15 @@ export function Leaderboard() {
     setLoading(false);
   }, [tab, user, language]);
 
+  // Status hubungan sendiri → tombol per baris. Hanya saat login (enabled).
+  const loadRelations = useCallback(async (force = false) => {
+    if (!enabled) { setRelMap(new Map()); return; }
+    const res = await fetchConnections(force ? { force: true } : undefined);
+    setRelMap(stateMap(res.rows));
+  }, [enabled]);
+
   useEffect(() => { if (configured) load(); }, [configured, load]);
+  useEffect(() => { loadRelations(); }, [loadRelations]);
 
   const myXp = Number(progress?.xp) || 0;
 
@@ -138,7 +152,9 @@ export function Leaderboard() {
                   onClick={async () => {
                     await syncNow();              // dorong progres dulu
                     clearLeaderboardCache();      // buang cache agar angka segar
+                    clearSocialCache();           // status hubungan ikut segar
                     await load(true);             // muat paksa (bypass cache)
+                    await loadRelations(true);
                   }}
                   disabled={status === 'syncing'}
                   className="px-5 py-3 border-[3px] border-sumi bg-kinari-light text-sumi font-black text-xs tracking-widest uppercase shadow-[3px_3px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all disabled:opacity-50 cursor-pointer"
@@ -181,41 +197,58 @@ export function Leaderboard() {
                     const score = tab === 'week' ? r.weekly_xp : r.xp;
                     // Baris "Kamu" → langsung ke Profil sendiri (tanpa modal).
                     // Baris orang lain → modal 訪問 (fetchPublicProfile).
+                    const relState = isMe ? 'self' : (relMap.get(r.id) || 'none');
                     return (
-                      <button
+                      <div
                         key={r.id}
-                        type="button"
-                        onClick={() => (isMe ? navigate('/profile') : setVisit(r))}
-                        title={isMe
-                          ? (id ? 'Buka profilmu' : 'Open your profile')
-                          : (id ? `Kunjungi profil ${r.display_name || 'pemain'}` : `Visit ${r.display_name || 'player'}'s profile`)}
-                        aria-label={isMe
-                          ? (id ? 'Buka profilmu' : 'Open your profile')
-                          : (id ? `Kunjungi profil ${r.display_name || 'pemain'}` : `Visit ${r.display_name || 'player'}'s profile`)}
-                        className={`w-full text-left flex items-center gap-4 px-4 sm:px-6 py-3 transition-colors cursor-pointer hover:bg-sumi/[0.06] ${isMe ? 'bg-ai/15' : ''}`}
+                        className={`w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 transition-colors ${isMe ? 'bg-ai/15' : 'hover:bg-sumi/[0.06]'}`}
                       >
-                        <span className="w-10 text-center font-serif font-black text-lg text-sumi shrink-0">
-                          {rankMedal(i)}
-                        </span>
-                        <span className="w-9 h-9 shrink-0 border-[2px] border-sumi bg-ai text-kinari-light flex items-center justify-center overflow-hidden font-serif font-black text-xs">
-                          {r.avatar
-                            ? <img src={r.avatar} alt="" className="w-full h-full object-cover" />
-                            : initials(r.display_name)}
-                        </span>
-                        <span className="flex-1 min-w-0 truncate font-bold text-sumi">
-                          {r.display_name || '旅人'}
-                          {isMe && <span className="ml-2 text-[10px] uppercase tracking-widest text-ai font-black">{id ? 'Kamu' : 'You'}</span>}
-                        </span>
-                        <span className="text-[10px] uppercase tracking-widest font-bold text-sumi/40 hidden sm:block">
-                          Lv {r.level}
-                        </span>
-                        <span className="font-serif font-black text-sumi tabular-nums">
-                          {Number(score || 0).toLocaleString()} <span className="text-[10px] text-sumi/50">XP</span>
-                        </span>
-                        <span className="shrink-0 text-sumi/30" aria-hidden="true">
-                          <Glyph name={isMe ? 'user' : 'external'} className="text-sm" />
-                        </span>
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => (isMe ? navigate('/profile') : setVisit(r))}
+                          title={isMe
+                            ? (id ? 'Buka profilmu' : 'Open your profile')
+                            : (id ? `Kunjungi profil ${r.display_name || 'pemain'}` : `Visit ${r.display_name || 'player'}'s profile`)}
+                          aria-label={isMe
+                            ? (id ? 'Buka profilmu' : 'Open your profile')
+                            : (id ? `Kunjungi profil ${r.display_name || 'pemain'}` : `Visit ${r.display_name || 'player'}'s profile`)}
+                          className="flex-1 min-w-0 flex items-center gap-3 sm:gap-4 text-left cursor-pointer"
+                        >
+                          <span className="w-8 sm:w-10 text-center font-serif font-black text-lg text-sumi shrink-0">
+                            {rankMedal(i)}
+                          </span>
+                          <span className="w-9 h-9 shrink-0 border-[2px] border-sumi bg-ai text-kinari-light flex items-center justify-center overflow-hidden font-serif font-black text-xs">
+                            {r.avatar
+                              ? <img src={r.avatar} alt="" className="w-full h-full object-cover" />
+                              : initials(r.display_name)}
+                          </span>
+                          <span className="flex-1 min-w-0 truncate font-bold text-sumi">
+                            {r.display_name || '旅人'}
+                            {isMe && <span className="ml-2 text-[10px] uppercase tracking-widest text-ai font-black">{id ? 'Kamu' : 'You'}</span>}
+                          </span>
+                          <span className="text-[10px] uppercase tracking-widest font-bold text-sumi/40 hidden sm:block">
+                            Lv {r.level}
+                          </span>
+                          <span className="font-serif font-black text-sumi tabular-nums">
+                            {Number(score || 0).toLocaleString()} <span className="text-[10px] text-sumi/50">XP</span>
+                          </span>
+                          <span className="shrink-0 text-sumi/30" aria-hidden="true">
+                            <Glyph name={isMe ? 'user' : 'external'} className="text-sm" />
+                          </span>
+                        </button>
+                        {/* 友達 — add friend langsung dari papan peringkat.
+                            isPublic tak diketahui di sini → label netral 「追加」;
+                            RPC request_follow yang menentukan follow vs minta. */}
+                        {!isMe && (
+                          <FollowButton
+                            targetId={r.id}
+                            state={relState}
+                            isPublic={null}
+                            onChanged={() => loadRelations(true)}
+                            size="sm"
+                          />
+                        )}
+                      </div>
                     );
                   })}
                 </div>

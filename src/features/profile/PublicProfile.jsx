@@ -11,6 +11,7 @@
 // privat / tidak ada → kartu 「非公開」 (sengaja tidak dibedakan).
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { goBackOr } from './backNav.js';
 import { motion } from 'motion/react';
 import { useLanguage } from '../../context/LanguageContext';
 import { EraPaper } from '../../components/EraPaper';
@@ -21,6 +22,8 @@ import { N5Certificate } from '../n5exam/N5Certificate';
 import { localized } from '../../utils/localize';
 import { initials } from './avatar';
 import { fetchPublicProfile } from '../leaderboard/leaderboardApi';
+import { fetchPlayerCard } from '../social/socialApi';
+import { FollowButton } from '../social/FollowButton.jsx';
 import { copyText } from '../leaderboard/PublicProfileModal';
 import { profileErrorCopy } from '../leaderboard/profileError';
 import { SUBJECT_LABEL_ID } from './subjectMastery';
@@ -54,18 +57,32 @@ export function PublicProfile() {
 
   const [state, setState] = useState({ loading: true, row: null, error: null });
   const [copied, setCopied] = useState(false);
+  // Kartu minimal (nama/avatar/level + rel_state) — untuk tombol 友達, dan
+  // untuk kasus profil privat supaya halaman tetap "siapa ini" + tombol minta.
+  const [card, setCard] = useState(null);
   const [tab, setTab] = useState('ringkasan'); // ringkasan | statistik | sertifikat
 
   useEffect(() => {
     if (!targetId) { setState({ loading: false, row: null, error: null }); return; }
     let alive = true;
     setState({ loading: true, row: null, error: null });
+    setCard(null);
     setTab('ringkasan');
     fetchPublicProfile(targetId)
       .then(({ row, error }) => { if (alive) setState({ loading: false, row, error }); })
       .catch((e) => { if (alive) setState({ loading: false, row: null, error: String(e?.message || e) }); });
+    fetchPlayerCard(targetId)
+      .then(({ row }) => { if (alive) setCard(row); })
+      .catch(() => { /* offline → tanpa tombol */ });
     return () => { alive = false; };
   }, [targetId]);
+
+  const refreshCard = () => {
+    if (!targetId) return;
+    fetchPlayerCard(targetId, { force: true })
+      .then(({ row }) => setCard(row))
+      .catch(() => { /* noop */ });
+  };
 
   const { loading, row, error } = state;
   const name = row?.display_name || '旅人';
@@ -92,7 +109,7 @@ export function PublicProfile() {
     <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
       <EraPaper />
       <button
-        onClick={() => navigate('/leaderboard')}
+        onClick={() => goBackOr(navigate, '/leaderboard')}
         className="mb-6 flex items-center gap-2 px-4 py-2 bg-kinari-light border-[3px] border-sumi font-black uppercase text-xs shadow-[3px_3px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0_0_#1a1a1a] transition-all cursor-pointer"
       >
         ← {id ? 'Papan Peringkat' : 'Leaderboard'}
@@ -170,17 +187,36 @@ export function PublicProfile() {
               </p>
             </div>
           ) : !targetId || !row ? (
-            // Privat / tidak ada / id kosong — kartu 「非公開」.
+            // Privat / tidak ada / id kosong — kartu 「非公開」 (+ tombol 友達 bila
+            // kartu minimal tersedia, supaya bisa minta pertemanan).
             <div className="border-[4px] border-sumi bg-kinari p-8 sm:p-12 text-center shadow-[6px_6px_0_0_#1a1a1a]">
               <div className="mx-auto w-20 h-20 border-[3px] border-dashed border-sumi/30 flex items-center justify-center mb-5">
-                <Glyph name="lock" className="text-3xl text-sumi/40" />
+                {card?.avatar
+                  ? <img src={card.avatar} alt="" className="w-full h-full object-cover" />
+                  : <Glyph name="lock" className="text-3xl text-sumi/40" />}
               </div>
-              <h2 className="font-serif font-black text-2xl sm:text-3xl text-sumi">プロフィールは非公開</h2>
+              <h2 className="font-serif font-black text-2xl sm:text-3xl text-sumi">
+                {card?.display_name || 'プロフィールは非公開'}
+              </h2>
               <p className="text-sm font-bold text-sumi/70 mt-2">{id ? 'Profil ini privat' : 'This profile is private'}</p>
-              <p className="text-xs text-sumi/50 mt-4 max-w-sm mx-auto leading-relaxed">
-                {id
-                  ? 'Pemain ini belum menyalakan 「Profil Publik」. Minta dia menyalakannya di Pengaturan agar halaman ini bisa dilihat.'
-                  : 'This player has not turned on 「Public Profile」. Ask them to enable it in Settings so this page becomes visible.'}
+              {card && card.state !== 'self' && (
+                <div className="mt-6 flex justify-center">
+                  <FollowButton
+                    targetId={card.id}
+                    state={card.state}
+                    isPublic={false}
+                    onChanged={refreshCard}
+                  />
+                </div>
+              )}
+              <p className="text-xs text-sumi/50 mt-5 max-w-sm mx-auto leading-relaxed">
+                {card
+                  ? (id
+                      ? 'Statistiknya tersembunyi. Minta pertemanan — setelah dia terima, kalian saling terhubung.'
+                      : 'Their stats are hidden. Send a friend request — once accepted, you are connected.')
+                  : (id
+                      ? 'Pemain ini belum menyalakan 「Profil Publik」. Minta dia menyalakannya di Pengaturan agar halaman ini bisa dilihat.'
+                      : 'This player has not turned on 「Public Profile」. Ask them to enable it in Settings so this page becomes visible.')}
               </p>
             </div>
           ) : (
@@ -336,8 +372,18 @@ export function PublicProfile() {
                   )
               )}
 
-              {/* Aksi: salin tautan + lihat papan */}
+              {/* Aksi: 友達 + salin tautan + lihat papan */}
               <div className="flex flex-col sm:flex-row gap-3">
+                {card && card.state !== 'self' && (
+                  <div className="flex-1 flex justify-center">
+                    <FollowButton
+                      targetId={card.id}
+                      state={card.state}
+                      isPublic={true}
+                      onChanged={refreshCard}
+                    />
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={handleCopy}
@@ -348,7 +394,7 @@ export function PublicProfile() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate('/leaderboard')}
+                  onClick={() => goBackOr(navigate, '/leaderboard')}
                   className="flex-1 py-4 px-5 border-[3px] border-sumi bg-kinari-light text-sumi font-black text-xs tracking-widest uppercase shadow-[4px_4px_0_0_#1a1a1a] hover:bg-sumi hover:text-kinari-light transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                   <Glyph name="trophy" /> {id ? 'Lihat papan peringkat' : 'View leaderboard'}

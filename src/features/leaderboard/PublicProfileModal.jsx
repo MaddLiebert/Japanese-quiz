@@ -12,6 +12,8 @@ import { RankBadge } from '../progress/RankBadge';
 import { useLanguage } from '../../context/LanguageContext';
 import { initials } from '../profile/avatar';
 import { fetchPublicProfile } from './leaderboardApi';
+import { fetchPlayerCard } from '../social/socialApi';
+import { FollowButton } from '../social/FollowButton.jsx';
 import { profileErrorCopy } from './profileError';
 
 // Salin teks ke clipboard; fallback `prompt` kalau clipboard tak tersedia
@@ -39,18 +41,33 @@ export function PublicProfileModal({ target, onClose, onOpenPage }) {
   const { language } = useLanguage();
   const id = language === 'id';
   const [state, setState] = useState({ loading: true, row: null, error: null });
+  // Kartu minimal (nama/avatar/level + rel_state) — dipakai saat profil privat
+  // supaya modal tetap bisa menampilkan "siapa ini" + tombol minta pertemanan.
+  const [card, setCard] = useState(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!target?.id) return;
     let alive = true;
     setState({ loading: true, row: null, error: null });
+    setCard(null);
     setCopied(false);
     fetchPublicProfile(target.id)
       .then(({ row, error }) => { if (alive) setState({ loading: false, row, error }); })
       .catch((e) => { if (alive) setState({ loading: false, row: null, error: String(e?.message || e) }); });
+    // Kartu minimal (untuk tombol follow) — paralel, tak memblokir profil publik.
+    fetchPlayerCard(target.id)
+      .then(({ row }) => { if (alive) setCard(row); })
+      .catch(() => { /* offline → tanpa tombol */ });
     return () => { alive = false; };
   }, [target?.id]);
+
+  const refreshCard = () => {
+    if (!target?.id) return;
+    fetchPlayerCard(target.id, { force: true })
+      .then(({ row }) => setCard(row))
+      .catch(() => { /* noop */ });
+  };
 
   if (!target) return null;
 
@@ -116,21 +133,53 @@ export function PublicProfileModal({ target, onClose, onOpenPage }) {
               </p>
             </div>
           ) : !row ? (
-            // Privat ATAU tidak ada — sengaja tidak dibedakan.
-            <div className="text-center py-6">
-              <div className="mx-auto w-16 h-16 border-[3px] border-dashed border-sumi/30 flex items-center justify-center mb-4">
-                <Glyph name="lock" className="text-2xl text-sumi/40" />
+            // Privat (profil publik mati) — pakai kartu minimal bila ada.
+            card ? (
+              <div className="flex flex-col items-center text-center">
+                <div className="w-20 h-20 border-[4px] border-sumi bg-ai text-kinari-light flex items-center justify-center overflow-hidden font-serif font-black text-2xl shadow-[4px_4px_0_0_#1a1a1a]">
+                  {card.avatar
+                    ? <img src={card.avatar} alt="" className="w-full h-full object-cover" />
+                    : initials(card.display_name || name)}
+                </div>
+                <h3 className="mt-3 font-serif font-black text-2xl text-sumi truncate max-w-full">{card.display_name || name}</h3>
+                <div className="mt-2 flex items-center gap-2 flex-wrap justify-center">
+                  <span className="border-[2px] border-sumi bg-kinari px-2.5 py-1 text-xs font-black text-sumi">
+                    Lv {card.level}
+                  </span>
+                  <span className="border-[2px] border-dashed border-sumi/40 text-sumi/60 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest">
+                    {id ? 'Privat' : 'Private'}
+                  </span>
+                </div>
+                <div className="mt-5">
+                  <FollowButton
+                    targetId={card.id}
+                    state={card.state}
+                    isPublic={card.is_public}
+                    onChanged={refreshCard}
+                  />
+                </div>
+                <p className="text-[11px] text-sumi/50 mt-4 max-w-[20rem] mx-auto leading-relaxed">
+                  {id
+                    ? 'Profil ini privat — statistiknya tersembunyi. Minta pertemanan untuk terhubung.'
+                    : 'This profile is private — its stats are hidden. Send a friend request to connect.'}
+                </p>
               </div>
-              <p className="font-serif font-black text-xl text-sumi">プロフィールは非公開</p>
-              <p className="text-xs font-bold text-sumi/60 mt-1">
-                {id ? 'Profil ini privat' : 'This profile is private'}
-              </p>
-              <p className="text-[11px] text-sumi/50 mt-3 max-w-[18rem] mx-auto leading-relaxed">
-                {id
-                  ? 'Minta dia menyalakan 「Profil Publik」 di Pengaturan untuk bisa dilihat.'
-                  : 'Ask them to turn on 「Public Profile」 in Settings to be visible.'}
-              </p>
-            </div>
+            ) : (
+              <div className="text-center py-6">
+                <div className="mx-auto w-16 h-16 border-[3px] border-dashed border-sumi/30 flex items-center justify-center mb-4">
+                  <Glyph name="lock" className="text-2xl text-sumi/40" />
+                </div>
+                <p className="font-serif font-black text-xl text-sumi">プロフィールは非公開</p>
+                <p className="text-xs font-bold text-sumi/60 mt-1">
+                  {id ? 'Profil ini privat' : 'This profile is private'}
+                </p>
+                <p className="text-[11px] text-sumi/50 mt-3 max-w-[18rem] mx-auto leading-relaxed">
+                  {id
+                    ? 'Minta dia menyalakan 「Profil Publik」 di Pengaturan untuk bisa dilihat.'
+                    : 'Ask them to turn on 「Public Profile」 in Settings to be visible.'}
+                </p>
+              </div>
+            )
           ) : (
             <div className="flex flex-col items-center text-center">
               <div className="w-20 h-20 border-[4px] border-sumi bg-ai text-kinari-light flex items-center justify-center overflow-hidden font-serif font-black text-2xl shadow-[4px_4px_0_0_#1a1a1a]">
@@ -190,6 +239,18 @@ export function PublicProfileModal({ target, onClose, onOpenPage }) {
                   <Glyph name={copied ? 'check' : 'copy'} /> {copied ? (id ? 'Tersalin' : 'Copied') : (id ? 'Salin tautan' : 'Copy link')}
                 </button>
               </div>
+
+              {/* 友達 — follow (publik) / minta pertemanan (privat) */}
+              {card && card.state !== 'self' && (
+                <div className="w-full mt-3 flex justify-center">
+                  <FollowButton
+                    targetId={target.id}
+                    state={card.state}
+                    isPublic={true}
+                    onChanged={refreshCard}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -57,8 +57,11 @@ import { FirstRunGate } from "./features/onboarding/FirstRunGate";
 import { Glyph } from "./components/icons/Glyph";
 import { MedaruCoin } from "./components/MedaruCoin";
 import { medaruCopy } from "./features/progress/medaruCopy";
-import { SyncProvider } from "./features/sync/SyncContext";
+import { SyncProvider, useSync } from "./features/sync/SyncContext";
 import { Leaderboard } from "./features/leaderboard/Leaderboard";
+import { Friends } from "./features/social/Friends";
+import { fetchConnections } from "./features/social/socialApi";
+import { requestCount } from "./features/social/socialView";
 
 // Floating top controls — collapsible biar hemat tempat. Default: tombol menu +
 // saldo medaru. Klik → mekar semua tombol (nav + tema); klik lagi → kempes.
@@ -67,10 +70,22 @@ function TopControls() {
   const { era } = useEra();
   const { theme, toggleTheme } = useTheme();
   const { progress } = useUserStats();
+  const { enabled } = useSync();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  // Badge permintaan pertemanan masuk (友達 申請) — dihitung dari list_connections.
+  const [pendingFriends, setPendingFriends] = useState(0);
   // Nama mata uang ikut era (Heian → もん, era lain → MEDARU).
   const money = medaruCopy(era, language);
+
+  useEffect(() => {
+    if (!enabled) { setPendingFriends(0); return; }
+    let alive = true;
+    fetchConnections()
+      .then(({ rows }) => { if (alive) setPendingFriends(requestCount(rows)); })
+      .catch(() => { /* offline → badge 0 */ });
+    return () => { alive = false; };
+  }, [enabled, open]);
 
   // Kelas dasar tiap tombol di dalam bar (tanpa border/shadow sendiri).
   const itemCls =
@@ -148,6 +163,24 @@ function TopControls() {
           >
             <Glyph name="trophy" className="text-sm" />
             <span className="text-[11px] font-black tracking-wider text-sumi">番付</span>
+          </button>
+
+          {divider}
+
+          {/* 友達 Friends — kode unik, follow ala IG */}
+          <button
+            onClick={() => go('/friends')}
+            className={itemCls}
+            title={language === 'id' ? 'Teman' : 'Friends'}
+            aria-label={language === 'id' ? 'Teman' : 'Friends'}
+          >
+            <Glyph name="users" className="text-sm" />
+            <span className="text-[11px] font-black tracking-wider text-sumi">友達</span>
+            {pendingFriends > 0 && (
+              <span className="ml-1 bg-shu text-kinari-light px-1.5 py-0.5 text-[9px] font-black leading-none">
+                {pendingFriends}
+              </span>
+            )}
           </button>
 
           {divider}
@@ -344,6 +377,7 @@ function App() {
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/u/:id" element={<PublicProfile />} />
                   <Route path="/leaderboard" element={<Leaderboard />} />
+                  <Route path="/friends" element={<Friends />} />
                   <Route path="/heian-history" element={<HeianHistory />} />
                   <Route path="/edo-history" element={<EdoHistory />} />
                   <Route path="/meiji-history" element={<MeijiHistory />} />
