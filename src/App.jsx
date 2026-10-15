@@ -88,8 +88,10 @@ function TopControls() {
   }, [enabled, open]);
 
   // Kelas dasar tiap tombol di dalam bar (tanpa border/shadow sendiri).
+  // Padding/gap lebih rapat di layar kecil — teks kanji disembunyikan (hidden
+  // sm:inline) supaya bar mekar tetap muat di HP tanpa perlu geser.
   const itemCls =
-    'flex items-center justify-center gap-1.5 h-8 px-2.5 transition-colors hover:bg-sumi/10 active:bg-sumi/15 cursor-pointer select-none';
+    'flex items-center justify-center gap-1 sm:gap-1.5 h-8 px-2 sm:px-2.5 transition-colors hover:bg-sumi/10 active:bg-sumi/15 cursor-pointer select-none';
   const divider = <span className="w-[2px] self-stretch bg-sumi/15" aria-hidden="true" />;
 
   // Navigasi + langsung kempes bar (biar nggak nyangkut kebuka di halaman baru).
@@ -120,7 +122,7 @@ function TopControls() {
       >
         <Glyph name="shop" className="text-sm" />
         <MedaruCoin size={14} />
-        <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()} {money.nameShort}</span>
+        <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()}<span className="hidden sm:inline"> {money.nameShort}</span></span>
       </button>
 
       {/* Sisa tombol — hanya tampil saat bar dibuka */}
@@ -136,7 +138,7 @@ function TopControls() {
             aria-label={eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack')}
           >
             <Glyph name="backpack" className="text-sm" />
-            <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('inventory', era)}</span>
+            <span className="hidden sm:inline text-[11px] font-black tracking-wider text-sumi">{eraName('inventory', era)}</span>
           </button>
 
           {divider}
@@ -149,7 +151,7 @@ function TopControls() {
             aria-label={eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile')}
           >
             <Glyph name="mask" className="text-sm" />
-            <span className="text-[11px] font-black tracking-wider text-sumi">{eraName('profile', era)}</span>
+            <span className="hidden sm:inline text-[11px] font-black tracking-wider text-sumi">{eraName('profile', era)}</span>
           </button>
 
           {divider}
@@ -162,7 +164,7 @@ function TopControls() {
             aria-label={language === 'id' ? 'Papan Peringkat' : 'Leaderboard'}
           >
             <Glyph name="trophy" className="text-sm" />
-            <span className="text-[11px] font-black tracking-wider text-sumi">番付</span>
+            <span className="hidden sm:inline text-[11px] font-black tracking-wider text-sumi">番付</span>
           </button>
 
           {divider}
@@ -175,7 +177,7 @@ function TopControls() {
             aria-label={language === 'id' ? 'Teman' : 'Friends'}
           >
             <Glyph name="users" className="text-sm" />
-            <span className="text-[11px] font-black tracking-wider text-sumi">友達</span>
+            <span className="hidden sm:inline text-[11px] font-black tracking-wider text-sumi">友達</span>
             {pendingFriends > 0 && (
               <span className="ml-1 bg-shu text-kinari-light px-1.5 py-0.5 text-[9px] font-black leading-none">
                 {pendingFriends}
