@@ -95,6 +95,30 @@ export const markWrite = (storage, now = Date.now()) => {
   writeQuota(storage, quota);
 };
 
+// ── Anti-double-tap per-TARGET (aksi sosial 友達) ────────────────────────────
+// Aksi tulis sosial (follow/unfollow/accept) WAJAR beruntun ke target BERBEDA —
+// jadi TIDAK boleh memakai jeda 15 dtk milik bundle sync (itu bikin "tunggu
+// sebentar" tiap habis 1 aksi). Yang perlu dicegah hanya tap GANDA pada TARGET
+// YANG SAMA (salah pencet / spam satu tombol). In-memory per sesi tab; kuota
+// harian tetap dijaga `consume('write')`.
+export const SOCIAL_TAP_MS = 1200;
+
+export const createTapGuard = (minMs = SOCIAL_TAP_MS, now = () => Date.now()) => {
+  const last = new Map(); // key → waktu tap terakhir
+  return {
+    // true = boleh (dan waktunya dicatat); false = terlalu cepat untuk key itu.
+    allow(key) {
+      const t = now();
+      const prev = last.has(key) ? last.get(key) : -Infinity;
+      if (t - prev < minMs) return false;
+      last.set(key, t);
+      return true;
+    },
+    clear() { last.clear(); },
+    size: () => last.size,
+  };
+};
+
 // Jeda backoff setelah `failures` kali gagal beruntun (0 = tidak menunda).
 export const backoffDelay = (
   failures,

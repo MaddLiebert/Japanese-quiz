@@ -10,12 +10,17 @@
 
 import { supabase, isSupabaseConfigured } from '../sync/supabaseClient';
 import { createRequestCache } from '../sync/requestCache';
-import { consume, writeCooldown, markWrite } from '../sync/rateLimit';
+import { consume, createTapGuard } from '../sync/rateLimit';
 
 const clean = (rows) => (Array.isArray(rows) ? rows : []);
 
 // Cache per-sesi tab (dibagi semua pemanggil sosial). Di-clear setelah aksi tulis.
 const cache = createRequestCache({ ttlMs: 60000 });
+
+// Anti-double-tap per-target: tap GANDA ke target sama dalam 1,2 dtk ditolak,
+// tapi target BERBEDA selalu boleh (follow beruntun itu wajar). Rem 15 dtk
+// milik bundle sync TIDAK dipakai di sini.
+const taps = createTapGuard();
 
 const storage = () => {
   try { return typeof localStorage !== 'undefined' ? localStorage : null; } catch { return null; }
@@ -44,18 +49,20 @@ const rpcReadRows = async (key, rpcName, args, opts) => {
   return { rows: clean(data), error, cached };
 };
 
-// Satu RPC tulis: jeda min tulis + kuota write. Return { data, error }.
-const rpcWrite = async (rpcName, args) => {
+// Satu RPC tulis: anti-double-tap per-target + kuota write. Return { data, error }.
+const rpcWrite = async (rpcName, args, tapKey) => {
   if (!isSupabaseConfigured) return { data: null, error: 'unconfigured' };
   const s = storage();
-  const cd = writeCooldown(s);
-  if (cd > 0) return { data: null, error: 'cooldown' };
+  // Kunci anti-double-tap: target + nama RPC (respond/unfollow ke target sama
+  // tetap dihitung aksi berbeda karena rpcName beda).
+  if (!taps.allow(`${rpcName}:${tapKey ?? args?.p_target ?? args?.p_requester ?? ''}`)) {
+    return { data: null, error: 'cooldown' };
+  }
   const quota = consume(s, 'write');
   if (!quota.ok) return { data: null, error: 'quota' };
   try {
     const { data, error } = await supabase.rpc(rpcName, args);
     if (error) return { data: null, error: error.message || String(error) };
-    markWrite(s);
     cache.clear(); // state hubungan berubah → buang cache supaya segar
     return { data, error: null };
   } catch (e) {

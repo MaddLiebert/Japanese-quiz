@@ -133,12 +133,22 @@ test('respondFollow/unfollow: arg benar', async () => {
   assert.deepEqual(calls.at(-1), ['unfollow', { p_target: 'tgt-1', p_both: true }]);
 });
 
-test('tulis: jeda min tulis aktif → aksi kedua kena cooldown (tanpa RPC)', async () => {
+test('tulis: target BERBEDA selalu boleh beruntun (tak ada jeda 15 dtk)', async () => {
   reset();
   rpcImpl = async () => ({ data: 'ok', error: null });
-  await requestFollow('a');
+  await requestFollow('t1');
+  await requestFollow('t2');
+  await requestFollow('t3');
+  assert.equal(calls.length, 3, 'tiga target berbeda → tiga RPC, tanpa cooldown');
+  assert.equal(readQuota(localStorage).write, 3);
+});
+
+test('tulis: double-tap TARGET SAMA ditolak (anti salah pencet)', async () => {
+  reset();
+  rpcImpl = async () => ({ data: 'ok', error: null });
+  await requestFollow('dt');
   const n = calls.length;
-  const second = await requestFollow('b');
+  const second = await requestFollow('dt');
   assert.equal(second.error, 'cooldown');
-  assert.equal(calls.length, n, 'tidak ada RPC baru saat cooldown');
+  assert.equal(calls.length, n, 'tidak ada RPC baru saat double-tap target sama');
 });

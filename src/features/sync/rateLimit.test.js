@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   dayKey, emptyQuota, readQuota, writeQuota, consume, writeCooldown, markWrite,
-  backoffDelay, canReload, markReload, quotaSummary,
+  backoffDelay, canReload, markReload, quotaSummary, createTapGuard,
   QUOTA_KEY, RELOAD_KEY, DAILY_LIMIT, MIN_INTERVAL, BACKOFF_BASE, BACKOFF_MAX,
 } from './rateLimit.js';
 
@@ -116,4 +116,14 @@ test('konstanta: limit & jeda wajar (di bawah kuota gratis)', () => {
   assert.equal(MIN_INTERVAL.write, 15000);
   assert.equal(QUOTA_KEY, 'net_quota_v1');
   assert.equal(RELOAD_KEY, 'sync_reload_guard_v1');
+});
+
+test('createTapGuard: target berbeda selalu boleh, target sama ditolak dalam jeda', () => {
+  let t = 1000;
+  const g = createTapGuard(1200, () => t);
+  assert.equal(g.allow('a'), true);   // pertama → boleh
+  assert.equal(g.allow('a'), false);  // double-tap target sama → ditolak
+  assert.equal(g.allow('b'), true);   // target BEDA → tetap boleh (follow beruntun)
+  t = 2300;                           // > 1200 ms
+  assert.equal(g.allow('a'), true);   // sudah lewat jeda → boleh lagi
 });
