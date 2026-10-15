@@ -87,117 +87,122 @@ function TopControls() {
     return () => { alive = false; };
   }, [enabled, open]);
 
-  // Kelas dasar tiap tombol di dalam bar (tanpa border/shadow sendiri).
-  // Padding/gap lebih rapat di layar kecil — teks kanji disembunyikan (hidden
-  // sm:inline) supaya bar mekar tetap muat di HP tanpa perlu geser.
+  // Kelas dasar tiap tombol di dalam BARIS (layar >=sm, tanpa border/shadow).
   const itemCls =
-    'flex items-center justify-center gap-1 sm:gap-1.5 h-8 px-1.5 sm:px-2.5 transition-colors hover:bg-sumi/10 active:bg-sumi/15 cursor-pointer select-none';
-  // Divider hanya di layar >=sm — di HP dihemat (ikon sudah rapat & jelas).
-  const divider = <span className="hidden sm:block w-[2px] self-stretch bg-sumi/15" aria-hidden="true" />;
+    'flex items-center justify-center gap-1.5 h-8 px-2.5 transition-colors hover:bg-sumi/10 active:bg-sumi/15 cursor-pointer select-none';
+  const divider = <span className="w-[2px] self-stretch bg-sumi/15" aria-hidden="true" />;
 
   // Navigasi + langsung kempes bar (biar nggak nyangkut kebuka di halaman baru).
   const go = (path) => { setOpen(false); navigate(path); };
 
+  // Item menu (ikon + nama era). Dirender DUA tata letak dari SATU sumber:
+  //  • layar >=sm → baris horizontal (ikon + kanji sebaris);
+  //  • HP <sm     → GRID tombol besar (ikon di atas, label di bawah) supaya
+  //    tap target lega (~64px) → tidak gampang salah pencet.
+  const items = [
+    {
+      key: 'inventory', glyph: 'backpack', jp: eraName('inventory', era),
+      title: eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack'),
+      onClick: () => go('/inventory'),
+    },
+    {
+      key: 'profile', glyph: 'mask', jp: eraName('profile', era),
+      title: eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile'),
+      onClick: () => go('/profile'),
+    },
+    {
+      key: 'leaderboard', glyph: 'trophy', jp: '番付',
+      title: language === 'id' ? 'Papan Peringkat' : 'Leaderboard',
+      onClick: () => go('/leaderboard'),
+    },
+    {
+      key: 'friends', glyph: 'users', jp: '友達',
+      title: language === 'id' ? 'Teman' : 'Friends',
+      badge: pendingFriends, onClick: () => go('/friends'),
+    },
+    {
+      key: 'theme', glyph: theme === 'dark' ? 'sun' : 'moon',
+      jp: theme === 'dark' ? '明' : '暗',
+      title: theme === 'dark' ? 'Ganti ke Mode Terang / Light Mode' : 'Ganti ke Mode Gelap / Dark Mode',
+      onClick: toggleTheme,
+    },
+  ];
+
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-stretch border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] overflow-hidden era-brocade">
-      {/* Tombol menu (≡ / ✕) — buka/tutup bar */}
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className={itemCls}
-        title={open ? (language === 'id' ? 'Sembunyikan menu' : 'Hide menu') : (language === 'id' ? 'Buka menu' : 'Open menu')}
-        aria-label={open ? (language === 'id' ? 'Sembunyikan menu' : 'Hide menu') : (language === 'id' ? 'Buka menu' : 'Open menu')}
-        aria-expanded={open}
-      >
-        <Glyph name={open ? 'x' : 'menu'} className="text-sm" />
-      </button>
+    <div className="fixed top-4 right-4 z-50 flex flex-col items-end gap-2">
+      {/* Baris utama: toggle + saldo (selalu tampil) + menu sebaris (layar >=sm) */}
+      <div className="flex items-stretch border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] overflow-hidden era-brocade">
+        {/* Tombol menu (≡ / ✕) — buka/tutup */}
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className={itemCls}
+          title={open ? (language === 'id' ? 'Sembunyikan menu' : 'Hide menu') : (language === 'id' ? 'Buka menu' : 'Open menu')}
+          aria-label={open ? (language === 'id' ? 'Sembunyikan menu' : 'Hide menu') : (language === 'id' ? 'Buka menu' : 'Open menu')}
+          aria-expanded={open}
+        >
+          <Glyph name={open ? 'x' : 'menu'} className="text-sm" />
+        </button>
 
-      {divider}
+        {divider}
 
-      {/* Shop / Medaru chip — SELALU tampil (penting) */}
-      <button
-        onClick={() => go('/shop')}
-        className={itemCls}
-        title={eraName('shop', era, language === 'id' ? 'Warung Kakek' : "Grandpa's Shop")}
-        aria-label={eraName('shop', era, language === 'id' ? 'Warung Kakek' : "Grandpa's Shop")}
-      >
-        <Glyph name="shop" className="text-sm" />
-        <MedaruCoin size={14} />
-        <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()}<span className="hidden sm:inline"> {money.nameShort}</span></span>
-      </button>
+        {/* Shop / Medaru chip — SELALU tampil (penting) */}
+        <button
+          onClick={() => go('/shop')}
+          className={itemCls}
+          title={eraName('shop', era, language === 'id' ? 'Warung Kakek' : "Grandpa's Shop")}
+          aria-label={eraName('shop', era, language === 'id' ? 'Warung Kakek' : "Grandpa's Shop")}
+        >
+          <Glyph name="shop" className="text-sm" />
+          <MedaruCoin size={14} />
+          <span className="text-[11px] font-black tracking-wider text-sumi">{(progress.medaru || 0).toLocaleString()}<span className="hidden sm:inline"> {money.nameShort}</span></span>
+        </button>
 
-      {/* Sisa tombol — hanya tampil saat bar dibuka */}
+        {/* Menu sebaris — HANYA layar >=sm (HP pakai grid di bawah) */}
+        {open && items.map((it) => (
+          <span key={it.key} className="hidden sm:flex items-stretch">
+            {divider}
+            <button
+              type="button"
+              onClick={it.onClick}
+              className={itemCls}
+              title={it.title}
+              aria-label={it.title}
+            >
+              <Glyph name={it.glyph} className="text-sm" />
+              {it.jp && <span className="text-[11px] font-black tracking-wider text-sumi">{it.jp}</span>}
+              {it.badge > 0 && (
+                <span className="ml-1 bg-shu text-kinari-light px-1.5 py-0.5 text-[9px] font-black leading-none">
+                  {it.badge}
+                </span>
+              )}
+            </button>
+          </span>
+        ))}
+      </div>
+
+      {/* GRID tombol besar — HANYA HP (<sm). Tap target lega, anti salah pencet. */}
       {open && (
-        <>
-          {divider}
-
-          {/* Backpack / Inventory */}
-          <button
-            onClick={() => go('/inventory')}
-            className={itemCls}
-            title={eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack')}
-            aria-label={eraName('inventory', era, language === 'id' ? 'Tas Punggung' : 'Backpack')}
-          >
-            <Glyph name="backpack" className="text-sm" />
-            <span className="hidden sm:inline text-[11px] font-black tracking-wider text-sumi">{eraName('inventory', era)}</span>
-          </button>
-
-          {divider}
-
-          {/* Profile */}
-          <button
-            onClick={() => go('/profile')}
-            className={itemCls}
-            title={eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile')}
-            aria-label={eraName('profile', era, language === 'id' ? 'Profil Pemain' : 'Player Profile')}
-          >
-            <Glyph name="mask" className="text-sm" />
-            <span className="hidden sm:inline text-[11px] font-black tracking-wider text-sumi">{eraName('profile', era)}</span>
-          </button>
-
-          {divider}
-
-          {/* Leaderboard / Papan Peringkat 番付 */}
-          <button
-            onClick={() => go('/leaderboard')}
-            className={itemCls}
-            title={language === 'id' ? 'Papan Peringkat' : 'Leaderboard'}
-            aria-label={language === 'id' ? 'Papan Peringkat' : 'Leaderboard'}
-          >
-            <Glyph name="trophy" className="text-sm" />
-            <span className="hidden sm:inline text-[11px] font-black tracking-wider text-sumi">番付</span>
-          </button>
-
-          {divider}
-
-          {/* 友達 Friends — kode unik, follow ala IG */}
-          <button
-            onClick={() => go('/friends')}
-            className={itemCls}
-            title={language === 'id' ? 'Teman' : 'Friends'}
-            aria-label={language === 'id' ? 'Teman' : 'Friends'}
-          >
-            <Glyph name="users" className="text-sm" />
-            <span className="hidden sm:inline text-[11px] font-black tracking-wider text-sumi">友達</span>
-            {pendingFriends > 0 && (
-              <span className="ml-1 bg-shu text-kinari-light px-1.5 py-0.5 text-[9px] font-black leading-none">
-                {pendingFriends}
-              </span>
-            )}
-          </button>
-
-          {divider}
-
-          {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            className={itemCls}
-            title={theme === 'dark' ? 'Ganti ke Mode Terang / Light Mode' : 'Ganti ke Mode Gelap / Dark Mode'}
-            aria-label={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-          >
-            <Glyph name={theme === 'dark' ? 'sun' : 'moon'} className="text-sm" />
-          </button>
-        </>
+        <div className="sm:hidden grid grid-cols-3 gap-2 p-2 w-60 border-[3px] border-sumi bg-kinari-light shadow-[3px_3px_0_0_#1a1a1a] era-brocade">
+          {items.map((it) => (
+            <button
+              key={it.key}
+              type="button"
+              onClick={it.onClick}
+              title={it.title}
+              aria-label={it.title}
+              className="relative flex flex-col items-center justify-center gap-1 min-h-[64px] px-2 py-2 border-[2px] border-sumi/25 bg-kinari text-sumi transition-colors hover:bg-sumi/10 active:bg-sumi/20 cursor-pointer select-none"
+            >
+              <Glyph name={it.glyph} className="text-xl" />
+              {it.jp && <span className="text-[10px] font-black tracking-wider leading-none">{it.jp}</span>}
+              {it.badge > 0 && (
+                <span className="absolute top-1 right-1 bg-shu text-kinari-light px-1.5 py-0.5 text-[9px] font-black leading-none">
+                  {it.badge}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );
