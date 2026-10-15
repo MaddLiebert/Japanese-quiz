@@ -91,8 +91,9 @@ function TopControls() {
   // Padding/gap lebih rapat di layar kecil — teks kanji disembunyikan (hidden
   // sm:inline) supaya bar mekar tetap muat di HP tanpa perlu geser.
   const itemCls =
-    'flex items-center justify-center gap-1 sm:gap-1.5 h-8 px-2 sm:px-2.5 transition-colors hover:bg-sumi/10 active:bg-sumi/15 cursor-pointer select-none';
-  const divider = <span className="w-[2px] self-stretch bg-sumi/15" aria-hidden="true" />;
+    'flex items-center justify-center gap-1 sm:gap-1.5 h-8 px-1.5 sm:px-2.5 transition-colors hover:bg-sumi/10 active:bg-sumi/15 cursor-pointer select-none';
+  // Divider hanya di layar >=sm — di HP dihemat (ikon sudah rapat & jelas).
+  const divider = <span className="hidden sm:block w-[2px] self-stretch bg-sumi/15" aria-hidden="true" />;
 
   // Navigasi + langsung kempes bar (biar nggak nyangkut kebuka di halaman baru).
   const go = (path) => { setOpen(false); navigate(path); };
