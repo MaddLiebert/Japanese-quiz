@@ -39,6 +39,11 @@ alter table public.profiles add column if not exists avatar text not null defaul
 -- Profil publik (opt-in): default TERTUTUP. Hanya baris dengan is_public = true
 -- (atau baris milik sendiri) yang boleh keluar lewat RPC public_profile().
 alter table public.profiles add column if not exists is_public boolean not null default false;
+-- Profil LENGKAP 訪問 (opt-in TERPISAH, default TERTUTUP). is_full_public = true
+-- membuka statistik rinci (winrate, radar 8 subjek, badge terpasang, sertifikat
+-- N5) — DAN implisit menyalakan data dasar. Pemain lama yang hanya menyalakan
+-- is_public TIDAK ikut terbuka; mereka harus opt-in ulang lewat sakelar ini.
+alter table public.profiles add column if not exists is_full_public boolean not null default false;
 
 create table if not exists public.xp_events (
   id          bigint generated always as identity primary key,
@@ -172,19 +177,47 @@ grant execute on function public.my_rank_all_time()        to authenticated;
 -- Baris hanya keluar bila `is_public = true` ATAU milik sendiri (`auth.uid()`).
 -- Kembalian KOSONG = tidak publik / tidak ada (jangan dibedakan — hindari bocor
 -- keberadaan akun). id = UUID acak (tak bisa ditebak) → enumerasi tak berguna.
+--
+-- Kolom `full` (Profil LENGKAP 訪問, opt-in TERPISAH `is_full_public`): NULL
+-- kecuali pemilik menyalakannya. Isinya WHITELIST ketat dari bundle `data` —
+-- hanya statistik & koleksi yang mau dipamerkan: statistik dasar, n5Exam
+-- (sertifikat), selectedBadges/achievements, dan peta status item (id→status,
+-- ~43KB worst-case) supaya klien bisa hitung radar 8 subjek. YANG TIDAK PERNAH
+-- masuk: medaru, ownedItems/Packs/Cosmetics/Franchises, email, bio, bundle mentah.
+-- is_full_public implisit menyalakan data dasar (baris ikut keluar).
 drop function if exists public.public_profile(uuid);
 
 create or replace function public.public_profile(p_id uuid)
 returns table (id uuid, display_name text, avatar text, xp int, level int,
-               streak int, accuracy numeric, updated_at timestamptz)
+               streak int, accuracy numeric, updated_at timestamptz, full_data jsonb)
 language sql
 security definer
 set search_path = public
 as $$
-  select p.id, p.display_name, p.avatar, p.xp, p.level, p.streak, p.accuracy, p.updated_at
+  select
+    p.id, p.display_name, p.avatar, p.xp, p.level, p.streak, p.accuracy, p.updated_at,
+    case when p.is_full_public is true or p.id = auth.uid() then
+      jsonb_build_object(
+        'winRate',       coalesce((p.data->'progress'->>'weightedWinRate')::numeric, 0),
+        'totalAnswered', coalesce((p.data->'progress'->>'totalAnswered')::int, 0),
+        'totalCorrect',  coalesce((p.data->'progress'->>'totalCorrect')::int, 0),
+        'maxStreak',     coalesce((p.data->'progress'->>'maxStreak')::int, 0),
+        'accuracy',      coalesce((p.data->'progress'->>'accuracy')::numeric, 0),
+        'matchesPlayed', coalesce((p.data->'progress'->>'matchesPlayed')::int, 0),
+        'n5Exam',        coalesce(p.data->'progress'->'n5Exam', '{}'::jsonb),
+        'selectedBadges',coalesce(p.data->'selectedBadges', '[]'::jsonb),
+        'achievements',  coalesce(p.data->'achievements', '[]'::jsonb),
+        -- Peta status item saja (id→status) untuk radar penguasaan materi.
+        'itemStatus',    coalesce(
+          (select jsonb_object_agg(kv.key, kv.value->'status')
+           from jsonb_each(coalesce(p.data->'itemProgress', '{}'::jsonb)) as kv
+           where kv.value->>'status' is not null),
+          '{}'::jsonb)
+      )
+    else null end
   from public.profiles p
   where p.id = p_id
-    and (p.is_public = true or p.id = auth.uid());
+    and (p.is_public = true or p.is_full_public = true or p.id = auth.uid());
 $$;
 
 grant execute on function public.public_profile(uuid) to anon, authenticated;
