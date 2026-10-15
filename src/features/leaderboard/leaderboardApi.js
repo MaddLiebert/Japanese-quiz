@@ -57,7 +57,9 @@ export const fetchMyRank = async (opts) => {
 // ber-whitelist `public_profile(uuid)` (SECURITY DEFINER). Pakai cache TTL 60 dtk
 // + kuota read yang SUDAH ADA (rpcCached) — jangan bikin jalur baru.
 // Return { row, error, cached }; `row === null` = privat / tidak ada (sengaja
-// TIDAK dibedakan — hindari bocor keberadaan akun).
+// TIDAK dibedakan — hindari bocor keberadaan akun). Bila pemilik menyalakan
+// 「Profil Lengkap」, baris ikut membawa `row.full_data` (whitelist statistik +
+// sertifikat N5); lihat docs/public-profile-full.md §8.
 export const fetchPublicProfile = async (id, opts) => {
   if (!id) return { row: null, error: null, cached: false };
   const { rows, error, cached } = await rpcCached(`pub:${id}`, 'public_profile', { p_id: id }, opts);

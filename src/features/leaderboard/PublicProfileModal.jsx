@@ -58,6 +58,11 @@ export function PublicProfileModal({ target, onClose, onOpenPage }) {
   // Nama fallback dari baris leaderboard supaya modal tidak kosong saat memuat.
   const name = row?.display_name || target.display_name || '旅人';
   const xp = row ? Number(row.xp) || 0 : null;
+  // Profil LENGKAP (docs/public-profile-full.md §7): server kirim `full_data`
+  // hanya bila pemilik menyalakan 「Profil Lengkap」. Modal tetap ringkas —
+  // cukup penanda + winrate + ajakan buka halaman untuk detail lengkap.
+  const full = row?.full_data && typeof row.full_data === 'object' ? row.full_data : null;
+  const winRate = full ? (Number(full.winRate) || 0) : null;
 
   const handleCopy = async () => {
     const ok = await copyText(profileUrl(target.id));
@@ -139,6 +144,11 @@ export function PublicProfileModal({ target, onClose, onOpenPage }) {
                 <span className="border-[2px] border-sumi bg-kinari px-2.5 py-1 text-xs font-black text-sumi">
                   Lv {row.level}
                 </span>
+                {full && (
+                  <span className="border-[2px] border-shu bg-shu/10 text-shu px-2.5 py-1 text-[10px] font-black uppercase tracking-widest">
+                    プロフィール完全
+                  </span>
+                )}
               </div>
 
               <div className="grid grid-cols-3 gap-3 w-full mt-5">
@@ -153,6 +163,16 @@ export function PublicProfileModal({ target, onClose, onOpenPage }) {
                   </div>
                 ))}
               </div>
+
+              {/* Penanda profil lengkap — detail di halaman /u/:id */}
+              {full && (
+                <div className="w-full mt-4 border-[3px] border-sumi bg-kinari px-4 py-3 shadow-[3px_3px_0_0_#1a1a1a] flex items-center justify-between gap-3">
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-sumi/60">
+                    {id ? 'Winrate' : 'Win rate'}
+                  </span>
+                  <span className="font-serif font-black text-lg text-shu">{winRate.toFixed(1)}%</span>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mt-6">
                 <button

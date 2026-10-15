@@ -17,7 +17,7 @@ import { SyncSettings } from "../features/sync/SyncSettings";
 import { BackupSettings } from "../features/backup/BackupSettings";
 
 export function Settings() {
-  const { resetProgress, progress, setTutorialHidden, setPublicProfile } = useUserStats();
+  const { resetProgress, progress, setTutorialHidden, setPublicProfile, setPublicProfileFull } = useUserStats();
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { era, setEra, unlocked } = useEra();
@@ -435,6 +435,62 @@ export function Settings() {
                 {language === 'id'
                   ? 'Papan peringkat tetap publik apa adanya.'
                   : 'The leaderboard stays public as-is.'}
+              </p>
+            </div>
+
+            {/* Profil LENGKAP 訪問 — sakelar TERPISAH, opt-in. Default MATI.
+                Membuka statistik rinci + sertifikat N5 (docs/public-profile-full.md §7). */}
+            <div className="border-[3px] border-sumi/20 bg-kinari p-6 mt-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 mb-1">
+                    <Glyph name="chart" className="text-sm" />
+                    {language === 'id' ? 'Profil Lengkap' : 'Full Profile'}
+                  </label>
+                  <p className="text-xs text-sumi/70 font-semibold max-w-md">
+                    {language === 'id'
+                      ? 'Buka profil penuh: winrate, penguasaan materi, badge, dan sertifikat N5. Menyalakan ini juga membuat data dasar (nama, level, XP) bisa dilihat. Medaru, isi tas, dan email tetap privat.'
+                      : 'Opens your full profile: win rate, subject mastery, badges, and N5 certificate. Turning this on also makes basic data (name, level, XP) visible. Medaru, bag contents, and email stay private.'}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 min-w-[240px]">
+                  <button
+                    type="button"
+                    onClick={() => setPublicProfileFull(true)}
+                    aria-pressed={Boolean(progress.publicProfileFull)}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      progress.publicProfileFull
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    {language === 'id' ? 'Nyalakan' : 'On'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPublicProfileFull(false)}
+                    aria-pressed={!progress.publicProfileFull}
+                    className={`py-3 px-4 border-[3px] border-sumi font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      !progress.publicProfileFull
+                        ? 'bg-sumi text-kinari-light shadow-[3px_3px_0_0_#1a1a1a]'
+                        : 'bg-kinari-light text-sumi/70 hover:text-sumi'
+                    }`}
+                  >
+                    {language === 'id' ? 'Matikan' : 'Off'}
+                  </button>
+                </div>
+              </div>
+              <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-sumi/50 mt-3">
+                {language === 'id' ? 'Status:' : 'Status:'}{' '}
+                <span className={progress.publicProfileFull ? 'text-matcha' : 'text-sumi/60'}>
+                  {progress.publicProfileFull
+                    ? (language === 'id' ? 'LENGKAP' : 'FULL')
+                    : (language === 'id' ? 'TERBATAS (default)' : 'LIMITED (default)')}
+                </span>
+                {' · '}
+                {language === 'id'
+                  ? 'Terpisah dari Profil Publik di atas.'
+                  : 'Separate from Public Profile above.'}
               </p>
             </div>
           </section>
