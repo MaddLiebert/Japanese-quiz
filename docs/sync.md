@@ -72,9 +72,21 @@ Ini membuat tabel `profiles` & `xp_events`, RLS, trigger XP, dan fungsi leaderbo
 - **Papan peringkat** (`/leaderboard`): **mingguan** (reset tiap Senin 00:00 UTC,
   dari `xp_events`) & **sepanjang masa** (dari kolom `xp`). Dibaca lewat fungsi
   `SECURITY DEFINER` yang hanya mengekspos kolom aman — **bukan** isi progres.
+- **Profil publik 訪問** (`/u/:id`, modal dari papan): RPC ber-whitelist
+  `public_profile(uuid)` (SECURITY DEFINER, tembus RLS). Dua tingkat opt-in:
+  - 「Profil Publik」 (`is_public`) → data **dasar**: nama, avatar, XP, level,
+    streak, akurasi. Spec: `docs/public-profile.md`.
+  - 「Profil Lengkap」 (`is_full_public`, **sakelar terpisah**) → kolom
+    `full_data`: winrate, radar penguasaan materi 8 subjek, badge terpasang, dan
+    sertifikat N5. Spec: `docs/public-profile-full.md`.
+  Baris hanya keluar bila salah satu sakelar menyala (atau milik sendiri);
+  `full_data` NULL bila lengkap mati. Medaru, isi tas, bio, email, dan bundle
+  `data` mentah **tidak pernah** dikirim. Migrasi SQL:
+  `supabase/public-profile-migration.sql` (tempel ke SQL Editor).
 
 Modul: `src/features/sync/*` (logika murni `merge.js` + `syncStore.js`, diuji via
-`node --test`), `src/features/leaderboard/*`, `src/features/sync/SyncSettings.jsx`.
+`node --test`), `src/features/leaderboard/*`, `src/features/profile/PublicProfile.jsx`
++ `publicProfileView.js`, `src/features/sync/SyncSettings.jsx`.
 
 ---
 
