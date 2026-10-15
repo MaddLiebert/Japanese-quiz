@@ -41,3 +41,20 @@ test('publicProfile: setPublicProfile menulis boolean (Boolean(on))', () => {
 test('publicProfile: resetProgress memakai DEFAULT_PROGRESS (kembali false)', () => {
   assert.match(code, /resetProgress[\s\S]*?setProgress\s*\(\s*DEFAULT_PROGRESS\s*\)/);
 });
+
+// ── Profil LENGKAP 訪問 (docs/public-profile-full.md §5.3, §10 T3) ──────────
+// Sakelar TERPISAH `publicProfileFull`, default TERTUTUP. Punya aksi sendiri
+// `setPublicProfileFull(on)` (diekspos ke Provider) supaya Pengaturan bisa
+// memanggilnya — tanpa menyentuh `setPublicProfile` yang lama.
+test('publicProfileFull: DEFAULT_PROGRESS default TERTUTUP (false)', () => {
+  assert.match(code, /publicProfileFull\s*:\s*false/);
+});
+
+test('publicProfileFull: ada aksi setPublicProfileFull(on) dan diekspos ke Provider', () => {
+  assert.match(code, /const\s+setPublicProfileFull\s*=\s*useCallback\s*\(/);
+  assert.match(code, /value=\{\{[^}]*\bsetPublicProfileFull\b/s);
+});
+
+test('publicProfileFull: setPublicProfileFull menulis boolean (Boolean(on))', () => {
+  assert.match(code, /publicProfileFull\s*:\s*Boolean\s*\(\s*on\s*\)/);
+});

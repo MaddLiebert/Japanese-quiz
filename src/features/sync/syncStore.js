@@ -130,6 +130,10 @@ export const bundleToProfile = (bundle = {}, userId) => {
     // Profil publik 訪問 — opt-in, default TERTUTUP. Satu sumber kebenaran:
     // state lokal `progress.publicProfile` (docs/public-profile.md §5.4).
     is_public: Boolean(p.publicProfile),
+    // Profil LENGKAP 訪問 — opt-in TERPISAH (default TERTUTUP). Membuka
+    // statistik rinci + sertifikat N5; implisit menyalakan data dasar saat dibaca
+    // (docs/public-profile-full.md §5).
+    is_full_public: Boolean(p.publicProfileFull),
     data: {
       version: bundle.version || SYNC_VERSION,
       username: bundle.username || '',

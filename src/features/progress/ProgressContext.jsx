@@ -81,7 +81,11 @@ const DEFAULT_PROGRESS = {
   cinematicsSeen: emptyCinematics(),
   // Profil publik 訪問 — opt-in, default TERTUTUP (docs/public-profile.md §3).
   // Satu sumber kebenaran: ditulis ke kolom server `is_public` lewat bundleToProfile.
-  publicProfile: false
+  publicProfile: false,
+  // Profil LENGKAP 訪問 — opt-in TERPISAH, default TERTUTUP. Membuka statistik
+  // rinci + sertifikat N5 di server (`is_full_public`); implisit menyalakan data
+  // dasar saat dibaca (docs/public-profile-full.md §3).
+  publicProfileFull: false
 };
 
 const DIFFICULTY_MAP = { easy: 0.8, medium: 1.0, hard: 1.2 };
@@ -791,6 +795,13 @@ export const ProgressProvider = ({ children }) => {
     setProgress(prev => ({ ...prev, publicProfile: Boolean(on) }));
   }, []);
 
+  // Profil LENGKAP 訪問 — sakelar opt-in TERPISAH (default mati). Dikirim ke
+  // server sebagai `is_full_public`; membuka statistik rinci + sertifikat N5
+  // (docs/public-profile-full.md §5).
+  const setPublicProfileFull = useCallback((on) => {
+    setProgress(prev => ({ ...prev, publicProfileFull: Boolean(on) }));
+  }, []);
+
   const resetProgress = useCallback(() => {
     localStorage.removeItem('user_progress_v2');
     localStorage.removeItem('item_progress_v2');
@@ -808,7 +819,7 @@ export const ProgressProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, buyFranchise, equipFranchise, equipCosmetic, pullCharacter, setOshi, ownedCharacterList, characterPool, markTutorialSeen, setTutorialHidden, markCinematicSeen, setPublicProfile, resetProgress }}>
+    <UserStatsContext.Provider value={{ progress, username, setUsername, addXp, loseXp, gainMedaru, claimQuest, claimWeeklyQuest, completeQuiz, recordN5Exam, spendMedaru, buyItem, consumeItem, togglePack, rollGacha, buyFranchise, equipFranchise, equipCosmetic, pullCharacter, setOshi, ownedCharacterList, characterPool, markTutorialSeen, setTutorialHidden, markCinematicSeen, setPublicProfile, setPublicProfileFull, resetProgress }}>
       <ItemProgressContext.Provider value={{ itemProgress, weakItems, recordAnswer, forceMasterItem }}>
         <AchievementsContext.Provider value={{ achievements, selectedBadges, setSelectedBadges, ACHIEVEMENT_META, unlockAchievement }}>
           {children}

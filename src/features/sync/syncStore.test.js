@@ -115,6 +115,27 @@ test('bundleToProfile: is_public = Boolean(publicProfile) — nilai truthy/kotor
   assert.equal(bundleToProfile({ progress: { publicProfile: 'yes' } }, 'u').is_public, true);
 });
 
+// ── Profil LENGKAP 訪問 (docs/public-profile-full.md §5) ────────────────────
+// Sakelar TERPISAH `publicProfileFull` → kolom `is_full_public`. Default
+// TERTUTUP. Menyalakannya membuka statistik rinci + sertifikat N5 di server.
+test('bundleToProfile: is_full_public dari progress.publicProfileFull (default false)', () => {
+  assert.equal(bundleToProfile({ progress: {} }, 'u').is_full_public, false);
+  assert.equal(bundleToProfile({ progress: { publicProfileFull: false } }, 'u').is_full_public, false);
+  assert.equal(bundleToProfile({ progress: { publicProfileFull: true } }, 'u').is_full_public, true);
+});
+
+test('bundleToProfile: is_full_public terpisah dari is_public (tidak saling memaksa)', () => {
+  // Dasar ON tapi lengkap OFF → is_public true, is_full_public false.
+  const a = bundleToProfile({ progress: { publicProfile: true } }, 'u');
+  assert.equal(a.is_public, true);
+  assert.equal(a.is_full_public, false);
+  // Lengkap ON tapi dasar OFF → keduanya seperti apa adanya (server yang
+  // membuat lengkap implisit menyalakan dasar saat membaca).
+  const b = bundleToProfile({ progress: { publicProfileFull: true } }, 'u');
+  assert.equal(b.is_public, false);
+  assert.equal(b.is_full_public, true);
+});
+
 test('profileToBundle: kebalikan dari bundleToProfile (round-trip inti)', () => {
   const original = {
     version: 1, username: 'Madd', updatedAt: 1710000000000,
