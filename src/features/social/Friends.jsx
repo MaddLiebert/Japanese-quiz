@@ -16,7 +16,7 @@ import { profileErrorCopy } from '../leaderboard/profileError';
 import {
   fetchFriendCode, searchPlayers, fetchConnections, clearSocialCache,
 } from './socialApi.js';
-import { bucketConnections, requestCount, BUCKET_TABS } from './socialView.js';
+import { bucketConnections, requestCount, BUCKET_TABS, relFromBucket } from './socialView.js';
 import { FollowButton } from './FollowButton.jsx';
 
 export function Friends() {
@@ -99,7 +99,13 @@ export function Friends() {
           Lv {r.level}{!r.is_public && ` · ${id ? 'Privat' : 'Private'}`}
         </span>
       </button>
-      <FollowButton targetId={r.id} state={r.state} isPublic={r.is_public} onChanged={afterChange} size="sm" />
+      <FollowButton
+        targetId={r.id}
+        state={r.state || relFromBucket(r.bucket)}
+        isPublic={r.is_public}
+        onChanged={afterChange}
+        size="sm"
+      />
     </div>
   );
 

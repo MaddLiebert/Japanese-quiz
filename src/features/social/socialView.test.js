@@ -35,13 +35,20 @@ test('actionFor: privat (none) → minta pertemanan', () => {
   assert.equal(a.label, '友達申請');
 });
 
-test('actionFor: menutup semua state', () => {
-  assert.equal(actionFor(REL.FOLLOWER, true).kind, 'followback');
-  assert.equal(actionFor(REL.FOLLOWING, true).kind, 'unfollow');
-  assert.equal(actionFor(REL.PENDING_OUT, true).kind, 'cancel');
-  assert.equal(actionFor(REL.PENDING_IN, false).kind, 'respond');
-  assert.equal(actionFor(REL.FRIENDS, true).kind, 'unfriend');
-  assert.equal(actionFor(REL.SELF, true), null);
+test('actionFor: sudah berteman → CHIP STATUS + tombol hapus (bukan tombol tambah)', () => {
+  const a = actionFor(REL.FRIENDS, true);
+  assert.equal(a.kind, 'unfriend');
+  assert.equal(a.status, true, 'friends = status chip, bukan tombol aksi biasa');
+  assert.equal(a.label, '友達');
+  assert.equal(a.labelId, 'Teman');
+  // Label tombol hapus + teks konfirmasi tersedia (ID & EN).
+  assert.equal(a.removeLabelId, 'Hapus Pertemanan');
+  assert.equal(a.removeLabelEn, 'Remove friend');
+  assert.equal(a.confirmId, 'Hapus pertemanan?');
+  assert.equal(a.confirmEn, 'Remove friend?');
+  // State lain BUKAN chip status.
+  assert.ok(!actionFor(REL.FOLLOWING, true).status);
+  assert.ok(!actionFor(REL.NONE, true).status);
 });
 
 test('bucketConnections: mengelompokkan & menahan input kotor', () => {

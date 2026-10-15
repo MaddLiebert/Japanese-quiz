@@ -62,7 +62,22 @@ export const actionFor = (state, isPublic) => {
     case REL.PENDING_IN:
       return { kind: 'respond', label: '承認', labelId: 'Terima', labelEn: 'Accept' };
     case REL.FRIENDS:
-      return { kind: 'unfriend', label: '友達', labelId: 'Teman', labelEn: 'Friends' };
+      // Sudah berteman (mutual) → BUKAN tombol "tambah" lagi. Ditampilkan sebagai
+      // CHIP STATUS 「友達」 + tombol terpisah 「Hapus Pertemanan」 (dengan
+      // konfirmasi). `status: true` menandai FollowButton untuk merender chip,
+      // bukan tombol aksi biasa.
+      return {
+        kind: 'unfriend',
+        status: true,
+        label: '友達',
+        labelId: 'Teman',
+        labelEn: 'Friends',
+        removeLabel: '削除',
+        removeLabelId: 'Hapus Pertemanan',
+        removeLabelEn: 'Remove friend',
+        confirmId: 'Hapus pertemanan?',
+        confirmEn: 'Remove friend?',
+      };
     default:
       return null; // self → tak ada aksi
   }
@@ -94,16 +109,21 @@ export const stateMap = (rows) => {
   if (!Array.isArray(rows)) return out;
   for (const r of rows) {
     if (!r || !r.id) continue;
-    const st = r.bucket === 'request_in' ? REL.PENDING_IN
-      : r.bucket === 'request_out' ? REL.PENDING_OUT
-      : r.bucket === 'friend' ? REL.FRIENDS
-      : r.bucket === 'following' ? REL.FOLLOWING
-      : r.bucket === 'follower' ? REL.FOLLOWER
-      : null;
+    const st = relFromBucket(r.bucket);
     if (st) out.set(r.id, st);
   }
   return out;
 };
+
+// bucket (dari list_connections) → rel_state. Satu sumber kebenaran pemetaan.
+// Bucket tak dikenal → null (bukan 'none', supaya pemanggil bisa memutuskan).
+export const relFromBucket = (bucket) =>
+  bucket === 'request_in' ? REL.PENDING_IN
+    : bucket === 'request_out' ? REL.PENDING_OUT
+    : bucket === 'friend' ? REL.FRIENDS
+    : bucket === 'following' ? REL.FOLLOWING
+    : bucket === 'follower' ? REL.FOLLOWER
+    : null;
 
 // Label tab daftar — bilingual.
 export const BUCKET_TABS = [
