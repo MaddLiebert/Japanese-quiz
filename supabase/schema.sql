@@ -199,11 +199,11 @@ as $$
     case when p.is_full_public is true or p.id = auth.uid() then
       jsonb_build_object(
         'winRate',       coalesce((p.data->'progress'->>'weightedWinRate')::numeric, 0),
-        'totalAnswered', coalesce((p.data->'progress'->>'totalAnswered')::int, 0),
-        'totalCorrect',  coalesce((p.data->'progress'->>'totalCorrect')::int, 0),
-        'maxStreak',     coalesce((p.data->'progress'->>'maxStreak')::int, 0),
+        'totalAnswered', coalesce((p.data->'progress'->>'totalAnswered')::numeric::int, 0),
+        'totalCorrect',  coalesce((p.data->'progress'->>'totalCorrect')::numeric::int, 0),
+        'maxStreak',     coalesce((p.data->'progress'->>'maxStreak')::numeric::int, 0),
         'accuracy',      coalesce((p.data->'progress'->>'accuracy')::numeric, 0),
-        'matchesPlayed', coalesce((p.data->'progress'->>'matchesPlayed')::int, 0),
+        'matchesPlayed', coalesce((p.data->'progress'->>'matchesPlayed')::numeric::int, 0),
         'n5Exam',        coalesce(p.data->'progress'->'n5Exam', '{}'::jsonb),
         'selectedBadges',coalesce(p.data->'selectedBadges', '[]'::jsonb),
         'achievements',  coalesce(p.data->'achievements', '[]'::jsonb),
