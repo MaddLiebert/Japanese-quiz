@@ -280,9 +280,9 @@ export function Review() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40 hover:text-shu transition-colors"
+              className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/60 hover:text-shu transition-colors flex items-center gap-2 mb-6 group relative z-20 w-fit"
             >
-              {language === 'id' ? 'Kembali' : 'Back'}
+              <span className="group-hover:-translate-x-1 transition-transform">←</span> {language === 'id' ? 'Kembali' : 'Back'}
             </button>
             <button
               onClick={() => navigate('/')}
