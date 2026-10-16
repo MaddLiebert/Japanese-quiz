@@ -279,6 +279,18 @@ export function Review() {
           </div>
           <div className="flex items-center gap-4">
             <button
+              onClick={() => navigate(-1)}
+              className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40 hover:text-shu transition-colors"
+            >
+              {language === 'id' ? 'Kembali' : 'Back'}
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40 hover:text-shu transition-colors"
+            >
+              {language === 'id' ? 'Beranda' : 'Home'}
+            </button>
+            <button
               onClick={() => {
                 endQuizSession();   // Keluar di tengah sesi → domain & bar padam
                 setIsReviewing(false);
@@ -288,12 +300,6 @@ export function Review() {
               className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40 hover:text-shu transition-colors"
             >
               {language === 'id' ? 'Akhiri Review' : 'End Review'}
-            </button>
-            <button
-              onClick={() => navigate('/')}
-              className="text-[10px] uppercase tracking-[0.3em] font-bold text-sumi/40 hover:text-shu transition-colors"
-            >
-              {language === 'id' ? 'Beranda' : 'Home'}
             </button>
           </div>
         </header>
