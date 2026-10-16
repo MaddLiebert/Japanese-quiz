@@ -75,9 +75,9 @@ export const N5_TOTAL_MINUTES = N5_SECTION_ORDER.reduce((s, k) => s + N5_SECTION
 export const sectionRawTotal = (sectionKey) =>
   N5_SECTIONS[sectionKey].mondai.reduce((s, m) => s + m.count, 0);
 
-// ── Pemetaan skor: proporsional (aproksimasi IRT asli yang tak bisa direplikasi offline) ──
+// ── Pemetaan skor: proporsional dengan floor (truncation), sesuai standar JLPT offline ──
 export const scaleSection = (rawCorrect, rawTotal, maxScore) =>
-  rawTotal <= 0 ? 0 : Math.round((rawCorrect / rawTotal) * maxScore);
+  rawTotal <= 0 ? 0 : Math.floor((rawCorrect / rawTotal) * maxScore);
 
 // Nilai kelulusan: total ≥80 DAN lkr ≥38 DAN listening ≥19 (gagal satu seksi = gagal).
 export const evaluatePass = ({ lkrRaw, lkrTotal, listeningRaw, listeningTotal }) => {
@@ -108,18 +108,18 @@ export const formatClock = (totalSeconds) => {
 // Teks yang mengandung kanji disimpan dengan anotasi furigana format "漢字[かんじ]"
 // di field *Furigana; UI merendernya lewat <Furigana/>.
 
-// Ambil 4 opsi unik: 1 benar + 3 distraktor dari pool (fallback bila pool tipis).
+// Ambil 4 opsi unik: 1 benar + 3 distraktor dari pool.
+// Skip item jika tidak cukup distraktor (pool < 3 unik setelah remove correct).
 const pickOptions = (correct, pool, rng) => {
   const seen = new Set([correct]);
   const out = [correct];
   for (const v of shuffle(pool, rng)) {
     if (out.length >= 4) break;
-    if (v == null || seen.has(v)) continue;
+    if (v == null || seen.has(v) || String(v).startsWith('—')) continue;
     seen.add(v);
     out.push(v);
   }
-  let n = 1;
-  while (out.length < 4) { out.push(`—${n}`); n++; }
+  if (out.length < 4) return null; // Tandai item ini bermasalah (skip UI)
   return shuffle(out, rng);
 };
 
@@ -141,16 +141,20 @@ const kanjiReading = (datasets, rng) => {
     .map((s) => s.replace(/[()（）]/g, '').trim())
     .filter(Boolean);
   return pool.map((k) => {
-    const correct = (String(k.kunyomi || '').split('、')[0] || String(k.onyomi || '').split('、')[0] || '')
-      .replace(/[()（）]/g, '').trim();
+    // Ambil semua reading unik (onyomi + kunyomi), bukan cuma [0]
+    const allReadings = [...new Set(readings.filter(r => r.length > 0))];
+    if (allReadings.length < 4) return null; // Skip jika tidak cukup distraktor
+    const correct = allReadings.find(r => r === (k.kunyomi || '').split('、')[0].replace(/[()（）]/g, '').trim()) ||
+                    allReadings.find(r => r === (k.onyomi || '').split('、')[0].replace(/[()（）]/g, '').trim()) ||
+                    allReadings[0];
     return makeItem({
       id: `n5_kanji_${k.id}`,
       mondai: 'kanji_reading',
       prompt: `「${k.char}」の 読み方は どれですか。`,
       // Furigana sengaja TIDAK di prompt ini — kanji-nya justru soal yang ditanya.
       explanation: `${k.char}（${k.meaning}）= ${correct}`,
-    }, correct, readings, rng);
-  });
+    }, correct, allReadings, rng);
+  }).filter(Boolean);
 };
 
 const grammarForm = (datasets, rng) => {
@@ -200,9 +204,10 @@ export const buildSection = (type, bank, datasets, count, rng = Math.random) => 
   const shuffled = shuffle(source, rng);
   const out = [];
   // Bila bank < count → pakai ulang dari awal (sampling with replacement) supaya ujian tetap penuh.
+  // Skip item dengan options===null (tidak cukup distraktor).
   for (let i = 0; i < count; i++) {
     const it = shuffled[i % shuffled.length];
-    out.push({ ...it, mondai: type, _slot: i });
+    if (it && it.options !== null) out.push({ ...it, mondai: type, _slot: i });
   }
   return out;
 };

@@ -51,12 +51,13 @@ test('konstanta skor resmi JLPT N5', () => {
   assert.equal(LISTENING_MAX, 60);
 });
 
-test('scaleSection: proporsional raw → scaled, dibulatkan', () => {
+test('scaleSection: proporsional raw → scaled, floor', () => {
   assert.equal(scaleSection(0, 54, LKR_MAX), 0);
   assert.equal(scaleSection(54, 54, LKR_MAX), 120);
   assert.equal(scaleSection(27, 54, LKR_MAX), 60);
   assert.equal(scaleSection(24, 24, LISTENING_MAX), 60);
-  assert.equal(scaleSection(1, 54, LKR_MAX), 2); // 1/54*120 = 2.22 → 2
+  assert.equal(scaleSection(1, 54, LKR_MAX), 2); // 1/54*120 = 2.22 → 2 (floor)
+  assert.equal(scaleSection(2, 54, LKR_MAX), 4); // 2/54*120 = 4.44 → 4 (floor)
   assert.equal(scaleSection(0, 0, LKR_MAX), 0);
 });
 
@@ -67,16 +68,16 @@ test('evaluatePass: total ≥80 DAN lkr ≥38 DAN listening ≥19', () => {
 
   // total besar tapi listening < 19 → GAGAL
   const r = evaluatePass({ lkrRaw: 54, lkrTotal: 54, listeningRaw: 7, listeningTotal: 24 });
-  assert.equal(r.listeningScaled, 18);
-  assert.equal(r.total, 138);
+  assert.equal(r.listeningScaled, 17); // 7/24*60 = 17.5 → 17 (floor)
+  assert.equal(r.total, 137); // 120 + 17 = 137
   assert.equal(r.listeningOk, false);
   assert.equal(r.passed, false);
 
   // sectional aman tapi total < 80 → GAGAL
   const r2 = evaluatePass({ lkrRaw: 17, lkrTotal: 54, listeningRaw: 8, listeningTotal: 24 });
-  assert.equal(r2.lkrScaled, 38);
-  assert.equal(r2.listeningScaled, 20);
-  assert.equal(r2.total, 58);
+  assert.equal(r2.lkrScaled, 37); // 17/54*120 = 37.77 → 37 (floor)
+  assert.equal(r2.listeningScaled, 20); // 8/24*60 = 20 (exact)
+  assert.equal(r2.total, 57); // 37 + 20 = 57
   assert.equal(r2.totalOk, false);
   assert.equal(r2.passed, false);
 });
