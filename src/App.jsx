@@ -23,6 +23,7 @@ import { PrintShop } from "./pages/PrintShop";
 import { Neologism } from "./pages/Neologism";
 import { Codex } from "./pages/Codex";
 import { Koseki } from "./pages/Koseki";
+import { CyberpunkGachaOverlay } from "./features/gacha/CyberpunkGachaOverlay";
 import { EdoNightFestival } from "./features/cinematic/edo/components/EdoNightFestival";
 import { HakoneCheckpoint } from "./pages/HakoneCheckpoint";
 import { KokkaiCheckpoint } from "./pages/KokkaiCheckpoint";
@@ -396,6 +397,7 @@ function App() {
                   <Route path="/anime-checkpoint" element={<AnimeCheckpoint />} />
                   <Route path="/anime-practice" element={<AnimePractice />} />
                   <Route path="/cyberpunk-history" element={<CyberpunkHistory />} />
+                  <Route path="/cyberpunk-hack" element={<CyberpunkGachaOverlay />} />
                   <Route path="/owari-checkpoint" element={<OwariCheckpoint />} />
                   <Route path="/owari-exam" element={<N5ExamScreen owari />} />
                   <Route path="/hakone-checkpoint" element={<HakoneCheckpoint />} />

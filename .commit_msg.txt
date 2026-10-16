@@ -1,0 +1,14 @@
+fix(gacha): Cyberpunk gacha — 3-tahap terminal hack minigame
+
+Files baru:
+- cyberpunkHack.js: logic hacking (rollResult, calcPenalty, buildCommandSequence)
+- cyberpunkHack.test.js: 10 unit test (pass)
+- CyberpunkGachaOverlay.jsx: React component (terminal UI, hologram style)
+
+Mekanik:
+- 3 tahap hacking dengan command input (ls → sudo → cat archive.dat)
+- Risk vs reward: common (90% success, -5%), rare (75%, -15%), legendary (50%, -30%), special (30%, -50%)
+- Fail penalty: score deduction, streak reset, points loss
+- UI: glassmorphism frame + scanline + cyan glow + glitch effect
+
+Build + test pass.

@@ -181,6 +181,42 @@ export function Shop() {
                 {T.tagline}
               </p>
 
+              {/* Cyberpunk Gacha Button (terminal hack UI) */}
+              {isCyber && (
+                <div className="mb-6 border-[2px] border-cyan/50 bg-black/90 rounded p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <div className="text-xs text-cyan/70 uppercase">SYSTEM HACK</div>
+                      <div className="text-lg font-bold text-cyan font-mono">ハック · hack</div>
+                    </div>
+                    <div className="text-[10px] text-cyan/50 uppercase">電脳</div>
+                  </div>
+                  <p className="text-[11px] text-kinari-light/80 mb-4">
+                    Crack the data. Hit or noise?
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/cyberpunk-hack')}
+                      className="flex-1 bg-cyan text-black border-[3px] border-cyan/80 shadow-[4px_4px_0_0_#0891b2] font-black text-sm py-3 active:translate-y-[2px] active:shadow-[2px_2px_0_0_#0891b2] transition-all font-mono"
+                    >
+                      <span className="mr-1">ハック 1回</span> - 100 <MedaruCoin className="ml-1" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/cyberpunk-hack')}
+                      className="flex-1 bg-cyan text-black border-[3px] border-cyan/80 shadow-[4px_4px_0_0_#0891b2] font-black text-sm py-3 active:translate-y-[2px] active:shadow-[2px_2px_0_0_#0891b2] transition-all font-mono"
+                    >
+                      <span className="mr-1">ハック 10回</span> - 900 <MedaruCoin className="ml-1" />
+                    </button>
+                  </div>
+                  <div className="mt-4 text-[10px] text-cyan/60">
+                    <div>Duplikat di-refund 50. Peluang: common 51% · rare 30.6% · legendary 18.4%.</div>
+                    <div className="mt-1">抜いたデータは すぐ アーカイブ へ</div>
+                  </div>
+                </div>
+              )}
+
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   type="button"

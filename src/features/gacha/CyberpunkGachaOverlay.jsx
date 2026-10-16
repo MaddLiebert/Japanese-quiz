@@ -7,7 +7,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { useEra } from "../theme/EraContext";
 import { Glyph } from "../../components/icons/Glyph";
 import { MedaruCoin } from "../../components/MedaruCoin";
-import { playReelTick, playFanfare, playGlitch } from "../../utils/sfx";
+import { playReelTick, playFanfare } from "../../utils/sfx";
 import { CYBERPUNK_GACHA, isCyberpunk } from "./cyberpunkCopy";
 import {
   CYBER_HACK_STEPS,
@@ -82,7 +82,6 @@ function CyberpunkGachaOverlay({ pack, onClose, onArchive, userScore, userStreak
   const handleTimeout = () => {
     if (currentStep < CYBER_HACK_STEPS - 1) {
       // Failed step, continue to next (user can retry)
-      playGlitch();
       setCorruption((c) => c + 10);
       setCurrentStep((s) => s + 1);
       setInput("");
@@ -101,7 +100,6 @@ function CyberpunkGachaOverlay({ pack, onClose, onArchive, userScore, userStreak
       if (currentStep < CYBER_HACK_STEPS - 1) {
         // Success step
         playReelTick();
-        playGlitch();
         setCurrentStep((s) => s + 1);
         setInput("");
         setTimer(CYBER_STEP_MS[currentStep + 1]);
@@ -111,7 +109,6 @@ function CyberpunkGachaOverlay({ pack, onClose, onArchive, userScore, userStreak
       }
     } else {
       // Wrong command
-      playGlitch();
       setCorruption((c) => Math.min(c + 5, 100));
       setInput("");
     }
@@ -224,7 +221,7 @@ function CyberpunkGachaOverlay({ pack, onClose, onArchive, userScore, userStreak
             {hackState === "hacking" && (
               <form onSubmit={handleSubmit} className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-cyan font-bold">></span>
+                  <span className="text-cyan font-bold">{'>'}</span>
                   <input
                     ref={inputRef}
                     type="text"
@@ -349,4 +346,4 @@ export const useCyberpunkGacha = (eraId) => {
   return { isCyberpunk: isCyber, copy };
 };
 
-export default CyberpunkGachaOverlay;
+export { CyberpunkGachaOverlay };
