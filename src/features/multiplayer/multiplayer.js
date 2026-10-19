@@ -59,6 +59,12 @@ export const isValidMode = (mode) => mode === '1v1' || mode === '2v2';
 export const isValidCategory = (cat) => MP_CATEGORIES.includes(cat);
 export const isValidQuestionCount = (n) => MP_QUESTION_COUNTS.includes(n);
 
+// Presence key Supabase. WAJIB unik per tab: dua pemain dengan akun sama
+// (atau dua guest) tidak boleh berbagi key, kalau tidak presence saling timpa
+// dan pemain kedua tidak terhitung di room.
+export const makePresenceKey = (authId, tabId) =>
+  authId ? `${authId}#${tabId}` : `guest_${tabId}`;
+
 // Tempatkan pemain baru ke tim yang masih ada slot kosong.
 // Mengembalikan 'red' | 'blue' | null (penuh).
 export const autoAssignTeam = (redTeam, blueTeam, mode) => {

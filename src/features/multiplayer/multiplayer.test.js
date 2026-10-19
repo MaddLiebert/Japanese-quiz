@@ -8,6 +8,7 @@ import {
   calcSpeedScore,
   maxPlayers, teamCapacity, isValidMode, isValidCategory, isValidQuestionCount,
   autoAssignTeam, switchTeam, isRoomFull,
+  makePresenceKey,
   tallyTeamScores, determineWinner, findMvp,
   calcMatchXp, calcMatchMedaru,
   generateRoomCode,
@@ -130,6 +131,15 @@ test('isValidQuestionCount: hanya 5 atau 10', () => {
 });
 
 // ── Team Assignment ──────────────────────────────────────────────────────────
+
+test('makePresenceKey: tiap tab dapat key unik walau akun sama', () => {
+  const uid = '11111111-2222-3333-4444-555555555555';
+  assert.equal(makePresenceKey(uid, 'tab1'), `${uid}#tab1`);
+  assert.notEqual(makePresenceKey(uid, 'tab1'), makePresenceKey(uid, 'tab2'));
+  // guest tanpa sesi tetap unik per tab
+  assert.equal(makePresenceKey(null, 'tab1'), 'guest_tab1');
+  assert.notEqual(makePresenceKey(null, 'tab1'), makePresenceKey(null, 'tab2'));
+});
 
 test('autoAssignTeam 1v1: merah dulu, lalu biru, lalu null', () => {
   assert.equal(autoAssignTeam([], [], '1v1'), 'red');

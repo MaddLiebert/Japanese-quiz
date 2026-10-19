@@ -17,6 +17,17 @@ export async function createRoom({ mode = '1v1', category = 'mixed', questionCou
   const quizSeed = typeof seed === 'number' ? seed : Math.floor(Math.random() * 1000000);
 
   try {
+    // `multiplayer_rooms.host_id` FK ke `profiles.id`. Baris profil baru dibuat
+    // saat push sync; user yang langsung buat room bisa kena FK error. Pastikan
+    // barisnya ada dulu (no-op kalau sudah ada, tidak menimpa data).
+    const uid = await getSessionUserId();
+    if (uid) {
+      const { error: pe } = await supabase
+        .from('profiles')
+        .upsert({ id: uid }, { onConflict: 'id', ignoreDuplicates: true });
+      if (pe) return { ok: false, error: pe.message };
+    }
+
     const { data, error } = await supabase.rpc('create_mp_room', {
       p_code: code,
       p_mode: mode,
@@ -81,6 +92,7 @@ export function subscribeToRoom(code, { playerInfo, onPresenceSync, onBroadcast,
     if (status === 'SUBSCRIBED') {
       channel.track({
         id: playerInfo?.id,
+        authId: playerInfo?.authId || null,
         username: playerInfo?.username || '旅人',
         avatar: playerInfo?.avatar || '',
         rank: playerInfo?.rank || 'Kouhai',
@@ -90,6 +102,20 @@ export function subscribeToRoom(code, { playerInfo, onPresenceSync, onBroadcast,
   });
 
   return channel;
+}
+
+// ── ID Sesi Aktif ────────────────────────────────────────────────────────────
+// Sumber otoritatif untuk identitas pemain: `auth.uid()` yang dipakai
+// `create_mp_room` sebagai host_id. `useSync().user` bisa masih null saat
+// room dibuat (state async) → host tidak dikenali sebagai host.
+export async function getSessionUserId() {
+  if (!isSupabaseConfigured || !supabase) return null;
+  try {
+    const { data } = await supabase.auth.getSession();
+    return data?.session?.user?.id || null;
+  } catch {
+    return null;
+  }
 }
 
 // ── Broadcast Helpers ────────────────────────────────────────────────────────

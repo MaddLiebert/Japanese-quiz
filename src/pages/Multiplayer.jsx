@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useUserStats } from '../features/progress/ProgressContext';
@@ -10,9 +10,10 @@ import {
   calcSpeedScore,
   tallyTeamScores, determineWinner, findMvp,
   calcMatchXp, calcMatchMedaru,
+  autoAssignTeam, makePresenceKey,
 } from '../features/multiplayer/multiplayer';
 import {
-  createRoom, findRoom, subscribeToRoom,
+  createRoom, findRoom, subscribeToRoom, getSessionUserId,
   broadcastReady, broadcastSwitchTeam, broadcastStartGame,
   broadcastAnswer, broadcastEmote,
 } from '../features/multiplayer/multiplayerApi';
@@ -65,7 +66,48 @@ export function Multiplayer() {
   const [liveEmotes, setLiveEmotes] = useState([]);
   const [matchResult, setMatchResult] = useState(null);
 
-  const currentUserId = progress?.id || 'guest_player';
+  // ── Identitas pemain ───────────────────────────────────────────────────────
+  // Presence key HARUS unik per tab. Dulu `progress?.id || 'guest_player'` bikin
+  // semua pemain pakai key sama → Supabase menganggapnya satu entitas: pemain
+  // kedua menimpa yang pertama (tidak terhitung, tim biru kosong).
+  // Key = `<auth.uid()>#<tabId>`; identitas akun disimpan terpisah di `authId`
+  // supaya host tetap dikenali walau beda tab.
+  const [tabId] = useState(() => {
+    try {
+      let t = sessionStorage.getItem('mp_tab_id');
+      if (!t) {
+        t = Math.random().toString(36).slice(2, 10);
+        sessionStorage.setItem('mp_tab_id', t);
+      }
+      return t;
+    } catch {
+      return Math.random().toString(36).slice(2, 10);
+    }
+  });
+
+  const makePlayerId = useCallback(
+    (uid) => makePresenceKey(uid, tabId),
+    [tabId]
+  );
+
+  const [currentUserId, setCurrentUserId] = useState(() => `guest_${tabId}`);
+  const [authId, setAuthId] = useState(null);
+
+  // auth.uid() = sumber yang sama dengan host_id di DB. Resolve sekali di mount,
+  // dan sekali lagi sebelum buat/gabung room (jangan pakai ID sementara).
+  const resolvePlayerId = useCallback(async () => {
+    const uid = await getSessionUserId();
+    const pid = makePlayerId(uid);
+    setAuthId(uid);
+    setCurrentUserId(pid);
+    return { uid, pid };
+  }, [makePlayerId]);
+
+  useEffect(() => { resolvePlayerId(); }, [resolvePlayerId]);
+
+  // Niat pemain (siap/tim) disimpan di ref supaya bisa dikirim ulang tiap
+  // presence sync — presence state tidak membawa isReady/team.
+  const myIntentRef = useRef({ isReady: false, team: null });
 
   // ── Bersihkan Channel saat unmount ─────────────────────────────────────────
   useEffect(() => {
@@ -87,32 +129,74 @@ export function Multiplayer() {
   }, [selectedCategory, selectedQCount]);
 
   // ── Setup Realtime Subscription ────────────────────────────────────────────
-  const connectToChannel = useCallback((code, roomData) => {
+  const connectToChannel = useCallback((code, roomData, playerId = currentUserId, myAuthId = authId) => {
     const playerInfo = {
-      id: currentUserId,
+      id: playerId,
+      authId: myAuthId,
       username: username || '旅人',
       avatar: progress?.avatar || '',
       rank: progress?.rank || 'Kouhai',
     };
 
-    const ch = subscribeToRoom(code, {
+    let ch = null;
+
+    ch = subscribeToRoom(code, {
       playerInfo,
       onPresenceSync: (presenceState) => {
-        // Ambil daftar pemain dari presence state
-        const allPresent = Object.values(presenceState).flat();
+        // Presence key = id unik per tab → dua pemain tidak lagi bertabrakan.
+        // Host diproses lebih dulu (selalu tim merah), sisanya urut by id supaya
+        // semua client menghasilkan alokasi tim yang sama.
+        const hostId = roomData?.host_id;
+        const allPresent = Object.values(presenceState)
+          .flat()
+          .filter((p) => p && p.id)
+          .sort((a, b) => {
+            const ha = hostId && a.authId === hostId ? 0 : 1;
+            const hb = hostId && b.authId === hostId ? 0 : 1;
+            if (ha !== hb) return ha - hb;
+            return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+          });
+
         setRoomPlayers((prev) => {
-          return allPresent.map((p, idx) => {
-            const existing = prev.find((x) => x.id === p.id);
+          const prevById = new Map(prev.map((x) => [x.id, x]));
+          const mode = roomData?.mode || '1v1';
+          const red = [];
+          const blue = [];
+
+          return allPresent.map((p) => {
+            const existing = prevById.get(p.id);
+            // host_id di DB = uuid polos; presence id = `<uid>#<tab>`.
+            const isHostPlayer = !!hostId && p.authId === hostId;
+            let team;
+            // Urutan prioritas: niat sendiri → pilihan manual (broadcast) →
+            // default host merah → auto-assign. `existing.team` didahulukan dari
+            // default host supaya switch tim host ikut konsisten di client lain.
+            if (p.id === playerId && myIntentRef.current.team) {
+              team = myIntentRef.current.team;
+            } else if (existing?.team) {
+              team = existing.team;
+            } else if (isHostPlayer) {
+              team = 'red'; // host selalu tim merah (sesuai red_team di DB)
+            } else {
+              team = autoAssignTeam(red, blue, mode) || 'red';
+            }
+            (team === 'red' ? red : blue).push(p.id);
             return {
               id: p.id,
+              authId: p.authId,
               username: p.username,
               avatar: p.avatar,
               rank: p.rank,
-              team: existing?.team || (idx % 2 === 0 ? 'red' : 'blue'),
-              isReady: existing?.isReady || p.id === roomData?.host_id,
+              team,
+              isReady: isHostPlayer || existing?.isReady || false,
             };
           });
         });
+
+        // Presence TIDAK membawa status siap/tim. Kalau sync datang setelah
+        // broadcast saya, pemain lain kehilangan info → kirim ulang intent.
+        if (myIntentRef.current.isReady) broadcastReady(ch, playerId, true);
+        if (myIntentRef.current.team) broadcastSwitchTeam(ch, playerId, myIntentRef.current.team);
       },
       onBroadcast: (event, payload) => {
         if (event === 'player_ready') {
@@ -138,12 +222,14 @@ export function Multiplayer() {
     });
 
     setChannelRef(ch);
-  }, [currentUserId, username, progress, startBattle]);
+  }, [currentUserId, authId, username, progress, startBattle]);
 
   // ── Buat Room Baru ─────────────────────────────────────────────────────────
   const handleCreateRoom = async () => {
     setIsLoading(true);
     setErrorMsg('');
+    // Resolve dulu: presence id harus `<auth.uid()>#<tab>`, bukan id sementara.
+    const { uid, pid } = await resolvePlayerId();
     const res = await createRoom({
       mode: selectedMode,
       category: selectedCategory,
@@ -160,7 +246,7 @@ export function Multiplayer() {
 
     setActiveRoom(res.room);
     setView('lobby');
-    connectToChannel(res.code, res.room);
+    connectToChannel(res.code, res.room, pid, uid);
   };
 
   // ── Gabung Room by Code ────────────────────────────────────────────────────
@@ -168,6 +254,7 @@ export function Multiplayer() {
     if (!joinCode || joinCode.length < 6) return;
     setIsLoading(true);
     setErrorMsg('');
+    const { uid, pid } = await resolvePlayerId();
     const res = await findRoom(joinCode);
     setIsLoading(false);
 
@@ -178,7 +265,7 @@ export function Multiplayer() {
 
     setActiveRoom(res.room);
     setView('lobby');
-    connectToChannel(res.room.code, res.room);
+    connectToChannel(res.room.code, res.room, pid, uid);
   };
 
   // ── Builder Soal Kuis Ber-Seed ─────────────────────────────────────────────
@@ -209,6 +296,7 @@ export function Multiplayer() {
   const handleToggleReady = () => {
     const me = roomPlayers.find((p) => p.id === currentUserId);
     const newReady = !me?.isReady;
+    myIntentRef.current.isReady = newReady;
     setRoomPlayers((prev) =>
       prev.map((p) => (p.id === currentUserId ? { ...p, isReady: newReady } : p))
     );
@@ -216,6 +304,7 @@ export function Multiplayer() {
   };
 
   const handleSwitchTeam = (targetTeam) => {
+    myIntentRef.current.team = targetTeam;
     setRoomPlayers((prev) =>
       prev.map((p) => (p.id === currentUserId ? { ...p, team: targetTeam } : p))
     );
@@ -300,6 +389,8 @@ export function Multiplayer() {
     setView('browser');
     setActiveRoom(null);
     setRoomPlayers([]);
+    // Niat lama (siap/tim) jangan terbawa ke room berikutnya.
+    myIntentRef.current = { isReady: false, team: null };
   };
 
   return (
@@ -458,7 +549,7 @@ export function Multiplayer() {
             room={activeRoom}
             players={roomPlayers}
             currentUserId={currentUserId}
-            isHost={activeRoom?.host_id === currentUserId}
+            isHost={!!activeRoom?.host_id && activeRoom.host_id === authId}
             onSwitchTeam={handleSwitchTeam}
             onToggleReady={handleToggleReady}
             onStartGame={handleHostStartGame}

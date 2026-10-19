@@ -39,7 +39,7 @@ export function RoomLobby({
     redPlayers.map((p) => p.id),
     bluePlayers.map((p) => p.id),
     mode
-  ) && (players || []).every((p) => p.id === room.host_id || p.isReady);
+  ) && (players || []).every((p) => p.authId === room.host_id || p.isReady);
 
   const renderSlot = (player, team, slotIdx) => {
     if (!player) {
@@ -54,7 +54,7 @@ export function RoomLobby({
     }
 
     const isMe = player.id === currentUserId;
-    const isPlayerHost = player.id === room?.host_id;
+    const isPlayerHost = !!room?.host_id && player.authId === room.host_id;
 
     return (
       <div
