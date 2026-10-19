@@ -15,7 +15,7 @@ import {
 import {
   createRoom, findRoom, subscribeToRoom, getSessionUserId,
   broadcastReady, broadcastSwitchTeam, broadcastStartGame,
-  broadcastAnswer, broadcastEmote, broadcastMatchEnd,
+  broadcastAnswer, broadcastEmote, broadcastMatchEnd, broadcastPause,
 } from '../features/multiplayer/multiplayerApi';
 import { RoomLobby } from '../features/multiplayer/RoomLobby';
 import { BattleScreen } from '../features/multiplayer/BattleScreen';
@@ -67,6 +67,8 @@ export function Multiplayer() {
   const [answersLog, setAnswersLog] = useState([]);
   const [liveEmotes, setLiveEmotes] = useState([]);
   const [matchResult, setMatchResult] = useState(null);
+  // Juri bisa menghentikan waktu soal untuk semua pemain sekaligus.
+  const [paused, setPaused] = useState(false);
   // Juri butuh log jawaban & daftar pemain duduk di dalam closure channel
   // (state React di situ basi).
   const answersLogRef = useRef([]);
@@ -132,6 +134,7 @@ export function Multiplayer() {
     setAnswersLog([]);
     answersLogRef.current = [];
     setLiveEmotes([]);
+    setPaused(false);
     setView('battle');
   }, [selectedCategory, selectedQCount]);
 
@@ -265,6 +268,9 @@ export function Multiplayer() {
             isSpectator: true,
           });
           setView('result');
+        } else if (event === 'pause') {
+          // Hanya juri yang boleh menjeda.
+          if (payload.role === 'spectator') setPaused(!!payload.paused);
         } else if (event === 'send_emote') {
           const em = { id: Date.now() + Math.random(), emote: payload.emote };
           setLiveEmotes((prev) => [...prev, em]);
@@ -377,10 +383,18 @@ export function Multiplayer() {
     }, 3000);
   };
 
+  // ── Juri: Jeda / Lanjut ────────────────────────────────────────────────────
+  const handleTogglePause = () => {
+    if (!isSpectator) return;
+    const next = !paused;
+    setPaused(next);
+    broadcastPause(channelRef, { paused: next, by: currentUserId, role: 'spectator' });
+  };
+
   // ── Player Menjawab Soal ───────────────────────────────────────────────────
   const handleSelectOption = (idx, secondsUsed) => {
     // Juri tidak menjawab — soal maju dari broadcast pemain.
-    if (isSpectator) return;
+    if (isSpectator || paused) return;
     const currentQ = questions[currentQIndex];
     if (!currentQ) return;
 
@@ -454,6 +468,7 @@ export function Multiplayer() {
     setActiveRoom(null);
     setRoomPlayers([]);
     setIsSpectator(false);
+    setPaused(false);
     // Niat lama (siap/tim) jangan terbawa ke room berikutnya.
     myIntentRef.current = { isReady: false, team: null };
   };
@@ -654,8 +669,10 @@ export function Multiplayer() {
             teamScores={tallyTeamScores(answersLog)}
             playerAnswers={answersLog.filter((a) => a.qIndex === currentQIndex).reduce((acc, curr) => ({ ...acc, [curr.playerId]: curr }), {})}
             liveEmotes={liveEmotes}
+            paused={paused}
             onSelectOption={handleSelectOption}
             onSendEmote={handleSendEmote}
+            onTogglePause={handleTogglePause}
             language={language}
           />
         </div>

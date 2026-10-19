@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   broadcastReady, broadcastSwitchTeam, broadcastStartGame,
-  broadcastAnswer, broadcastEmote, broadcastMatchEnd,
+  broadcastAnswer, broadcastEmote, broadcastMatchEnd, broadcastPause,
 } from './multiplayerApi.js';
 
 // Mock Channel
@@ -65,6 +65,14 @@ test('broadcastMatchEnd: kirim finalScores ke channel', () => {
   assert.deepEqual(ch.sent[0].payload, { finalScores });
 });
 
+test('broadcastPause: kirim status jeda', () => {
+  const ch = createMockChannel();
+  broadcastPause(ch, { paused: true, by: 'p1', role: 'spectator' });
+  assert.equal(ch.sent.length, 1);
+  assert.equal(ch.sent[0].event, 'pause');
+  assert.deepEqual(ch.sent[0].payload, { paused: true, by: 'p1', role: 'spectator' });
+});
+
 test('broadcast helper aman saat channel null (fail-open)', () => {
   assert.doesNotThrow(() => {
     broadcastReady(null, 'p1', true);
@@ -73,5 +81,6 @@ test('broadcast helper aman saat channel null (fail-open)', () => {
     broadcastAnswer(null, {});
     broadcastEmote(null, 'p1', '笑');
     broadcastMatchEnd(null, {});
+    broadcastPause(null, {});
   });
 });

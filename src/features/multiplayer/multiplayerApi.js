@@ -166,6 +166,15 @@ export function broadcastMatchEnd(channel, { finalScores }) {
   });
 }
 
+export function broadcastPause(channel, { paused, by, role }) {
+  if (!channel) return;
+  channel.send({
+    type: 'broadcast',
+    event: 'pause',
+    payload: { paused, by, role },
+  });
+}
+
 export function broadcastEmote(channel, playerId, emote) {
   if (!channel) return;
   channel.send({

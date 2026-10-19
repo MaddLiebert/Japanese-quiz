@@ -14,8 +14,10 @@ export function BattleScreen({
   teamScores = { red: 0, blue: 0 },
   playerAnswers = {},
   liveEmotes = [],
+  paused = false,
   onSelectOption,
   onSendEmote,
+  onTogglePause,
   language = 'id',
 }) {
   const id = language === 'id';
@@ -28,31 +30,28 @@ export function BattleScreen({
     setSelectedIdx(null);
     setIsAnswered(false);
     setTimeLeft(MP_TIMER_S);
-
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
   }, [questionIndex]);
 
-  // Handle timeout auto-fail (juri tidak menjawab → tidak ada timeout)
+  // Hitung mundur berhenti saat juri menjeda (timeLeft disimpan, bukan di-reset).
   useEffect(() => {
-    if (isSpectator) return;
+    if (paused) return;
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => (prev <= 1 ? 0 : prev - 1));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [questionIndex, paused]);
+
+  // Handle timeout auto-fail (juri tidak menjawab → tidak ada timeout; jeda menghentikan waktu)
+  useEffect(() => {
+    if (isSpectator || paused) return;
     if (timeLeft === 0 && !isAnswered) {
       setIsAnswered(true);
       onSelectOption(null, 0); // timeout = 0 poin
     }
-  }, [timeLeft, isAnswered, onSelectOption, isSpectator]);
+  }, [timeLeft, isAnswered, onSelectOption, isSpectator, paused]);
 
   const handleChoose = (idx) => {
-    if (isAnswered || isSpectator) return;
+    if (isAnswered || isSpectator || paused) return;
     setSelectedIdx(idx);
     setIsAnswered(true);
     const secondsUsed = MP_TIMER_S - timeLeft;
@@ -122,8 +121,17 @@ export function BattleScreen({
             <div className={`text-2xl sm:text-3xl font-mono font-black ${
               timeLeft <= 3 ? 'text-shu animate-pulse' : 'text-sumi'
             }`}>
-              {isSpectator ? '審判' : timeLeft}
+              {isSpectator ? (paused ? '停止' : '審判') : timeLeft}
             </div>
+            {isSpectator && onTogglePause && (
+              <button
+                type="button"
+                onClick={onTogglePause}
+                className="mt-1 px-2 py-0.5 border-[2px] border-sumi bg-kinari-light hover:bg-sumi hover:text-kinari-light text-[10px] font-black shadow-[2px_2px_0_0_#1a1a1a] active:translate-y-0.5 transition-all cursor-pointer"
+              >
+                {paused ? '再開' : '停止'}
+              </button>
+            )}
           </div>
 
           {/* Sisi Biru */}
@@ -172,12 +180,18 @@ export function BattleScreen({
 
         <div className="text-center space-y-4">
           <span className="text-[10px] uppercase tracking-[0.3em] font-black text-sumi/50">
-            {question?.type || 'QUIZ'}
+            {paused ? '停止中 · JEDA' : question?.type || 'QUIZ'}
           </span>
 
           <h2 className="text-3xl sm:text-5xl font-serif font-black text-sumi leading-tight">
             <Furigana text={question?.prompt || question?.char || question?.question} />
           </h2>
+
+          {paused && (
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-shu">
+              審判が停止中 · menunggu juri
+            </p>
+          )}
         </div>
       </div>
 
@@ -190,14 +204,14 @@ export function BattleScreen({
           return (
             <motion.button
               key={idx}
-              disabled={isAnswered || isSpectator}
+              disabled={isAnswered || isSpectator || paused}
               onClick={() => handleChoose(idx)}
               whileHover={!isAnswered ? { x: 2, y: 2 } : {}}
               whileTap={!isAnswered ? { x: 4, y: 4 } : {}}
               className={`p-4 border-[3px] border-sumi text-left font-serif font-bold text-sm sm:text-base transition-all shadow-[4px_4px_0_0_#1a1a1a] flex items-center gap-3 ${
                 isChosen
                   ? 'bg-ai text-kinari-light !shadow-[2px_2px_0_0_#1a1a1a]'
-                  : isAnswered
+                  : isAnswered || paused
                   ? 'bg-kinari/50 text-sumi/40 cursor-not-allowed'
                   : 'bg-kinari text-sumi hover:bg-kinari-light cursor-pointer'
               }`}
