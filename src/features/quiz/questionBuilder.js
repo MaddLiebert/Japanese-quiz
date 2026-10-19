@@ -14,17 +14,50 @@ export function shuffle(array, rng = Math.random) {
   return arr;
 }
 
+// ── Helper tanda tangan tampilan (cegah opsi kembar / duplikat teks) ────────
+// Opsi tidak boleh menampilkan teks yang sama dengan opsi lain di layar.
+function getDisplaySignatures(item) {
+  if (!item) return [];
+  const sigs = [];
+  if (item.type === 'grammar') {
+    if (item.char) sigs.push(`g_char:${item.char.trim()}`);
+    if (item.answer) sigs.push(`g_ans:${item.answer.trim().toLowerCase()}`);
+  } else if (item.type === 'kotoba' || item.type === 'kanji') {
+    if (item.meaning) sigs.push(`mean_en:${item.meaning.trim().toLowerCase()}`);
+    if (item.meaning_id) sigs.push(`mean_id:${item.meaning_id.trim().toLowerCase()}`);
+  } else {
+    // kana
+    if (item.romaji) sigs.push(`romaji:${item.romaji.trim().toLowerCase()}`);
+    if (item.char) sigs.push(`char:${item.char.trim()}`);
+  }
+  return sigs;
+}
+
+function hasDisplayCollision(candidate, existingItems) {
+  const candidateSigs = getDisplaySignatures(candidate);
+  if (candidateSigs.length === 0) return false;
+  for (const item of existingItems) {
+    const itemSigs = getDisplaySignatures(item);
+    for (const sig of candidateSigs) {
+      if (itemSigs.includes(sig)) return true;
+    }
+  }
+  return false;
+}
+
 // ── Smart Distractor Builder ─────────────────────────────────────────────────
 // Picks distractors using a 3-tier priority:
 //   1. Same row/category inside the user's quiz pool
 //   2. Different row/category inside the user's quiz pool
 //   3. Global fallback (type-matched, avoids cross-category contamination)
+// Menjamin tidak ada distraktor yang punya teks/arti kembar dengan jawaban benar
+// atau distraktor lain yang sudah terpilih.
 function pickDistractors(item, quizPool, optionCount, datasets) {
   const needed = optionCount - 1;
   const groupKey = (item.type === 'kotoba' || item.type === 'grammar' || item.type === 'kanji')
     ? 'category' : 'row';
 
-  // Tier 1 & 2: dari pool kuis (buang item sendiri; script & type harus sama).
+  // Tier 1 & 2: dari pool kuis (buang item sendiri & opsi yang teksnya kembar).
   const poolWithoutSelf = quizPool.filter(d => {
     if (d.id === item.id) return false;
     if (item.script || d.script) {
@@ -35,26 +68,51 @@ function pickDistractors(item, quizPool, optionCount, datasets) {
   const sameGroup  = shuffle(poolWithoutSelf.filter(d => d[groupKey] === item[groupKey]));
   const otherGroup = shuffle(poolWithoutSelf.filter(d => d[groupKey] !== item[groupKey]));
 
-  const picked = [...sameGroup, ...otherGroup].slice(0, needed);
+  const candidates = [...sameGroup, ...otherGroup];
+  const picked = [];
+  const chosen = [item];
 
-  // Tier 3: pool kekecilan → ambil dari dataset global (masih type-matched).
+  for (const cand of candidates) {
+    if (picked.length >= needed) break;
+    if (chosen.some(c => c.id === cand.id)) continue;
+    if (hasDisplayCollision(cand, chosen)) continue;
+    picked.push(cand);
+    chosen.push(cand);
+  }
+
+  // Tier 3: pool kekecilan → ambil dari dataset global (masih type-matched & bebas kembar).
   if (picked.length < needed) {
-    const usedIds = new Set([item.id, ...picked.map(d => d.id)]);
     const isHiragana = item.id?.startsWith('hira_') || item.script === 'hiragana';
     const isKatakana = item.id?.startsWith('kata_') || item.script === 'katakana';
     const targetDataset = isHiragana ? datasets.hiragana
       : isKatakana ? datasets.katakana
       : datasets[item.type] || [];
     const globalPool = targetDataset.filter(d => {
-      if (usedIds.has(d.id)) return false;
+      if (chosen.some(c => c.id === d.id)) return false;
       // Kana: samakan type (seion/dakuon/…) bila mungkin.
       if (isHiragana || isKatakana) {
         return d.type === item.type;
       }
       return true;
     });
-    const extras = shuffle(globalPool).slice(0, needed - picked.length);
-    picked.push(...extras);
+
+    for (const cand of shuffle(globalPool)) {
+      if (picked.length >= needed) break;
+      if (chosen.some(c => c.id === cand.id)) continue;
+      if (hasDisplayCollision(cand, chosen)) continue;
+      picked.push(cand);
+      chosen.push(cand);
+    }
+
+    // Jika dataset unik sangat sedikit dan masih kurang, fallback isi sisa tanpa crash
+    if (picked.length < needed) {
+      for (const cand of shuffle(globalPool)) {
+        if (picked.length >= needed) break;
+        if (chosen.some(c => c.id === cand.id)) continue;
+        picked.push(cand);
+        chosen.push(cand);
+      }
+    }
   }
 
   return picked;

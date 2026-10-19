@@ -86,16 +86,67 @@ export function Review() {
       else if (currentWeakChar.type === 'kanji') pool = kanjiData;
       else if (currentWeakChar.type === 'poem') pool = poemsData;
 
-      const distractorsRaw = pool.filter(item => item.id !== currentWeakChar.id);
+      const getDisplaySig = (it) => {
+        if (!it) return [];
+        const sigs = [];
+        if (it.type === 'grammar') {
+          if (it.char) sigs.push(`g_char:${it.char.trim()}`);
+          if (it.answer) sigs.push(`g_ans:${it.answer.trim().toLowerCase()}`);
+        } else if (it.type === 'kotoba' || it.type === 'kanji') {
+          if (it.meaning) sigs.push(`mean_en:${it.meaning.trim().toLowerCase()}`);
+          if (it.meaning_id) sigs.push(`mean_id:${it.meaning_id.trim().toLowerCase()}`);
+        } else if (it.type === 'poem') {
+          if (it.title) sigs.push(`poem_title:${it.title.trim()}`);
+        } else {
+          if (it.romaji) sigs.push(`romaji:${it.romaji.trim().toLowerCase()}`);
+          if (it.char) sigs.push(`char:${it.char.trim()}`);
+        }
+        return sigs;
+      };
+
+      const hasCollision = (cand, existing) => {
+        const cSigs = getDisplaySig(cand);
+        if (cSigs.length === 0) return false;
+        for (const item of existing) {
+          const iSigs = getDisplaySig(item);
+          for (const s of cSigs) {
+            if (iSigs.includes(s)) return true;
+          }
+        }
+        return false;
+      };
+
+      const distractorsRaw = pool.filter(item => item.id !== currentWeakChar.id && !hasCollision(item, [currentWeakChar]));
 
       // Try to get same category distractors if possible
-      let distractors = [];
+      let candidates = [];
       if (currentWeakChar.category) {
         const sameCat = distractorsRaw.filter(d => d.category === currentWeakChar.category);
         const others = distractorsRaw.filter(d => d.category !== currentWeakChar.category);
-        distractors = shuffle([...shuffle(sameCat), ...shuffle(others)]).slice(0, 3);
+        candidates = [...shuffle(sameCat), ...shuffle(others)];
       } else {
-        distractors = shuffle(distractorsRaw).slice(0, 3);
+        candidates = shuffle(distractorsRaw);
+      }
+
+      const distractors = [];
+      const chosen = [currentWeakChar];
+      for (const cand of candidates) {
+        if (distractors.length >= 3) break;
+        if (!hasCollision(cand, chosen)) {
+          distractors.push(cand);
+          chosen.push(cand);
+        }
+      }
+
+      // Fallback bila opsi unik kurang dari 3
+      if (distractors.length < 3) {
+        for (const cand of pool.filter(item => item.id !== currentWeakChar.id)) {
+          if (distractors.length >= 3) break;
+          if (!chosen.some(c => c.id === cand.id)) {
+            distractors.push(cand);
+            chosen.push(cand);
+          }
+        }
       }
 
       const newOptions = shuffle([currentWeakChar, ...distractors]);

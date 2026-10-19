@@ -80,10 +80,28 @@ test('buildOptions: item kanji → opsi punya onyomi & kunyomi', () => {
   }
 });
 
-test('buildOptions: pool kecil → fallback tier-3 tetap 4 opsi dari dataset global', () => {
-  const item = hiragana[0];
-  const options = buildOptions(item, [item], 4, DATASETS);
-  assert.equal(options.length, 4);
-  assert.equal(new Set(options.map((o) => o.id)).size, 4);
-  assert.ok(options.some((o) => o.id === item.id));
+test('buildOptions: tidak ada opsi dengan teks/arti kembar pada grammar', () => {
+  // Grammar 'に' punya 5 variasi di grammar.json (g_ni_freq, g_ni_time, dst).
+  // Semua opsi yang dihasilkan harus memiliki char unik (tidak ada 2 opsi bertuliskan 'に').
+  const niItem = grammar.find((g) => g.char === 'に');
+  const options = buildOptions(niItem, grammar, 4, DATASETS);
+  const chars = options.map((o) => o.char);
+  assert.equal(new Set(chars).size, 4, `Opsi grammar harus unik: ${chars.join(', ')}`);
+});
+
+test('buildOptions: tidak ada opsi dengan arti kembar pada kotoba', () => {
+  // Misal 'v_ani' ('Older brother') vs 'v_oniisan' ('Older brother')
+  const aniItem = kotoba.find((k) => k.id === 'v_ani');
+  const options = buildOptions(aniItem, kotoba, 4, DATASETS);
+  const meaningsEn = options.map((o) => o.meaning?.toLowerCase());
+  const meaningsId = options.map((o) => o.meaning_id?.toLowerCase()).filter(Boolean);
+  assert.equal(new Set(meaningsEn).size, 4, `Arti EN harus unik: ${meaningsEn.join(', ')}`);
+  assert.equal(new Set(meaningsId).size, meaningsId.length, `Arti ID harus unik: ${meaningsId.join(', ')}`);
+});
+
+test('buildOptions: tidak ada opsi dengan romaji kembar pada kana (ji/di, zu/du)', () => {
+  const jiItem = hiragana.find((h) => h.id === 'hira_ji');
+  const options = buildOptions(jiItem, hiragana, 4, DATASETS);
+  const romajis = options.map((o) => o.romaji);
+  assert.equal(new Set(romajis).size, 4, `Romaji kana harus unik: ${romajis.join(', ')}`);
 });
