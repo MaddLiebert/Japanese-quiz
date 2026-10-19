@@ -530,6 +530,22 @@ export function Home() {
                   <span className="cyber-glitch-text text-lg font-serif font-black select-none">試</span>
                 </div>
               </motion.div>
+
+              {/* Multiplayer Arena 合戦 (1v1 & 2v2 Live) */}
+              <motion.div onClick={() => navigate('/multiplayer')} whileHover={{ backgroundColor: "rgba(24, 43, 73, 0.05)" }} className="p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden">
+                <div className="absolute right-0 top-0 w-24 h-full bg-ai/5 transform skew-x-12 group-hover:scale-[3] transition-transform duration-700 ease-out z-0"></div>
+                <div className="flex flex-col gap-2 relative z-10">
+                  <h4 className="text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors text-sumi group-hover:text-ai">
+                    {language === 'id' ? 'Pertarungan Multiplayer' : 'Multiplayer Arena'} 合戦
+                  </h4>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                    {language === 'id' ? 'Duel 1v1 & Regu 2v2 (Merah vs Biru) · Live' : '1v1 Duel & 2v2 Teams (Red vs Blue) · Live'}
+                  </p>
+                </div>
+                <div className="w-14 h-14 border-[3px] border-ai text-ai flex items-center justify-center transition-all flex-shrink-0 relative z-10 group-hover:bg-ai group-hover:text-kinari-light">
+                  <span className="cyber-glitch-text text-lg font-serif font-black select-none">戦</span>
+                </div>
+              </motion.div>
             </div>
 
           </div>

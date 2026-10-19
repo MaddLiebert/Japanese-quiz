@@ -61,6 +61,7 @@ import { medaruCopy } from "./features/progress/medaruCopy";
 import { SyncProvider, useSync } from "./features/sync/SyncContext";
 import { Leaderboard } from "./features/leaderboard/Leaderboard";
 import { Friends } from "./features/social/Friends";
+import { Multiplayer } from "./pages/Multiplayer";
 import { fetchConnections } from "./features/social/socialApi";
 import { requestCount } from "./features/social/socialView";
 
@@ -387,6 +388,7 @@ function App() {
                   <Route path="/u/:id" element={<PublicProfile />} />
                   <Route path="/leaderboard" element={<Leaderboard />} />
                   <Route path="/friends" element={<Friends />} />
+                  <Route path="/multiplayer" element={<Multiplayer />} />
                   <Route path="/heian-history" element={<HeianHistory />} />
                   <Route path="/edo-history" element={<EdoHistory />} />
                   <Route path="/meiji-history" element={<MeijiHistory />} />

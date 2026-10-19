@@ -52,7 +52,7 @@ function hasDisplayCollision(candidate, existingItems) {
 //   3. Global fallback (type-matched, avoids cross-category contamination)
 // Menjamin tidak ada distraktor yang punya teks/arti kembar dengan jawaban benar
 // atau distraktor lain yang sudah terpilih.
-function pickDistractors(item, quizPool, optionCount, datasets) {
+function pickDistractors(item, quizPool, optionCount, datasets, rng = Math.random) {
   const needed = optionCount - 1;
   const groupKey = (item.type === 'kotoba' || item.type === 'grammar' || item.type === 'kanji')
     ? 'category' : 'row';
@@ -65,8 +65,8 @@ function pickDistractors(item, quizPool, optionCount, datasets) {
     }
     return d.type === item.type;
   });
-  const sameGroup  = shuffle(poolWithoutSelf.filter(d => d[groupKey] === item[groupKey]));
-  const otherGroup = shuffle(poolWithoutSelf.filter(d => d[groupKey] !== item[groupKey]));
+  const sameGroup  = shuffle(poolWithoutSelf.filter(d => d[groupKey] === item[groupKey]), rng);
+  const otherGroup = shuffle(poolWithoutSelf.filter(d => d[groupKey] !== item[groupKey]), rng);
 
   const candidates = [...sameGroup, ...otherGroup];
   const picked = [];
@@ -96,7 +96,7 @@ function pickDistractors(item, quizPool, optionCount, datasets) {
       return true;
     });
 
-    for (const cand of shuffle(globalPool)) {
+    for (const cand of shuffle(globalPool, rng)) {
       if (picked.length >= needed) break;
       if (chosen.some(c => c.id === cand.id)) continue;
       if (hasDisplayCollision(cand, chosen)) continue;
@@ -106,7 +106,7 @@ function pickDistractors(item, quizPool, optionCount, datasets) {
 
     // Jika dataset unik sangat sedikit dan masih kurang, fallback isi sisa tanpa crash
     if (picked.length < needed) {
-      for (const cand of shuffle(globalPool)) {
+      for (const cand of shuffle(globalPool, rng)) {
         if (picked.length >= needed) break;
         if (chosen.some(c => c.id === cand.id)) continue;
         picked.push(cand);
@@ -133,8 +133,8 @@ function toOptionShape(d) {
   return d;
 }
 
-export function buildOptions(item, quizPool, optionCount, datasets) {
-  const distractors = pickDistractors(item, quizPool, optionCount, datasets);
+export function buildOptions(item, quizPool, optionCount, datasets, rng = Math.random) {
+  const distractors = pickDistractors(item, quizPool, optionCount, datasets, rng);
 
   // Opsi jawaban benar dengan bentuk yang tepat.
   let correctOption;
@@ -149,5 +149,5 @@ export function buildOptions(item, quizPool, optionCount, datasets) {
   }
 
   const distractorOptions = distractors.map(toOptionShape);
-  return shuffle([...distractorOptions, correctOption]);
+  return shuffle([...distractorOptions, correctOption], rng);
 }

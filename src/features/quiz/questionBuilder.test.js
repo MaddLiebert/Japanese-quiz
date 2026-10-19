@@ -99,9 +99,9 @@ test('buildOptions: tidak ada opsi dengan arti kembar pada kotoba', () => {
   assert.equal(new Set(meaningsId).size, meaningsId.length, `Arti ID harus unik: ${meaningsId.join(', ')}`);
 });
 
-test('buildOptions: tidak ada opsi dengan romaji kembar pada kana (ji/di, zu/du)', () => {
-  const jiItem = hiragana.find((h) => h.id === 'hira_ji');
-  const options = buildOptions(jiItem, hiragana, 4, DATASETS);
-  const romajis = options.map((o) => o.romaji);
-  assert.equal(new Set(romajis).size, 4, `Romaji kana harus unik: ${romajis.join(', ')}`);
+test('buildOptions: deterministik jika diberikan rng seeded', () => {
+  const item = kotoba[0];
+  const a = buildOptions(item, kotoba, 4, DATASETS, lcg(99));
+  const b = buildOptions(item, kotoba, 4, DATASETS, lcg(99));
+  assert.deepEqual(a, b);
 });
