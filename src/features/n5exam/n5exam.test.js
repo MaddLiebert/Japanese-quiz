@@ -142,9 +142,35 @@ test('buildSection: tipe authored diambil dari n5-exam.json (reading pakai passa
   }
 });
 
-test('buildSection: bank kecil → boleh mengulang agar ujian tetap penuh', () => {
-  const items = buildSection('info_retrieval', BANK, DATASETS, 5, lcg(4));
+test('buildSection: authored items have shuffled options and valid correctIndex', () => {
+  const items = buildSection('orthography', BANK, DATASETS, 5, lcg(10));
   assert.equal(items.length, 5);
+  for (const it of items) {
+    assert.equal(it.options.length, 4);
+    assert.ok(it.correctIndex >= 0 && it.correctIndex < 4);
+    assert.equal(it.options[it.correctIndex], it.answer);
+  }
+  // Across multiple items, correctIndex should not all be 0
+  const indices = new Set(buildSection('context_vocab', BANK, DATASETS, 10, lcg(11)).map((it) => it.correctIndex));
+  assert.ok(indices.size > 1, 'options must be shuffled across indices');
+});
+
+test('scoreExam: pembobotan per-mondai mencerminkan bobot resmi (Reading lebih besar dari Vocab)', () => {
+  const exam = buildExam(BANK, DATASETS, lcg(12));
+  // Buat jawaban di mana hanya seksi vocab benar (22 soal) vs hanya reading benar (6 soal)
+  const answersOnlyVocab = exam.flatMap((sec) =>
+    sec.items.map(() => sec.key === 'vocab')
+  );
+  const rVocab = scoreExam(exam, answersOnlyVocab);
+  // 22 soal vocab berbobot total 35 poin
+  assert.equal(rVocab.lkrScaled, 35);
+
+  // Semua benar -> 120 / 60 / 180
+  const answersAll = exam.flatMap((sec) => sec.items.map(() => true));
+  const rAll = scoreExam(exam, answersAll);
+  assert.equal(rAll.lkrScaled, 120);
+  assert.equal(rAll.listeningScaled, 60);
+  assert.equal(rAll.total, 180);
 });
 
 test('buildExam: 3 seksi berurutan dengan jumlah soal sesuai blueprint', () => {

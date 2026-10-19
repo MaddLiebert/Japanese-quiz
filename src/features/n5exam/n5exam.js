@@ -75,6 +75,46 @@ export const N5_TOTAL_MINUTES = N5_SECTION_ORDER.reduce((s, k) => s + N5_SECTION
 export const sectionRawTotal = (sectionKey) =>
   N5_SECTIONS[sectionKey].mondai.reduce((s, m) => s + m.count, 0);
 
+// ── Pemetaan skor: bobot per mondai meniru JLPT resmi (0–180 total) ───────────
+// JLPT resmi: Reading bernilai jauh lebih besar per soal dibanding Kosakata biasa.
+// Total poin: Vocab ~35 + Grammar ~45 + Reading ~40 = LKR 120; Listening = 60.
+export const MONDAI_WEIGHTS = {
+  // Vocab (22 soal): ~35 poin
+  kanji_reading: 1.5,       // 7 * 1.5 = 10.5
+  orthography: 1.5,         // 5 * 1.5 = 7.5
+  context_vocab: 1.5,       // 6 * 1.5 = 9.0
+  paraphrase: 2.0,          // 4 * 2.0 = 8.0  -> Subtotal Vocab = 35.0
+
+  // Grammar & Reading (32 soal): ~85 poin
+  grammar_form: 1.5,        // 16 * 1.5 = 24.0
+  sentence_composition: 2.0,// 5 * 2.0 = 10.0
+  text_grammar: 2.2,        // 5 * 2.2 = 11.0 -> Subtotal Grammar = 45.0
+  reading_short: 5.0,       // 3 * 5.0 = 15.0
+  reading_mid: 8.0,         // 2 * 8.0 = 16.0
+  info_retrieval: 9.0,      // 1 * 9.0 = 9.0  -> Subtotal Reading = 40.0
+                            // Subtotal LKR = 35 + 45 + 40 = 120.0
+
+  // Listening (24 soal): 60 poin
+  task_comprehension: 2.5,  // 7 * 2.5 = 17.5
+  key_point: 2.5,           // 6 * 2.5 = 15.0
+  verbal_expression: 2.5,   // 5 * 2.5 = 12.5
+  quick_response: 2.5,      // 6 * 2.5 = 15.0 -> Subtotal Listening = 60.0
+};
+
+export const mondaiWeight = (type) => MONDAI_WEIGHTS[type] ?? 1.5;
+
+// Hitung skor seksi tertimbang: jumlah (bobot soal * benar) dibulatkan.
+export const scaleSectionWeighted = (items, answers) => {
+  let earned = 0;
+  let max = 0;
+  for (let i = 0; i < items.length; i++) {
+    const w = mondaiWeight(items[i]?.mondai);
+    max += w;
+    if (answers[i]) earned += w;
+  }
+  return { earned, max, scaled: Math.round(earned) };
+};
+
 // ── Pemetaan skor: proporsional dengan floor (truncation), sesuai standar JLPT offline ──
 export const scaleSection = (rawCorrect, rawTotal, maxScore) =>
   rawTotal <= 0 ? 0 : Math.floor((rawCorrect / rawTotal) * maxScore);
@@ -193,12 +233,29 @@ const mondaiListening = (datasets, rng) => {
   });
 };
 
+// Acak opsi untuk item dari bank authored (supaya correctIndex tidak selalu 0)
+const shuffleAuthoredItem = (item, rng) => {
+  if (!item || !Array.isArray(item.options) || item.options.length < 2) return item;
+  const tagged = item.options.map((t, idx) => ({ t, idx }));
+  const shuffled = shuffle(tagged, rng);
+  const correctIdx = typeof item.correctIndex === 'number' ? item.correctIndex : 0;
+  return {
+    ...item,
+    options: shuffled.map((o) => o.t),
+    correctIndex: shuffled.findIndex((o) => o.idx === correctIdx),
+    answer: item.options[correctIdx] ?? item.answer,
+  };
+};
+
 export const buildSection = (type, bank, datasets, count, rng = Math.random) => {
   let source;
   if (type === 'kanji_reading') source = kanjiReading(datasets, rng);
   else if (type === 'grammar_form') source = grammarForm(datasets, rng);
   else if (type === 'task_comprehension' || type === 'key_point') source = mondaiListening(datasets, rng);
-  else source = Array.isArray(bank?.[type]) ? bank[type] : [];
+  else {
+    const raw = Array.isArray(bank?.[type]) ? bank[type] : [];
+    source = raw.map((it) => shuffleAuthoredItem(it, rng));
+  }
 
   if (!source || source.length === 0) return [];
   const shuffled = shuffle(source, rng);
@@ -224,11 +281,19 @@ export const scoreExam = (exam, answers, evaluate = evaluatePass) => {
   let cursor = 0;
   const perSection = {};
   const perMondai = [];
+  let lkrWeighted = 0;
+  let listeningWeighted = 0;
+
   for (const sec of exam) {
     let correct = 0;
     for (const item of sec.items) {
       const ok = !!answers[cursor++];
-      if (ok) correct++;
+      const w = mondaiWeight(item.mondai);
+      if (ok) {
+        correct++;
+        if (sec.key === 'listening') listeningWeighted += w;
+        else lkrWeighted += w;
+      }
       const row = perMondai.find((r) => r.mondai === item.mondai);
       if (row) { row.correct += ok ? 1 : 0; row.total += 1; }
       else perMondai.push({ mondai: item.mondai, correct: ok ? 1 : 0, total: 1 });
@@ -237,12 +302,27 @@ export const scoreExam = (exam, answers, evaluate = evaluatePass) => {
   }
   const lkrRaw = perSection.vocab.correct + perSection.grammarReading.correct;
   const lkrTotal = perSection.vocab.total + perSection.grammarReading.total;
-  // `evaluate` bisa di-override (mis. gerbang 終 電脳 = ambang NAIK). Default N5.
-  const verdict = evaluate({
-    lkrRaw, lkrTotal,
-    listeningRaw: perSection.listening.correct,
-    listeningTotal: perSection.listening.total,
-  });
+  
+  // Hitung scaled score dengan pembobotan mondai (meniru bobot JLPT resmi)
+  const lkrScaled = Math.min(LKR_MAX, Math.round(lkrWeighted));
+  const listeningScaled = Math.min(LISTENING_MAX, Math.round(listeningWeighted));
+  const total = lkrScaled + listeningScaled;
+  const lkrOk = lkrScaled >= N5_PASS_LKR;
+  const listeningOk = listeningScaled >= N5_PASS_LISTENING;
+  const totalOk = total >= N5_PASS_TOTAL;
+
+  // Custom evaluator (mis. gerbang 終 電脳 = ambang NAIK).
+  // Jika evaluate diberikan dan bukan evaluatePass, delegasikan argumen ke custom evaluator.
+  let verdict = { lkrScaled, listeningScaled, total, lkrOk, listeningOk, totalOk, passed: totalOk && lkrOk && listeningOk };
+  if (evaluate && evaluate !== evaluatePass) {
+    const customVerdict = evaluate({
+      lkrRaw, lkrTotal,
+      listeningRaw: perSection.listening.correct,
+      listeningTotal: perSection.listening.total,
+    });
+    verdict = { ...verdict, ...customVerdict };
+  }
+
   return {
     perSection, perMondai, lkrRaw, lkrTotal,
     listeningRaw: perSection.listening.correct,

@@ -7,27 +7,45 @@ import React from 'react';
 export const Furigana = ({ text, className = "" }) => {
   if (!text) return null;
 
-  // Regex to match Kanji[reading] patterns
-  const parts = text.split(/(\[.*?\])/g);
-  const result = [];
+  // Regex matches: (Kanji sequence)[reading]
+  // CJK Unified Ideographs + iteration marks (々, 〆)
+  const pattern = /([\u4e00-\u9faf\u3400-\u4dbf\uf900-\ufaff々〆]+)\[(.*?)\]/g;
+  const elements = [];
+  let lastIndex = 0;
+  let match;
 
-  for (let i = 0; i < parts.length; i++) {
-    const part = parts[i];
-    
-    // Check if the next part is a reading block [reading]
-    if (i + 1 < parts.length && parts[i+1].startsWith('[') && parts[i+1].endsWith(']')) {
-      const reading = parts[i+1].slice(1, -1);
-      result.push(
-        <ruby key={i} className="ruby-base">
-          {part}
-          <rt className="ruby-text text-[0.6em] opacity-80 select-none">{reading}</rt>
-        </ruby>
+  while ((match = pattern.exec(text)) !== null) {
+    const [fullMatch, kanji, reading] = match;
+    const matchStart = match.index;
+
+    // Plain text before this kanji
+    if (matchStart > lastIndex) {
+      elements.push(
+        <span key={`text-${lastIndex}`}>
+          {text.slice(lastIndex, matchStart)}
+        </span>
       );
-      i++; // Skip the reading part
-    } else if (!part.startsWith('[') || !part.endsWith(']')) {
-      result.push(<span key={i}>{part}</span>);
     }
+
+    // Kanji with furigana
+    elements.push(
+      <ruby key={`ruby-${matchStart}`} className="ruby-base">
+        {kanji}
+        <rt className="ruby-text text-[0.6em] opacity-80 select-none">{reading}</rt>
+      </ruby>
+    );
+
+    lastIndex = matchStart + fullMatch.length;
   }
 
-  return <span className={className}>{result}</span>;
+  // Trailing plain text
+  if (lastIndex < text.length) {
+    elements.push(
+      <span key={`text-${lastIndex}`}>
+        {text.slice(lastIndex)}
+      </span>
+    );
+  }
+
+  return <span className={className}>{elements}</span>;
 };
