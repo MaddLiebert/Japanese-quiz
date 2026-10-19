@@ -96,6 +96,8 @@ export function subscribeToRoom(code, { playerInfo, onPresenceSync, onBroadcast,
         username: playerInfo?.username || '旅人',
         avatar: playerInfo?.avatar || '',
         rank: playerInfo?.rank || 'Kouhai',
+        // 'player' | 'spectator' — juri ikut channel tapi tidak mengisi slot tim.
+        role: playerInfo?.role || 'player',
         joinedAt: Date.now(),
       });
     }
@@ -152,6 +154,15 @@ export function broadcastAnswer(channel, { playerId, team, qIndex, isCorrect, po
     type: 'broadcast',
     event: 'player_answer',
     payload: { playerId, team, qIndex, isCorrect, points },
+  });
+}
+
+export function broadcastMatchEnd(channel, { finalScores }) {
+  if (!channel) return;
+  channel.send({
+    type: 'broadcast',
+    event: 'match_end',
+    payload: { finalScores },
   });
 }
 

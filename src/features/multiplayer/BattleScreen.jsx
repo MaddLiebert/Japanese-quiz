@@ -8,6 +8,7 @@ export function BattleScreen({
   questionIndex,
   totalQuestions,
   myTeam = 'red',
+  isSpectator = false,
   currentUserId,
   players = [],
   teamScores = { red: 0, blue: 0 },
@@ -41,16 +42,17 @@ export function BattleScreen({
     return () => clearInterval(interval);
   }, [questionIndex]);
 
-  // Handle timeout auto-fail
+  // Handle timeout auto-fail (juri tidak menjawab → tidak ada timeout)
   useEffect(() => {
+    if (isSpectator) return;
     if (timeLeft === 0 && !isAnswered) {
       setIsAnswered(true);
       onSelectOption(null, 0); // timeout = 0 poin
     }
-  }, [timeLeft, isAnswered, onSelectOption]);
+  }, [timeLeft, isAnswered, onSelectOption, isSpectator]);
 
   const handleChoose = (idx) => {
-    if (isAnswered) return;
+    if (isAnswered || isSpectator) return;
     setSelectedIdx(idx);
     setIsAnswered(true);
     const secondsUsed = MP_TIMER_S - timeLeft;
@@ -120,7 +122,7 @@ export function BattleScreen({
             <div className={`text-2xl sm:text-3xl font-mono font-black ${
               timeLeft <= 3 ? 'text-shu animate-pulse' : 'text-sumi'
             }`}>
-              {timeLeft}
+              {isSpectator ? '審判' : timeLeft}
             </div>
           </div>
 
@@ -188,7 +190,7 @@ export function BattleScreen({
           return (
             <motion.button
               key={idx}
-              disabled={isAnswered}
+              disabled={isAnswered || isSpectator}
               onClick={() => handleChoose(idx)}
               whileHover={!isAnswered ? { x: 2, y: 2 } : {}}
               whileTap={!isAnswered ? { x: 4, y: 4 } : {}}

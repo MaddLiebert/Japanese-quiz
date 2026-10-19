@@ -32,14 +32,17 @@ export function RoomLobby({
   const bluePlayers = (players || []).filter((p) => p.team === 'blue');
 
   const me = (players || []).find((p) => p.id === currentUserId);
-  const myTeam = me?.team || 'red';
+  const isSpectator = !!me?.isSpectator;
+  const spectators = (players || []).filter((p) => p.isSpectator);
+  const myTeam = isSpectator ? null : (me?.team || 'red');
   const isReady = !!me?.isReady;
 
+  // Juri tidak dihitung dalam syarat mulai.
   const canStart = isRoomFull(
     redPlayers.map((p) => p.id),
     bluePlayers.map((p) => p.id),
     mode
-  ) && (players || []).every((p) => p.authId === room.host_id || p.isReady);
+  ) && (players || []).filter((p) => !p.isSpectator).every((p) => p.authId === room.host_id || p.isReady);
 
   const renderSlot = (player, team, slotIdx) => {
     if (!player) {
@@ -115,8 +118,15 @@ export function RoomLobby({
               {mode} · {room?.category || 'mixed'} · {room?.question_count || 10} {id ? 'SOAL' : 'Q'}
             </span>
             <h2 className="text-2xl sm:text-3xl font-serif font-black text-sumi tracking-tight mt-1">
-              {id ? 'Ruang Tunggu Pertandingan' : 'Match Waiting Lounge'}
+              {isSpectator
+                ? (id ? 'Ruang Juri (審判席)' : 'Judge Gallery')
+                : (id ? 'Ruang Tunggu Pertandingan' : 'Match Waiting Lounge')}
             </h2>
+            {isSpectator && (
+              <p className="text-[11px] font-bold text-sumi/60 mt-1">
+                {id ? 'Kamu menonton dua kubu. Tidak mengisi slot tim & tidak dapat XP.' : 'You watch both sides. No team slot, no XP.'}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -164,7 +174,7 @@ export function RoomLobby({
             {Array.from({ length: cap }).map((_, idx) => renderSlot(redPlayers[idx], 'red', idx))}
           </div>
 
-          {is2v2 && myTeam === 'blue' && redPlayers.length < cap && (
+          {is2v2 && !isSpectator && myTeam === 'blue' && redPlayers.length < cap && (
             <button
               onClick={() => onSwitchTeam('red')}
               type="button"
@@ -193,7 +203,7 @@ export function RoomLobby({
             {Array.from({ length: cap }).map((_, idx) => renderSlot(bluePlayers[idx], 'blue', idx))}
           </div>
 
-          {is2v2 && myTeam === 'red' && bluePlayers.length < cap && (
+          {is2v2 && !isSpectator && myTeam === 'red' && bluePlayers.length < cap && (
             <button
               onClick={() => onSwitchTeam('blue')}
               type="button"
@@ -204,6 +214,30 @@ export function RoomLobby({
           )}
         </div>
       </div>
+
+      {/* Kursi Juri */}
+      {spectators.length > 0 && (
+        <div className="border-[4px] border-sumi bg-sumi/5 p-5 shadow-[4px_4px_0_0_#1a1a1a]">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base font-serif font-black text-sumi tracking-wide">
+              {id ? 'Juri (審判)' : 'Judges'}
+            </h3>
+            <span className="text-xs font-mono font-black text-sumi/60">{spectators.length}</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {spectators.map((p) => (
+              <span
+                key={p.id}
+                className="flex items-center gap-1.5 border-[2px] border-sumi bg-kinari-light px-2 py-1 text-[10px] font-black text-sumi shadow-[2px_2px_0_0_#1a1a1a]"
+              >
+                <Glyph name="eye" size={12} />
+                {p.username}
+                {p.id === currentUserId && <span className="text-sumi/40">(kamu)</span>}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Kontrol Aksi Bawah */}
       <div className="border-[4px] border-sumi bg-kinari-light p-5 shadow-[4px_4px_0_0_#1a1a1a] flex flex-col sm:flex-row gap-3 items-center justify-between">
@@ -216,7 +250,7 @@ export function RoomLobby({
         </button>
 
         <div className="flex gap-3 w-full sm:w-auto">
-          {!isHost && (
+          {!isHost && !isSpectator && (
             <button
               onClick={onToggleReady}
               type="button"

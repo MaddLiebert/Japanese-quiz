@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   broadcastReady, broadcastSwitchTeam, broadcastStartGame,
-  broadcastAnswer, broadcastEmote,
+  broadcastAnswer, broadcastEmote, broadcastMatchEnd,
 } from './multiplayerApi.js';
 
 // Mock Channel
@@ -56,6 +56,15 @@ test('broadcastEmote: kirim kanji emote', () => {
   assert.deepEqual(ch.sent[0].payload, { playerId: 'p1', emote: '炎' });
 });
 
+test('broadcastMatchEnd: kirim finalScores ke channel', () => {
+  const ch = createMockChannel();
+  const finalScores = { red: 120, blue: 90, perPlayer: { p1: 60 } };
+  broadcastMatchEnd(ch, { finalScores });
+  assert.equal(ch.sent.length, 1);
+  assert.equal(ch.sent[0].event, 'match_end');
+  assert.deepEqual(ch.sent[0].payload, { finalScores });
+});
+
 test('broadcast helper aman saat channel null (fail-open)', () => {
   assert.doesNotThrow(() => {
     broadcastReady(null, 'p1', true);
@@ -63,5 +72,6 @@ test('broadcast helper aman saat channel null (fail-open)', () => {
     broadcastStartGame(null, {});
     broadcastAnswer(null, {});
     broadcastEmote(null, 'p1', '笑');
+    broadcastMatchEnd(null, {});
   });
 });

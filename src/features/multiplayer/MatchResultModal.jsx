@@ -11,6 +11,7 @@ export function MatchResultModal({
   medaruReward = 0,
   players = [],
   _perPlayerScore = {},
+  isSpectator = false,
   onBackToLobby,
   language = 'id',
 }) {
@@ -27,13 +28,17 @@ export function MatchResultModal({
       >
         {/* Banner Kemenangan */}
         <div className={`p-4 border-[3px] border-sumi text-center mb-6 shadow-[3px_3px_0_0_#1a1a1a] ${
-          isDraw ? 'bg-kinari text-sumi' : isWon ? 'bg-matcha text-white' : 'bg-shu text-white'
+          isSpectator || isDraw ? 'bg-kinari text-sumi' : isWon ? 'bg-matcha text-white' : 'bg-shu text-white'
         }`}>
           <div className="text-[10px] uppercase tracking-[0.4em] font-black opacity-80">
-            {isDraw ? (id ? 'HASIL IMBANG' : 'DRAW MATCH') : isWon ? (id ? 'KEMENANGAN' : 'VICTORY') : (id ? 'KEKALAHAN' : 'DEFEAT')}
+            {isSpectator
+              ? (id ? 'HASIL KEPUTUSAN JURI' : 'JUDGE VERDICT')
+              : isDraw ? (id ? 'HASIL IMBANG' : 'DRAW MATCH') : isWon ? (id ? 'KEMENANGAN' : 'VICTORY') : (id ? 'KEKALAHAN' : 'DEFEAT')}
           </div>
           <h2 className="text-4xl sm:text-5xl font-serif font-black tracking-tight mt-1">
-            {isDraw ? '引き分け' : isWon ? '勝利' : '敗北'}
+            {isSpectator
+              ? (isDraw ? '引き分け' : winner === 'red' ? '紅組' : '藍組')
+              : isDraw ? '引き分け' : isWon ? '勝利' : '敗北'}
           </h2>
         </div>
 
@@ -75,7 +80,8 @@ export function MatchResultModal({
           </div>
         )}
 
-        {/* Perolehan XP & Medaru */}
+        {/* Perolehan XP & Medaru (juri tidak menerima apa pun) */}
+        {!isSpectator && (
         <div className="border-t-[3px] border-sumi/20 pt-4 mb-6 flex justify-around text-center">
           <div>
             <span className="text-[9px] uppercase tracking-wider font-black text-sumi/50 block">
@@ -97,6 +103,7 @@ export function MatchResultModal({
             </span>
           </div>
         </div>
+        )}
 
         {/* Tombol Balik ke Lobby */}
         <button

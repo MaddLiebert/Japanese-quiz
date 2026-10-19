@@ -10,12 +10,12 @@ import {
   calcSpeedScore,
   tallyTeamScores, determineWinner, findMvp,
   calcMatchXp, calcMatchMedaru,
-  autoAssignTeam, makePresenceKey,
+  autoAssignTeam, makePresenceKey, maxPlayers,
 } from '../features/multiplayer/multiplayer';
 import {
   createRoom, findRoom, subscribeToRoom, getSessionUserId,
   broadcastReady, broadcastSwitchTeam, broadcastStartGame,
-  broadcastAnswer, broadcastEmote,
+  broadcastAnswer, broadcastEmote, broadcastMatchEnd,
 } from '../features/multiplayer/multiplayerApi';
 import { RoomLobby } from '../features/multiplayer/RoomLobby';
 import { BattleScreen } from '../features/multiplayer/BattleScreen';
@@ -58,6 +58,8 @@ export function Multiplayer() {
   const [activeRoom, setActiveRoom] = useState(null);
   const [roomPlayers, setRoomPlayers] = useState([]);
   const [channelRef, setChannelRef] = useState(null);
+  // Juri: ikut channel & lihat dua kubu, tapi tidak mengisi slot tim / dapat XP.
+  const [isSpectator, setIsSpectator] = useState(false);
 
   // In-Game state
   const [questions, setQuestions] = useState([]);
@@ -65,6 +67,10 @@ export function Multiplayer() {
   const [answersLog, setAnswersLog] = useState([]);
   const [liveEmotes, setLiveEmotes] = useState([]);
   const [matchResult, setMatchResult] = useState(null);
+  // Juri butuh log jawaban & daftar pemain duduk di dalam closure channel
+  // (state React di situ basi).
+  const answersLogRef = useRef([]);
+  const seatedIdsRef = useRef([]);
 
   // ── Identitas pemain ───────────────────────────────────────────────────────
   // Presence key HARUS unik per tab. Dulu `progress?.id || 'guest_player'` bikin
@@ -124,18 +130,20 @@ export function Multiplayer() {
     setQuestions(qList);
     setCurrentQIndex(0);
     setAnswersLog([]);
+    answersLogRef.current = [];
     setLiveEmotes([]);
     setView('battle');
   }, [selectedCategory, selectedQCount]);
 
   // ── Setup Realtime Subscription ────────────────────────────────────────────
-  const connectToChannel = useCallback((code, roomData, playerId = currentUserId, myAuthId = authId) => {
+  const connectToChannel = useCallback((code, roomData, playerId = currentUserId, myAuthId = authId, spectator = false) => {
     const playerInfo = {
       id: playerId,
       authId: myAuthId,
       username: username || '旅人',
       avatar: progress?.avatar || '',
       rank: progress?.rank || 'Kouhai',
+      role: spectator ? 'spectator' : 'player',
     };
 
     let ch = null;
@@ -157,13 +165,18 @@ export function Multiplayer() {
             return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
           });
 
+        // Juri (spectator) tidak ikut perebutan slot tim — dipisah dari auto-assign.
+        const contenders = allPresent.filter((p) => p.role !== 'spectator');
+        const watchers = allPresent.filter((p) => p.role === 'spectator');
+        seatedIdsRef.current = contenders.map((p) => p.id);
+
         setRoomPlayers((prev) => {
           const prevById = new Map(prev.map((x) => [x.id, x]));
           const mode = roomData?.mode || '1v1';
           const red = [];
           const blue = [];
 
-          return allPresent.map((p) => {
+          const seated = contenders.map((p) => {
             const existing = prevById.get(p.id);
             // host_id di DB = uuid polos; presence id = `<uid>#<tab>`.
             const isHostPlayer = !!hostId && p.authId === hostId;
@@ -191,6 +204,20 @@ export function Multiplayer() {
               isReady: isHostPlayer || existing?.isReady || false,
             };
           });
+
+          // Juri: ikut tampil di daftar, tapi team null & tidak pernah siap.
+          const judges = watchers.map((p) => ({
+            id: p.id,
+            authId: p.authId,
+            username: p.username,
+            avatar: p.avatar,
+            rank: p.rank,
+            team: null,
+            isReady: false,
+            isSpectator: true,
+          }));
+
+          return [...seated, ...judges];
         });
 
         // Presence TIDAK membawa status siap/tim. Kalau sync datang setelah
@@ -211,6 +238,33 @@ export function Multiplayer() {
           startBattle(payload.seed, roomData);
         } else if (event === 'player_answer') {
           setAnswersLog((prev) => [...prev, payload]);
+          // Juri tidak menjawab sendiri: soal maju saat SEMUA pemain sudah lapor
+          // qIndex ini (2v2: jangan lompat gara-gara satu orang submit).
+          if (spectator) {
+            answersLogRef.current.push(payload);
+            // ponytail: maju saat semua pemain duduk sudah jawab qIndex ini.
+            // Kalau satu pemain putus di tengah soal, juri berhenti di soal itu
+            // sampai match_end. Upgrade: timeout per soal atau re-check di presence sync.
+            const required = seatedIdsRef.current.length || maxPlayers(roomData?.mode);
+            const done = new Set(
+              answersLogRef.current.filter((a) => a.qIndex === payload.qIndex).map((a) => a.playerId)
+            );
+            if (done.size >= required) setCurrentQIndex((prev) => Math.max(prev, payload.qIndex + 1));
+          }
+        } else if (event === 'match_end' && spectator) {
+          // Juri tidak menghitung sendiri: hasil akhir datang dari broadcast.
+          setMatchResult((prev) => prev || {
+            winner: determineWinner(payload.finalScores.red, payload.finalScores.blue),
+            myTeam: null,
+            finalScores: payload.finalScores,
+            mvp: null,
+            xpDelta: 0,
+            medaruReward: 0,
+            players: roomPlayers,
+            perPlayerScore: payload.finalScores.perPlayer || {},
+            isSpectator: true,
+          });
+          setView('result');
         } else if (event === 'send_emote') {
           const em = { id: Date.now() + Math.random(), emote: payload.emote };
           setLiveEmotes((prev) => [...prev, em]);
@@ -244,13 +298,15 @@ export function Multiplayer() {
       return;
     }
 
+    setIsSpectator(false); // room baru = pemain, jangan bawa status juri lama
     setActiveRoom(res.room);
     setView('lobby');
     connectToChannel(res.code, res.room, pid, uid);
   };
 
   // ── Gabung Room by Code ────────────────────────────────────────────────────
-  const handleJoinByCode = async () => {
+  // `spectate` = masuk sebagai juri: ikut channel, tidak mengisi slot tim.
+  const handleJoinByCode = async (spectate = false) => {
     if (!joinCode || joinCode.length < 6) return;
     setIsLoading(true);
     setErrorMsg('');
@@ -263,9 +319,10 @@ export function Multiplayer() {
       return;
     }
 
+    setIsSpectator(spectate);
     setActiveRoom(res.room);
     setView('lobby');
-    connectToChannel(res.room.code, res.room, pid, uid);
+    connectToChannel(res.room.code, res.room, pid, uid, spectate);
   };
 
   // ── Builder Soal Kuis Ber-Seed ─────────────────────────────────────────────
@@ -322,6 +379,8 @@ export function Multiplayer() {
 
   // ── Player Menjawab Soal ───────────────────────────────────────────────────
   const handleSelectOption = (idx, secondsUsed) => {
+    // Juri tidak menjawab — soal maju dari broadcast pemain.
+    if (isSpectator) return;
     const currentQ = questions[currentQIndex];
     if (!currentQ) return;
 
@@ -355,12 +414,13 @@ export function Multiplayer() {
     const scores = tallyTeamScores(answersLog);
     const winner = determineWinner(scores.red, scores.blue);
     const me = roomPlayers.find((p) => p.id === currentUserId);
-    const myTeam = me?.team || 'red';
+    // Juri tidak punya kubu & tidak menerima XP/Medaru.
+    const myTeam = isSpectator ? null : (me?.team || 'red');
     const mvp = findMvp(scores.perPlayer, roomPlayers.filter((p) => p.team === 'red').map((p) => p.id), roomPlayers.filter((p) => p.team === 'blue').map((p) => p.id));
-    const isMvp = mvp?.mvpId === currentUserId;
+    const isMvp = !isSpectator && mvp?.mvpId === currentUserId;
 
-    const xpDelta = calcMatchXp(activeRoom?.mode || '1v1', myTeam, winner, progress?.xp || 0, isMvp);
-    const medaru = calcMatchMedaru(myTeam, winner);
+    const xpDelta = isSpectator ? 0 : calcMatchXp(activeRoom?.mode || '1v1', myTeam, winner, progress?.xp || 0, isMvp);
+    const medaru = isSpectator ? 0 : calcMatchMedaru(myTeam, winner);
 
     // Eksekusi XP delta & Medaru ke state pemain
     if (xpDelta > 0) addXp(xpDelta);
@@ -376,7 +436,11 @@ export function Multiplayer() {
       medaruReward: medaru,
       players: roomPlayers,
       perPlayerScore: scores.perPlayer,
+      isSpectator,
     });
+
+    // Umumkan hasil ke channel supaya juri & pemain lain melihat skor yang sama.
+    broadcastMatchEnd(channelRef, { finalScores: scores });
 
     setView('result');
   };
@@ -389,6 +453,7 @@ export function Multiplayer() {
     setView('browser');
     setActiveRoom(null);
     setRoomPlayers([]);
+    setIsSpectator(false);
     // Niat lama (siap/tim) jangan terbawa ke room berikutnya.
     myIntentRef.current = { isReady: false, team: null };
   };
@@ -525,18 +590,34 @@ export function Multiplayer() {
                 />
               </div>
 
-              <button
-                onClick={handleJoinByCode}
-                disabled={isLoading || joinCode.length < 6}
-                type="button"
-                className={`w-full mt-6 py-3.5 border-[3px] border-sumi font-black uppercase tracking-widest text-xs shadow-[3px_3px_0_0_#1a1a1a] transition-all ${
-                  joinCode.length >= 6
-                    ? 'bg-shu text-kinari-light hover:brightness-110 cursor-pointer'
-                    : 'bg-sumi/20 text-sumi/40 border-sumi/30 cursor-not-allowed'
-                }`}
-              >
-                {isLoading ? '...' : (id ? 'Gabung Room' : 'Join Room')}
-              </button>
+              <div className="mt-6 space-y-2">
+                <button
+                  onClick={() => handleJoinByCode(false)}
+                  disabled={isLoading || joinCode.length < 6}
+                  type="button"
+                  className={`w-full py-3.5 border-[3px] border-sumi font-black uppercase tracking-widest text-xs shadow-[3px_3px_0_0_#1a1a1a] transition-all ${
+                    joinCode.length >= 6
+                      ? 'bg-shu text-kinari-light hover:brightness-110 cursor-pointer'
+                      : 'bg-sumi/20 text-sumi/40 border-sumi/30 cursor-not-allowed'
+                  }`}
+                >
+                  {isLoading ? '...' : (id ? 'Gabung Room' : 'Join Room')}
+                </button>
+
+                {/* Juri: ikut menonton dua kubu, tanpa mengisi slot tim. */}
+                <button
+                  onClick={() => handleJoinByCode(true)}
+                  disabled={isLoading || joinCode.length < 6}
+                  type="button"
+                  className={`w-full py-2.5 border-[3px] border-sumi font-black uppercase tracking-widest text-[10px] transition-all ${
+                    joinCode.length >= 6
+                      ? 'bg-kinari text-sumi hover:bg-sumi hover:text-kinari-light cursor-pointer'
+                      : 'bg-sumi/10 text-sumi/30 border-sumi/20 cursor-not-allowed'
+                  }`}
+                >
+                  {id ? 'Masuk sebagai Juri (審判)' : 'Join as Judge'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -567,6 +648,7 @@ export function Multiplayer() {
             questionIndex={currentQIndex}
             totalQuestions={questions.length}
             myTeam={roomPlayers.find((p) => p.id === currentUserId)?.team || 'red'}
+            isSpectator={isSpectator}
             currentUserId={currentUserId}
             players={roomPlayers}
             teamScores={tallyTeamScores(answersLog)}
@@ -590,6 +672,7 @@ export function Multiplayer() {
           medaruReward={matchResult.medaruReward}
           players={matchResult.players}
           perPlayerScore={matchResult.perPlayerScore}
+          isSpectator={matchResult.isSpectator}
           onBackToLobby={handleBackToLobby}
           language={language}
         />
