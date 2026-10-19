@@ -148,6 +148,14 @@ export const formatClock = (totalSeconds) => {
 // Teks yang mengandung kanji disimpan dengan anotasi furigana format "漢字[かんじ]"
 // di field *Furigana; UI merendernya lewat <Furigana/>.
 
+// Bacaan lepas untuk opsi jawaban. Buang notasi afiks ("-び", "あま-") dan
+// placeholder "-" (kanji tanpa kun-yomi) — dulu keduanya lolos jadi opsi kosong.
+const DASH_ONLY = /^[-‐–—]+$/;
+const cleanReadings = (k) =>
+  [...String(k.onyomi || '').split('、'), ...String(k.kunyomi || '').split('、')]
+    .map((s) => s.replace(/[()（）]/g, '').trim())
+    .filter((s) => s && !s.includes('-') && !DASH_ONLY.test(s));
+
 // Ambil 4 opsi unik: 1 benar + 3 distraktor dari pool.
 // Skip item jika tidak cukup distraktor (pool < 3 unik setelah remove correct).
 const pickOptions = (correct, pool, rng) => {
@@ -155,7 +163,7 @@ const pickOptions = (correct, pool, rng) => {
   const out = [correct];
   for (const v of shuffle(pool, rng)) {
     if (out.length >= 4) break;
-    if (v == null || seen.has(v) || String(v).startsWith('—')) continue;
+    if (v == null || seen.has(v) || DASH_ONLY.test(String(v).trim())) continue;
     seen.add(v);
     out.push(v);
   }
@@ -176,24 +184,21 @@ const makeItem = (base, correctValue, distractorPool, rng) => {
 // — Tipe yang dibangun otomatis dari pool yang ada —
 const kanjiReading = (datasets, rng) => {
   const pool = datasets.kanji || [];
-  const readings = pool
-    .flatMap((k) => [...String(k.onyomi || '').split('、'), ...String(k.kunyomi || '').split('、')])
-    .map((s) => s.replace(/[()（）]/g, '').trim())
-    .filter(Boolean);
+  const own = new Map(pool.map((k) => [k, cleanReadings(k)]));
+  // Distraktor = bacaan kanji LAIN. Bacaan kanji ini sendiri tidak boleh jadi
+  // distraktor: 小 punya ちいさい + こ, dua-duanya benar → soal ambigu.
+  const globalPool = [...new Set(pool.flatMap((k) => own.get(k)))];
   return pool.map((k) => {
-    // Ambil semua reading unik (onyomi + kunyomi), bukan cuma [0]
-    const allReadings = [...new Set(readings.filter(r => r.length > 0))];
-    if (allReadings.length < 4) return null; // Skip jika tidak cukup distraktor
-    const correct = allReadings.find(r => r === (k.kunyomi || '').split('、')[0].replace(/[()（）]/g, '').trim()) ||
-                    allReadings.find(r => r === (k.onyomi || '').split('、')[0].replace(/[()（）]/g, '').trim()) ||
-                    allReadings[0];
+    const mine = own.get(k);
+    if (!mine.length) return null; // kanji tanpa bacaan bersih (kunyomi "-")
+    const correct = mine[0];
     return makeItem({
       id: `n5_kanji_${k.id}`,
       mondai: 'kanji_reading',
       prompt: `「${k.char}」の 読み方は どれですか。`,
       // Furigana sengaja TIDAK di prompt ini — kanji-nya justru soal yang ditanya.
       explanation: `${k.char}（${k.meaning}）= ${correct}`,
-    }, correct, allReadings, rng);
+    }, correct, globalPool.filter((r) => !mine.includes(r)), rng);
   }).filter(Boolean);
 };
 
@@ -202,6 +207,7 @@ const grammarForm = (datasets, rng) => {
   const particles = [...new Set(pool.map((g) => g.char).filter(Boolean))];
   return pool.map((g) => {
     const options = pickOptions(g.char, particles, rng);
+    if (!options) return null; // pool < 4 unik → jangan lempar null ke indexOf
     return {
       id: `n5_grm_${g.id}`,
       mondai: 'grammar_form',
@@ -211,7 +217,7 @@ const grammarForm = (datasets, rng) => {
       answer: g.char,
       explanation: `Jawaban: ${g.char} (${g.romaji})`,
     };
-  });
+  }).filter(Boolean);
 };
 
 const mondaiListening = (datasets, rng) => {
@@ -222,7 +228,7 @@ const mondaiListening = (datasets, rng) => {
     return {
       id: `n5_lst_${m.id}`,
       mondai: 'task_comprehension',
-      prompt: m.questionText,
+      prompt: m.title ? `${m.title}：${m.questionText}` : m.questionText,
       audio: m.audio,
       options: shuffled.map((o) => o.t),
       correctIndex: shuffled.findIndex((o) => o.idx === m.correctIndex),
@@ -247,7 +253,9 @@ const shuffleAuthoredItem = (item, rng) => {
   };
 };
 
-export const buildSection = (type, bank, datasets, count, rng = Math.random) => {
+// `used` = id yang sudah dipakai ujian ini. task_comprehension & key_point
+// menarik dari pool mondai yang SAMA; tanpa ini soal bisa muncul 2x.
+export const buildSection = (type, bank, datasets, count, rng = Math.random, used = new Set()) => {
   let source;
   if (type === 'kanji_reading') source = kanjiReading(datasets, rng);
   else if (type === 'grammar_form') source = grammarForm(datasets, rng);
@@ -258,23 +266,36 @@ export const buildSection = (type, bank, datasets, count, rng = Math.random) => 
   }
 
   if (!source || source.length === 0) return [];
-  const shuffled = shuffle(source, rng);
+  // Buang item cacat (options null = distraktor kurang) + duplikat id.
+  const seen = new Set();
+  const unique = source.filter((it) => {
+    if (!it || !Array.isArray(it.options) || it.options.length < 2) return false;
+    if (seen.has(it.id)) return false;
+    seen.add(it.id);
+    return true;
+  });
+  if (unique.length === 0) return [];
+
+  const fresh = shuffle(unique.filter((it) => !used.has(it.id)), rng);
+  // Bank < count → ulang dari awal supaya ujian tetap penuh.
+  const pool = fresh.length >= count ? fresh : fresh.concat(shuffle(unique, rng));
   const out = [];
-  // Bila bank < count → pakai ulang dari awal (sampling with replacement) supaya ujian tetap penuh.
-  // Skip item dengan options===null (tidak cukup distraktor).
   for (let i = 0; i < count; i++) {
-    const it = shuffled[i % shuffled.length];
-    if (it && it.options !== null) out.push({ ...it, mondai: type, _slot: i });
+    const it = pool[i % pool.length];
+    used.add(it.id);
+    out.push({ ...it, mondai: type, _slot: i });
   }
   return out;
 };
 
-export const buildExam = (bank, datasets, rng = Math.random) =>
-  N5_SECTION_ORDER.map((key) => {
+export const buildExam = (bank, datasets, rng = Math.random) => {
+  const used = new Set();
+  return N5_SECTION_ORDER.map((key) => {
     const sec = N5_SECTIONS[key];
-    const items = sec.mondai.flatMap((m) => buildSection(m.type, bank, datasets, m.count, rng));
+    const items = sec.mondai.flatMap((m) => buildSection(m.type, bank, datasets, m.count, rng, used));
     return { key, minutes: sec.minutes, label: sec.label, items };
   });
+};
 
 // answers = array boolean sejajar exam.flatMap(s => s.items).
 export const scoreExam = (exam, answers, evaluate = evaluatePass) => {

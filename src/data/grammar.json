@@ -390,7 +390,7 @@
     "id": "g_receive_morau",
     "char": "もらいました",
     "romaji": "moraimashita",
-    "question": "わたしは たなかさんに ほんを ___。",
+    "question": "わたしは たなかさんから ほんを ___。",
     "answer": "moraimashita",
     "type": "grammar",
     "category": "GivingReceiving"

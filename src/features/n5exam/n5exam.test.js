@@ -214,3 +214,38 @@ test('scoreExam: evaluator bisa di-inject (gerbang 終) — ambang naik mengubah
   // Evaluator bawaan tetap dipakai bila argumen ke-3 kosong.
   assert.equal(scoreExam(exam, answers, undefined).passed, true);
 });
+
+// Regresi: opsi kosong ("-"), opsi kembar, dan soal kembar dalam satu ujian.
+test('buildExam: opsi tidak kosong, tidak kembar, dan tidak ada soal dobel', () => {
+  for (let run = 0; run < 50; run++) {
+    const flat = buildExam(BANK, DATASETS, lcg(run + 1)).flatMap((s) => s.items);
+    const ids = new Set();
+    for (const it of flat) {
+      assert.equal(it.options.length, 4, it.id);
+      const vals = it.options.map((o) => String(o ?? '').trim());
+      assert.ok(vals.every((v) => v && !/^[-‐–—]+$/.test(v)), `${it.id} opsi kosong`);
+      assert.equal(new Set(vals).size, 4, `${it.id} opsi kembar: ${JSON.stringify(vals)}`);
+      assert.equal(it.options[it.correctIndex], it.answer, it.id);
+      assert.ok(!ids.has(it.id), `${it.id} muncul dobel`);
+      ids.add(it.id);
+    }
+  }
+});
+
+// Data mentah: id unik di tiap dataset + tidak ada soal kembar isi.
+test('data: id unik di kanji/grammar/mondai/bank, tidak ada konten kembar', () => {
+  const norm = (s) => String(s ?? '').normalize('NFKC').replace(/\s+/g, '').trim();
+  for (const [name, arr] of Object.entries({ kanji: DATASETS.kanji, grammar: DATASETS.grammar, mondai: DATASETS.mondai })) {
+    const ids = new Set(arr.map((x) => x.id));
+    assert.equal(ids.size, arr.length, `${name}: id dobel`);
+  }
+  const key = (it) => [norm(it.prompt || it.questionText), norm(it.passage), norm(it.audio)].join('|');
+  const bankItems = Object.values(BANK).flat().filter(Array.isArray).flat();
+  const all = [...bankItems, ...DATASETS.mondai];
+  const seen = new Map();
+  for (const it of all) {
+    const k = key(it);
+    assert.ok(!seen.has(k), `konten kembar: ${seen.get(k)} = ${it.id}`);
+    seen.set(k, it.id);
+  }
+});
