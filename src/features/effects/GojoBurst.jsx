@@ -55,13 +55,13 @@ function GojoGifLayer({ src, reduced, wrong = false, delay = 0 }) {
       <motion.div
         data-gojo-gif
         className="absolute left-1/2 top-1/2 z-10"
-        style={{ marginLeft: '-19vh', marginTop: '-17vh' }}
+        style={{ marginLeft: 'calc(min(38vh, 56vw) / -2)', marginTop: 'calc(min(38vh, 56vw) / -2)' }}
         initial={{ opacity: 0, scale: 0.92, rotate: 2.5 }}
         animate={{ opacity: 1, scale: 1, rotate: -1.5, x: reduced ? 0 : [0, -9, 8, -5, 3, 0] }}
         exit={{ opacity: 0, scale: 0.96 }}
         transition={{ duration: reduced ? 0 : 0.34, ease: 'easeOut' }}
       >
-        <div className="w-[38vh] h-[38vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden">
+        <div className="w-[min(38vh,56vw)] h-[min(38vh,56vw)] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden">
           <img
             src={src}
             alt="Gojo"

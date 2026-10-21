@@ -18,7 +18,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
   const { recordAnswer } = useItemProgress();
   const { completeQuiz } = useUserStats();
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, clearAnswerFx, endQuizSession } = useEffectLayer();
 
   useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
 
@@ -66,6 +66,7 @@ const Quiz = ({ chapter, onComplete, onBack }) => {
     setIsPlaying(false);
     setSelectedOption(null);
     setIsAnswered(false);
+    clearAnswerFx();   // GIF jawaban tidak menutupi soal berikutnya
 
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);

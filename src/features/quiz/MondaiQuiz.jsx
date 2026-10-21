@@ -22,7 +22,7 @@ export function MondaiQuiz() {
   const { recordAnswer } = useItemProgress();
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, clearAnswerFx, endQuizSession } = useEffectLayer();
 
   useEffect(() => { resetEffectStreak(); }, [resetEffectStreak]);
 
@@ -70,6 +70,7 @@ export function MondaiQuiz() {
     setIsPlaying(false);
     setSelectedOption(null);
     setIsAnswered(false);
+    clearAnswerFx();   // GIF jawaban tidak menutupi soal berikutnya
 
     if (currentIndex < mondaiData.length - 1) {
       setCurrentIndex((prev) => prev + 1);

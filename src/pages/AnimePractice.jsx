@@ -41,7 +41,7 @@ export function AnimePractice() {
   const unlocked = isEraUnlocked('anime', level);
   // Efek JJK (visual + suara) saat menjawab — pak sama dengan kuis lain
   // (Quiz/MondaiQuiz/N5Exam): benar → efek karakter, salah → efek gagal.
-  const { triggerEffect, resetEffectStreak, endQuizSession } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, clearAnswerFx, endQuizSession } = useEffectLayer();
 
   // Sesi baru: streak efek mulai dari nol; keluar halaman → efek padam
   // (bar/domain/bola tidak nyangkut di halaman berikutnya).
@@ -97,7 +97,7 @@ export function AnimePractice() {
     if (r.ok) { setScore((s) => s + 1); addXp?.(QUIZ_XP); }
   };
 
-  const next = () => { setIdx((i) => i + 1); setPlaced([]); setChosen(null); setResult(null); };
+  const next = () => { setIdx((i) => i + 1); setPlaced([]); setChosen(null); setResult(null); clearAnswerFx(); };
 
   // ── Gerbang era ───────────────────────────────────────────────────────────
   if (!unlocked) {

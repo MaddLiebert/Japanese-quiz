@@ -114,7 +114,7 @@ export function Practice() {
   const timerRef = useRef(null);
 
   const { language } = useLanguage();
-  const { triggerEffect, resetEffectStreak, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, tojiStateOn, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, yutaCopyFreezes, yutaCutIds, yutaCutForId, setYutaQuizOptions } = useEffectLayer();
+  const { triggerEffect, resetEffectStreak, clearAnswerFx, endQuizSession, domainOn, finisherOn, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, setMegumiQuizOptions, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, tojiStateOn, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, yutaCopyFreezes, yutaCutIds, yutaCutForId, setYutaQuizOptions } = useEffectLayer();
 
   // Keluar paksa (browser back / navigasi / route change) → efek Gojo ikut padam.
   // Tanpa ini, bola/GIF/domain nyangkut di halaman berikutnya.
@@ -160,6 +160,10 @@ export function Practice() {
     currentIndex,
     timeLeft
   } = useQuizSession({ frozen: domainOn || yutaCopyFreezes });   // Gojo/domain copy = waktu BEKU
+
+  // Soal berganti → efek jawaban (GIF + teks) padam seketika. Tanpa ini GIF
+  // ber-hold 2–4,6s tetap menutupi soal berikutnya ("lama buat ke next quiz").
+  useEffect(() => { clearAnswerFx(); }, [currentIndex, clearAnswerFx]);
 
   // 開 (finisher Yuji) → 2 opsi salah soal ini disembunyikan (50/50).
   // options stabil per soal → recompute hanya saat soal berganti / finisher berubah.

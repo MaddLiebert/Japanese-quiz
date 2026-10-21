@@ -1348,6 +1348,10 @@ export function EffectProvider({ children }) {
     setYutaQuizOptionsState(null); yutaQuizOptionsRef.current = null;
   }, [setTakeover]);
 
+  // Pindah soal → efek jawaban (GIF + teks) LANGSUNG padam. Tanpa ini GIF yang
+  // hold-nya 2–4,6s ikut menutupi soal berikutnya ("lama buat ke next quiz").
+  const clearAnswerFx = useCallback(() => { setFx(null); }, []);
+
   // Sesi kuis selesai / keluar → SEMUA efek padam: bar, domain, bola, dan fx
   // yang sedang berjalan. Tanpa ini, keluar paksa saat efek murasaki/domain
   // tampil meninggalkan elemen nyangkut (bola, GIF, garis) di halaman berikutnya.
@@ -2356,7 +2360,7 @@ export function EffectProvider({ children }) {
   }, [triggerEffect]);
 
   return (
-    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt, tojiCharge, tojiCasting, tojiStateOn, tojiStateLeft, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, castTojiUlt, yutaCharge, yutaCasting, yutaPickOpen, yutaKatanas, yutaDomainOn: yutaDomain, yutaDomainLeft, yutaCopyId, yutaCutIds, yutaCutForId, yutaAmmo, yutaPiles, yutaWheel, yutaCombo, yutaCopyFreezes: yutaDomain && yutaCopyId === 'gojo', setYutaQuizOptions, castYutaUlt, pickYutaKatana, cancelYutaPick }}>
+    <EffectContext.Provider value={{ triggerEffect, resetEffectStreak, clearAnswerFx, previewStreak, previewYujiCombo, castDomain, castTakeover, castSukunaDomain, endQuizSession, active, domainOn: gojoDomain, domainLeft, takeoverOn: yujiTakeover, takeoverLeft, finisherOn: yujiFinisher, yujiCharge, yujiCombo, sukunaCharge, sukunaDomainOn: sukunaDomain, sukunaHitsumeCutIds, sukunaHitsumeForId, sukunaSkillCutIds, sukunaSkillForId, setSukunaQuizOptions, castSukunaQuizSkill, megumiCharge, megumiSummonOn: megumiSummon, megumiWheel, megumiAdaptCutIds, megumiAdaptForId, megumiSwordCutIds, megumiSwordForId, megumiSwordReady: megumiWheel >= MEGUMI_WHEEL_NOTCHES, setMegumiQuizOptions, castMegumiSummon, nobaraCharge, nobaraCasting, nobaraCutIds, nobaraCutForId, setNobaraQuizOptions, castNobaraUlt, nanamiCharge, nanamiCasting, nanamiOvertimeOn: nanamiOvertime, nanamiOvertimeLeft, nanamiPiles, nanamiRubbleCutIds, nanamiRubbleForId, setNanamiQuizOptions, castNanamiUlt, tojiCharge, tojiCasting, tojiStateOn, tojiStateLeft, tojiAmmo, tojiKillCutIds, tojiKillForId, setTojiQuizOptions, castTojiUlt, yutaCharge, yutaCasting, yutaPickOpen, yutaKatanas, yutaDomainOn: yutaDomain, yutaDomainLeft, yutaCopyId, yutaCutIds, yutaCutForId, yutaAmmo, yutaPiles, yutaWheel, yutaCombo, yutaCopyFreezes: yutaDomain && yutaCopyId === 'gojo', setYutaQuizOptions, castYutaUlt, pickYutaKatana, cancelYutaPick }}>
       {children}
       {/* Mode senyap (mis. Ujian N5) → tidak ada overlay efek sama sekali. */}
       {!effectsQuiet && (
@@ -3039,7 +3043,7 @@ function HinaBurst({ fx, kind }) {
       {hasGif && (
         <motion.div
           className="absolute left-1/2 top-1/2"
-          style={{ marginLeft: '-18vh', marginTop: '-16vh' }}
+          style={{ marginLeft: 'calc(min(36vh, 56vw) / -2)', marginTop: 'calc(min(36vh, 56vw) / -2)' }}
           initial={{ opacity: 1, scale: 0.94, rotate: wrong ? 2.5 : -2 }}
           animate={
             wrong
@@ -3054,7 +3058,7 @@ function HinaBurst({ fx, kind }) {
           }
         >
           <div
-            className="w-[36vh] h-[36vh] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden"
+            className="w-[min(36vh,56vw)] h-[min(36vh,56vw)] border-[3px] border-sumi bg-kinari shadow-[8px_8px_0_0_rgba(26,26,26,0.32)] overflow-hidden"
           >
             <img
               src={fx.gifSrc}
