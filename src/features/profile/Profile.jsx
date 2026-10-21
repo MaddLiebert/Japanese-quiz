@@ -19,7 +19,8 @@ import poemsData from '../../data/poems.json';
 import n5ExamData from '../../data/n5-exam.json';
 import { buildSubjectMastery, flattenExamData, SUBJECT_LABEL_ID } from './subjectMastery';
 import { EraPaper } from '../../components/EraPaper';
-import { readAvatar, writeAvatar, clearAvatar, resizeImageToDataURL, isValidAvatarFile, initials } from './avatar';
+import { readAvatar, writeAvatar, clearAvatar, isValidAvatarFile, initials } from './avatar';
+import AvatarCropModal from './AvatarCropModal';
 import { useSync } from '../sync/SyncContext';
 import { fetchMyRank } from '../leaderboard/leaderboardApi';
 import { getCosmetic } from '../cosmetics/cosmetics';
@@ -57,10 +58,11 @@ export function Profile() {
   // ── Foto profil (disimpan lokal + ikut tersinkron ke cloud) ────────────────
   const [avatar, setAvatar] = useState(() => readAvatar());
   const [avatarMsg, setAvatarMsg] = useState('');
+  const [cropFile, setCropFile] = useState(null);
   const avatarInputRef = useRef(null);
 
   const handlePickAvatar = () => avatarInputRef.current?.click();
-  const handleAvatarFile = async (e) => {
+  const handleAvatarFile = (e) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
@@ -69,14 +71,13 @@ export function Profile() {
       setAvatarMsg(v.reason === 'size' ? 'File terlalu besar (maks 8MB)' : 'Format harus PNG/JPG/WebP/GIF');
       return;
     }
-    try {
-      const dataUrl = await resizeImageToDataURL(file);
-      setAvatar(dataUrl);
-      writeAvatar(localStorage, dataUrl);
-      setAvatarMsg('Foto tersimpan ✓');
-    } catch {
-      setAvatarMsg('Gagal memproses gambar');
-    }
+    setCropFile(file); // → modal crop, simpan di onSave
+  };
+  const handleCropSave = (dataUrl) => {
+    setAvatar(dataUrl);
+    writeAvatar(localStorage, dataUrl);
+    setAvatarMsg('Foto tersimpan ✓');
+    setCropFile(null);
   };
   const handleRemoveAvatar = () => {
     setAvatar('');
@@ -532,6 +533,15 @@ export function Profile() {
           )}
         </div>
       </motion.div>
+
+      {cropFile && (
+        <AvatarCropModal
+          file={cropFile}
+          language={language}
+          onCancel={() => setCropFile(null)}
+          onSave={handleCropSave}
+        />
+      )}
     </div>
   );
 }

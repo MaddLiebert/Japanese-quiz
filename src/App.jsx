@@ -123,6 +123,11 @@ function TopControls() {
       badge: pendingFriends, onClick: () => go('/friends'),
     },
     {
+      key: 'settings', glyph: 'settings', jp: '設定',
+      title: language === 'id' ? 'Pengaturan' : 'Settings',
+      onClick: () => go('/settings'),
+    },
+    {
       key: 'theme', glyph: theme === 'dark' ? 'sun' : 'moon',
       jp: theme === 'dark' ? '明' : '暗',
       title: theme === 'dark' ? 'Ganti ke Mode Terang / Light Mode' : 'Ganti ke Mode Gelap / Dark Mode',
