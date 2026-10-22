@@ -59,3 +59,16 @@ test('ikon baru (mail/cloud) terdaftar di Glyph.jsx', () => {
 test('gate memakai AuthModal untuk jalur email (tidak bikin form login baru)', () => {
   assert.match(gate, /<AuthModal/, 'gate harus memakai AuthModal yang sudah ada');
 });
+
+// Bug nyata (2026-10-22): `setChoice(m.id)` dipanggil tanpa pernah dideklarasi →
+// ReferenceError di onClick → SEMUA tombol gate mati, layar macet. oxlint
+// default (tanpa --deny no-undef) tidak menangkapnya, jadi dikunci di sini.
+test('tidak ada state setter hantu di gate (semua setter terdeklarasi)', () => {
+  const used = [...gate.matchAll(/\b(set[A-Z]\w*)\s*\(/g)].map((m) => m[1]);
+  // Setter sah datang dari dua bentuk: useState ([x, setX] = …) dan
+  // destructuring context/import ({ setUsername } = useUserStats()).
+  const decls = [...gate.matchAll(/const\s*(?:\[[^\]]*\]|\{[^}]*\})\s*=/g)].map((m) => m[0]).join(' ');
+  const declared = [...decls.matchAll(/\bset[A-Z]\w*/g)].map((m) => m[0]);
+  const missing = [...new Set(used)].filter((n) => !declared.includes(n));
+  assert.deepEqual(missing, [], `setter tak terdeklarasi: ${missing.join(', ')}`);
+});

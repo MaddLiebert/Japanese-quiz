@@ -42,7 +42,6 @@ export function FirstRunGate() {
   const active = required === 'name' ? 'name' : (step || 'method');
 
   const pick = async (m) => {
-    setChoice(m.id);
     const next = advanceAfterMethod(m.id);
     if (next === 'name') {
       // Tanpa Akun: aktifkan sesi tamu (kalau backend siap), lalu tanya nama.
