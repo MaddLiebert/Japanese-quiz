@@ -25,6 +25,7 @@ import { useSync } from '../sync/SyncContext';
 import { fetchMyRank } from '../leaderboard/leaderboardApi';
 import { getCosmetic } from '../cosmetics/cosmetics';
 import { useEra } from '../theme/EraContext';
+import { accuracySeries } from '../progress/dailyLog';
 
 // Hanko Stamp component matching Home.jsx
 const HankoStamp = ({ text, label, delay = 0.2 }) => (
@@ -497,6 +498,28 @@ export function Profile() {
                 <div className="border-[4px] border-sumi bg-kinari p-6 shadow-[6px_6px_0_0_#1a1a1a] text-center">
                   <div className="text-xs font-black uppercase text-sumi/60 mb-1">{language === 'id' ? 'Streak Maks' : 'Max Streak'}</div>
                   <div className="text-4xl font-serif font-black text-ai">{realProfileData.stats.maxStreak} {language === 'id' ? 'hari' : 'days'}</div>
+                </div>
+              </div>
+
+              {/* Akurasi 7 hari terakhir — totalAnswered cuma angka kumulatif,
+                  jadi tak bisa jawab "minggu ini naik atau turun". */}
+              <div className="border-[4px] border-sumi bg-kinari p-6 sm:p-8 shadow-[6px_6px_0_0_#1a1a1a]">
+                <div className="flex items-center gap-4 mb-6">
+                  <h3 className="text-xl font-serif font-black text-sumi">{language === 'id' ? 'Akurasi 7 Hari' : '7-Day Accuracy'}</h3>
+                  <div className="h-[2px] flex-1 bg-sumi/20"></div>
+                </div>
+                <div className="flex items-end justify-between gap-2 h-32">
+                  {accuracySeries(progress.dailyLog, 7).map((d) => (
+                    <div key={d.day} className="flex-1 flex flex-col items-center justify-end h-full gap-1">
+                      <span className="text-[10px] font-black text-sumi/60">{d.accuracy === null ? '–' : `${d.accuracy}%`}</span>
+                      <div
+                        className={`w-full border-[2px] border-sumi ${d.accuracy === null ? 'bg-kinari-light' : d.accuracy >= 70 ? 'bg-matcha' : 'bg-shu'}`}
+                        style={{ height: `${Math.max(4, d.accuracy ?? 4)}%` }}
+                        title={`${d.day} · ${d.answered} ${language === 'id' ? 'jawaban' : 'answers'}`}
+                      />
+                      <span className="text-[9px] font-bold text-sumi/40">{d.day.slice(8)}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
