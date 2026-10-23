@@ -695,7 +695,8 @@
       ],
       "correctIndex": 0,
       "answer": "おじゃましました。",
-      "explanation": "Saat pulang dari rumah orang = おじゃましました."
+      "explanation": "Saat pulang dari rumah orang = おじゃましました.",
+      "audio": "/audio/n5-ve-001.mp3"
     },
     {
       "id": "n5ve_002",
@@ -708,7 +709,8 @@
       ],
       "correctIndex": 0,
       "answer": "いただきます。",
-      "explanation": "Sebelum makan = いただきます."
+      "explanation": "Sebelum makan = いただきます.",
+      "audio": "/audio/n5-ve-002.mp3"
     },
     {
       "id": "n5ve_003",
@@ -721,7 +723,8 @@
       ],
       "correctIndex": 0,
       "answer": "ごちそうさまでした。",
-      "explanation": "Setelah makan = ごちそうさまでした."
+      "explanation": "Setelah makan = ごちそうさまでした.",
+      "audio": "/audio/n5-ve-003.mp3"
     },
     {
       "id": "n5ve_004",
@@ -734,7 +737,8 @@
       ],
       "correctIndex": 0,
       "answer": "いってきます。",
-      "explanation": "Saat pergi keluar rumah = いってきます."
+      "explanation": "Saat pergi keluar rumah = いってきます.",
+      "audio": "/audio/n5-ve-004.mp3"
     },
     {
       "id": "n5ve_005",
@@ -747,7 +751,8 @@
       ],
       "correctIndex": 0,
       "answer": "ただいま。",
-      "explanation": "Saat pulang ke rumah = ただいま."
+      "explanation": "Saat pulang ke rumah = ただいま.",
+      "audio": "/audio/n5-ve-005.mp3"
     },
     {
       "id": "n5ve_006",
@@ -760,7 +765,8 @@
       ],
       "correctIndex": 0,
       "answer": "いらっしゃい。",
-      "explanation": "Menyambut tamu = いらっしゃい."
+      "explanation": "Menyambut tamu = いらっしゃい.",
+      "audio": "/audio/n5-ve-006.mp3"
     },
     {
       "id": "n5ve_007",
@@ -773,7 +779,8 @@
       ],
       "correctIndex": 0,
       "answer": "ありがとうございます。",
-      "explanation": "Menerima sesuatu = ありがとうございます."
+      "explanation": "Menerima sesuatu = ありがとうございます.",
+      "audio": "/audio/n5-ve-007.mp3"
     },
     {
       "id": "n5ve_008",
@@ -786,7 +793,8 @@
       ],
       "correctIndex": 0,
       "answer": "ごめんなさい。",
-      "explanation": "Minta maaf = ごめんなさい."
+      "explanation": "Minta maaf = ごめんなさい.",
+      "audio": "/audio/n5-ve-008.mp3"
     }
   ],
   "quick_response": [
@@ -801,7 +809,8 @@
       ],
       "correctIndex": 0,
       "answer": "ええ、いいですね。",
-      "explanation": "Ajakan 「〜ませんか」 dijawab setuju: ええ、いいですね。"
+      "explanation": "Ajakan 「〜ませんか」 dijawab setuju: ええ、いいですね。",
+      "audio": "/audio/n5-qr-001.mp3"
     },
     {
       "id": "n5qr_002",
@@ -814,7 +823,8 @@
       ],
       "correctIndex": 0,
       "answer": "はい、すこし わかります。",
-      "explanation": "Pertanyaan kemampuan → jawab わかります."
+      "explanation": "Pertanyaan kemampuan → jawab わかります.",
+      "audio": "/audio/n5-qr-002.mp3"
     },
     {
       "id": "n5qr_003",
@@ -827,7 +837,8 @@
       ],
       "correctIndex": 0,
       "answer": "たなかです。",
-      "explanation": "Nama → たなかです."
+      "explanation": "Nama → たなかです.",
+      "audio": "/audio/n5-qr-003.mp3"
     },
     {
       "id": "n5qr_004",
@@ -840,7 +851,8 @@
       ],
       "correctIndex": 0,
       "answer": "５００えんです。",
-      "explanation": "Harga → 〜えんです."
+      "explanation": "Harga → 〜えんです.",
+      "audio": "/audio/n5-qr-004.mp3"
     },
     {
       "id": "n5qr_005",
@@ -853,7 +865,8 @@
       ],
       "correctIndex": 0,
       "answer": "はい、ひまです。",
-      "explanation": "Pertanyaan ya/tidak → ulangi kata kunci: はい、ひまです."
+      "explanation": "Pertanyaan ya/tidak → ulangi kata kunci: はい、ひまです.",
+      "audio": "/audio/n5-qr-005.mp3"
     },
     {
       "id": "n5qr_006",
@@ -866,7 +879,8 @@
       ],
       "correctIndex": 0,
       "answer": "がくせいです。",
-      "explanation": "Pekerjaan → がくせいです."
+      "explanation": "Pekerjaan → がくせいです.",
+      "audio": "/audio/n5-qr-006.mp3"
     },
     {
       "id": "n5qr_007",
@@ -879,7 +893,8 @@
       ],
       "correctIndex": 0,
       "answer": "あそこです。",
-      "explanation": "Lokasi → あそこです."
+      "explanation": "Lokasi → あそこです.",
+      "audio": "/audio/n5-qr-007.mp3"
     },
     {
       "id": "n5qr_008",
@@ -892,7 +907,8 @@
       ],
       "correctIndex": 0,
       "answer": "はい、おかげさまで。",
-      "explanation": "Sapaan kesehatan → はい、おかげさまで."
+      "explanation": "Sapaan kesehatan → はい、おかげさまで.",
+      "audio": "/audio/n5-qr-008.mp3"
     },
     {
       "id": "n5qr_009",
@@ -905,7 +921,8 @@
       ],
       "correctIndex": 0,
       "answer": "０９０ー１２３４です。",
-      "explanation": "Nomor telepon → sebutkan angka."
+      "explanation": "Nomor telepon → sebutkan angka.",
+      "audio": "/audio/n5-qr-009.mp3"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { useLanguage } from "../../context/LanguageContext";
@@ -9,6 +9,7 @@ import {
   N5_SECTIONS, N5_SECTION_ORDER, sectionRawTotal,
   formatClock, LKR_MAX, LISTENING_MAX,
   N5_PASS_TOTAL, N5_PASS_LKR, N5_PASS_LISTENING, N5_TOTAL_MINUTES,
+  AUDIO_ONLY_MONDAI,
 } from "./n5exam";
 import { mondaiLabel, mondaiGloss } from "./mondaiLabels";
 import { EraPaper } from "../../components/EraPaper";
@@ -29,6 +30,31 @@ export function N5ExamScreen({ owari = false } = {}) {
       : {},
   );
   const [confirmQuit, setConfirmQuit] = useState(false);
+
+  // Keyboard nav: 1-4 / A-D pilih opsi, Space/Enter lanjut. Sama seperti
+  // Practice.jsx:391 — 78 soal pakai mouse doang itu menyiksa.
+  const { chooseOption, nextQuestion } = s;
+  useEffect(() => {
+    if (s.phase !== 'section' || !s.currentItem) return undefined;
+    const onKey = (e) => {
+      const tag = document.activeElement?.tagName;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag) || e.target?.isContentEditable) return;
+      const k = e.key.toLowerCase();
+      if (!s.isAnswered && /^[1-4]$/.test(k)) {
+        e.preventDefault();
+        chooseOption(Number(k) - 1);
+      } else if (!s.isAnswered && /^[a-d]$/.test(k)) {
+        e.preventDefault();
+        chooseOption(k.charCodeAt(0) - 97);
+      } else if (s.isAnswered && (k === ' ' || k === 'enter')) {
+        e.preventDefault();
+        nextQuestion();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [s.phase, s.isAnswered, s.currentItem, chooseOption, nextQuestion]);
+
   // Ambang & durasi yang ditampilkan: N5 biasa atau gerbang 終.
   const PASS_TOTAL = owari ? OWARI_PASS_TOTAL : N5_PASS_TOTAL;
   const PASS_LKR = owari ? OWARI_PASS_LKR : N5_PASS_LKR;
@@ -217,9 +243,14 @@ export function N5ExamScreen({ owari = false } = {}) {
             </div>
           )}
 
-          <div className="cyber-glitch-text text-base sm:text-lg font-bold text-sumi mb-6 whitespace-pre-line leading-relaxed">
-            <Furigana text={it.prompt} />
-          </div>
+          {/* 言語表現 & 応答 = mondai murni dengar. Prompt kana-nya menyebut
+              situasinya, jadi kalau ikut tampil jawabannya bocor. Sembunyikan
+              sampai dijawab (baru muncul di bawah sebagai pembahasan). */}
+          {!(it.audio && AUDIO_ONLY_MONDAI.includes(it.mondai) && !s.isAnswered) && (
+            <div className="cyber-glitch-text text-base sm:text-lg font-bold text-sumi mb-6 whitespace-pre-line leading-relaxed">
+              <Furigana text={it.prompt} />
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
             {it.options.map((option, idx) => {

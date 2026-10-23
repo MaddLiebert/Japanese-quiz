@@ -31,6 +31,10 @@ export const isN5ExamUnlocked = (rank, masteredKanjiCount) =>
   typeof rank === 'string' && rank.startsWith('Shogun')
   && Number(masteredKanjiCount) >= N5_EXAM_MIN_MASTERED_KANJI;
 
+// Mondai yang di JLPT asli murni DENGAR (tanpa teks soal di layar).
+// Dipakai UI untuk menyembunyikan prompt sampai soal dijawab.
+export const AUDIO_ONLY_MONDAI = ['verbal_expression', 'quick_response'];
+
 // ── Blueprint tipe soal (mondai) persis komposisi resmi N5 ──────────────────
 // `gen` = dibangun otomatis dari pool yang sudah ada; tanpa `gen` = dari n5-exam.json.
 export const N5_SECTIONS = {

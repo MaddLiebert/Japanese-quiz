@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import {
   N5_SECTIONS, N5_SECTION_ORDER, N5_TOTAL_MINUTES,
   sectionRawTotal, scaleSection, evaluatePass, formatClock,
   N5_PASS_TOTAL, N5_PASS_LKR, N5_PASS_LISTENING, LKR_MAX, LISTENING_MAX,
   N5_EXAM_MIN_MASTERED_KANJI, countMasteredKanji, isN5ExamUnlocked,
-  buildSection, buildExam, scoreExam,
+  buildSection, buildExam, scoreExam, AUDIO_ONLY_MONDAI,
 } from './n5exam.js';
 
 // Aturan repo: modul murni dilarang import JSON → test baca manual.
@@ -247,5 +247,17 @@ test('data: id unik di kanji/grammar/mondai/bank, tidak ada konten kembar', () =
     const k = key(it);
     assert.ok(!seen.has(k), `konten kembar: ${seen.get(k)} = ${it.id}`);
     seen.set(k, it.id);
+  }
+});
+
+// 言語表現 & 応答 = mondai murni dengar. Tanpa audio, soalnya jadi soal baca
+// dan prompt kana-nya membocorkan jawaban. File mp3 harus ada di public/.
+test('listening: verbal_expression & quick_response punya audio + file-nya ada', () => {
+  for (const type of AUDIO_ONLY_MONDAI) {
+    for (const it of BANK[type]) {
+      assert.ok(it.audio, `${it.id}: field audio kosong`);
+      const file = new URL(`../../../public${it.audio}`, import.meta.url);
+      assert.ok(existsSync(file), `${it.id}: file hilang -> ${it.audio}`);
+    }
   }
 });
