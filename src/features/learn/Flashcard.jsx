@@ -4,6 +4,7 @@ import { Volume2 } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { playDramaticAudio } from "../../utils/audio";
 import { useLanguage } from "../../context/LanguageContext";
+import { NotesPanel } from "./NotesPanel";
 
 export function Flashcard({ kana, isMastered, onToggleMastery, showAudio = true }) {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -85,11 +86,12 @@ export function Flashcard({ kana, isMastered, onToggleMastery, showAudio = true 
 
         {/* ── Back ──────────────────────────────────────────────────────────── */}
         <div 
-          className="absolute inset-0 bg-kinari-light rounded-xl border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] flex flex-col items-center justify-center p-8"
+          className="absolute inset-0 bg-kinari-light rounded-xl border-[4px] border-sumi shadow-[8px_8px_0_0_#1a1a1a] flex flex-col p-6 sm:p-8"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-[radial-gradient(circle,currentColor_2px,transparent_2px)] bg-[length:8px_8px] text-sumi/5 opacity-50 pointer-events-none"></div>
 
+          <div className="flex-1 min-h-0 overflow-y-auto w-full flex flex-col items-center justify-center relative z-10">
           {kana.meaning ? (
             /* Kotoba/Grammar/Kanji back: meaning prominent */
             <>
@@ -125,6 +127,9 @@ export function Flashcard({ kana, isMastered, onToggleMastery, showAudio = true 
               <h2 className="text-6xl sm:text-7xl font-serif text-sumi mb-10 font-black tracking-widest relative z-10">{kana.romaji}</h2>
             </>
           )}
+
+          <NotesPanel item={kana} language={language} className="mt-4" />
+          </div>
           
           <div className="relative z-10 w-full mt-auto">
             <Button 

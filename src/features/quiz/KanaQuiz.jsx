@@ -6,6 +6,7 @@ import { useLanguage } from "../../context/LanguageContext";
 
 import { markYujiPicked } from "../effects/yujiHit";
 import { EraPaper } from "../../components/EraPaper";
+import { NotesPanel } from "../learn/NotesPanel";
 
 export function KanaQuiz({
   currentQuestion,
@@ -171,6 +172,7 @@ export function KanaQuiz({
                   : `✗ Wrong — Answer: ${isGrammarMode ? currentQuestion.char : currentQuestion.romaji}`)
               }
             </div>
+            <NotesPanel item={currentQuestion} language={language} className="mt-3" />
           </motion.div>
         )}
       </div>

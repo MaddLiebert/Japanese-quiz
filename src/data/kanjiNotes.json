@@ -1,0 +1,1293 @@
+{
+  "_readme": "Penjelasan kanji bahasa Indonesia. Key = id di kanji.json. Field: desc = kegunaan/asal bentuk/tips baca; ex = contoh kata [{w: tulisan, k: kana + romaji, m: arti}]. Dijaga oleh src/features/learn/notes.test.js",
+  "kj_ichi": {
+    "desc": "Angka 'satu'. Bentuknya satu garis mendatar — satu jari, satu batang. Dipakai sebagai bahan dasar semua angka Jepang (一、十一、百). Baca イチ kalau jadi bagian angka (いち、いちがつ), baca ひと(つ) kalau dipakai sendiri sebagai kata hitung benda.",
+    "ex": [
+      {
+        "w": "一つ",
+        "k": "ひとつ (hitotsu)",
+        "m": "satu buah"
+      },
+      {
+        "w": "一月",
+        "k": "いちがつ (ichigatsu)",
+        "m": "Januari"
+      }
+    ]
+  },
+  "kj_ni": {
+    "desc": "Angka 'dua'. Dua garis = dua jari. Sama seperti 一, dipakai menyusun angka (二十 = にじゅう). Kata hitungnya ふた(つ).",
+    "ex": [
+      {
+        "w": "二つ",
+        "k": "ふたつ (futatsu)",
+        "m": "dua buah"
+      },
+      {
+        "w": "二日",
+        "k": "ふつか (futsuka)",
+        "m": "tanggal 2 / dua hari"
+      }
+    ]
+  },
+  "kj_san": {
+    "desc": "Angka 3. Tiga garis mendatar — salah satu kanji paling tua dan paling sederhana. Dipakai untuk angka (三 = さん), tanggal (三日 = みっか), dan kata hitung barang (三つ = みっつ). Untuk 3 orang pakai 三人 (さんにん). Muncul di mana-mana: 三月 (さんがつ, Maret), 三時 (さんじ, jam 3).",
+    "ex": [
+      {
+        "w": "三つ",
+        "k": "みっつ (mittsu)",
+        "m": "tiga buah"
+      },
+      {
+        "w": "三月",
+        "k": "さんがつ (sangatsu)",
+        "m": "Maret"
+      }
+    ]
+  },
+  "kj_yon": {
+    "desc": "Angka 'empat'. Hati-hati: bacaan シ sama bunyinya dengan 死 (mati), jadi orang Jepang lebih sering bilang よん untuk menghindari kesan buruk. Tapi nama bulan tetap しがつ.",
+    "ex": [
+      {
+        "w": "四つ",
+        "k": "よっつ (yottsu)",
+        "m": "empat buah"
+      },
+      {
+        "w": "四月",
+        "k": "しがつ (shigatsu)",
+        "m": "April"
+      }
+    ]
+  },
+  "kj_go_five": {
+    "desc": "Angka 5. Asalnya gambar tangan dengan lima jari — dulu ditulis empat garis di atas satu garis melintang. Dipakai untuk angka (五 = ご), tanggal (五日 = いつか), dan kata hitung barang (五つ = いつつ, lima buah). Untuk menyebut 5 orang pakai 五人 (ごにん), bukan 五つ.",
+    "ex": [
+      {
+        "w": "五",
+        "k": "ご (go)",
+        "m": "lima"
+      },
+      {
+        "w": "五つ",
+        "k": "いつつ (itsutsu)",
+        "m": "lima buah"
+      }
+    ]
+  },
+  "kj_roku": {
+    "desc": "Angka 'enam'. Baca ロク untuk angka, むっ(つ) untuk kata hitung. Di 六百 jadi ろっぴゃく (ada perubahan bunyi).",
+    "ex": [
+      {
+        "w": "六つ",
+        "k": "むっつ (muttsu)",
+        "m": "enam buah"
+      },
+      {
+        "w": "六日",
+        "k": "むいか (muika)",
+        "m": "tanggal 6"
+      }
+    ]
+  },
+  "kj_nana": {
+    "desc": "Angka 'tujuh'. Dua bacaan: シチ dan なな. なな dipakai supaya tidak tertukar dengan いち (satu) saat bicara cepat. Nama bulan tetap しちがつ.",
+    "ex": [
+      {
+        "w": "七つ",
+        "k": "ななつ (nanatsu)",
+        "m": "tujuh buah"
+      },
+      {
+        "w": "七月",
+        "k": "しちがつ (shichigatsu)",
+        "m": "Juli"
+      }
+    ]
+  },
+  "kj_hachi": {
+    "desc": "Angka 'delapan'. Bentuknya seperti dua garis membuka ke bawah. Baca ハチ untuk angka, やっ(つ) untuk kata hitung.",
+    "ex": [
+      {
+        "w": "八つ",
+        "k": "やっつ (yattsu)",
+        "m": "delapan buah"
+      },
+      {
+        "w": "八百屋",
+        "k": "やおや (yaoya)",
+        "m": "toko sayur (harfiah: 800 barang)"
+      }
+    ]
+  },
+  "kj_kyuu": {
+    "desc": "Angka 'sembilan'. Baca キュウ untuk angka, ク di kata gabungan (九月 = くがつ), ここの(つ) untuk kata hitung.",
+    "ex": [
+      {
+        "w": "九つ",
+        "k": "ここのつ (kokonotsu)",
+        "m": "sembilan buah"
+      },
+      {
+        "w": "九月",
+        "k": "くがつ (kugatsu)",
+        "m": "September"
+      }
+    ]
+  },
+  "kj_juu": {
+    "desc": "Angka 'sepuluh'. Bentuknya seperti tanda plus (+) — salib. Ini kunci sistem angka Jepang: 十一 = 11, 二十 = 20, 三十 = 30.",
+    "ex": [
+      {
+        "w": "十",
+        "k": "とお (too)",
+        "m": "sepuluh (kata hitung)"
+      },
+      {
+        "w": "十日",
+        "k": "とおか (tooka)",
+        "m": "tanggal 10"
+      }
+    ]
+  },
+  "kj_hyaku": {
+    "desc": "'Seratus'. Tidak punya kun-yomi. Sering berubah bunyi saat digabung: 三百 = さんびゃく, 六百 = ろっぴゃく, 八百 = はっぴゃく.",
+    "ex": [
+      {
+        "w": "百円",
+        "k": "ひゃくえん (hyaku en)",
+        "m": "100 yen"
+      },
+      {
+        "w": "三百",
+        "k": "さんびゃく (sanbyaku)",
+        "m": "300"
+      }
+    ]
+  },
+  "kj_sen": {
+    "desc": "'Seribu'. Baca セン untuk angka, ち untuk kata hitung lama. Pengecualian bunyi: 三千 = さんぜん, 八千 = はっせん.",
+    "ex": [
+      {
+        "w": "千円",
+        "k": "せんえん (sen en)",
+        "m": "1.000 yen"
+      },
+      {
+        "w": "三千",
+        "k": "さんぜん (sanzen)",
+        "m": "3.000"
+      }
+    ]
+  },
+  "kj_man": {
+    "desc": "'Sepuluh ribu'. PENTING: Jepang mengelompokkan angka per 10.000 (万), bukan per 1.000. 10.000 = 一万, 100.000 = 十万, 1.000.000 = 百万. Jangan terjemahkan langsung dari bahasa Indonesia.",
+    "ex": [
+      {
+        "w": "一万円",
+        "k": "いちまんえん (ichiman en)",
+        "m": "10.000 yen"
+      },
+      {
+        "w": "万歳",
+        "k": "ばんざい (banzai)",
+        "m": "hore! (seruan sorak)"
+      }
+    ]
+  },
+  "kj_nichi": {
+    "desc": "'Hari' dan 'matahari'. Bentuk aslinya gambar matahari bulat dengan titik tengah. Baca ニチ untuk hari/tanggal (日曜日), ひ kalau berdiri sendiri, dan sering berubah jadi び atau か saat menempel (日曜日 = にちようび, 二日 = ふつか).",
+    "ex": [
+      {
+        "w": "日本",
+        "k": "にほん (nihon)",
+        "m": "Jepang"
+      },
+      {
+        "w": "毎日",
+        "k": "まいにち (mainichi)",
+        "m": "setiap hari"
+      }
+    ]
+  },
+  "kj_getsu": {
+    "desc": "'Bulan' dan juga 'Senin'. ガツ untuk nama bulan (一月 = いちがつ), ゲツ untuk hari Senin dan durasi (月曜日 = げつようび), つき untuk bulan di langit.",
+    "ex": [
+      {
+        "w": "月曜日",
+        "k": "げつようび (getsuyoubi)",
+        "m": "hari Senin"
+      },
+      {
+        "w": "月",
+        "k": "つき (tsuki)",
+        "m": "bulan (di langit)"
+      }
+    ]
+  },
+  "kj_ka": {
+    "desc": "'Api'. Juga nama hari Selasa. Asal bentuknya gambar nyala api. Sering jadi び kalau menempel di belakang kata (花火 = はなび).",
+    "ex": [
+      {
+        "w": "火曜日",
+        "k": "かようび (kayoubi)",
+        "m": "hari Selasa"
+      },
+      {
+        "w": "花火",
+        "k": "はなび (hanabi)",
+        "m": "kembang api"
+      }
+    ]
+  },
+  "kj_sui": {
+    "desc": "Air. Bentuknya aliran sungai dengan titik-titik di tengah. Dipakai untuk air secara umum (水 = みず), untuk minuman di restoran (お水 = おみず), dan untuk hari Rabu (水曜日 = すいようび) karena dulu orang Jepang menamai hari dengan lima elemen. 水泳 (すいえい) = renang.",
+    "ex": [
+      {
+        "w": "水",
+        "k": "みず (mizu)",
+        "m": "air"
+      },
+      {
+        "w": "水曜日",
+        "k": "すいようび (suiyoubi)",
+        "m": "hari Rabu"
+      }
+    ]
+  },
+  "kj_moku": {
+    "desc": "'Pohon' dan 'kayu'. Juga hari Kamis. Bentuknya gambar pohon: batang dan dahan. 木曜日 = もくようび.",
+    "ex": [
+      {
+        "w": "木",
+        "k": "き (ki)",
+        "m": "pohon"
+      },
+      {
+        "w": "木曜日",
+        "k": "もくようび (mokuyoubi)",
+        "m": "hari Kamis"
+      }
+    ]
+  },
+  "kj_kin": {
+    "desc": "'Emas' dan 'uang'. Juga hari Jumat. お金 = おかね (uang), 金曜日 = きんようび. Bunyi かね bisa berubah jadi かな- di kata gabungan (金物 = かなもの).",
+    "ex": [
+      {
+        "w": "お金",
+        "k": "おかね (okane)",
+        "m": "uang"
+      },
+      {
+        "w": "金曜日",
+        "k": "きんようび (kinyoubi)",
+        "m": "hari Jumat"
+      }
+    ]
+  },
+  "kj_do": {
+    "desc": "Tanah. Gambar tanah yang menumpuk di atas garis permukaan. Dipakai untuk tanah (土 = つち), jenis tanah (粘土 = ねんど, tanah liat), dan hari Sabtu (土曜日 = どようび) karena Sabtu diberi elemen tanah. 土地 (とち) = lahan/properti — kata penting kalau cari tempat tinggal.",
+    "ex": [
+      {
+        "w": "土",
+        "k": "つち (tsuchi)",
+        "m": "tanah"
+      },
+      {
+        "w": "土曜日",
+        "k": "どようび (doyoubi)",
+        "m": "hari Sabtu"
+      }
+    ]
+  },
+  "kj_nen": {
+    "desc": "'Tahun'. Baca ネン untuk tahun sebagai satuan, とし untuk tahun sebagai rentang hidup. 今年 = ことし (pengecualian), 去年 = きょねん.",
+    "ex": [
+      {
+        "w": "今年",
+        "k": "ことし (kotoshi)",
+        "m": "tahun ini"
+      },
+      {
+        "w": "三年生",
+        "k": "さんねんせい (sannensei)",
+        "m": "murid kelas 3"
+      }
+    ]
+  },
+  "kj_ima": {
+    "desc": "'Sekarang'. Baca いま kalau sendiri, コン kalau gabung (今週 = こんしゅう, 今月 = こんげつ). Pengecualian penting: 今日 = きょう, bukan こんにち dalam percakapan.",
+    "ex": [
+      {
+        "w": "今",
+        "k": "いま (ima)",
+        "m": "sekarang"
+      },
+      {
+        "w": "今週",
+        "k": "こんしゅう (konshuu)",
+        "m": "minggu ini"
+      }
+    ]
+  },
+  "kj_ji": {
+    "desc": "'Waktu' dan 'jam'. Baca ジ untuk jam (三時 = さんじ), とき untuk 'saat/kalau'. Bisa jadi どき kalau menempel (食事時).",
+    "ex": [
+      {
+        "w": "三時",
+        "k": "さんじ (sanji)",
+        "m": "jam 3"
+      },
+      {
+        "w": "時々",
+        "k": "ときどき (tokidoki)",
+        "m": "kadang-kadang"
+      }
+    ]
+  },
+  "kj_fun": {
+    "desc": "'Menit' dan 'membagi/mengerti'. Baca フン atau プン untuk menit (五分 = ごふん, 十分 = じゅっぷん), ブン untuk 'bagian', わ(ける) untuk kata kerja 'membagi'.",
+    "ex": [
+      {
+        "w": "五分",
+        "k": "ごふん (gofun)",
+        "m": "5 menit"
+      },
+      {
+        "w": "分かる",
+        "k": "わかる (wakaru)",
+        "m": "mengerti"
+      }
+    ]
+  },
+  "kj_han": {
+    "desc": "Setengah. Gambar sesuatu yang dibelah lalu dibagi. Dua pemakaian utama: waktu lewat 30 menit (三時半 = さんじはん, jam 3.30) dan separuh jumlah (半分 = はんぶん, setengah). 半額 (はんがく) = setengah harga — sering muncul di diskon toko.",
+    "ex": [
+      {
+        "w": "三時半",
+        "k": "さんじはん (sanji han)",
+        "m": "jam 3.30"
+      },
+      {
+        "w": "半分",
+        "k": "はんぶん (hanbun)",
+        "m": "setengah"
+      }
+    ]
+  },
+  "kj_yama": {
+    "desc": "Gunung. Bentuknya gambar tiga puncak gunung. Dipakai untuk gunung (山 = やま), gunung berapi (火山 = かざん), dan nama tempat/keluarga paling umum di Jepang: 山田 (やまだ), 富士山 (ふじさん). 登山 (とざん) = mendaki gunung.",
+    "ex": [
+      {
+        "w": "山",
+        "k": "やま (yama)",
+        "m": "gunung"
+      },
+      {
+        "w": "富士山",
+        "k": "ふじさん (fujisan)",
+        "m": "Gunung Fuji"
+      }
+    ]
+  },
+  "kj_kawa": {
+    "desc": "'Sungai'. Tiga garis vertikal dengan aliran di tengah. Bisa dibaca がわ kalau menempel (小川 = おがわ).",
+    "ex": [
+      {
+        "w": "川",
+        "k": "かわ (kawa)",
+        "m": "sungai"
+      },
+      {
+        "w": "小川",
+        "k": "おがわ (ogawa)",
+        "m": "sungai kecil"
+      }
+    ]
+  },
+  "kj_ten": {
+    "desc": "'Langit' dan 'surga'. Dipakai di banyak kata penting: 天気 (cuaca), 天ぷら (tempura), 天国 (surga).",
+    "ex": [
+      {
+        "w": "天気",
+        "k": "てんき (tenki)",
+        "m": "cuaca"
+      },
+      {
+        "w": "天国",
+        "k": "てんごく (tengoku)",
+        "m": "surga"
+      }
+    ]
+  },
+  "kj_ki": {
+    "desc": "'Udara', 'pikiran', 'energi'. Kanji paling sering muncul di percakapan sehari-hari: 元気 (sehat), 天気 (cuaca), 気持ち (perasaan). Bayangkan 'udara/nafas' yang mengisi diri.",
+    "ex": [
+      {
+        "w": "元気",
+        "k": "げんき (genki)",
+        "m": "sehat, bersemangat"
+      },
+      {
+        "w": "気持ち",
+        "k": "きもち (kimochi)",
+        "m": "perasaan"
+      }
+    ]
+  },
+  "kj_sora": {
+    "desc": "'Langit' dan 'kosong'. Baca そら untuk langit, あ(く) untuk 'menjadi kosong', クウ di kata gabungan (空港 = くうこう, bandara).",
+    "ex": [
+      {
+        "w": "空",
+        "k": "そら (sora)",
+        "m": "langit"
+      },
+      {
+        "w": "空港",
+        "k": "くうこう (kuukou)",
+        "m": "bandara"
+      }
+    ]
+  },
+  "kj_ame": {
+    "desc": "'Hujan'. Baca あめ kalau sendiri, ウ di kata gabungan (雨天 = うてん). Ada bentuk あま- untuk kata lama (雨具 = あまぐ, perlengkapan hujan).",
+    "ex": [
+      {
+        "w": "雨",
+        "k": "あめ (ame)",
+        "m": "hujan"
+      },
+      {
+        "w": "梅雨",
+        "k": "つゆ (tsuyu)",
+        "m": "musim hujan (pengecualian baca)"
+      }
+    ]
+  },
+  "kj_kita": {
+    "desc": "Utara. Bentuknya dua orang membelakangi satu sama lain — arah punggung. Dipakai untuk arah (北 = きた) dan nama tempat: 北海道 (ほっかいどう, Hokkaido). Bunyi berubah jadi ほっ kalau menempel di depan kata lain.",
+    "ex": [
+      {
+        "w": "北",
+        "k": "きた (kita)",
+        "m": "utara"
+      },
+      {
+        "w": "北海道",
+        "k": "ほっかいどう (hokkaidou)",
+        "m": "Hokkaido"
+      }
+    ]
+  },
+  "kj_minami": {
+    "desc": "Selatan. Bagian dalam kanji ini gambar alat musik, dipakai hanya karena bunyinya mirip. Dipakai untuk arah (南 = みなみ) dan nama wilayah: 東南アジア (とうなんアジア, Asia Tenggara), 南口 (みなみぐち, pintu keluar selatan stasiun).",
+    "ex": [
+      {
+        "w": "南",
+        "k": "みなみ (minami)",
+        "m": "selatan"
+      },
+      {
+        "w": "南口",
+        "k": "みなみぐち (minamiguchi)",
+        "m": "pintu keluar selatan"
+      }
+    ]
+  },
+  "kj_higashi": {
+    "desc": "Timur. Matahari (日) menembus pohon (木) — matahari terbit. Dipakai untuk arah (東 = ひがし) dan nama tempat paling sering di Jepang: 東京 (とうきょう) harfiahnya ibu kota timur, 東口 (ひがしぐち, pintu timur stasiun), 関東 (かんとう, wilayah timur).",
+    "ex": [
+      {
+        "w": "東",
+        "k": "ひがし (higashi)",
+        "m": "timur"
+      },
+      {
+        "w": "東京",
+        "k": "とうきょう (toukyou)",
+        "m": "Tokyo"
+      }
+    ]
+  },
+  "kj_nishi": {
+    "desc": "Barat. Bentuknya gambar sarang burung di atas dahan — dulu dipakai untuk arah matahari terbenam. Dipakai untuk arah (西 = にし), nama wilayah (関西 = かんさい, Jepang barat), dan pintu keluar barat stasiun (西口 = にしぐち). Baca セイ di kata resmi seperti 西洋 (せいよう, Barat).",
+    "ex": [
+      {
+        "w": "西",
+        "k": "にし (nishi)",
+        "m": "barat"
+      },
+      {
+        "w": "関西",
+        "k": "かんさい (kansai)",
+        "m": "Kansai (wilayah barat)"
+      }
+    ]
+  },
+  "kj_migi": {
+    "desc": "'Kanan'. Bentuk aslinya gambar tangan yang memegang sesuatu dengan mulut di bawah — sisi kanan. 右手 = みぎて (tangan kanan).",
+    "ex": [
+      {
+        "w": "右",
+        "k": "みぎ (migi)",
+        "m": "kanan"
+      },
+      {
+        "w": "右手",
+        "k": "みぎて (migite)",
+        "m": "tangan kanan"
+      }
+    ]
+  },
+  "kj_hidari": {
+    "desc": "Kiri. Bentuknya mirip 右 (kanan); bedanya di bagian bawah — di sini 工 (alat kerja). Dipakai untuk arah kiri (左 = ひだり), tangan kiri (左手 = ひだりて), dan belok kiri (左折 = させつ) — rambu lalu lintas. 左利き (ひだりきき) = kidal.",
+    "ex": [
+      {
+        "w": "左",
+        "k": "ひだり (hidari)",
+        "m": "kiri"
+      },
+      {
+        "w": "左手",
+        "k": "ひだりて (hidarite)",
+        "m": "tangan kiri"
+      }
+    ]
+  },
+  "kj_ue": {
+    "desc": "'Atas'. Baca うえ untuk posisi, あ(がる) untuk kata kerja 'naik', ジョウ di kata gabungan. 上手 = じょうず (pandai) — bukan 'tangan atas'.",
+    "ex": [
+      {
+        "w": "上",
+        "k": "うえ (ue)",
+        "m": "atas"
+      },
+      {
+        "w": "上手",
+        "k": "じょうず (jouzu)",
+        "m": "pandai, mahir"
+      }
+    ]
+  },
+  "kj_shita": {
+    "desc": "'Bawah'. Baca した untuk posisi, さ(がる) untuk 'turun', カ di kata gabungan. 下手 = へた (tidak pandai).",
+    "ex": [
+      {
+        "w": "下",
+        "k": "した (shita)",
+        "m": "bawah"
+      },
+      {
+        "w": "地下鉄",
+        "k": "ちかてつ (chikatetsu)",
+        "m": "kereta bawah tanah"
+      }
+    ]
+  },
+  "kj_naka": {
+    "desc": "'Tengah' dan 'dalam'. 中 = なか. Di kata gabungan jadi チュウ (中国 = ちゅうごく, China). 一日中 = いちにちじゅう (sepanjang hari).",
+    "ex": [
+      {
+        "w": "中",
+        "k": "なか (naka)",
+        "m": "dalam"
+      },
+      {
+        "w": "一日中",
+        "k": "いちにちじゅう (ichinichijuu)",
+        "m": "sepanjang hari"
+      }
+    ]
+  },
+  "kj_soto": {
+    "desc": "Luar. Bagian kiri gambar dua bagian terpisah, kanan 卜 (ramalan) — artinya sesuatu di sisi lain. Dipakai untuk sisi luar (外 = そと), negara asing (外国 = がいこく), orang luar (外人 = がいじん, agak kasar). 外す (はずす) = melepas.",
+    "ex": [
+      {
+        "w": "外",
+        "k": "そと (soto)",
+        "m": "luar"
+      },
+      {
+        "w": "外国",
+        "k": "がいこく (gaikoku)",
+        "m": "negara asing"
+      }
+    ]
+  },
+  "kj_hito": {
+    "desc": "'Orang'. Baca ひと sendiri, ジン untuk kewarganegaraan (日本人 = にほんじん), ニン untuk kata hitung orang (三人 = さんにん).",
+    "ex": [
+      {
+        "w": "人",
+        "k": "ひと (hito)",
+        "m": "orang"
+      },
+      {
+        "w": "日本人",
+        "k": "にほんじん (nihonjin)",
+        "m": "orang Jepang"
+      }
+    ]
+  },
+  "kj_otoko": {
+    "desc": "'Laki-laki'. Asal bentuk: 田 (sawah) + 力 (tenaga) — yang mencurahkan tenaga di sawah. 男の人 = おとこのひと (pria).",
+    "ex": [
+      {
+        "w": "男",
+        "k": "おとこ (otoko)",
+        "m": "laki-laki"
+      },
+      {
+        "w": "男性",
+        "k": "だんせい (dansei)",
+        "m": "pria (formal)"
+      }
+    ]
+  },
+  "kj_onna": {
+    "desc": "Perempuan. Bentuknya orang duduk dengan tangan terlipat di pangkuan. Dipakai untuk perempuan (女 = おんな), anak perempuan (女の子 = おんなのこ), wanita dewasa (女の人 = おんなのひと), dan toilet wanita (女子 = じょし).",
+    "ex": [
+      {
+        "w": "女",
+        "k": "おんな (onna)",
+        "m": "perempuan"
+      },
+      {
+        "w": "女の人",
+        "k": "おんなのひと (onna no hito)",
+        "m": "wanita"
+      }
+    ]
+  },
+  "kj_ko": {
+    "desc": "Anak. Gambar bayi dengan tangan terentang. Dipakai untuk anak (子供 = こども), anak laki-laki (男の子 = おとこのこ), dan anak perempuan (女の子 = おんなのこ). Sebagai akhiran: こ pada 女の子, し pada 帽子 (ぼうし, topi). 子犬 (こいぬ) = anak anjing.",
+    "ex": [
+      {
+        "w": "子供",
+        "k": "こども (kodomo)",
+        "m": "anak"
+      },
+      {
+        "w": "女の子",
+        "k": "おんなのこ (onnanoko)",
+        "m": "anak perempuan"
+      }
+    ]
+  },
+  "kj_me": {
+    "desc": "'Mata'. Bentuknya gambar mata yang diputar 90 derajat. 一日目 = いちにちめ (hari pertama) — 目 di sini berarti 'urutan ke-'.",
+    "ex": [
+      {
+        "w": "目",
+        "k": "め (me)",
+        "m": "mata"
+      },
+      {
+        "w": "一日目",
+        "k": "いちにちめ (ichinichime)",
+        "m": "hari pertama"
+      }
+    ]
+  },
+  "kj_mimi": {
+    "desc": "Telinga. Bentuknya gambar daun telinga. Dipakai untuk telinga (耳 = みみ), klinik THT (耳鼻科 = じびか, telinga-hidung-tenggorokan), dan suara dekat telinga (耳元 = みみもと).",
+    "ex": [
+      {
+        "w": "耳",
+        "k": "みみ (mimi)",
+        "m": "telinga"
+      },
+      {
+        "w": "耳鼻科",
+        "k": "じびか (jibika)",
+        "m": "klinik THT"
+      }
+    ]
+  },
+  "kj_kuchi": {
+    "desc": "'Mulut'. Bentuknya gambar mulut terbuka. Sering dipakai untuk pintu masuk/keluar: 入口 = いりぐち, 出口 = でぐち.",
+    "ex": [
+      {
+        "w": "口",
+        "k": "くち (kuchi)",
+        "m": "mulut"
+      },
+      {
+        "w": "入口",
+        "k": "いりぐち (iriguchi)",
+        "m": "pintu masuk"
+      }
+    ]
+  },
+  "kj_te": {
+    "desc": "'Tangan'. Bentuknya gambar telapak tangan dengan jari. 手紙 = てがみ (surat) — harfiah 'kertas tangan'.",
+    "ex": [
+      {
+        "w": "手",
+        "k": "て (te)",
+        "m": "tangan"
+      },
+      {
+        "w": "手紙",
+        "k": "てがみ (tegami)",
+        "m": "surat"
+      }
+    ]
+  },
+  "kj_ashi": {
+    "desc": "'Kaki'. Baca あし sendiri, た(りる) untuk 'cukup', ソク di kata gabungan (遠足 = えんそく, karyawisata).",
+    "ex": [
+      {
+        "w": "足",
+        "k": "あし (ashi)",
+        "m": "kaki"
+      },
+      {
+        "w": "足りる",
+        "k": "たりる (tariru)",
+        "m": "cukup"
+      }
+    ]
+  },
+  "kj_ookii": {
+    "desc": "'Besar'. Bentuknya gambar orang dengan tangan dan kaki terbuka lebar — menunjukkan ukuran besar. 大学 = だいがく (universitas, 'sekolah besar').",
+    "ex": [
+      {
+        "w": "大きい",
+        "k": "おおきい (ookii)",
+        "m": "besar"
+      },
+      {
+        "w": "大学",
+        "k": "だいがく (daigaku)",
+        "m": "universitas"
+      }
+    ]
+  },
+  "kj_chiisai": {
+    "desc": "Kecil. Kebalikan dari 大 — tiga goresan kecil. Dipakai untuk ukuran kecil (小さい = ちいさい), sekolah dasar (小学校 = しょうがっこう), dan toko kecil (小店 = こみせ). Untuk arti sedikit pakai 少, bukan 小.",
+    "ex": [
+      {
+        "w": "小さい",
+        "k": "ちいさい (chiisai)",
+        "m": "kecil"
+      },
+      {
+        "w": "小学校",
+        "k": "しょうがっこう (shougakkou)",
+        "m": "sekolah dasar"
+      }
+    ]
+  },
+  "kj_takai": {
+    "desc": "'Tinggi' dan 'mahal'. Satu kanji, dua arti tergantung konteks: 背が高い (badan tinggi) vs 値段が高い (harga mahal).",
+    "ex": [
+      {
+        "w": "高い",
+        "k": "たかい (takai)",
+        "m": "tinggi / mahal"
+      },
+      {
+        "w": "高校",
+        "k": "こうこう (koukou)",
+        "m": "SMA"
+      }
+    ]
+  },
+  "kj_yasui": {
+    "desc": "Murah sekaligus tenang/aman — dua sisi dari ide yang sama: tidak ada yang mengganggu. Dipakai untuk harga murah (安い = やすい), rasa lega (安心 = あんしん), dan keamanan (安全 = あんぜん). 安物 (やすもの) = barang murahan. Sering muncul di diskon toko.",
+    "ex": [
+      {
+        "w": "安い",
+        "k": "やすい (yasui)",
+        "m": "murah"
+      },
+      {
+        "w": "安心",
+        "k": "あんしん (anshin)",
+        "m": "merasa lega"
+      }
+    ]
+  },
+  "kj_atarashii": {
+    "desc": "'Baru'. 新しい = あたらしい. 新聞 = しんぶん (koran) — harfiah 'mendengar hal baru'. 新幹線 = しんかんせん (shinkansen).",
+    "ex": [
+      {
+        "w": "新しい",
+        "k": "あたらしい (atarashii)",
+        "m": "baru"
+      },
+      {
+        "w": "新聞",
+        "k": "しんぶん (shinbun)",
+        "m": "koran"
+      }
+    ]
+  },
+  "kj_furui": {
+    "desc": "'Lama' (barang, bukan waktu). 古い = ふるい. 中古 = ちゅうこ (bekas). Jangan tertukar dengan 長い (panjang) atau 年上 (lebih tua).",
+    "ex": [
+      {
+        "w": "古い",
+        "k": "ふるい (furui)",
+        "m": "lama, kuno"
+      },
+      {
+        "w": "中古",
+        "k": "ちゅうこ (chuuko)",
+        "m": "barang bekas"
+      }
+    ]
+  },
+  "kj_nagai": {
+    "desc": "Panjang. Gambar rambut panjang yang berkibar. Dipakai untuk panjang (長い = ながい), durasi lama (長年 = ながねん, bertahun-tahun), dan pemimpin tertinggi: 社長 (しゃちょう, direktur), 部長 (ぶちょう, kepala bagian), 長男 (ちょうなん, anak laki-laki tertua).",
+    "ex": [
+      {
+        "w": "長い",
+        "k": "ながい (nagai)",
+        "m": "panjang"
+      },
+      {
+        "w": "社長",
+        "k": "しゃちょう (shachou)",
+        "m": "direktur"
+      }
+    ]
+  },
+  "kj_ooi": {
+    "desc": "Banyak. Dua bagian bertumpuk — gambar tumpukan besar. Dipakai untuk jumlah banyak (多い = おおい), mungkin (多分 = たぶん), dan sibuk (多忙 = たぼう). Lawannya 少ない (すくない).",
+    "ex": [
+      {
+        "w": "多い",
+        "k": "おおい (ooi)",
+        "m": "banyak"
+      },
+      {
+        "w": "多分",
+        "k": "たぶん (tabun)",
+        "m": "mungkin"
+      }
+    ]
+  },
+  "kj_sukunai": {
+    "desc": "'Sedikit'. 少ない = すくない (sedikit), 少し = すこし (sedikit, sebagai kata keterangan). 少年 = しょうねん (anak laki-laki).",
+    "ex": [
+      {
+        "w": "少ない",
+        "k": "すくない (sukunai)",
+        "m": "sedikit"
+      },
+      {
+        "w": "少し",
+        "k": "すこし (sukoshi)",
+        "m": "sedikit (kata keterangan)"
+      }
+    ]
+  },
+  "kj_shiro": {
+    "desc": "'Putih'. Baca しろ(い) sendiri, ハク/ビャク di kata gabungan. 面白い = おもしろい (menarik) — pengecualian baca yang harus dihafal.",
+    "ex": [
+      {
+        "w": "白い",
+        "k": "しろい (shiroi)",
+        "m": "putih"
+      },
+      {
+        "w": "面白い",
+        "k": "おもしろい (omoshiroi)",
+        "m": "menarik, lucu"
+      }
+    ]
+  },
+  "kj_miru": {
+    "desc": "Melihat. Mata (目) di atas kaki orang (儿) — orang berjalan sambil melihat. Dipakai untuk melihat (見る = みる), hanami (花見 = はなみ, melihat bunga sakura), melihat-lihat (見物 = けんぶつ), dan penampilan (見た目 = みため). 見せる = memperlihatkan.",
+    "ex": [
+      {
+        "w": "見る",
+        "k": "みる (miru)",
+        "m": "melihat"
+      },
+      {
+        "w": "花見",
+        "k": "はなみ (hanami)",
+        "m": "hanami (melihat sakura)"
+      }
+    ]
+  },
+  "kj_iku": {
+    "desc": "'Pergi'. 行く = いく. Baca ギョウ di kata seperti 行事 (acara), おこな(う) untuk 'mengadakan'. 銀行 = ぎんこう (bank).",
+    "ex": [
+      {
+        "w": "行く",
+        "k": "いく (iku)",
+        "m": "pergi"
+      },
+      {
+        "w": "銀行",
+        "k": "ぎんこう (ginkou)",
+        "m": "bank"
+      }
+    ]
+  },
+  "kj_kuru": {
+    "desc": "Datang. Gambar batang gandum dengan orang di bawahnya — panen yang datang. Dipakai untuk datang (来る = くる), tahun depan (来年 = らいねん), masa depan (未来 = みらい), dan datang ke toko (来店 = らいてん).",
+    "ex": [
+      {
+        "w": "来る",
+        "k": "くる (kuru)",
+        "m": "datang"
+      },
+      {
+        "w": "来年",
+        "k": "らいねん (rainen)",
+        "m": "tahun depan"
+      }
+    ]
+  },
+  "kj_taberu": {
+    "desc": "'Makan'. 食べる = たべる. Baca ショク di kata gabungan: 食堂 = しょくどう (kantin), 食事 = しょくじ (makan/santapan).",
+    "ex": [
+      {
+        "w": "食べる",
+        "k": "たべる (taberu)",
+        "m": "makan"
+      },
+      {
+        "w": "食堂",
+        "k": "しょくどう (shokudou)",
+        "m": "kantin, ruang makan"
+      }
+    ]
+  },
+  "kj_nomu": {
+    "desc": "Kata kerja \"minum\". Kanji ini menggabungkan 食 (makan) dengan 欠 (membuka mulut/menghirup) — jadi artinya memasukkan cairan ke mulut. Dipakai untuk semua jenis minuman: air, teh, kopi, obat. Bentuk 飲み物 (のみもの) = minuman, sering muncul di menu dan rambu toko.",
+    "ex": [
+      {
+        "w": "飲む",
+        "k": "のむ (nomu)",
+        "m": "minum"
+      },
+      {
+        "w": "飲み物",
+        "k": "のみもの (nomimono)",
+        "m": "minuman"
+      }
+    ]
+  },
+  "kj_au": {
+    "desc": "'Bertemu'. 会う = あう. 会社 = かいしゃ (perusahaan) — harfiah 'perkumpulan'. 会話 = かいわ (percakapan).",
+    "ex": [
+      {
+        "w": "会う",
+        "k": "あう (au)",
+        "m": "bertemu"
+      },
+      {
+        "w": "会社",
+        "k": "かいしゃ (kaisha)",
+        "m": "perusahaan"
+      }
+    ]
+  },
+  "kj_yasumu": {
+    "desc": "'Istirahat/libur'. Asal bentuk: 人 (orang) + 木 (pohon) — orang bersandar di bawah pohon untuk beristirahat. 休み = やすみ (hari libur).",
+    "ex": [
+      {
+        "w": "休む",
+        "k": "やすむ (yasumu)",
+        "m": "beristirahat"
+      },
+      {
+        "w": "休み",
+        "k": "やすみ (yasumi)",
+        "m": "libur"
+      }
+    ]
+  },
+  "kj_kau": {
+    "desc": "Membeli. Atas gambar jaring, bawah gambar kerang yang dulu dipakai sebagai uang. Dipakai untuk membeli (買う = かう) dan belanja (買い物 = かいもの) — kata yang muncul tiap kali ke konbini.",
+    "ex": [
+      {
+        "w": "買う",
+        "k": "かう (kau)",
+        "m": "membeli"
+      },
+      {
+        "w": "買い物",
+        "k": "かいもの (kaimono)",
+        "m": "belanja"
+      }
+    ]
+  },
+  "kj_iu": {
+    "desc": "'Berkata'. 言う = いう. 言葉 = ことば (kata/bahasa) — di sini 言 dibaca こと. 言語 = げんご (bahasa, linguistik).",
+    "ex": [
+      {
+        "w": "言う",
+        "k": "いう (iu)",
+        "m": "berkata"
+      },
+      {
+        "w": "言葉",
+        "k": "ことば (kotoba)",
+        "m": "kata, bahasa"
+      }
+    ]
+  },
+  "kj_hanasu": {
+    "desc": "'Berbicara'. 話す = はなす. 電話 = でんわ (telepon) — harfiah 'bicara lewat listrik'. 会話 = かいわ (percakapan).",
+    "ex": [
+      {
+        "w": "話す",
+        "k": "はなす (hanasu)",
+        "m": "berbicara"
+      },
+      {
+        "w": "電話",
+        "k": "でんわ (denwa)",
+        "m": "telepon"
+      }
+    ]
+  },
+  "kj_yomu": {
+    "desc": "Membaca. Kiri 言 (bicara) memberi petunjuk makna, kanan 売 memberi petunjuk bunyi. Dipakai untuk membaca (読む = よむ), membaca buku (読書 = どくしょ), dan pembaca (読者 = どくしゃ). 新聞を読む (しんぶんをよむ) = membaca koran.",
+    "ex": [
+      {
+        "w": "読む",
+        "k": "よむ (yomu)",
+        "m": "membaca"
+      },
+      {
+        "w": "読書",
+        "k": "どくしょ (dokusho)",
+        "m": "membaca buku"
+      }
+    ]
+  },
+  "kj_kaku": {
+    "desc": "Menulis. 日 (matahari) di atas 聿 (kuas tulis) — tangan memegang kuas. Dipakai untuk menulis (書く = かく), dokumen (書類 = しょるい), dan kamus (辞書 = じしょ). 書き方 (かきかた) = cara menulis.",
+    "ex": [
+      {
+        "w": "書く",
+        "k": "かく (kaku)",
+        "m": "menulis"
+      },
+      {
+        "w": "辞書",
+        "k": "じしょ (jisho)",
+        "m": "kamus"
+      }
+    ]
+  },
+  "kj_gaku": {
+    "desc": "'Belajar/ilmu'. 学生 = がくせい (pelajar). 学校 = がっこう (sekolah). Baca まな(ぶ) untuk kata kerja 'belajar'.",
+    "ex": [
+      {
+        "w": "学生",
+        "k": "がくせい (gakusei)",
+        "m": "pelajar"
+      },
+      {
+        "w": "学ぶ",
+        "k": "まなぶ (manabu)",
+        "m": "mempelajari"
+      }
+    ]
+  },
+  "kj_kou": {
+    "desc": "'Sekolah (bangunan)'. Tidak dipakai sendiri; selalu menempel: 学校 = がっこう, 高校 = こうこう, 校長 = こうちょう (kepala sekolah).",
+    "ex": [
+      {
+        "w": "学校",
+        "k": "がっこう (gakkou)",
+        "m": "sekolah"
+      },
+      {
+        "w": "高校",
+        "k": "こうこう (koukou)",
+        "m": "SMA"
+      }
+    ]
+  },
+  "kj_sei": {
+    "desc": "'Hidup/lahir'. Banyak bacaan: セイ (学生), ショウ (一生), い(きる) hidup, う(まれる) lahir, なま (mentah). 先生 = せんせい (guru) — harfiah 'lahir lebih dulu'.",
+    "ex": [
+      {
+        "w": "先生",
+        "k": "せんせい (sensei)",
+        "m": "guru"
+      },
+      {
+        "w": "生まれる",
+        "k": "うまれる (umareru)",
+        "m": "lahir"
+      }
+    ]
+  },
+  "kj_saki": {
+    "desc": "'Sebelum/terdahulu' dan 'ujung'. 先生 = せんせい (guru, orang yang lahir lebih dulu). 先週 = せんしゅう (minggu lalu). 先に = さきに (duluan).",
+    "ex": [
+      {
+        "w": "先週",
+        "k": "せんしゅう (senshuu)",
+        "m": "minggu lalu"
+      },
+      {
+        "w": "先に",
+        "k": "さきに (saki ni)",
+        "m": "duluan"
+      }
+    ]
+  },
+  "kj_nani": {
+    "desc": "'Apa'. Baca なに sebelum kata kerja/benda, なん sebelum kata bantu bunyi (なんじ, なんようび) dan kata hitung.",
+    "ex": [
+      {
+        "w": "何",
+        "k": "なに (nani)",
+        "m": "apa"
+      },
+      {
+        "w": "何時",
+        "k": "なんじ (nanji)",
+        "m": "jam berapa"
+      }
+    ]
+  },
+  "kj_hon": {
+    "desc": "'Buku' dan 'asal'. 本 = ほん (buku). 日本 = にほん (Jepang, 'asal matahari'). Baca もと untuk 'asal/dasar'.",
+    "ex": [
+      {
+        "w": "本",
+        "k": "ほん (hon)",
+        "m": "buku"
+      },
+      {
+        "w": "日本",
+        "k": "にほん (nihon)",
+        "m": "Jepang"
+      }
+    ]
+  },
+  "kj_go_word": {
+    "desc": "'Bahasa/kata'. Selalu menempel di belakang nama bahasa: 日本語 = にほんご, 英語 = えいご, インドネシア語. Baca かた(る) untuk 'menuturkan'.",
+    "ex": [
+      {
+        "w": "日本語",
+        "k": "にほんご (nihongo)",
+        "m": "bahasa Jepang"
+      },
+      {
+        "w": "英語",
+        "k": "えいご (eigo)",
+        "m": "bahasa Inggris"
+      }
+    ]
+  },
+  "kj_kuni": {
+    "desc": "Negara sekaligus daerah asal. Gambar wilayah yang dikelilingi batas. Dipakai untuk negara (国 = くに), luar negeri (外国 = がいこく), China (中国 = ちゅうごく), dan negara asal (国柄 = くにがら, karakter bangsa). 国籍 (こくせき) = kewarganegaraan.",
+    "ex": [
+      {
+        "w": "国",
+        "k": "くに (kuni)",
+        "m": "negara"
+      },
+      {
+        "w": "外国",
+        "k": "がいこく (gaikoku)",
+        "m": "luar negeri"
+      }
+    ]
+  },
+  "kj_sha": {
+    "desc": "'Perusahaan' dan 'kuil'. 会社 = かいしゃ (perusahaan). 神社 = じんじゃ (kuil Shinto) — di sini dibaca じゃ.",
+    "ex": [
+      {
+        "w": "会社",
+        "k": "かいしゃ (kaisha)",
+        "m": "perusahaan"
+      },
+      {
+        "w": "神社",
+        "k": "じんじゃ (jinja)",
+        "m": "kuil Shinto"
+      }
+    ]
+  },
+  "kj_mise": {
+    "desc": "Toko. Gambar bangunan dengan atap lebar dan barang dipajang di bawahnya. Dipakai untuk toko (店 = みせ), toko gabungan dengan baca テン: 喫茶店 (きっさてん, kafe), 店員 (てんいん, pelayan toko), 本店 (ほんてん, toko pusat), 売店 (ばいてん, kios).",
+    "ex": [
+      {
+        "w": "店",
+        "k": "みせ (mise)",
+        "m": "toko"
+      },
+      {
+        "w": "喫茶店",
+        "k": "きっさてん (kissaten)",
+        "m": "kafe"
+      }
+    ]
+  },
+  "kj_eki": {
+    "desc": "Stasiun. Kiri 馬 (kuda) — dulu tempat menukar kuda pos. Dipakai untuk stasiun kereta (駅 = えき), depan stasiun (駅前 = えきまえ, pusat kota di Jepang), dan staf stasiun (駅員 = えきいん). Tidak punya kun-yomi.",
+    "ex": [
+      {
+        "w": "駅",
+        "k": "えき (eki)",
+        "m": "stasiun"
+      },
+      {
+        "w": "駅前",
+        "k": "えきまえ (ekimae)",
+        "m": "depan stasiun"
+      }
+    ]
+  },
+  "kj_kuruma": {
+    "desc": "Kendaraan beroda. Bentuknya gambar kereta dari atas: roda di kiri-kanan, poros di tengah. Dipakai untuk mobil (車 = くるま), kereta listrik (電車 = でんしゃ), sepeda (自転車 = じてんしゃ), dan parkir (駐車場 = ちゅうしゃじょう). 車内 (しゃない) = di dalam kereta.",
+    "ex": [
+      {
+        "w": "車",
+        "k": "くるま (kuruma)",
+        "m": "mobil"
+      },
+      {
+        "w": "電車",
+        "k": "でんしゃ (densha)",
+        "m": "kereta listrik"
+      }
+    ]
+  },
+  "kj_den": {
+    "desc": "'Listrik'. Selalu menempel: 電車 = でんしゃ (kereta), 電話 = でんわ (telepon), 電気 = でんき (listrik/lampu).",
+    "ex": [
+      {
+        "w": "電気",
+        "k": "でんき (denki)",
+        "m": "listrik, lampu"
+      },
+      {
+        "w": "電話",
+        "k": "でんわ (denwa)",
+        "m": "telepon"
+      }
+    ]
+  },
+  "kj_en": {
+    "desc": "Yen (mata uang Jepang) dan bulat. Bentuk aslinya gambar koin bundar. Dipakai untuk mata uang (円 = えん) — 百円 (ひゃくえん) = 100 yen, dan untuk bentuk bulat (丸い = まるい, baca kun-yomi). 円高 (えんだか) = yen menguat. Simbol ¥ berasal dari kanji ini.",
+    "ex": [
+      {
+        "w": "円",
+        "k": "えん (en)",
+        "m": "yen"
+      },
+      {
+        "w": "円い",
+        "k": "まるい (marui)",
+        "m": "bulat"
+      }
+    ]
+  }
+}

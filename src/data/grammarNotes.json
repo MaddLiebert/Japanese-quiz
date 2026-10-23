@@ -1,0 +1,427 @@
+{
+  "_readme": "Penjelasan partikel & pola kalimat bahasa Indonesia. Key = id di grammar.json. Field: desc = kegunaan + kapan dipakai; pola = rumus singkat; ex = contoh [{w: kalimat, k: romaji, m: arti}]. Dijaga src/features/learn/notes.test.js",
+  "g_ni_freq": {
+    "desc": "に di sini berarti 'per' — dipakai untuk menyatakan frekuensi dalam rentang waktu. Rumusnya rentang waktu + に + jumlah + かい (kali). に menerjemahkan 'dalam/tiap' pada frasa seperti 'dua kali sebulan'.",
+    "pola": "waktu + に + jumlah + かい",
+    "ex": [
+      { "w": "いっしゅうかんに 3かい プールに いきます。", "k": "isshuukan ni sankai pūru ni ikimasu", "m": "Seminggu tiga kali pergi ke kolam renang." },
+      { "w": "いちにちに 8じかん ねます。", "k": "ichinichi ni hachijikan nemasu", "m": "Sehari tidur delapan jam." }
+    ]
+  },
+  "g_ya_list": {
+    "desc": "や menghubungkan dua kata benda sebagai daftar yang TIDAK lengkap — seperti 'A dan B (dan lain-lain)'. Berbeda dengan と yang mendaftar semua barang secara lengkap. Cocok saat kamu cuma menyebut sebagian contoh.",
+    "pola": "A や B（など）",
+    "ex": [
+      { "w": "つくえの うえに ほんや ノートが あります。", "k": "tsukue no ue ni hon ya nōto ga arimasu", "m": "Di atas meja ada buku, catatan, dan lain-lain." },
+      { "w": "にちようびは そうじや せんたくを します。", "k": "nichiyōbi wa sōji ya sentaku o shimasu", "m": "Hari Minggu bersih-bersih, cuci baju, dan sebagainya." }
+    ]
+  },
+  "g_de_place": {
+    "desc": "で menandai TEMPAT terjadinya kegiatan. Bedanya dengan に: に = tempat keberadaan atau tujuan, で = tempat kamu melakukan sesuatu (bekerja, makan, belajar).",
+    "pola": "tempat + で + kata kerja",
+    "ex": [
+      { "w": "としょかんで べんきょうします。", "k": "toshokan de benkyō shimasu", "m": "Belajar di perpustakaan." },
+      { "w": "レストランで ひるごはんを たべました。", "k": "resutoran de hirugohan o tabemashita", "m": "Makan siang di restoran." }
+    ]
+  },
+  "g_ga_desire": {
+    "desc": "が dipakai untuk menandai OBJEK dari ほしい (ingin) dan たい (ingin melakukan). Di pola ini が menunjuk barang yang diinginkan, bukan pelakunya. は juga bisa, tapi が lebih netral dan lebih sering di buku teks.",
+    "pola": "… が ほしいです / … が 〜たいです",
+    "ex": [
+      { "w": "あたらしい けいたいが ほしいです。", "k": "atarashii keitai ga hoshii desu", "m": "Ingin HP baru." },
+      { "w": "つめたい みずが のみたいです。", "k": "tsumetai mizu ga nomitai desu", "m": "Ingin minum air dingin." }
+    ]
+  },
+  "g_mo_nothing": {
+    "desc": "何も (なにも · nanimo) berarti 'apa-apa' dan WAJIB dipakai bersama kata kerja bentuk negatif supaya berarti 'tidak ada apa-apa / tidak melakukan apa-apa'. Kalau dipakai dengan bentuk positif artinya kacau.",
+    "pola": "何も + kata kerja negatif",
+    "ex": [
+      { "w": "きのうは なにも たべませんでした。", "k": "kinō wa nanimo tabemasen deshita", "m": "Kemarin tidak makan apa-apa." },
+      { "w": "へやには なにも ありません。", "k": "heya ni wa nanimo arimasen", "m": "Di kamar tidak ada apa-apa." }
+    ]
+  },
+  "g_zutto_compare": {
+    "desc": "ずっと menempel pada kata sifat untuk memperkuat perbandingan: 'jauh lebih'. Dipakai setelah より (daripada) untuk menegaskan selisihnya besar, bukan cuma sedikit.",
+    "pola": "A は B より ずっと + kata sifat",
+    "ex": [
+      { "w": "でんしゃは バスより ずっと はやいです。", "k": "densha wa basu yori zutto hayai desu", "m": "Kereta jauh lebih cepat daripada bus." },
+      { "w": "この へやの ほうが ずっと しずかです。", "k": "kono heya no hō ga zutto shizuka desu", "m": "Kamar ini jauh lebih tenang." }
+    ]
+  },
+  "g_wa_topic": {
+    "desc": "は adalah partikel TOPIK — menandai 'soal apa' kalimat ini bicara, dan berlaku sampai akhir kalimat. わたしは = 'kalau saya, …'. Jangan tertukar dengan が yang menandai pelaku aksi.",
+    "pola": "topik + は + komentar",
+    "ex": [
+      { "w": "たなかさんは せんせいです。", "k": "tanaka-san wa sensei desu", "m": "Tanaka adalah guru." },
+      { "w": "この ほんは おもしろいです。", "k": "kono hon wa omoshiroi desu", "m": "Buku ini menarik." }
+    ]
+  },
+  "g_wo_object": {
+    "desc": "を menandai OBJEK LANGSUNG — benda yang dikenai kata kerja. パンを たべます = makan roti. Urutannya objek dulu, kata kerja di akhir.",
+    "pola": "objek + を + kata kerja",
+    "ex": [
+      { "w": "まいにち にほんごを べんきょうします。", "k": "mainichi nihongo o benkyō shimasu", "m": "Setiap hari belajar bahasa Jepang." },
+      { "w": "おんがくを ききます。", "k": "ongaku o kikimasu", "m": "Mendengarkan musik." }
+    ]
+  },
+  "g_ni_time": {
+    "desc": "に menempel pada WAKTU yang spesifik (jam, tanggal, hari dalam sebulan) — 6じに, 3がつに. Tidak dipakai untuk waktu relatif seperti きょう, あした, まいにち.",
+    "pola": "waktu spesifik + に + kata kerja",
+    "ex": [
+      { "w": "よる 11じに ねます。", "k": "yoru jūichiji ni nemasu", "m": "Tidur jam sebelas malam." },
+      { "w": "4がつに にほんへ いきます。", "k": "shigatsu ni nihon e ikimasu", "m": "Bulan April pergi ke Jepang." }
+    ]
+  },
+  "g_ni_destination": {
+    "desc": "に menandai TITIK TUJUAN perpindahan — tempat yang jadi akhir gerakan. Bisa diganti へ dengan arti hampir sama; に lebih menekankan 'tiba di'. Jangan pakai で untuk tujuan.",
+    "pola": "tempat + に／へ + いきます・きます・かえります",
+    "ex": [
+      { "w": "あした がっこうに いきます。", "k": "ashita gakkō ni ikimasu", "m": "Besok pergi ke sekolah." },
+      { "w": "7じに うちに かえります。", "k": "shichiji ni uchi ni kaerimasu", "m": "Jam tujuh pulang ke rumah." }
+    ]
+  },
+  "g_de_tool": {
+    "desc": "で menandai ALAT atau BAHASA yang dipakai untuk melakukan sesuatu. はしで = dengan sumpit, にほんごで = dengan bahasa Jepang. Bisa juga untuk transportasi (でんしゃで).",
+    "pola": "alat／bahasa + で + kata kerja",
+    "ex": [
+      { "w": "ペンで なまえを かいてください。", "k": "pen de namae o kaite kudasai", "m": "Tolong tulis nama dengan pulpen." },
+      { "w": "にほんごで はなしましょう。", "k": "nihongo de hanashimashō", "m": "Ayo bicara dengan bahasa Jepang." }
+    ]
+  },
+  "g_ga_suki": {
+    "desc": "が dipakai bersama すき (suka), きらい (benci), じょうず (mahir), わかります (paham). Objek perasaan atau kemampuan ditandai が, bukan を. わたしは いぬが すきです = 'soal saya, anjing itu menyenangkan'.",
+    "pola": "… が すき／きらい／じょうず／わかります",
+    "ex": [
+      { "w": "わたしは にほんの おんがくが すきです。", "k": "watashi wa nihon no ongaku ga suki desu", "m": "Saya suka musik Jepang." },
+      { "w": "たなかさんは かんじが わかります。", "k": "tanaka-san wa kanji ga wakarimasu", "m": "Tanaka paham kanji." }
+    ]
+  },
+  "g_to_with": {
+    "desc": "と berarti 'bersama/dengan' untuk menyatakan lawan interaksi — orang yang menemani kamu melakukan sesuatu. ともだちと = bersama teman. Bedanya dengan で (alat): と untuk ORANG.",
+    "pola": "orang + と + kata kerja",
+    "ex": [
+      { "w": "かぞくと りょこうします。", "k": "kazoku to ryokō shimasu", "m": "Bepergian bersama keluarga." },
+      { "w": "せんせいと はなしました。", "k": "sensei to hanashimashita", "m": "Berbicara dengan guru." }
+    ]
+  },
+  "g_kara_from": {
+    "desc": "から menandai TITIK AWAL — waktu mulai atau tempat asal. 9じから = mulai jam sembilan. Pasangan alaminya まで (sampai).",
+    "pola": "titik awal + から（+ titik akhir + まで）",
+    "ex": [
+      { "w": "あさ 7じから はたらきます。", "k": "asa shichiji kara hatarakimasu", "m": "Bekerja mulai jam tujuh pagi." },
+      { "w": "インドネシアから きました。", "k": "indoneshia kara kimashita", "m": "Datang dari Indonesia." }
+    ]
+  },
+  "g_made_until": {
+    "desc": "まで menandai BATAS AKHIR — 'sampai'. Bisa untuk waktu (5じまで) maupun tempat (えきまで). Sering berpasangan dengan から.",
+    "pola": "batas akhir + まで",
+    "ex": [
+      { "w": "ぎんこうは 3じまで です。", "k": "ginkō wa sanji made desu", "m": "Bank buka sampai jam tiga." },
+      { "w": "えきまで あるきました。", "k": "eki made arukimashita", "m": "Berjalan sampai stasiun." }
+    ]
+  },
+  "g_mo_also": {
+    "desc": "も menggantikan は atau が untuk berarti 'juga'. Kalau わたしは がくせいです (saya siswa), maka たなかさんも = Tanaka juga. も tidak bisa digabung dengan は/が/を di posisi yang sama.",
+    "pola": "topik + も + komentar",
+    "ex": [
+      { "w": "わたしも いきます。", "k": "watashi mo ikimasu", "m": "Saya juga pergi." },
+      { "w": "この みせは やすいです。あの みせも やすいです。", "k": "kono mise wa yasui desu. ano mise mo yasui desu", "m": "Toko ini murah. Toko itu juga murah." }
+    ]
+  },
+  "g_no_possession": {
+    "desc": "の menghubungkan dua kata benda: pemilik + の + benda. わたしの ほん = buku saya. Bisa juga untuk asal (にほんの くるま = mobil Jepang) dan penjelas (えいごの せんせい = guru bahasa Inggris).",
+    "pola": "A の B = B milik A／B dari A",
+    "ex": [
+      { "w": "これは せんせいの かさです。", "k": "kore wa sensei no kasa desu", "m": "Ini payung guru." },
+      { "w": "にほんの アニメが すきです。", "k": "nihon no anime ga suki desu", "m": "Suka anime Jepang." }
+    ]
+  },
+  "g_ga_exist": {
+    "desc": "が menandai BENDA YANG ADA dalam kalimat keberadaan あります (benda mati) dan います (makhluk hidup). Pola: tempat に … が あります。Yang baru disebut pertama kali pakai が; setelah itu pakai は.",
+    "pola": "tempat + に + benda + が あります／います",
+    "ex": [
+      { "w": "つくえの うえに ペンが あります。", "k": "tsukue no ue ni pen ga arimasu", "m": "Di atas meja ada pulpen." },
+      { "w": "こうえんに こどもが います。", "k": "kōen ni kodomo ga imasu", "m": "Di taman ada anak-anak." }
+    ]
+  },
+  "g_yori_than": {
+    "desc": "より menandai PEMBANDING dalam kalimat 'lebih … daripada'. Rumusnya A は B より + kata sifat. より menempel pada B (yang jadi pembanding).",
+    "pola": "A は B より + kata sifat",
+    "ex": [
+      { "w": "なつは ふゆより あついです。", "k": "natsu wa fuyu yori atsui desu", "m": "Musim panas lebih panas daripada musim dingin." },
+      { "w": "でんしゃの ほうが バスより べんりです。", "k": "densha no hō ga basu yori benri desu", "m": "Kereta lebih praktis daripada bus." }
+    ]
+  },
+  "g_ni_purpose": {
+    "desc": "に menandai TUJUAN KEGIATAN setelah kata kerja bentuk ます-stem (bentuk yang dipakai sebelum ます). かいものに いきます = pergi UNTUK belanja. Hati-hati: bentuknya かいもの (kata benda), bukan かいものを.",
+    "pola": "kata kerja (stem)／kata benda kegiatan + に + いきます",
+    "ex": [
+      { "w": "えいがを みに いきます。", "k": "eiga o mi ni ikimasu", "m": "Pergi untuk menonton film." },
+      { "w": "ごはんを たべに かえります。", "k": "gohan o tabe ni kaerimasu", "m": "Pulang untuk makan." }
+    ]
+  },
+  "g_dake_only": {
+    "desc": "だけ berarti 'hanya' dan bisa dipakai dengan kalimat POSITIF maupun negatif. Letaknya setelah kata yang dibatasi. Bedanya dengan しか: しか selalu butuh kata kerja negatif.",
+    "pola": "kata + だけ",
+    "ex": [
+      { "w": "みずだけ のみます。", "k": "mizu dake nomimasu", "m": "Hanya minum air." },
+      { "w": "ひとりだけ きました。", "k": "hitori dake kimashita", "m": "Hanya satu orang yang datang." }
+    ]
+  },
+  "g_shika_only": {
+    "desc": "しか juga berarti 'hanya', tapi WAJIB diikuti kata kerja NEGATIF. Kesannya lebih menekankan keterbatasan: ひとつしか ありません = 'cuma ada satu (tidak lebih)'. Ini kesalahan klasik pemula — しか + kalimat positif itu salah.",
+    "pola": "kata + しか + kata kerja negatif",
+    "ex": [
+      { "w": "でんしゃしか ありません。", "k": "densha shika arimasen", "m": "Cuma ada kereta." },
+      { "w": "にほんごしか はなせません。", "k": "nihongo shika hanasemasen", "m": "Cuma bisa bicara bahasa Jepang." }
+    ]
+  },
+  "g_ga_but": {
+    "desc": "が sebagai KONJUNGSI di tengah kalimat berarti 'tapi/tetapi' — menyambung dua klausa yang bertentangan. Ditulis dengan koma sesudahnya. Jangan tertukar dengan が partikel subjek di awal kalimat.",
+    "pola": "kalimat 1 + が、+ kalimat 2",
+    "ex": [
+      { "w": "この みせは やすいですが、おいしいです。", "k": "kono mise wa yasui desu ga, oishii desu", "m": "Toko ini murah, tapi enak." },
+      { "w": "にほんごは むずかしいですが、おもしろいです。", "k": "nihongo wa muzukashii desu ga, omoshiroi desu", "m": "Bahasa Jepang susah, tapi menarik." }
+    ]
+  },
+  "g_dakara_so": {
+    "desc": "ですから (atau だから dalam bentuk kasual) berarti 'karena itu / jadi' — menyimpulkan dari kalimat sebelumnya. Letaknya di AWAL kalimat kedua dan diikuti koma.",
+    "pola": "sebab。ですから、akibat。",
+    "ex": [
+      { "w": "あしたは テストです。ですから、きょう べんきょうします。", "k": "ashita wa tesuto desu. desukara, kyō benkyō shimasu", "m": "Besok ujian. Karena itu, hari ini belajar." },
+      { "w": "さむいです。ですから、まどを しめます。", "k": "samui desu. desukara, mado o shimemasu", "m": "Dingin. Jadi jendela ditutup." }
+    ]
+  },
+  "g_mashou_let": {
+    "desc": "ましょう mengajak melakukan sesuatu bersama: 'ayo/mari'. Dibentuk dari ます-stem + ましょう. Lebih sopan daripada bentuk kasual, dan biasanya dipakai kalau lawan bicara sudah jelas setuju.",
+    "pola": "kata kerja (stem) + ましょう",
+    "ex": [
+      { "w": "いっしょに かえりましょう。", "k": "issho ni kaerimashō", "m": "Ayo pulang bersama." },
+      { "w": "ちょっと やすみましょう。", "k": "chotto yasumimashō", "m": "Mari istirahat sebentar." }
+    ]
+  },
+  "g_masenka_invite": {
+    "desc": "ませんか adalah ajakan SOPAN berbentuk pertanyaan negatif: 'maukah …?'. Lebih halus daripada ましょう karena memberi ruang menolak. Jawaban setuju: ええ、いいですね / ぜひ.",
+    "pola": "kata kerja (stem) + ませんか",
+    "ex": [
+      { "w": "あした えいがを みませんか。", "k": "ashita eiga o mimasen ka", "m": "Maukah besok nonton film?" },
+      { "w": "いっしょに おひるごはんを たべませんか。", "k": "issho ni ohirugohan o tabemasen ka", "m": "Maukah makan siang bersama?" }
+    ]
+  },
+  "g_tai_want": {
+    "desc": "たい menyatakan KEINGINAN SENDIRI (ingin melakukan). Dibentuk dari ます-stem + たい, lalu dikonjugasi seperti kata sifat-i. Untuk keinginan orang lain jangan pakai たい (terkesan seperti membaca pikiran) — pakai たがっています.",
+    "pola": "kata kerja (stem) + たいです",
+    "ex": [
+      { "w": "にほんへ いきたいです。", "k": "nihon e ikitai desu", "m": "Ingin pergi ke Jepang." },
+      { "w": "つめたい コーヒーが のみたいです。", "k": "tsumetai kōhī ga nomitai desu", "m": "Ingin minum kopi dingin." }
+    ]
+  },
+  "g_tekudasai_please": {
+    "desc": "てください = 'tolong lakukan'. Pakai kata kerja bentuk て + ください. Untuk permintaan sopan yang lebih halus, gunakan ていただけませんか.",
+    "pola": "kata kerja (bentuk て) + ください",
+    "ex": [
+      { "w": "ゆっくり はなしてください。", "k": "yukkuri hanashite kudasai", "m": "Tolong bicara pelan-pelan." },
+      { "w": "まどを あけてください。", "k": "mado o akete kudasai", "m": "Tolong buka jendelanya." }
+    ]
+  },
+  "g_temoii_may": {
+    "desc": "てもいい (bentuk lengkap てもいいです) meminta atau memberi IZIN: 'boleh …?'. Bentuk pertanyaannya てもいいですか. Jangan dipakai untuk menawarkan bantuan.",
+    "pola": "kata kerja (bentuk て) + もいいですか",
+    "ex": [
+      { "w": "ここに すわってもいいですか。", "k": "koko ni suwatte mo ii desu ka", "m": "Boleh duduk di sini?" },
+      { "w": "この ほんを かりてもいいですか。", "k": "kono hon o karite mo ii desu ka", "m": "Boleh pinjam buku ini?" }
+    ]
+  },
+  "g_tewaike_mustnot": {
+    "desc": "てはいけない = 'tidak boleh' — larangan. Bentuk sopannya てはいけません. Dibentuk dari kata kerja bentuk て + はいけません. Lebih tegas daripada ないでください (jangan/tolong jangan).",
+    "pola": "kata kerja (bentuk て) + はいけません",
+    "ex": [
+      { "w": "ここに はいっては いけません。", "k": "koko ni haitte wa ikemasen", "m": "Tidak boleh masuk ke sini." },
+      { "w": "じゅぎょうちゅうに はなしては いけません。", "k": "jugyōchū ni hanashite wa ikemasen", "m": "Tidak boleh bicara saat pelajaran." }
+    ]
+  },
+  "g_teiru_ing": {
+    "desc": "ています punya dua fungsi: (1) aksi SEDANG berlangsung (いま あめが ふっています), (2) KEADAAN hasil dari aksi yang sudah selesai (けっこんしています = sudah menikah). Bentuk dari kata kerja て + います.",
+    "pola": "kata kerja (bentuk て) + います",
+    "ex": [
+      { "w": "いま、でんわを かけています。", "k": "ima, denwa o kakete imasu", "m": "Sekarang sedang menelepon." },
+      { "w": "とうきょうに すんでいます。", "k": "tōkyō ni sunde imasu", "m": "Tinggal di Tokyo." }
+    ]
+  },
+  "g_naide_dont": {
+    "desc": "ないでください = 'tolong jangan …'. Pakai kata kerja bentuk ない (bentuk negatif pendek) + でください. Ini permintaan, bukan larangan keras — untuk larangan tegas pakai てはいけません.",
+    "pola": "kata kerja (bentuk ない) + でください",
+    "ex": [
+      { "w": "しんぱいしないでください。", "k": "shinpai shinaide kudasai", "m": "Tolong jangan khawatir." },
+      { "w": "ここで たばこを すわないでください。", "k": "koko de tabako o suwanaide kudasai", "m": "Tolong jangan merokok di sini." }
+    ]
+  },
+  "g_nakutemo_neednot": {
+    "desc": "なくてもいい = 'tidak perlu / boleh tidak'. Pakai kata kerja bentuk ない, buang い lalu + くてもいいです. Kebalikannya なければなりません (harus).",
+    "pola": "kata kerja (bentuk ない → なくて) + もいいです",
+    "ex": [
+      { "w": "あした こなくてもいいです。", "k": "ashita konakute mo ii desu", "m": "Besok tidak perlu datang." },
+      { "w": "いそがなくてもいいですよ。", "k": "isoganakute mo ii desu yo", "m": "Tidak perlu buru-buru, kok." }
+    ]
+  },
+  "g_dochira": {
+    "desc": "どちら menanyakan pilihan di antara DUA hal — 'yang mana'. Lebih sopan daripada どっち. Untuk tiga pilihan atau lebih pakai どれ.",
+    "pola": "A と B と どちらが …",
+    "ex": [
+      { "w": "バスと でんしゃと どちらが はやいですか。", "k": "basu to densha to dochira ga hayai desu ka", "m": "Bus atau kereta, mana yang cepat?" },
+      { "w": "おちゃと コーヒーと どちらが すきですか。", "k": "ocha to kōhī to dochira ga suki desu ka", "m": "Teh atau kopi, mana yang kamu suka?" }
+    ]
+  },
+  "g_houga": {
+    "desc": "のほうが menandai PIHAK YANG DIPILIH dalam perbandingan: 'yang lebih …'. Polanya A のほうが B より + sifat, atau menjawab pertanyaan どちら dengan 〜のほうがいいです.",
+    "pola": "A のほうが（B より）+ kata sifat",
+    "ex": [
+      { "w": "なつの ほうが すきです。", "k": "natsu no hō ga suki desu", "m": "Lebih suka musim panas." },
+      { "w": "こっちの ほうが やすいです。", "k": "kotchi no hō ga yasui desu", "m": "Yang ini lebih murah." }
+    ]
+  },
+  "g_ichiban": {
+    "desc": "いちばん = 'paling' untuk superlatif. Letaknya sebelum kata sifat, sering didahului cakupan perbandingan + で (くだものの中で = di antara buah-buahan).",
+    "pola": "（cakupan + で）いちばん + kata sifat",
+    "ex": [
+      { "w": "にほんで いちばん たかい やまは ふじさんです。", "k": "nihon de ichiban takai yama wa fujisan desu", "m": "Gunung tertinggi di Jepang adalah Fuji." },
+      { "w": "この みせの ラーメンが いちばん おいしいです。", "k": "kono mise no rāmen ga ichiban oishii desu", "m": "Ramen toko ini yang paling enak." }
+    ]
+  },
+  "g_adj_past": {
+    "desc": "かった adalah bentuk LAMPAU kata sifat-i. むずかしい → むずかしかった. Caranya: buang い di akhir, tambah かった. Jangan tambah です dua kali (むずかしいでした salah).",
+    "pola": "kata sifat-i (buang い) + かったです",
+    "ex": [
+      { "w": "きのうは さむかったです。", "k": "kinō wa samukatta desu", "m": "Kemarin dingin." },
+      { "w": "その ほんは たかかったです。", "k": "sono hon wa takakatta desu", "m": "Buku itu mahal." }
+    ]
+  },
+  "g_adj_pastneg": {
+    "desc": "くなかった adalah bentuk LAMPAU NEGATIF kata sifat-i: 'tidak … (dulu)'. おもしろい → おもしろくなかった. Untuk sopan tambahkan です: おもしろくなかったです.",
+    "pola": "kata sifat-i (buang い) + くなかったです",
+    "ex": [
+      { "w": "テストは かんたんじゃ なかったです。", "k": "tesuto wa kantan ja nakatta desu", "m": "Ujiannya tidak mudah." },
+      { "w": "きのうは あつくなかったです。", "k": "kinō wa atsukunakatta desu", "m": "Kemarin tidak panas." }
+    ]
+  },
+  "g_na_past": {
+    "desc": "でした adalah bentuk LAMPAU dari です untuk kata sifat-na dan kata benda. にぎやか → にぎやかでした. Kata sifat-na TIDAK pakai かった.",
+    "pola": "kata sifat-na／kata benda + でした",
+    "ex": [
+      { "w": "きのうの テストは たいへんでした。", "k": "kinō no tesuto wa taihen deshita", "m": "Ujian kemarin berat." },
+      { "w": "そこは ゆうめいでした。", "k": "soko wa yūmei deshita", "m": "Tempat itu terkenal." }
+    ]
+  },
+  "g_na_pastneg": {
+    "desc": "じゃありませんでした (atau では ありませんでした yang lebih formal) adalah bentuk LAMPAU NEGATIF untuk kata sifat-na dan kata benda: 'tidak … (dulu)'.",
+    "pola": "kata sifat-na／kata benda + じゃ（では）ありませんでした",
+    "ex": [
+      { "w": "その へやは きれいじゃ ありませんでした。", "k": "sono heya wa kirei ja arimasen deshita", "m": "Kamar itu tidak bersih." },
+      { "w": "きのうは げつようびじゃ ありませんでした。", "k": "kinō wa getsuyōbi ja arimasen deshita", "m": "Kemarin bukan hari Senin." }
+    ]
+  },
+  "g_adv_iadj": {
+    "desc": "Ubah kata sifat-i jadi KATA KETERANGAN dengan membuang い dan menambah く: はやい → はやく (dengan cepat). Bentuk ini menerangkan kata kerja, bukan kata benda.",
+    "pola": "kata sifat-i (buang い) + く + kata kerja",
+    "ex": [
+      { "w": "もっと おおきく かいてください。", "k": "motto ōkiku kaite kudasai", "m": "Tolong tulis lebih besar." },
+      { "w": "はやく ねてください。", "k": "hayaku nete kudasai", "m": "Tolong tidur cepat." }
+    ]
+  },
+  "g_adv_naadj": {
+    "desc": "Kata sifat-na jadi kata keterangan dengan menambah に: きれい → きれいに (dengan bersih/rapi). Sering dipakai bersama する (membuat jadi …) atau なる (menjadi …).",
+    "pola": "kata sifat-na + に + kata kerja",
+    "ex": [
+      { "w": "へやを しずかに してください。", "k": "heya o shizuka ni shite kudasai", "m": "Tolong buat kamar jadi tenang." },
+      { "w": "もっと ていねいに かいてください。", "k": "motto teinei ni kaite kudasai", "m": "Tolong tulis lebih rapi." }
+    ]
+  },
+  "g_give_ageru": {
+    "desc": "あげる = MEMBERI, dipakai kalau PEMBERINYA adalah kamu atau pihak ketiga, dan penerimanya bukan kamu. Pola: pemberi は penerima に benda を あげる.",
+    "pola": "pemberi は  penerima に  benda を あげました",
+    "ex": [
+      { "w": "わたしは いもうとに ほんを あげました。", "k": "watashi wa imōto ni hon o agemashita", "m": "Saya memberi buku ke adik perempuan." },
+      { "w": "たなかさんは リンさんに はなを あげました。", "k": "tanaka-san wa rin-san ni hana o agemashita", "m": "Tanaka memberi bunga ke Rin." }
+    ]
+  },
+  "g_receive_morau": {
+    "desc": "もらう = MENERIMA, dipakai kalau kamu adalah PENERIMANYA. Pola: penerima は pemberi に／から benda を もらう. Sudut pandangnya ada di penerima.",
+    "pola": "penerima は  pemberi に／から  benda を もらいました",
+    "ex": [
+      { "w": "わたしは せんせいに ほんを もらいました。", "k": "watashi wa sensei ni hon o moraimashita", "m": "Saya menerima buku dari guru." },
+      { "w": "たなかさんから チョコレートを もらいました。", "k": "tanaka-san kara chokorēto o moraimashita", "m": "Menerima cokelat dari Tanaka." }
+    ]
+  },
+  "g_giveme_kureru": {
+    "desc": "くれる = MEMBERI, tapi khusus kalau PENERIMANYA adalah kamu (atau keluarga kamu). Pelakunya orang lain. Inilah pasangan あげる: あげる = keluar dari kamu, くれる = masuk ke kamu.",
+    "pola": "pemberi は  わたし に  benda を くれました",
+    "ex": [
+      { "w": "ともだちは わたしに プレゼントを くれました。", "k": "tomodachi wa watashi ni purezento o kuremashita", "m": "Teman memberi saya hadiah." },
+      { "w": "ははは わたしに おかねを くれました。", "k": "haha wa watashi ni okane o kuremashita", "m": "Ibu memberi saya uang." }
+    ]
+  },
+  "g_nagara": {
+    "desc": "ながら menyatakan DUA KEGIATAN BERJALAN BERSAMAAN oleh satu orang: 'sambil'. Kata kerja yang pakai ながら adalah yang jadi kegiatan LATAR, sedangkan kata kerja utama di akhir kalimat.",
+    "pola": "kata kerja (stem) + ながら、kata kerja utama",
+    "ex": [
+      { "w": "コーヒーを のみながら しんぶんを よみます。", "k": "kōhī o nominagara shinbun o yomimasu", "m": "Membaca koran sambil minum kopi." },
+      { "w": "あるきながら でんわを しました。", "k": "arukinagara denwa o shimashita", "m": "Menelepon sambil berjalan." }
+    ]
+  },
+  "g_maeni": {
+    "desc": "まえに = 'sebelum' melakukan sesuatu. Kata kerja yang mendahuluinya memakai bentuk KAMUS (bentuk dasar), bukan bentuk て atau ます.",
+    "pola": "kata kerja (bentuk kamus) + まえに",
+    "ex": [
+      { "w": "でかける まえに、でんわを します。", "k": "dekakeru mae ni, denwa o shimasu", "m": "Sebelum keluar, menelepon dulu." },
+      { "w": "たべる まえに、てを あらってください。", "k": "taberu mae ni, te o aratte kudasai", "m": "Sebelum makan, cuci tangan." }
+    ]
+  },
+  "g_atode": {
+    "desc": "あとで = 'sesudah' melakukan sesuatu. Kata kerja sebelumnya memakai bentuk LAMPAU た (たべた あとで). Untuk kata benda pakai の: ごはんの あとで.",
+    "pola": "kata kerja (bentuk た) + あとで",
+    "ex": [
+      { "w": "しごとの あとで、ジムに いきます。", "k": "shigoto no ato de, jimu ni ikimasu", "m": "Setelah kerja, pergi ke gym." },
+      { "w": "シャワーを あびた あとで、ねます。", "k": "shawā o abita ato de, nemasu", "m": "Setelah mandi, tidur." }
+    ]
+  },
+  "g_koto_dekiru": {
+    "desc": "こと mengubah KATA KERJA menjadi KATA BENDA, lalu bisa dipasangkan dengan できます (bisa). Pola: kata kerja bentuk kamus + こと が できます = 'bisa melakukan …'. Ini cara menyatakan kemampuan untuk kata kerja.",
+    "pola": "kata kerja (bentuk kamus) + ことが できます",
+    "ex": [
+      { "w": "すしを つくることが できます。", "k": "sushi o tsukuru koto ga dekimasu", "m": "Bisa membuat sushi." },
+      { "w": "ここで カードを つかうことが できますか。", "k": "koko de kādo o tsukau koto ga dekimasu ka", "m": "Bisa pakai kartu di sini?" }
+    ]
+  },
+  "g_tsumori": {
+    "desc": "つもり = NIAT/RENCANA yang sudah diputuskan sendiri. Pola: kata kerja bentuk kamus + つもりです. Lebih kuat daripada でしょう (mungkin) dan berbeda dari たい (sekadar ingin).",
+    "pola": "kata kerja (bentuk kamus) + つもりです",
+    "ex": [
+      { "w": "らいねん にほんへ いくつもりです。", "k": "rainen nihon e iku tsumori desu", "m": "Tahun depan berniat pergi ke Jepang." },
+      { "w": "きょうは うちに いるつもりです。", "k": "kyō wa uchi ni iru tsumori desu", "m": "Hari ini berniat di rumah saja." }
+    ]
+  },
+  "g_tari": {
+    "desc": "たり…たり します mendaftar beberapa kegiatan yang dilakukan BERGANTIAN atau sebagai contoh, tidak berurutan. Kata kerja memakai bentuk た + り. Kalimat ditutup します.",
+    "pola": "kata kerja (bentuk た) + り、… + り します",
+    "ex": [
+      { "w": "やすみの ひは ねたり ほんを よんだり します。", "k": "yasumi no hi wa netari hon o yondari shimasu", "m": "Hari libur tidur, baca buku, dan sebagainya." },
+      { "w": "ともだちと はなしたり あるいたり しました。", "k": "tomodachi to hanashitari aruitari shimashita", "m": "Ngobrol dan jalan-jalan dengan teman." }
+    ]
+  },
+  "g_narimasu": {
+    "desc": "なります = 'menjadi'. Untuk kata sifat-i: buang い + く なります (さむい → さむく なります). Untuk kata sifat-na dan kata benda: + に なります. Jangan campur keduanya.",
+    "pola": "sifat-i → く／sifat-na & benda → に + なります",
+    "ex": [
+      { "w": "だんだん あたたかく なりました。", "k": "dandan atatakaku narimashita", "m": "Lama-lama jadi hangat." },
+      { "w": "せんせいに なりたいです。", "k": "sensei ni naritai desu", "m": "Ingin jadi guru." }
+    ]
+  },
+  "g_shiteimasu": {
+    "desc": "しています di sini bukan 'sedang melakukan', tapi KEADAAN yang melekat: メガネを かけています = memakai kacamata (keadaan sekarang), しっています = tahu. Sama seperti けっこんしています (sudah menikah).",
+    "pola": "benda を + kata kerja (bentuk て) + います",
+    "ex": [
+      { "w": "あの ひとは ぼうしを かぶっています。", "k": "ano hito wa bōshi o kabutte imasu", "m": "Orang itu memakai topi." },
+      { "w": "わたしは めがねを かけています。", "k": "watashi wa megane o kakete imasu", "m": "Saya memakai kacamata." }
+    ]
+  }
+}

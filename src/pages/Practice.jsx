@@ -17,6 +17,7 @@ import { Button } from "../components/ui/Button";
 import { categoryTranslations } from "../utils/translations";
 import { KanaTypeToggle } from "../components/KanaTypeToggle";
 import { KanaQuiz } from "../features/quiz/KanaQuiz";
+import { NotesPanel } from "../features/learn/NotesPanel";
 import { useEffectLayer } from "../features/effects/EffectContext";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 import { yujiBurnedIds, YUJI_FINISHER_XP_MULT } from "../features/effects/yujiFx";
@@ -558,6 +559,7 @@ export function Practice() {
                           {currentQuestion.meaning_id}
                         </span>
                       )}
+                      <NotesPanel item={currentQuestion} language={language} className="mt-2" />
                     </motion.div>
                   )}
                 </div>
