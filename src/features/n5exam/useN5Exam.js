@@ -22,6 +22,23 @@ const DATASETS = {
 
 const XP_PER_CORRECT = 15; // konsisten dengan MondaiQuiz
 
+// Sesi ujian disimpan di localStorage → refresh/HP mati tidak menghanguskan
+// 78 jawaban. Dipisah per mode supaya ujian 終 tidak menimpa N5 biasa.
+// ponytail: localStorage (bukan IndexedDB) — payload ~40 KB, cukup.
+const sessionKey = (cold) => `n5_exam_session_v1:${cold ? 'owari' : 'n5'}`;
+const SESSION_MAX_AGE_MS = 12 * 60 * 60 * 1000;
+
+const loadSession = (key) => {
+  try {
+    const s = JSON.parse(localStorage.getItem(key) || 'null');
+    if (!s?.exam?.length || !Array.isArray(s.answers)) return null;
+    if (Date.now() - (s.at || 0) > SESSION_MAX_AGE_MS) return null;
+    return s;
+  } catch {
+    return null;
+  }
+};
+
 // Fase: 'intro' → 'section' ⇄ 'sectionBreak' → 'results'
 // opts (gerbang 終 電脳): { cold, evaluate, sectionMinutes(fn) }.
 // Default = N5 biasa (cold off, ambang N5, durasi N5) → pemanggil lama tak berubah.
@@ -51,6 +68,46 @@ export function useN5Exam(opts = {}) {
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { sectionRef.current = sectionIndex; }, [sectionIndex]);
   useEffect(() => { qRef.current = qIndex; }, [qIndex]);
+
+  // ── Persist sesi ──────────────────────────────────────────────────────────
+  const key = sessionKey(cold);
+  const [restored, setRestored] = useState(false);
+
+  // Pulihkan sekali saat mount: refresh / HP mati di tengah ujian → lanjut.
+  // Timer ikut nilai tersimpan (ujian dianggap pause, bukan jalan di latar).
+  useEffect(() => {
+    const s = loadSession(key);
+    if (!s) { setRestored(true); return; }
+    examRef.current = s.exam;
+    answersRef.current = s.answers;
+    sectionRef.current = s.sectionIndex || 0;
+    qRef.current = s.qIndex || 0;
+    setExam(s.exam);
+    setSectionIndex(s.sectionIndex || 0);
+    setQIndex(s.qIndex || 0);
+    setSelected(s.selected ?? null);
+    setIsAnswered(!!s.isAnswered);
+    setTimeLeft(s.timeLeft ?? null);
+    setPhase(s.phase === 'sectionBreak' ? 'sectionBreak' : 'section');
+    setRestored(true);
+  }, [key]);
+
+  // Simpan tiap perubahan yang berarti. Guard `restored` supaya efek ini tidak
+  // menulis sesi kosong sebelum pemulihan selesai (race di mount pertama).
+  useEffect(() => {
+    if (!restored) return;
+    if (phase !== 'section' && phase !== 'sectionBreak') return;
+    try {
+      localStorage.setItem(key, JSON.stringify({
+        exam, answers: answersRef.current, sectionIndex, qIndex,
+        selected, isAnswered, timeLeft, phase, at: Date.now(),
+      }));
+    } catch { /* quota penuh → ujian jalan terus, cuma tak bisa dipulihkan */ }
+  }, [restored, key, phase, exam, sectionIndex, qIndex, selected, isAnswered, timeLeft]);
+
+  const clearSession = useCallback(() => {
+    try { localStorage.removeItem(key); } catch { /* abaikan */ }
+  }, [key]);
 
   const currentSection = exam[sectionIndex] || null;
   const currentItem = currentSection ? currentSection.items[qIndex] : null;
@@ -82,6 +139,7 @@ export function useN5Exam(opts = {}) {
     setResult(null);
     setTimeLeft(minutesFor(N5_SECTION_ORDER[0]) * 60);
     setPhase('section');
+    setRestored(true);   // sesi baru → efek persist boleh menulis
   }, [resetEffectStreak, minutesFor]);
 
   // Timer seksi — jalan hanya saat fase 'section'. Reset tiap ganti seksi.
@@ -110,7 +168,8 @@ export function useN5Exam(opts = {}) {
     });
     setResult(scored);
     setPhase('results');
-  }, [completeQuiz, recordN5Exam, evaluate]);
+    clearSession();   // ujian selesai → jangan ditawari lanjut sesi lama
+  }, [completeQuiz, recordN5Exam, evaluate, clearSession]);
 
   // Akhiri seksi sekarang: maju ke jeda (seksi berikutnya) atau ke hasil.
   const endSection = useCallback((timedOut) => {
@@ -170,10 +229,11 @@ export function useN5Exam(opts = {}) {
   const quit = useCallback(() => {
     examRef.current = [];
     answersRef.current = [];
+    clearSession();
     setPhase('intro');
     setExam([]);
     setResult(null);
-  }, []);
+  }, [clearSession]);
 
   return {
     phase, exam, currentSection, currentItem, sectionIndex, qIndex,
