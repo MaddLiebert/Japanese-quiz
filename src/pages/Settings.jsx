@@ -570,7 +570,7 @@ export function Settings() {
               {[
                 { label: language === 'id' ? "Aplikasi" : "Application", value: "日本語学園 · Nihongo Gakuen" },
                 { label: language === 'id' ? "Dasar" : "Foundation", value: "N5 Course" },
-                { label: language === 'id' ? "Versi" : "Version", value: "2.0.0" },
+                { label: language === 'id' ? "Versi" : "Version", value: "2.5.0" },
               ].map((item) => (
                 <div key={item.label} className="bg-kinari p-6">
                   <div className="text-[9px] uppercase tracking-[0.3em] font-bold text-sumi/50 mb-2">
