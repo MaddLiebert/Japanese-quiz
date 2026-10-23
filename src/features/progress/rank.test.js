@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   RANKS, TOP_RANK, TOP_RANK_XP,
   getRankInfo, getRankName, isTopRank, getNextRank, rankProgress, rankLabel,
+  gateXp, gateLevel,
 } from './rank.js';
 
 test('RANKS: 4 pangkat, tier menaik, ambang XP naik, hanya 1 puncak', () => {
@@ -97,4 +98,21 @@ test('rankProgress: di puncak → isMax, pct 100, tanpa next', () => {
 test('rankLabel: "Rank 漢字"', () => {
   assert.equal(rankLabel(0), 'Kouhai 後輩');
   assert.equal(rankLabel(20000), 'Shogun 将軍');
+});
+
+// Regresi: penalti XP Death Quiz (−300) tak boleh mengunci ulang fitur.
+test('gateXp: pakai XP puncak, bukan XP sekarang', () => {
+  assert.equal(gateXp({ xp: 20000, peakXp: 20000 }), 20000);
+  assert.equal(gateXp({ xp: 19700, peakXp: 20000 }), 20000); // kena penalti
+  assert.equal(gateXp({ xp: 5000, peakXp: 0 }), 5000);       // profil lama tanpa peakXp
+  assert.equal(gateXp({}), 0);
+  assert.equal(gateXp(null), 0);
+  assert.equal(gateXp({ xp: 'abc', peakXp: 12000 }), 12000);
+});
+
+test('gateLevel: level era ikut XP puncak', () => {
+  assert.equal(gateLevel({ xp: 29900, peakXp: 29900, level: 300 }), 300);
+  assert.equal(gateLevel({ xp: 29700, peakXp: 29900, level: 298 }), 300);
+  assert.equal(gateLevel({ xp: 0, peakXp: 0 }), 1);
+  assert.equal(gateLevel(null), 1);
 });

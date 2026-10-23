@@ -1,9 +1,10 @@
 import { motion } from "motion/react";
 import { Button } from "../components/ui/Button";
-import { useUserStats, useItemProgress, useAchievements, getRank } from "../features/progress/ProgressContext";
+import { useUserStats, useItemProgress, useAchievements, getGateRank } from "../features/progress/ProgressContext";
 import { pickBadges, knownBadges } from "../features/progress/badges";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
+import { gateLevel } from "../features/progress/rank";
 import { countMasteredKanji, isN5ExamUnlocked, N5_EXAM_MIN_MASTERED_KANJI } from "../features/n5exam/n5exam";
 import { DailyQuestPanel } from "../features/quests/DailyQuestPanel";
 import { EraDivider } from "../components/EraDivider";
@@ -75,14 +76,14 @@ export function Home() {
   const progressPercentage = (progress.xp > 0 && progress.xp % 100 === 0) ? 100 : (progress.xp % 100);
 
   // Death Quiz 死闘 — terkunci sampai rank Shogun (gate dari getRank, sumber tunggal).
-  const deathUnlocked = getRank(progress.xp || 0).startsWith('Shogun');
+  const deathUnlocked = getGateRank(progress).startsWith('Shogun');
 
   // N5 Exam 模擬試験 — butuh rank Shogun DAN minimal 30 kanji sudah hafal (mastered).
   const masteredKanji = countMasteredKanji(itemProgress);
-  const n5Unlocked = isN5ExamUnlocked(getRank(progress.xp || 0), masteredKanji);
+  const n5Unlocked = isN5ExamUnlocked(getGateRank(progress), masteredKanji);
 
   // 活字組み (Typesetting) — terbuka di era Meiji (gate Lv 50, sumber tunggal eras.js).
-  const typesettingUnlocked = isEraUnlocked('meiji', progress.level || 1);
+  const typesettingUnlocked = isEraUnlocked('meiji', gateLevel(progress));
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">

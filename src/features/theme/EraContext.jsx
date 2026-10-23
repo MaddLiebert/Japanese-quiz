@@ -3,6 +3,7 @@
 // Lihat PRD: docs/tema/heian.md §12 T2.
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useUserStats } from '../progress/ProgressContext';
+import { gateLevel } from '../progress/rank';
 import { franchiseTokens, franchiseNuance } from '../anime/franchises';
 import {
   DEFAULT_ERA, getEra, eraForLevel, isEraUnlocked, unlockedEras, nextEra,
@@ -13,7 +14,9 @@ export { EraContext };
 
 export const EraProvider = ({ children }) => {
   const { progress } = useUserStats();
-  const level = progress?.level || 1;
+  // Level untuk gerbang era = level TERTINGGI yang pernah dicapai (gateLevel).
+  // Penalti XP (Death Quiz) tak boleh mengunci ulang era yang sudah terbuka.
+  const level = gateLevel(progress);
 
   const [era, setEraState] = useState(() => {
     const saved = localStorage.getItem('app_era');

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { useUserStats, getRank } from "../progress/ProgressContext";
+import { useUserStats, getGateRank } from "../progress/ProgressContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { useDeathQuizSession } from "./useDeathQuizSession";
 import { Glyph } from "../../components/icons/Glyph";
@@ -9,6 +9,7 @@ import { MedaruCoin } from "../../components/MedaruCoin";
 import { useEra } from "../theme/EraContext";
 import { medaruCopy } from "../progress/medaruCopy";
 import { isDeathQuizUnlocked, DEATH_UNLOCK_XP, DEATH_XP_PENALTY, DEATH_START_LIVES, deathMedaruReward } from "./deathQuiz";
+import { gateXp } from "../progress/rank";
 import { DEATH_SKILLS, DEATH_METER_PER_CHARGE } from "./deathSkills";
 import { EraPaper } from "../../components/EraPaper";
 
@@ -50,9 +51,10 @@ export function DeathQuizScreen() {
   const money = medaruCopy(era, language);   // nama mata uang ikut era (Heian → もん)
   const [confirmQuit, setConfirmQuit] = useState(false);
 
-  const rank = getRank(progress.xp || 0);
+  const rank = getGateRank(progress);
   const unlocked = isDeathQuizUnlocked(rank);
-  const xpNow = Math.min(progress.xp || 0, DEATH_UNLOCK_XP);
+  // Progress bar pakai XP puncak juga — penalti tak memundurkan bar.
+  const xpNow = Math.min(gateXp(progress), DEATH_UNLOCK_XP);
   const unlockPct = Math.round((xpNow / DEATH_UNLOCK_XP) * 100);
 
   const session = useDeathQuizSession();

@@ -95,5 +95,22 @@ export const rankProgress = (xp) => {
   return { current: cur, next, pct, remaining: Math.max(0, next.minXp - value), isMax: false };
 };
 
+// XP untuk GERBANG fitur: XP puncak yang pernah dicapai. Penalti XP (Death Quiz
+// −300) tidak boleh mengunci ulang fitur yang sudah terbuka.
+export const gateXp = (progress) => {
+  const cur = Number(progress?.xp) || 0;
+  const peak = Number(progress?.peakXp) || 0;
+  return Math.max(cur, peak);
+};
+
+// Level untuk GERBANG era: diturunkan dari XP puncak, bukan XP sekarang. Tanpa
+// ini, penalti XP Death Quiz bisa menurunkan level → era yang sudah terbuka
+// (mis. 電脳 Lv 300) mendadak terkunci lagi.
+export const gateLevel = (progress) => {
+  const lv = Number(progress?.level) || 1;
+  const fromPeak = Math.min(Math.floor(gateXp(progress) / 100) + 1, 1000);
+  return Math.max(lv, fromPeak);
+};
+
 // Label singkat "Rank · XP" untuk dipakai chip kecil.
 export const rankLabel = (xp) => `${getRankName(xp)} ${getRankInfo(xp).kanji}`;

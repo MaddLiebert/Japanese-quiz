@@ -56,7 +56,14 @@ export const mergeBundles = (local, remote) => {
   const winner = rt > lt ? 'remote' : lt > rt ? 'local' : 'equal';
 
   // Snapshot progress + badge dari pemenang; kalau seri, utamakan lokal.
-  const winProgress = winner === 'remote' ? asObj(r.progress) : asObj(l.progress);
+  const winProgress = { ...(winner === 'remote' ? asObj(r.progress) : asObj(l.progress)) };
+  // XP puncak (gate fitur) = maksimum kedua sisi: perangkat yang lebih baru
+  // belum tentu punya puncak tertinggi, dan penalti XP boleh menurunkan `xp`.
+  const peak = Math.max(
+    num(asObj(l.progress).peakXp), num(asObj(r.progress).peakXp),
+    num(winProgress.xp),
+  );
+  if (peak > 0) winProgress.peakXp = Math.max(peak, num(winProgress.peakXp));
   const winBadges = winner === 'remote' ? asArr(r.selectedBadges) : asArr(l.selectedBadges);
 
   // Username: pakai yang non-kosong (kalau dua-duanya ada → ikut pemenang).

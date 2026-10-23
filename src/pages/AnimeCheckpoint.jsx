@@ -12,7 +12,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { useUserStats, useItemProgress, getRank } from '../features/progress/ProgressContext';
+import { useUserStats, useItemProgress, getGateRank } from '../features/progress/ProgressContext';
 import { countMasteredKanji, N5_TOTAL_MINUTES } from '../features/n5exam/n5exam';
 import {
   ANIME_CHECKPOINT_ROUTE, ANIME_CHECKPOINT_MIN_KANJI,
@@ -28,7 +28,7 @@ export function AnimeCheckpoint() {
   const id = language === 'id';
 
   const mastered = countMasteredKanji(itemProgress);
-  const rank = getRank(progress?.xp || 0);
+  const rank = getGateRank(progress);
   const unlocked = isAnimeCheckpointUnlocked(rank, mastered);
 
   const rows = [

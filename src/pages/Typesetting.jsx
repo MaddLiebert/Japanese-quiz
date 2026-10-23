@@ -9,6 +9,7 @@ import { useTypesetting } from '../features/typesetting/useTypesetting';
 import { TypesettingBoard } from '../features/typesetting/TypesettingBoard';
 import { looseAmount, looseIndices } from '../features/typesetting/looseType';
 import { isEraUnlocked } from '../features/theme/eras';
+import { gateLevel } from '../features/progress/rank';
 
 // 活字組み — halaman latihan menyusun blok huruf (grammar Meiji).
 // Gate: era Meiji (Lv 50). Lihat SPEC docs/tema/meiji-mekanik.md §M1.
@@ -18,7 +19,7 @@ export function Typesetting() {
   const { progress, addXp } = useUserStats();
   const id = language === 'id';
   const level = progress?.level ?? 1;
-  const unlocked = isEraUnlocked('meiji', level);
+  const unlocked = isEraUnlocked('meiji', gateLevel(progress));
 
   const bank = useMemo(() => TYPESETTING_BANK, []);
   // Level latihan mengikuti level era: makin tinggi → tanpa furigana.

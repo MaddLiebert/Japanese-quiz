@@ -13,7 +13,7 @@ import { dateKey, emptyQuests, ensureToday, bumpEvent, canClaim, markClaimed, qu
 import { bumpDaily } from './dailyLog';
 import { emptySeen, ensureSeen, markSeen, ensureTutorialHidden } from '../tutorial/tutorials';
 import { emptyCinematics, ensureCinematics, markCinematicSeen as markCine } from '../cinematic/cinematics';
-import { getRankName } from './rank';
+import { getRankName, gateXp } from './rank';
 // 多元 LAPIS 2 & 3 — franchise (dibeli) + karakter (gacha). Modul murni.
 import { canBuyFranchise, addFranchise, equipFranchise as equipFranchiseState, franchiseById } from '../anime/franchises';
 import { charactersOf } from '../anime/characters';
@@ -54,9 +54,14 @@ export const useUserStats = () => {
 // Tetap mengembalikan STRING nama rank (kontrak lama: gate fitur memakai
 // `rank.startsWith('Shogun')`, lihat deathQuiz.js & n5exam.js).
 export const getRank = (xp) => getRankName(xp);
+// Rank untuk GERBANG fitur — pakai XP puncak, jadi penalti XP tak mengunci ulang.
+export const getGateRank = (progress) => getRankName(gateXp(progress));
 
 const DEFAULT_PROGRESS = {
   xp: 0,
+  // XP puncak (sticky). Gerbang fitur memakai ini, bukan `xp` — penalti XP
+  // (Death Quiz) tak boleh mengunci ulang fitur yang sudah terbuka.
+  peakXp: 0,
   level: 1,
   accuracy: 0,
   weightedWinRate: 0,
@@ -206,6 +211,9 @@ export const ProgressProvider = ({ children }) => {
       const parsed = JSON.parse(saved);
       // Merge dengan default (backfill field hilang) + migrasi state pack.
       const merged = migratePacks({ ...DEFAULT_PROGRESS, ...(parsed || {}) });
+      // Backfill XP puncak: profil lama belum punya `peakXp` → anggap xp sekarang
+      // sebagai puncak, supaya gate yang sudah terbuka tidak mendadak terkunci.
+      merged.peakXp = Math.max(Number(merged.peakXp) || 0, Number(merged.xp) || 0);
       merged.quests = ensureToday(merged.quests);
       merged.weekly = ensureWeek(merged.weekly);
       merged.tutorialSeen = ensureSeen(merged.tutorialSeen);
@@ -364,6 +372,7 @@ export const ProgressProvider = ({ children }) => {
       return {
         ...prev,
         xp: newXp,
+        peakXp: Math.max(prev.peakXp || 0, newXp),
         level: newLevel,
         streak: newStreak,
         maxStreak: newMaxStreak,
@@ -577,6 +586,7 @@ export const ProgressProvider = ({ children }) => {
         ...prev,
         quests: markClaimed(base, id, today),
         xp: newXp,
+        peakXp: Math.max(prev.peakXp || 0, newXp),
         level: Math.min(Math.floor(newXp / 100) + 1, 1000),
         medaru: (prev.medaru || 0) + def.medaru,
       };
@@ -600,6 +610,7 @@ export const ProgressProvider = ({ children }) => {
         ...prev,
         weekly: markWeekClaimed(base, id, week),
         xp: newXp,
+        peakXp: Math.max(prev.peakXp || 0, newXp),
         level: Math.min(Math.floor(newXp / 100) + 1, 1000),
         medaru: (prev.medaru || 0) + def.medaru,
       };

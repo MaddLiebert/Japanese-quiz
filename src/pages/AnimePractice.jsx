@@ -14,6 +14,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useUserStats } from '../features/progress/ProgressContext';
 import { isEraUnlocked } from '../features/theme/eras';
+import { gateLevel } from '../features/progress/rank';
 import { useEffectLayer } from '../features/effects/EffectContext';
 import {
   QUIZ_MODES, QUIZ_MODE_LABEL, buildQuestions, checkAnswer, QUIZ_XP,
@@ -38,7 +39,7 @@ export function AnimePractice() {
   const { progress, addXp } = useUserStats();
   const id = language === 'id';
   const level = progress?.level ?? 1;
-  const unlocked = isEraUnlocked('anime', level);
+  const unlocked = isEraUnlocked('anime', gateLevel(progress));
   // Efek JJK (visual + suara) saat menjawab — pak sama dengan kuis lain
   // (Quiz/MondaiQuiz/N5Exam): benar → efek karakter, salah → efek gagal.
   const { triggerEffect, resetEffectStreak, clearAnswerFx, endQuizSession } = useEffectLayer();
