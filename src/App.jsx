@@ -1,40 +1,53 @@
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Home } from "./pages/Home";
-import { Learn } from "./pages/Learn";
-import { Practice } from "./pages/Practice";
-import { Review } from "./pages/Review";
-import { Settings } from "./pages/Settings";
-import { Writing } from "./pages/Writing";
-import { Speaking } from "./pages/Speaking";
-import { HeianHistory } from "./pages/HeianHistory";
-import { EdoHistory } from "./pages/EdoHistory";
-import { MeijiHistory } from "./pages/MeijiHistory";
-import { ShowaHistory } from "./pages/ShowaHistory";
-import { AnimeHistory } from "./pages/AnimeHistory";
-import { AnimeShop } from "./pages/AnimeShop";
-import { AnimeClaw } from "./pages/AnimeClaw";
-import { AnimeCheckpoint } from "./pages/AnimeCheckpoint";
-import { AnimePractice } from "./pages/AnimePractice";
-import { CyberpunkHistory } from "./pages/CyberpunkHistory";
-import { OwariCheckpoint } from "./pages/OwariCheckpoint";
-import { Typesetting } from "./pages/Typesetting";
-import { PrintShop } from "./pages/PrintShop";
-import { Neologism } from "./pages/Neologism";
-import { Codex } from "./pages/Codex";
-import { Koseki } from "./pages/Koseki";
-import { CyberpunkGachaOverlay } from "./features/gacha/CyberpunkGachaOverlay";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+// Shell era (bukan route) → tetap eager; ia dirender di luar <Suspense>.
 import { EdoNightFestival } from "./features/cinematic/edo/components/EdoNightFestival";
-import { HakoneCheckpoint } from "./pages/HakoneCheckpoint";
-import { KokkaiCheckpoint } from "./pages/KokkaiCheckpoint";
-import Profile from "./features/profile/Profile";
-import { PublicProfile } from "./features/profile/PublicProfile";
-import MondaiChapterFlow from "./features/quiz/MondaiChapterFlow";
-import Shop from "./features/shop/Shop";
-import Inventory from "./features/inventory/Inventory";
-import { DeathQuizScreen } from "./features/deathquiz/DeathQuizScreen";
-import { N5ExamScreen } from "./features/n5exam/N5ExamScreen";
-import { SotsugyoCheckpoint } from "./pages/SotsugyoCheckpoint";
+
+// Code splitting: dulu 66 import statis → satu chunk 2.5 MB, first paint di HP
+// nunggu /death-quiz + /multiplayer + 6 cinematic ikut keunduh. Sekarang Home
+// tetap eager (landing), sisanya diunduh saat rutenya dibuka.
+// lazyNamed: banyak halaman pakai named export, bukan default.
+const lazyNamed = (loader, name) =>
+  lazy(() => loader().then((m) => ({ default: m[name] })));
+
+const Learn = lazyNamed(() => import("./pages/Learn"), "Learn");
+const Practice = lazyNamed(() => import("./pages/Practice"), "Practice");
+const Review = lazyNamed(() => import("./pages/Review"), "Review");
+const Settings = lazyNamed(() => import("./pages/Settings"), "Settings");
+const Writing = lazyNamed(() => import("./pages/Writing"), "Writing");
+const Speaking = lazyNamed(() => import("./pages/Speaking"), "Speaking");
+const HeianHistory = lazyNamed(() => import("./pages/HeianHistory"), "HeianHistory");
+const EdoHistory = lazyNamed(() => import("./pages/EdoHistory"), "EdoHistory");
+const MeijiHistory = lazyNamed(() => import("./pages/MeijiHistory"), "MeijiHistory");
+const ShowaHistory = lazyNamed(() => import("./pages/ShowaHistory"), "ShowaHistory");
+const AnimeHistory = lazyNamed(() => import("./pages/AnimeHistory"), "AnimeHistory");
+const AnimeShop = lazyNamed(() => import("./pages/AnimeShop"), "AnimeShop");
+const AnimeClaw = lazyNamed(() => import("./pages/AnimeClaw"), "AnimeClaw");
+const AnimeCheckpoint = lazyNamed(() => import("./pages/AnimeCheckpoint"), "AnimeCheckpoint");
+const AnimePractice = lazyNamed(() => import("./pages/AnimePractice"), "AnimePractice");
+const CyberpunkHistory = lazyNamed(() => import("./pages/CyberpunkHistory"), "CyberpunkHistory");
+const OwariCheckpoint = lazyNamed(() => import("./pages/OwariCheckpoint"), "OwariCheckpoint");
+const Typesetting = lazyNamed(() => import("./pages/Typesetting"), "Typesetting");
+const PrintShop = lazyNamed(() => import("./pages/PrintShop"), "PrintShop");
+const Neologism = lazyNamed(() => import("./pages/Neologism"), "Neologism");
+const Codex = lazyNamed(() => import("./pages/Codex"), "Codex");
+const Koseki = lazyNamed(() => import("./pages/Koseki"), "Koseki");
+const CyberpunkGachaOverlay = lazyNamed(() => import("./features/gacha/CyberpunkGachaOverlay"), "CyberpunkGachaOverlay");
+const HakoneCheckpoint = lazyNamed(() => import("./pages/HakoneCheckpoint"), "HakoneCheckpoint");
+const KokkaiCheckpoint = lazyNamed(() => import("./pages/KokkaiCheckpoint"), "KokkaiCheckpoint");
+const Profile = lazy(() => import("./features/profile/Profile"));
+const PublicProfile = lazyNamed(() => import("./features/profile/PublicProfile"), "PublicProfile");
+const MondaiChapterFlow = lazy(() => import("./features/quiz/MondaiChapterFlow"));
+const Shop = lazy(() => import("./features/shop/Shop"));
+const Inventory = lazy(() => import("./features/inventory/Inventory"));
+const DeathQuizScreen = lazyNamed(() => import("./features/deathquiz/DeathQuizScreen"), "DeathQuizScreen");
+const N5ExamScreen = lazyNamed(() => import("./features/n5exam/N5ExamScreen"), "N5ExamScreen");
+const SotsugyoCheckpoint = lazyNamed(() => import("./pages/SotsugyoCheckpoint"), "SotsugyoCheckpoint");
+const Leaderboard = lazyNamed(() => import("./features/leaderboard/Leaderboard"), "Leaderboard");
+const Friends = lazyNamed(() => import("./features/social/Friends"), "Friends");
+const Multiplayer = lazyNamed(() => import("./pages/Multiplayer"), "Multiplayer");
 import { ProgressProvider, useUserStats } from "./features/progress/ProgressContext";
 import { EraProvider, useEra } from "./features/theme/EraContext";
 import { ThemeAudioHost } from "./features/theme/ThemeAudioHost";
@@ -59,9 +72,6 @@ import { Glyph } from "./components/icons/Glyph";
 import { MedaruCoin } from "./components/MedaruCoin";
 import { medaruCopy } from "./features/progress/medaruCopy";
 import { SyncProvider, useSync } from "./features/sync/SyncContext";
-import { Leaderboard } from "./features/leaderboard/Leaderboard";
-import { Friends } from "./features/social/Friends";
-import { Multiplayer } from "./pages/Multiplayer";
 import { fetchConnections } from "./features/social/socialApi";
 import { requestCount } from "./features/social/socialView";
 
@@ -376,6 +386,8 @@ function App() {
               <TutorialButton />
 
               <main className="relative z-10 w-full h-full">
+                <ErrorBoundary>
+                <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-serif font-black text-sumi/40 text-2xl">読込中…</div>}>
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/learn" element={<Learn />} />
@@ -416,6 +428,8 @@ function App() {
                   <Route path="/codex" element={<Codex />} />
                   <Route path="/koseki" element={<Koseki />} />
                 </Routes>
+                </Suspense>
+                </ErrorBoundary>
               </main>
             </div>
             </EffectProvider>
