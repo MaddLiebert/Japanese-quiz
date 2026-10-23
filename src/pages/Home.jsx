@@ -618,7 +618,15 @@ export function Home() {
 
         {/* Center */}
         <div className="text-[11px] tracking-[0.2em] uppercase font-bold text-sumi/50 text-center">
-          Credit by:<span className="font-bold text-ai">@MaddLiebert</span>
+          Credit by:{' '}
+          <a
+            href="https://www.instagram.com/maddliebert/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold text-ai hover:underline"
+          >
+            @MaddLiebert
+          </a>
         </div>
       </footer>
     </div>
