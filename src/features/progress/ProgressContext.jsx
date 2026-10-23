@@ -10,12 +10,18 @@ import { KOSEKI_KEY } from '../profile/koseki';
 import { COMPANION_KEY } from '../companion/questions';
 import { emptyExamRecord, mergeExamRecord, n5BadgesFor } from '../n5exam/certificate';
 import { dateKey, emptyQuests, ensureToday, bumpEvent, canClaim, markClaimed, questDef, SIDE_SOURCES, emptyWeekly, ensureWeek, weekBump, weekKey, canClaimWeek, markWeekClaimed, weeklyQuestDef } from '../quests/quests';
+import { bumpDaily } from './dailyLog';
 import { emptySeen, ensureSeen, markSeen, ensureTutorialHidden } from '../tutorial/tutorials';
 import { emptyCinematics, ensureCinematics, markCinematicSeen as markCine } from '../cinematic/cinematics';
 import { getRankName } from './rank';
 // 多元 LAPIS 2 & 3 — franchise (dibeli) + karakter (gacha). Modul murni.
 import { canBuyFranchise, addFranchise, equipFranchise as equipFranchiseState, franchiseById } from '../anime/franchises';
 import { charactersOf } from '../anime/characters';
+
+// Plafon SRS: 2^streak meledak (streak 10 = 1024 hari → kartu lenyap dari antrian).
+const SRS_MAX_DAYS = 180;
+// Plafon antrian Review harian — 300 kartu sekaligus = mustahil diselesaikan.
+export const REVIEW_QUEUE_CAP = 60;
 
 // Fungsi ini jagoan buat ngambil tanggal LOKAL HP/Laptop (YYYY-MM-DD)
 const getLocalDateString = (date = new Date()) => {
@@ -58,6 +64,8 @@ const DEFAULT_PROGRESS = {
   medaru: 0,
   totalAnswered: 0,
   totalCorrect: 0,
+  // Akurasi per tanggal, 30 hari terakhir (lihat features/progress/dailyLog.js).
+  dailyLog: {},
   streak: 0,
   maxStreak: 0,
   ownedPacks: [],
@@ -269,10 +277,12 @@ export const ProgressProvider = ({ children }) => {
       // Masuk weak queue jika pernah dikerjakan dan sudah waktunya direview
       // ATAU statusnya masih 'learning' (sedang susah-susahnya)
       if (stats.nextReview <= today || stats.status === 'learning') {
-         weakIds.push(itemId);
+         weakIds.push({ id: itemId, due: stats.nextReview || '' });
       }
     });
-    return weakIds;
+    // Paling telat dulu — cap antrian di Review jadi memotong ekor, bukan acak.
+    weakIds.sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : 0));
+    return weakIds.map((w) => w.id);
   }, [itemProgress]);
 
   const checkAchievements = useCallback(() => {
@@ -385,6 +395,9 @@ export const ProgressProvider = ({ children }) => {
         totalAnswered: newTotalAnswered,
         totalCorrect: newTotalCorrect,
         accuracy: newAccuracy,
+        // Log per tanggal → bisa jawab "minggu ini naik/turun". totalAnswered
+        // cuma kumulatif. Disimpan 30 hari terakhir saja biar localStorage kecil.
+        dailyLog: bumpDaily(prev.dailyLog, today, isCorrect),
         quests: q,
         weekly: w
       };
@@ -407,7 +420,7 @@ export const ProgressProvider = ({ children }) => {
       // Hitung next review date berdasarkan SRS (Spaced Repetition System) sederhana
       const reviewDate = new Date();
       if (isCorrect) {
-          const daysToAdd = Math.pow(2, newStreak);
+          const daysToAdd = Math.min(Math.pow(2, newStreak), SRS_MAX_DAYS);
           reviewDate.setDate(reviewDate.getDate() + daysToAdd);
       } else {
           reviewDate.setDate(reviewDate.getDate() + 1); // besok harus review lagi

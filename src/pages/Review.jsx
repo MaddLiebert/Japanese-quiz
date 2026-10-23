@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { Volume2 } from "lucide-react";
-import { useItemProgress } from "../features/progress/ProgressContext";
+import { useItemProgress, REVIEW_QUEUE_CAP } from "../features/progress/ProgressContext";
 import { useLanguage } from "../context/LanguageContext";
 import { playDramaticAudio } from "../utils/audio";
 import { useEffectLayer } from "../features/effects/EffectContext";
@@ -69,10 +69,14 @@ export function Review() {
   const [isCorrect, setIsCorrect] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
 
-  // Map weakItems (IDs) to actual character objects
-  const globalWeakCharacters = weakItems
-    .map(id => allData.find(item => item.id === id))
-    .filter(Boolean);
+  // Map weakItems (IDs) to actual character objects.
+  // Map, bukan allData.find per id: 300 kartu × ~2000 data = 600k banding tiap render.
+  // Di-cap REVIEW_QUEUE_CAP: cuma segitu yang bisa dikerjakan sekali duduk, dan
+  // grid 300 kartu bikin halaman berat tanpa guna.
+  const globalWeakCharacters = useMemo(() => {
+    const byId = new Map(allData.map((it) => [it.id, it]));
+    return weakItems.slice(0, REVIEW_QUEUE_CAP).map((id) => byId.get(id)).filter(Boolean);
+  }, [weakItems]);
 
   const currentWeakChar = sessionQueue[currentIndex];
 
@@ -273,7 +277,7 @@ export function Review() {
           <div className="absolute top-0 right-0 w-32 h-32 bg-asanoha opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4"></div>
           <h1 className="text-4xl sm:text-7xl font-serif font-black text-sumi tracking-tighter relative z-10 flex flex-wrap items-center gap-3 sm:gap-4">
             {language === 'id' ? 'Target' : 'Targeted'} <span className="text-shu">Review</span>
-            <span className="bg-shu text-kinari-light text-xl sm:text-2xl px-3 sm:px-4 py-0.5 sm:py-1 rounded-full shadow-sm ml-1 sm:ml-2 mt-1 sm:mt-2">{globalWeakCharacters.length}</span>
+            <span className="bg-shu text-kinari-light text-xl sm:text-2xl px-3 sm:px-4 py-0.5 sm:py-1 rounded-full shadow-sm ml-1 sm:ml-2 mt-1 sm:mt-2">{Math.min(globalWeakCharacters.length, REVIEW_QUEUE_CAP)}</span>
           </h1>
           <p className="text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-sumi/60 mt-3 sm:mt-4 relative z-10">
             {language === 'id' ? 'Taklukkan titik lemahmu' : 'Conquer your weak points'}
@@ -298,7 +302,8 @@ export function Review() {
         <div className="flex justify-center">
           <Button
             onClick={() => {
-              setSessionQueue(shuffle(globalWeakCharacters)); // Di-shuffle sempurna!
+              // Cap harian: 300 kartu sekali duduk = bubar. 60 paling telat dulu.
+              setSessionQueue(shuffle(globalWeakCharacters));
               setCurrentIndex(0);
               setIsReviewing(true);
             }}
