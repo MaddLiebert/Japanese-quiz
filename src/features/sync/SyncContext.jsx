@@ -144,6 +144,10 @@ export function SyncProvider({ children }) {
   const schedulePush = useCallback((delay = PUSH_DEBOUNCE_MS) => {
     if (!enabledRef.current || !userRef.current) return;
     dirtyRef.current = true;
+    // Tandai bundle lokal lebih baru SEKARANG, bukan hanya saat push sukses.
+    // Tanpa ini: edit offline → push gagal → tutup tab → buka lagi → pull
+    // melihat remote `updatedAt` lebih baru → perubahan lokal tertimpa.
+    touchMeta();
     clearTimeout(pushTimerRef.current);
     pushTimerRef.current = setTimeout(() => { pushNow(); }, delay);
   }, [pushNow]);
