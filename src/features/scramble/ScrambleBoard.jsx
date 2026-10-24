@@ -51,7 +51,7 @@ export function ScrambleBoard({
         </div>
         <div className="flex items-center gap-4">
           <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-sumi border-[2px] border-sumi/20 px-2 py-1">{diffLabel}</span>
-          {timeLeft != null && (
+          {diff === 'hard' && timeLeft != null && (
             <span className={`text-xs font-bold tracking-widest uppercase ${timeLeft <= 3 ? 'text-shu' : 'text-sumi/50'}`}>
               {t('Waktu','Time')}: <span className="text-xl">{timeLeft}s</span>
             </span>

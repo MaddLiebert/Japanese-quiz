@@ -19,6 +19,7 @@ export function useScrambleSession() {
   const [checked, setChecked] = useState(false);   // sudah diperiksa?
   const [isCorrect, setIsCorrect] = useState(null);
   const [timeLeft, setTimeLeft] = useState(TIME_PER_QUESTION);
+  const [difficulty, setDifficulty] = useState('easy');
   const [score, setScore] = useState(0);
   const [wrongIds, setWrongIds] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
@@ -41,6 +42,7 @@ export function useScrambleSession() {
     if (session.length === 0) return false;
 
     difficultyRef.current = String(difficulty).toLowerCase();
+    setDifficulty(String(difficulty).toLowerCase());
     questionsRef.current = session;
     indexRef.current = 0;
     placedRef.current = [];
@@ -62,8 +64,9 @@ export function useScrambleSession() {
 
   const currentQuestion = questions[currentIndex] || null;
 
-  // ── Countdown tiap soal: 7 detik per soal ────────────────────────────────
+  // ── Countdown tiap soal: 7 detik — HANYA mode sulit ─────────────────────
   useEffect(() => {
+    if (difficulty !== 'hard') return; // easy/medium tanpa timer
     if (checkedRef.current || isFinished) return;
     if (timeLeft <= 0) {
       // waktu habis → otomatis salah + lanjut
@@ -81,7 +84,7 @@ export function useScrambleSession() {
     const timer = setInterval(() => setTimeLeft((p) => (p <= 1 ? 0 : p - 1)), 1000);
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeLeft, isFinished, recordAnswer]);
+  }, [timeLeft, isFinished, recordAnswer, difficulty]);
 
   // ── Pasang / lepas balok ──────────────────────────────────────────────────
   const placeBlock = useCallback((key) => {
