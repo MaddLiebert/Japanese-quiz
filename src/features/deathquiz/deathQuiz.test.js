@@ -112,13 +112,13 @@ test('deathMedaruReward: monoton naik (makin jauh makin besar)', () => {
   }
 });
 
-test('allQuizItems: 1165 item, urutan pool hiragana→katakana→kotoba→grammar→kanji', () => {
+test('allQuizItems: 1182 item, urutan pool hiragana→katakana→kotoba→grammar→kanji', () => {
   const items = allQuizItems(DATASETS);
-  assert.equal(items.length, 1165);
-  assert.equal(items.length, 104 + 46 + 876 + 53 + 86);
+  assert.equal(items.length, 1182);
+  assert.equal(items.length, 104 + 46 + 876 + 53 + 103);
   assert.equal(items[0].id, DATASETS.hiragana[0].id);
   assert.equal(items[104].id, DATASETS.katakana[0].id);
-  assert.equal(items[1164].id, DATASETS.kanji[DATASETS.kanji.length - 1].id);
+  assert.equal(items[items.length - 1].id, DATASETS.kanji[DATASETS.kanji.length - 1].id);
 });
 
 test('refillDeathQueue: isi sama (multiset), array baru, input tidak berubah', () => {

@@ -1289,5 +1289,260 @@
         "m": "bulat"
       }
     ]
+  },
+  "kj_deru": {
+    "desc": "出 = 'keluar'. Baca で(る) kalau verb intransitif (出る = でる, keluar sendiri), だ(す) kalau transitif (出す = だす, mengeluarkan), onyomi シュツ di kata seperti 出発 (しゅっぱつ, berangkat) dan 出口 (でぐち, pintu keluar). Bentuk 出 = gunung kecil tersusun dari garis-garis — bayangkan pintu/orang keluar.",
+    "ex": [
+      {
+        "w": "出る",
+        "k": "でる (deru)",
+        "m": "keluar"
+      },
+      {
+        "w": "出口",
+        "k": "でぐち (deguchi)",
+        "m": "pintu keluar"
+      }
+    ]
+  },
+  "kj_ato": {
+    "desc": "後 = 'belakang/nanti'. Kiri dari pola tempat-waktu: 後で (あとで, nanti), 後ろ (うしろ, di belakang). Baca あと dan うし(ろ) (kunyomi), ゴ/コウ (onyomi: 午後 = ごご, sore, 最後 = さいご, terakhir). Sisi bermakna 'kebelakangan' — berlawanan dengan 前.",
+    "ex": [
+      {
+        "w": "後で",
+        "k": "あとで (ato de)",
+        "m": "nanti"
+      },
+      {
+        "w": "午後",
+        "k": "ごご (gogo)",
+        "m": "sore / siang"
+      }
+    ]
+  },
+  "kj_mae": {
+    "desc": "前 = 'depan, sebelum'. Kunyomi utama まえ (マエ). Muncul di 名前 (なまえ, nama depan), 前 (まえ, depan), 午前 (ごぜん, pagi). Onyomi ゼン dipakai kata serapan Cina: 前後 (ぜんご, sekitar/sebelum-sesudah).",
+    "ex": [
+      {
+        "w": "前",
+        "k": "まえ (mae)",
+        "m": "depan"
+      },
+      {
+        "w": "名前",
+        "k": "なまえ (namae)",
+        "m": "nama"
+      }
+    ]
+  },
+  "kj_aida": {
+    "desc": "間 = 'antara/selang'. Baca あいだ (interval), ま untuk ruang waktu (間 = ma, jeda). Onyomi カン: 時間 (じかん, waktu), 間 (かん, selama), 週間 (しゅうかん, mingguan). 間 = gerbang (門) melihat bulan — langkan di antara dua tiang.",
+    "ex": [
+      {
+        "w": "時間",
+        "k": "じかん (jikan)",
+        "m": "waktu"
+      },
+      {
+        "w": "間",
+        "k": "あいだ (aida)",
+        "m": "antara"
+      }
+    ]
+  },
+  "kj_hairu": {
+    "desc": "入 = 'masuk'. 入る (はいる, masuk) — はい.る; 入れる (いれる, memasukkan) — い.れる (transitif). Onyomi ニュウ di 入口 (いりぐち, pintu masuk) — di sini dibaca いり. Baca にゅう di 入学 (にゅうがく, pendaftaran). 入 = segitiga langkah. Ekspresi kecepatan (入る) vs selesai (入れる).",
+    "ex": [
+      {
+        "w": "入る",
+        "k": "はいる (hairu)",
+        "m": "masuk"
+      },
+      {
+        "w": "入れる",
+        "k": "いれる (ireru)",
+        "m": "memasukkan"
+      }
+    ]
+  },
+  "kj_tatsu": {
+    "desc": "立 = 'berdiri'. 立つ (たつ, berdiri), 立てる (たてる, mendirikan). Onyomi リツ di 立派 (りっぱ, hebat/mewah), リュウ jarang (建立 = こんりゅう). Bentuk 立 = orang beridiri tegak di tanah. Kids read たつ.",
+    "ex": [
+      {
+        "w": "立つ",
+        "k": "たつ (tatsu)",
+        "m": "berdiri"
+      },
+      {
+        "w": "立派",
+        "k": "りっぱ (rippa)",
+        "m": "hebat/mewah"
+      }
+    ]
+  },
+  "kj_go": {
+    "desc": "午 = 'tengah hari'. Hampir selalu dipakai komposit: 午前 (ごぜん, pagi), 午後 (ごご, sore). 午 = kuda (うま), zodiak. Jarang berdiri sendiri.",
+    "ex": [
+      {
+        "w": "午前",
+        "k": "ごぜん (gozen)",
+        "m": "pagi"
+      },
+      {
+        "w": "午後",
+        "k": "ごご (gogo)",
+        "m": "sore"
+      }
+    ]
+  },
+  "kj_na": {
+    "desc": "名 = 'nama'. 名前 (なまえ, nama). 名 = mulut (口) + malam (夕) — klasik 'siapa diucapkan mulut'. Kunyomi な: 名 (な, nama kecil), 有名 (ゆうめい, terkenal, onyomi メイ). Buat nama orang 名 (な).",
+    "ex": [
+      {
+        "w": "名前",
+        "k": "なまえ (namae)",
+        "m": "nama"
+      },
+      {
+        "w": "有名",
+        "k": "ゆうめい (yuumei)",
+        "m": "terkenal"
+      }
+    ]
+  },
+  "kj_michi": {
+    "desc": "道 = 'jalan/cara'. 道 (みち, jalan). Onyomi ドウ di 水道 (すいどう, pipa air), 道 (どう). 道 = jalan (辶) + kepala (首) — bentuk purba jalan dipimpin. Arti kiasan 'cara': 道 (どう, jalan/cara), 国道 (こくどう, jalan nasional).",
+    "ex": [
+      {
+        "w": "道",
+        "k": "みち (michi)",
+        "m": "jalan"
+      },
+      {
+        "w": "水道",
+        "k": "すいどう (suidou)",
+        "m": "pipa air"
+      }
+    ]
+  },
+  "kj_kiku": {
+    "desc": "聞 = 'mendengar/menanya'. 聞く (きく) — duafungsi: mendengar & bertanya. 聞こえる (きこえる) = terdengar. Onyomi ブン/モン: 新聞 (しんぶん, koran), 聞 (ぶん). Bentuk 聞 = telinga (耳) di pintu (門) — masuk lewat pintu ke telinga. Unik: 聞く ganda makna.",
+    "ex": [
+      {
+        "w": "聞く",
+        "k": "きく (kiku)",
+        "m": "mendengar / bertanya"
+      },
+      {
+        "w": "新聞",
+        "k": "しんぶん (shinbun)",
+        "m": "koran"
+      }
+    ]
+  },
+  "kj_mai": {
+    "desc": "毎 = 'setiap' — awalan waktu. 毎日 (まいにち, setiap hari), 毎週 (まいしゅう, tiap minggu), 毎月 (まいつき, tiap bulan). Onyomi マイ. Bentuk 毎 = bulir padi (禾) tiap musim — 'tiap kali, berulang'.",
+    "ex": [
+      {
+        "w": "毎日",
+        "k": "まいにち (mainichi)",
+        "m": "setiap hari"
+      },
+      {
+        "w": "毎週",
+        "k": "まいしゅう (maishuu)",
+        "m": "setiap minggu"
+      }
+    ]
+  },
+  "kj_shuu": {
+    "desc": "週 = 'minggu'. Sering dipakai 毎週 (まいしゅう, tiap minggu), 週末 (しゅうまつ, akhir pekan). Onyomi シュウ. Bentuk 週 = シ (gerak jalan) + 周 (keliling) — perjalanan satu putaran = satu minggu.",
+    "ex": [
+      {
+        "w": "週末",
+        "k": "しゅうまつ (shuumatsu)",
+        "m": "akhir pekan"
+      },
+      {
+        "w": "一週間",
+        "k": "いっしゅうかん (isshuukan)",
+        "m": "satu minggu"
+      }
+    ]
+  },
+  "kj_haha": {
+    "desc": "母 = 'ibu'. Baca はは (haha) — kata hormat keluarga sendiri. 母 = 2 titik + 母 bentuk, asalnya 'payudara' → ibu menyusui. Onyomi ボ: 母国 (ぼこく, tanah air). Lawan = 父 (ちち, ayah).",
+    "ex": [
+      {
+        "w": "母",
+        "k": "はは (haha)",
+        "m": "ibu"
+      },
+      {
+        "w": "お母さん",
+        "k": "おかあさん (okaasan)",
+        "m": "ibu (hormat)"
+      }
+    ]
+  },
+  "kj_hana": {
+    "desc": "花 = 'bunga'. Baca はな (hana). Bunga sakura 桜 (さくら) — musim. Onyomi カ: 花見 (はなみ, melihat bunga) pakai kun, 花瓶 (かびん, vas bunga) pakai on. Bentuk 花 = 艸 (rumput) + 化 (berubah) — rumput berubah jadi mekar.",
+    "ex": [
+      {
+        "w": "花",
+        "k": "はな (hana)",
+        "m": "bunga"
+      },
+      {
+        "w": "花見",
+        "k": "はなみ (hanami)",
+        "m": "piknik melihat bunga"
+      }
+    ]
+  },
+  "kj_tomo": {
+    "desc": "友 = 'teman'. Baca とも (tomo). Sering di 友達 (ともだち, teman), 友人 (ゆうじん, teman, onyomi ユウ). Bentuk 友 = dua tangan saling bantu — sahabat saling menolong.",
+    "ex": [
+      {
+        "w": "友達",
+        "k": "ともだち (tomodachi)",
+        "m": "teman"
+      },
+      {
+        "w": "友人",
+        "k": "ゆうじん (yuujin)",
+        "m": "teman (formal)"
+      }
+    ]
+  },
+  "kj_chichi": {
+    "desc": "父 = 'ayah'. Baca ちち (chichi) — kata hormat keluarga sendiri. Onyomi フ: 父親 (ちちおや, ayah, kun), 父 (ふ, ayah, on). Bentuk 父 = tangan menggenggam tongkat/tomahawk bermata dua — pemimpin rumah.",
+    "ex": [
+      {
+        "w": "父",
+        "k": "ちち (chichi)",
+        "m": "ayah"
+      },
+      {
+        "w": "お父さん",
+        "k": "おとうさん (otousan)",
+        "m": "ayah (hormat)"
+      }
+    ]
+  },
+  "kj_sakana": {
+    "desc": "魚 = 'ikan'. Baca さかな (sakana), うお (uo). Onyomi ギョ: 魚 (ぎょ, ikan), 魚屋 (さかなや, toko ikan). Bentuk 魚 = ekor + sirip + kepala — menggambar ikan utuh. Jepang negara ikan: 刺身 (さしみ, sashimi).",
+    "ex": [
+      {
+        "w": "魚",
+        "k": "さかな (sakana)",
+        "m": "ikan"
+      },
+      {
+        "w": "魚屋",
+        "k": "さかなや (sakanaya)",
+        "m": "toko ikan"
+      }
+    ]
   }
 }

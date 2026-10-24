@@ -858,5 +858,175 @@
     "meaning_id": "Yen / Bulat",
     "type": "kanji",
     "category": "SchoolPlaces"
+  },
+  {
+    "id": "kj_deru",
+    "char": "出",
+    "onyomi": "シュツ、スイ",
+    "kunyomi": "で(る)、だ(す)",
+    "meaning": "Exit / Leave",
+    "meaning_id": "Keluar",
+    "category": "VerbsKanji",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_ato",
+    "char": "後",
+    "onyomi": "ゴ、コウ",
+    "kunyomi": "あと、のち、うし(ろ)、おく(れる)",
+    "meaning": "Behind / Later",
+    "meaning_id": "Belakang / Nanti",
+    "category": "TimeDays",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_mae",
+    "char": "前",
+    "onyomi": "ゼン",
+    "kunyomi": "まえ",
+    "meaning": "In Front / Before",
+    "meaning_id": "Depan",
+    "category": "TimeDays",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_aida",
+    "char": "間",
+    "onyomi": "カン、ケン",
+    "kunyomi": "あいだ、ま、あい",
+    "meaning": "Interval / Space",
+    "meaning_id": "Antara / Ruang",
+    "category": "TimeDays",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_hairu",
+    "char": "入",
+    "onyomi": "ニュウ、ジュ",
+    "kunyomi": "はい(る)、い(れる)",
+    "meaning": "Enter / Insert",
+    "meaning_id": "Masuk",
+    "category": "VerbsKanji",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_tatsu",
+    "char": "立",
+    "onyomi": "リツ、リュウ",
+    "kunyomi": "た(つ)、た(てる)",
+    "meaning": "Stand Up",
+    "meaning_id": "Berdiri",
+    "category": "VerbsKanji",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_go",
+    "char": "午",
+    "onyomi": "ゴ",
+    "kunyomi": "うま",
+    "meaning": "Noon",
+    "meaning_id": "Tengah Hari",
+    "category": "TimeDays",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_na",
+    "char": "名",
+    "onyomi": "メイ、ミョウ",
+    "kunyomi": "な",
+    "meaning": "Name",
+    "meaning_id": "Nama",
+    "category": "PeopleBody",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_michi",
+    "char": "道",
+    "onyomi": "ドウ、トウ",
+    "kunyomi": "みち",
+    "meaning": "Road / Way",
+    "meaning_id": "Jalan",
+    "category": "NatureDirections",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_kiku",
+    "char": "聞",
+    "onyomi": "ブン、モン",
+    "kunyomi": "き(く)、き(こえる)",
+    "meaning": "Hear / Listen",
+    "meaning_id": "Mendengar",
+    "category": "VerbsKanji",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_mai",
+    "char": "毎",
+    "onyomi": "マイ",
+    "kunyomi": "ごと",
+    "meaning": "Every",
+    "meaning_id": "Setiap",
+    "category": "TimeDays",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_shuu",
+    "char": "週",
+    "onyomi": "シュウ",
+    "kunyomi": "",
+    "meaning": "Week",
+    "meaning_id": "Minggu",
+    "category": "TimeDays",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_haha",
+    "char": "母",
+    "onyomi": "ボ",
+    "kunyomi": "はは、も",
+    "meaning": "Mother",
+    "meaning_id": "Ibu",
+    "category": "PeopleBody",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_hana",
+    "char": "花",
+    "onyomi": "カ、ケ",
+    "kunyomi": "はな",
+    "meaning": "Flower",
+    "meaning_id": "Bunga",
+    "category": "NatureDirections",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_tomo",
+    "char": "友",
+    "onyomi": "ユウ",
+    "kunyomi": "とも",
+    "meaning": "Friend",
+    "meaning_id": "Teman",
+    "category": "PeopleBody",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_chichi",
+    "char": "父",
+    "onyomi": "フ",
+    "kunyomi": "ちち",
+    "meaning": "Father",
+    "meaning_id": "Ayah",
+    "category": "PeopleBody",
+    "type": "kanji"
+  },
+  {
+    "id": "kj_sakana",
+    "char": "魚",
+    "onyomi": "ギョ",
+    "kunyomi": "うお、さかな",
+    "meaning": "Fish",
+    "meaning_id": "Ikan",
+    "category": "NatureDirections",
+    "type": "kanji"
   }
 ]

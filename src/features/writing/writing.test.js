@@ -97,9 +97,9 @@ test('writingGroups: setiap item punya strokePath valid', () => {
   }
 });
 
-test('writingGroups: total item = 71 hiragana + 46 katakana + 86 kanji = 203', () => {
+test('writingGroups: total item = 71 hiragana + 46 katakana + 103 kanji = 220', () => {
   const total = writingGroups(DATA).reduce((n, g) => n + g.items.length, 0);
-  assert.equal(total, 203);
+  assert.equal(total, 220);
 });
 
 test('writingGroups: argumen kosong → [] (aman, tidak melempar)', () => {
