@@ -1,0 +1,5115 @@
+{
+  "_readme": "Bank soal susun balok (sentence scramble) grammar. Tiap item: langs.jp/id/en = {tokens (urutan benar), display (kalimat utuh), romaji khusus jp}. distractors = balok pengecoh per bahasa, dijamin tidak sama dengan token jawaban. Dijaga src/features/scramble/scramble.test.js",
+  "items": [
+    {
+      "id": "sc_g_ni_freq_0",
+      "grammarId": "g_ni_freq",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "いっしゅうかん",
+            "に",
+            "3かい",
+            "プール",
+            "に",
+            "いきます"
+          ],
+          "display": "いっしゅうかんに 3かい プールに いきます。",
+          "romaji": "isshuukan ni sankai pūru ni ikimasu"
+        },
+        "id": {
+          "tokens": [
+            "Seminggu",
+            "tiga kali",
+            "pergi",
+            "ke kolam renang"
+          ],
+          "display": "Seminggu tiga kali pergi ke kolam renang."
+        },
+        "en": {
+          "tokens": [
+            "I go",
+            "to the pool",
+            "three times",
+            "a week"
+          ],
+          "display": "I go to the pool three times a week."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "は",
+          "が"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "is",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ni_freq_1",
+      "grammarId": "g_ni_freq",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "いちにち",
+            "に",
+            "8じかん",
+            "ねます"
+          ],
+          "display": "いちにちに 8じかん ねます。",
+          "romaji": "ichinichi ni hachijikan nemasu"
+        },
+        "id": {
+          "tokens": [
+            "Sehari",
+            "tidur",
+            "delapan jam"
+          ],
+          "display": "Sehari tidur delapan jam."
+        },
+        "en": {
+          "tokens": [
+            "I sleep",
+            "eight hours",
+            "a day"
+          ],
+          "display": "I sleep eight hours a day."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "が",
+          "を"
+        ],
+        "id": [
+          "sudah",
+          "akan"
+        ],
+        "en": [
+          "are",
+          "was"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ya_list_0",
+      "grammarId": "g_ya_list",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "つくえ",
+            "の",
+            "うえ",
+            "に",
+            "ほん",
+            "や",
+            "ノート",
+            "が",
+            "あります"
+          ],
+          "display": "つくえの うえに ほんや ノートが あります。",
+          "romaji": "tsukue no ue ni hon ya nōto ga arimasu"
+        },
+        "id": {
+          "tokens": [
+            "Di atas meja",
+            "ada",
+            "buku",
+            "dan",
+            "catatan"
+          ],
+          "display": "Di atas meja ada buku dan catatan."
+        },
+        "en": {
+          "tokens": [
+            "On the desk",
+            "there are",
+            "books",
+            "and",
+            "notebooks"
+          ],
+          "display": "On the desk there are books and notebooks."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "で",
+          "と"
+        ],
+        "id": [
+          "akan",
+          "sangat"
+        ],
+        "en": [
+          "was",
+          "not"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ya_list_1",
+      "grammarId": "g_ya_list",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "にちようび",
+            "は",
+            "そうじ",
+            "や",
+            "せんたく",
+            "を",
+            "します"
+          ],
+          "display": "にちようびは そうじや せんたくを します。",
+          "romaji": "nichiyōbi wa sōji ya sentaku o shimasu"
+        },
+        "id": {
+          "tokens": [
+            "Hari Minggu",
+            "bersih-bersih",
+            "dan",
+            "cuci baju"
+          ],
+          "display": "Hari Minggu bersih-bersih dan cuci baju."
+        },
+        "en": {
+          "tokens": [
+            "On Sunday",
+            "I clean",
+            "and",
+            "do laundry"
+          ],
+          "display": "On Sunday I clean and do laundry."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "と",
+          "も"
+        ],
+        "id": [
+          "sangat",
+          "tidak"
+        ],
+        "en": [
+          "not",
+          "very"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_de_place_0",
+      "grammarId": "g_de_place",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "としょかん",
+            "で",
+            "べんきょうします"
+          ],
+          "display": "としょかんで べんきょうします。",
+          "romaji": "toshokan de benkyō shimasu"
+        },
+        "id": {
+          "tokens": [
+            "Belajar",
+            "di",
+            "perpustakaan"
+          ],
+          "display": "Belajar di perpustakaan."
+        },
+        "en": {
+          "tokens": [
+            "I study",
+            "in",
+            "the library"
+          ],
+          "display": "I study in the library."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "と",
+          "も"
+        ],
+        "id": [
+          "tidak",
+          "juga"
+        ],
+        "en": [
+          "very",
+          "also"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_de_place_1",
+      "grammarId": "g_de_place",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "レストラン",
+            "で",
+            "ひるごはん",
+            "を",
+            "たべました"
+          ],
+          "display": "レストランで ひるごはんを たべました。",
+          "romaji": "resutoran de hirugohan o tabemashita"
+        },
+        "id": {
+          "tokens": [
+            "Makan siang",
+            "di",
+            "restoran"
+          ],
+          "display": "Makan siang di restoran."
+        },
+        "en": {
+          "tokens": [
+            "I ate lunch",
+            "at",
+            "a restaurant"
+          ],
+          "display": "I ate lunch at a restaurant."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "の",
+          "へ"
+        ],
+        "id": [
+          "juga",
+          "itu"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ga_desire_0",
+      "grammarId": "g_ga_desire",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "あたらしい",
+            "けいたい",
+            "が",
+            "ほしいです"
+          ],
+          "display": "あたらしい けいたいが ほしいです。",
+          "romaji": "atarashii keitai ga hoshii desu"
+        },
+        "id": {
+          "tokens": [
+            "Ingin",
+            "ponsel",
+            "baru"
+          ],
+          "display": "Ingin ponsel baru."
+        },
+        "en": {
+          "tokens": [
+            "I want",
+            "a new",
+            "phone"
+          ],
+          "display": "I want a new phone."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "の",
+          "へ"
+        ],
+        "id": [
+          "itu",
+          "yang"
+        ],
+        "en": [
+          "will",
+          "to"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ga_desire_1",
+      "grammarId": "g_ga_desire",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "つめたい",
+            "みず",
+            "が",
+            "のみたいです"
+          ],
+          "display": "つめたい みずが のみたいです。",
+          "romaji": "tsumetai mizu ga nomitai desu"
+        },
+        "id": {
+          "tokens": [
+            "Ingin minum",
+            "air",
+            "dingin"
+          ],
+          "display": "Ingin minum air dingin."
+        },
+        "en": {
+          "tokens": [
+            "I want to drink",
+            "cold",
+            "water"
+          ],
+          "display": "I want to drink cold water."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "へ",
+          "から"
+        ],
+        "id": [
+          "yang",
+          "di"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_mo_nothing_0",
+      "grammarId": "g_mo_nothing",
+      "category": "Adverbs",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "きのう",
+            "は",
+            "なにも",
+            "たべませんでした"
+          ],
+          "display": "きのうは なにも たべませんでした。",
+          "romaji": "kinō wa nanimo tabemasen deshita"
+        },
+        "id": {
+          "tokens": [
+            "Kemarin",
+            "tidak makan",
+            "apa-apa"
+          ],
+          "display": "Kemarin tidak makan apa-apa."
+        },
+        "en": {
+          "tokens": [
+            "Yesterday",
+            "I didn't eat",
+            "anything"
+          ],
+          "display": "Yesterday I didn't eat anything."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "から",
+          "まで"
+        ],
+        "id": [
+          "di",
+          "ke"
+        ],
+        "en": [
+          "at",
+          "from"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_mo_nothing_1",
+      "grammarId": "g_mo_nothing",
+      "category": "Adverbs",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "へや",
+            "に",
+            "は",
+            "なにも",
+            "ありません"
+          ],
+          "display": "へやには なにも ありません。",
+          "romaji": "heya ni wa nanimo arimasen"
+        },
+        "id": {
+          "tokens": [
+            "Di kamar",
+            "tidak ada",
+            "apa-apa"
+          ],
+          "display": "Di kamar tidak ada apa-apa."
+        },
+        "en": {
+          "tokens": [
+            "In the room",
+            "there is",
+            "nothing"
+          ],
+          "display": "In the room there is nothing."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "ke",
+          "dari"
+        ],
+        "en": [
+          "from",
+          "for"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_zutto_compare_0",
+      "grammarId": "g_zutto_compare",
+      "category": "Adverbs",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "でんしゃ",
+            "は",
+            "バス",
+            "より",
+            "ずっと",
+            "はやいです"
+          ],
+          "display": "でんしゃは バスより ずっと はやいです。",
+          "romaji": "densha wa basu yori zutto hayai desu"
+        },
+        "id": {
+          "tokens": [
+            "Kereta",
+            "jauh lebih cepat",
+            "daripada",
+            "bus"
+          ],
+          "display": "Kereta jauh lebih cepat daripada bus."
+        },
+        "en": {
+          "tokens": [
+            "The train",
+            "is much faster",
+            "than",
+            "the bus"
+          ],
+          "display": "The train is much faster than the bus."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "だけ",
+          "しか"
+        ],
+        "id": [
+          "dari",
+          "untuk"
+        ],
+        "en": [
+          "for",
+          "with"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_zutto_compare_1",
+      "grammarId": "g_zutto_compare",
+      "category": "Adverbs",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "この",
+            "へや",
+            "の",
+            "ほう",
+            "が",
+            "ずっと",
+            "しずかです"
+          ],
+          "display": "この へやの ほうが ずっと しずかです。",
+          "romaji": "kono heya no hō ga zutto shizuka desu"
+        },
+        "id": {
+          "tokens": [
+            "Kamar ini",
+            "jauh lebih",
+            "tenang"
+          ],
+          "display": "Kamar ini jauh lebih tenang."
+        },
+        "en": {
+          "tokens": [
+            "This room",
+            "is much",
+            "quieter"
+          ],
+          "display": "This room is much quieter."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "しか",
+          "ね"
+        ],
+        "id": [
+          "untuk",
+          "dengan"
+        ],
+        "en": [
+          "with",
+          "and"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_wa_topic_0",
+      "grammarId": "g_wa_topic",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "たなかさん",
+            "は",
+            "せんせい",
+            "です"
+          ],
+          "display": "たなかさんは せんせいです。",
+          "romaji": "tanaka-san wa sensei desu"
+        },
+        "id": {
+          "tokens": [
+            "Tanaka",
+            "adalah",
+            "guru"
+          ],
+          "display": "Tanaka adalah guru."
+        },
+        "en": {
+          "tokens": [
+            "Tanaka",
+            "is",
+            "a teacher"
+          ],
+          "display": "Tanaka is a teacher."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "しか",
+          "ね"
+        ],
+        "id": [
+          "dengan",
+          "dan"
+        ],
+        "en": [
+          "the",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_wa_topic_1",
+      "grammarId": "g_wa_topic",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "この",
+            "ほん",
+            "は",
+            "おもしろいです"
+          ],
+          "display": "この ほんは おもしろいです。",
+          "romaji": "kono hon wa omoshiroi desu"
+        },
+        "id": {
+          "tokens": [
+            "Buku",
+            "ini",
+            "menarik"
+          ],
+          "display": "Buku ini menarik."
+        },
+        "en": {
+          "tokens": [
+            "This",
+            "book",
+            "is interesting"
+          ],
+          "display": "This book is interesting."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "ね",
+          "よ"
+        ],
+        "id": [
+          "dan",
+          "sedang"
+        ],
+        "en": [
+          "the",
+          "is"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_wo_object_0",
+      "grammarId": "g_wo_object",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "まいにち",
+            "にほんご",
+            "を",
+            "べんきょうします"
+          ],
+          "display": "まいにち にほんごを べんきょうします。",
+          "romaji": "mainichi nihongo o benkyō shimasu"
+        },
+        "id": {
+          "tokens": [
+            "Setiap hari",
+            "belajar",
+            "bahasa Jepang"
+          ],
+          "display": "Setiap hari belajar bahasa Jepang."
+        },
+        "en": {
+          "tokens": [
+            "Every day",
+            "I study",
+            "Japanese"
+          ],
+          "display": "Every day I study Japanese."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "よ",
+          "か"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "is",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_wo_object_1",
+      "grammarId": "g_wo_object",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "おんがく",
+            "を",
+            "ききます"
+          ],
+          "display": "おんがくを ききます。",
+          "romaji": "ongaku o kikimasu"
+        },
+        "id": {
+          "tokens": [
+            "Saya",
+            "mendengarkan",
+            "musik"
+          ],
+          "display": "Saya mendengarkan musik."
+        },
+        "en": {
+          "tokens": [
+            "I",
+            "listen to",
+            "music"
+          ],
+          "display": "I listen to music."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "か",
+          "は"
+        ],
+        "id": [
+          "sudah",
+          "akan"
+        ],
+        "en": [
+          "are",
+          "was"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ni_time_0",
+      "grammarId": "g_ni_time",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "よる",
+            "11じ",
+            "に",
+            "ねます"
+          ],
+          "display": "よる 11じに ねます。",
+          "romaji": "yoru jūichiji ni nemasu"
+        },
+        "id": {
+          "tokens": [
+            "Tidur",
+            "jam 11",
+            "malam"
+          ],
+          "display": "Tidur jam 11 malam."
+        },
+        "en": {
+          "tokens": [
+            "I sleep",
+            "at 11",
+            "PM"
+          ],
+          "display": "I sleep at 11 PM."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "は",
+          "が"
+        ],
+        "id": [
+          "akan",
+          "sangat"
+        ],
+        "en": [
+          "was",
+          "not"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ni_time_1",
+      "grammarId": "g_ni_time",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "4がつ",
+            "に",
+            "にほん",
+            "へ",
+            "いきます"
+          ],
+          "display": "4がつに にほんへ いきます。",
+          "romaji": "shigatsu ni nihon e ikimasu"
+        },
+        "id": {
+          "tokens": [
+            "Bulan April",
+            "pergi",
+            "ke Jepang"
+          ],
+          "display": "Bulan April pergi ke Jepang."
+        },
+        "en": {
+          "tokens": [
+            "In April",
+            "I go",
+            "to Japan"
+          ],
+          "display": "In April I go to Japan."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "を",
+          "で"
+        ],
+        "id": [
+          "sangat",
+          "tidak"
+        ],
+        "en": [
+          "not",
+          "very"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ni_destination_0",
+      "grammarId": "g_ni_destination",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "あした",
+            "がっこう",
+            "に",
+            "いきます"
+          ],
+          "display": "あした がっこうに いきます。",
+          "romaji": "ashita gakkō ni ikimasu"
+        },
+        "id": {
+          "tokens": [
+            "Besok",
+            "pergi",
+            "ke",
+            "sekolah"
+          ],
+          "display": "Besok pergi ke sekolah."
+        },
+        "en": {
+          "tokens": [
+            "Tomorrow",
+            "I go",
+            "to",
+            "school"
+          ],
+          "display": "Tomorrow I go to school."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "を",
+          "で"
+        ],
+        "id": [
+          "juga",
+          "itu"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ni_destination_1",
+      "grammarId": "g_ni_destination",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "7じ",
+            "に",
+            "うち",
+            "に",
+            "かえります"
+          ],
+          "display": "7じに うちに かえります。",
+          "romaji": "shichiji ni uchi ni kaerimasu"
+        },
+        "id": {
+          "tokens": [
+            "Jam tujuh",
+            "pulang",
+            "ke",
+            "rumah"
+          ],
+          "display": "Jam tujuh pulang ke rumah."
+        },
+        "en": {
+          "tokens": [
+            "At seven",
+            "I go back",
+            "home"
+          ],
+          "display": "At seven I go back home."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "で",
+          "と"
+        ],
+        "id": [
+          "itu",
+          "yang"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_de_tool_0",
+      "grammarId": "g_de_tool",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ペン",
+            "で",
+            "なまえ",
+            "を",
+            "かいてください"
+          ],
+          "display": "ペンで なまえを かいてください。",
+          "romaji": "pen de namae o kaite kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Tolong tulis",
+            "nama",
+            "dengan",
+            "pulpen"
+          ],
+          "display": "Tolong tulis nama dengan pulpen."
+        },
+        "en": {
+          "tokens": [
+            "Please write",
+            "the name",
+            "with",
+            "a pen"
+          ],
+          "display": "Please write the name with a pen."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "の",
+          "へ"
+        ],
+        "id": [
+          "yang",
+          "di"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_de_tool_1",
+      "grammarId": "g_de_tool",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "にほんご",
+            "で",
+            "はなしましょう"
+          ],
+          "display": "にほんごで はなしましょう。",
+          "romaji": "nihongo de hanashimashō"
+        },
+        "id": {
+          "tokens": [
+            "Ayo bicara",
+            "dengan",
+            "bahasa Jepang"
+          ],
+          "display": "Ayo bicara dengan bahasa Jepang."
+        },
+        "en": {
+          "tokens": [
+            "Let's speak",
+            "in",
+            "Japanese"
+          ],
+          "display": "Let's speak in Japanese."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "も",
+          "の"
+        ],
+        "id": [
+          "di",
+          "ke"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ga_suki_0",
+      "grammarId": "g_ga_suki",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "わたし",
+            "は",
+            "にほん",
+            "の",
+            "おんがく",
+            "が",
+            "すきです"
+          ],
+          "display": "わたしは にほんの おんがくが すきです。",
+          "romaji": "watashi wa nihon no ongaku ga suki desu"
+        },
+        "id": {
+          "tokens": [
+            "Saya",
+            "suka",
+            "musik",
+            "Jepang"
+          ],
+          "display": "Saya suka musik Jepang."
+        },
+        "en": {
+          "tokens": [
+            "I",
+            "like",
+            "Japanese",
+            "music"
+          ],
+          "display": "I like Japanese music."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "di",
+          "ke"
+        ],
+        "en": [
+          "at",
+          "from"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ga_suki_1",
+      "grammarId": "g_ga_suki",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "たなかさん",
+            "は",
+            "かんじ",
+            "が",
+            "わかります"
+          ],
+          "display": "たなかさんは かんじが わかります。",
+          "romaji": "tanaka-san wa kanji ga wakarimasu"
+        },
+        "id": {
+          "tokens": [
+            "Tanaka",
+            "paham",
+            "kanji"
+          ],
+          "display": "Tanaka paham kanji."
+        },
+        "en": {
+          "tokens": [
+            "Tanaka",
+            "understands",
+            "kanji"
+          ],
+          "display": "Tanaka understands kanji."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "まで",
+          "より"
+        ],
+        "id": [
+          "ke",
+          "dari"
+        ],
+        "en": [
+          "from",
+          "for"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_to_with_0",
+      "grammarId": "g_to_with",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "かぞく",
+            "と",
+            "りょこうします"
+          ],
+          "display": "かぞくと りょこうします。",
+          "romaji": "kazoku to ryokō shimasu"
+        },
+        "id": {
+          "tokens": [
+            "Bepergian",
+            "bersama",
+            "keluarga"
+          ],
+          "display": "Bepergian bersama keluarga."
+        },
+        "en": {
+          "tokens": [
+            "I travel",
+            "with",
+            "my family"
+          ],
+          "display": "I travel with my family."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "から",
+          "まで"
+        ],
+        "id": [
+          "dari",
+          "untuk"
+        ],
+        "en": [
+          "and",
+          "the"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_to_with_1",
+      "grammarId": "g_to_with",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "せんせい",
+            "と",
+            "はなしました"
+          ],
+          "display": "せんせいと はなしました。",
+          "romaji": "sensei to hanashimashita"
+        },
+        "id": {
+          "tokens": [
+            "Berbicara",
+            "dengan",
+            "guru"
+          ],
+          "display": "Berbicara dengan guru."
+        },
+        "en": {
+          "tokens": [
+            "I talked",
+            "with",
+            "the teacher"
+          ],
+          "display": "I talked with the teacher."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "まで",
+          "より"
+        ],
+        "id": [
+          "dan",
+          "sedang"
+        ],
+        "en": [
+          "the",
+          "is"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_kara_from_0",
+      "grammarId": "g_kara_from",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "あさ",
+            "7じ",
+            "から",
+            "はたらきます"
+          ],
+          "display": "あさ 7じから はたらきます。",
+          "romaji": "asa shichiji kara hatarakimasu"
+        },
+        "id": {
+          "tokens": [
+            "Bekerja",
+            "mulai",
+            "jam tujuh pagi"
+          ],
+          "display": "Bekerja mulai jam tujuh pagi."
+        },
+        "en": {
+          "tokens": [
+            "I work",
+            "from",
+            "seven in the morning"
+          ],
+          "display": "I work from seven in the morning."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "dengan",
+          "dan"
+        ],
+        "en": [
+          "is",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_kara_from_1",
+      "grammarId": "g_kara_from",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "インドネシア",
+            "から",
+            "きました"
+          ],
+          "display": "インドネシアから きました。",
+          "romaji": "indoneshia kara kimashita"
+        },
+        "id": {
+          "tokens": [
+            "Datang",
+            "dari",
+            "Indonesia"
+          ],
+          "display": "Datang dari Indonesia."
+        },
+        "en": {
+          "tokens": [
+            "I came",
+            "from",
+            "Indonesia"
+          ],
+          "display": "I came from Indonesia."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "だけ",
+          "しか"
+        ],
+        "id": [
+          "sudah",
+          "akan"
+        ],
+        "en": [
+          "are",
+          "was"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_made_until_0",
+      "grammarId": "g_made_until",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ぎんこう",
+            "は",
+            "3じ",
+            "まで",
+            "です"
+          ],
+          "display": "ぎんこうは 3じまで です。",
+          "romaji": "ginkō wa sanji made desu"
+        },
+        "id": {
+          "tokens": [
+            "Bank",
+            "buka",
+            "sampai",
+            "jam tiga"
+          ],
+          "display": "Bank buka sampai jam tiga."
+        },
+        "en": {
+          "tokens": [
+            "The bank",
+            "is open",
+            "until",
+            "three"
+          ],
+          "display": "The bank is open until three."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "よ",
+          "か"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "is",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_made_until_1",
+      "grammarId": "g_made_until",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "えき",
+            "まで",
+            "あるきました"
+          ],
+          "display": "えきまで あるきました。",
+          "romaji": "eki made arukimashita"
+        },
+        "id": {
+          "tokens": [
+            "Berjalan",
+            "sampai",
+            "stasiun"
+          ],
+          "display": "Berjalan sampai stasiun."
+        },
+        "en": {
+          "tokens": [
+            "I walked",
+            "to",
+            "the station"
+          ],
+          "display": "I walked to the station."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "ね",
+          "よ"
+        ],
+        "id": [
+          "sudah",
+          "akan"
+        ],
+        "en": [
+          "not",
+          "very"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_mo_also_0",
+      "grammarId": "g_mo_also",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "わたし",
+            "も",
+            "いきます"
+          ],
+          "display": "わたしも いきます。",
+          "romaji": "watashi mo ikimasu"
+        },
+        "id": {
+          "tokens": [
+            "Saya",
+            "juga",
+            "pergi"
+          ],
+          "display": "Saya juga pergi."
+        },
+        "en": {
+          "tokens": [
+            "I",
+            "will go",
+            "too"
+          ],
+          "display": "I will go too."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "よ",
+          "か"
+        ],
+        "id": [
+          "tidak",
+          "itu"
+        ],
+        "en": [
+          "was",
+          "not"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_mo_also_1",
+      "grammarId": "g_mo_also",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "この",
+            "みせ",
+            "は",
+            "やすいです",
+            "あの",
+            "みせ",
+            "も",
+            "やすいです"
+          ],
+          "display": "この みせは やすいです。あの みせも やすいです。",
+          "romaji": "kono mise wa yasui desu. ano mise mo yasui desu"
+        },
+        "id": {
+          "tokens": [
+            "Toko ini",
+            "murah",
+            "Toko itu",
+            "juga",
+            "murah"
+          ],
+          "display": "Toko ini murah Toko itu juga murah."
+        },
+        "en": {
+          "tokens": [
+            "This shop",
+            "is cheap",
+            "That shop",
+            "is also",
+            "cheap"
+          ],
+          "display": "This shop is cheap That shop is also cheap."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "を",
+          "に"
+        ],
+        "id": [
+          "itu",
+          "yang"
+        ],
+        "en": [
+          "not",
+          "very"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_no_possession_0",
+      "grammarId": "g_no_possession",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "これ",
+            "は",
+            "せんせい",
+            "の",
+            "かさ",
+            "です"
+          ],
+          "display": "これは せんせいの かさです。",
+          "romaji": "kore wa sensei no kasa desu"
+        },
+        "id": {
+          "tokens": [
+            "Ini",
+            "payung",
+            "guru"
+          ],
+          "display": "Ini payung guru."
+        },
+        "en": {
+          "tokens": [
+            "This",
+            "is",
+            "the teacher's",
+            "umbrella"
+          ],
+          "display": "This is the teacher's umbrella."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "に",
+          "で"
+        ],
+        "id": [
+          "tidak",
+          "juga"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_no_possession_1",
+      "grammarId": "g_no_possession",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "にほん",
+            "の",
+            "アニメ",
+            "が",
+            "すきです"
+          ],
+          "display": "にほんの アニメが すきです。",
+          "romaji": "nihon no anime ga suki desu"
+        },
+        "id": {
+          "tokens": [
+            "Suka",
+            "anime",
+            "Jepang"
+          ],
+          "display": "Suka anime Jepang."
+        },
+        "en": {
+          "tokens": [
+            "I like",
+            "Japanese",
+            "anime"
+          ],
+          "display": "I like Japanese anime."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "で",
+          "と"
+        ],
+        "id": [
+          "juga",
+          "itu"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ga_exist_0",
+      "grammarId": "g_ga_exist",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "つくえ",
+            "の",
+            "うえ",
+            "に",
+            "ペン",
+            "が",
+            "あります"
+          ],
+          "display": "つくえの うえに ペンが あります。",
+          "romaji": "tsukue no ue ni pen ga arimasu"
+        },
+        "id": {
+          "tokens": [
+            "Di atas meja",
+            "ada",
+            "pulpen"
+          ],
+          "display": "Di atas meja ada pulpen."
+        },
+        "en": {
+          "tokens": [
+            "On the desk",
+            "there is",
+            "a pen"
+          ],
+          "display": "On the desk there is a pen."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "から",
+          "まで"
+        ],
+        "id": [
+          "itu",
+          "yang"
+        ],
+        "en": [
+          "will",
+          "to"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ga_exist_1",
+      "grammarId": "g_ga_exist",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "こうえん",
+            "に",
+            "こども",
+            "が",
+            "います"
+          ],
+          "display": "こうえんに こどもが います。",
+          "romaji": "kōen ni kodomo ga imasu"
+        },
+        "id": {
+          "tokens": [
+            "Di taman",
+            "ada",
+            "anak-anak"
+          ],
+          "display": "Di taman ada anak-anak."
+        },
+        "en": {
+          "tokens": [
+            "In the park",
+            "there are",
+            "children"
+          ],
+          "display": "In the park there are children."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "の",
+          "へ"
+        ],
+        "id": [
+          "yang",
+          "di"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_yori_than_0",
+      "grammarId": "g_yori_than",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "なつ",
+            "は",
+            "ふゆ",
+            "より",
+            "あついです"
+          ],
+          "display": "なつは ふゆより あついです。",
+          "romaji": "natsu wa fuyu yori atsui desu"
+        },
+        "id": {
+          "tokens": [
+            "Musim panas",
+            "lebih panas",
+            "daripada",
+            "musim dingin"
+          ],
+          "display": "Musim panas lebih panas daripada musim dingin."
+        },
+        "en": {
+          "tokens": [
+            "Summer",
+            "is hotter",
+            "than",
+            "winter"
+          ],
+          "display": "Summer is hotter than winter."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "の",
+          "へ"
+        ],
+        "id": [
+          "di",
+          "ke"
+        ],
+        "en": [
+          "at",
+          "from"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_yori_than_1",
+      "grammarId": "g_yori_than",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "でんしゃ",
+            "の",
+            "ほう",
+            "が",
+            "バス",
+            "より",
+            "べんりです"
+          ],
+          "display": "でんしゃの ほうが バスより べんりです。",
+          "romaji": "densha no hō ga basu yori benri desu"
+        },
+        "id": {
+          "tokens": [
+            "Kereta",
+            "lebih praktis",
+            "daripada",
+            "bus"
+          ],
+          "display": "Kereta lebih praktis daripada bus."
+        },
+        "en": {
+          "tokens": [
+            "The train",
+            "is more convenient",
+            "than",
+            "the bus"
+          ],
+          "display": "The train is more convenient than the bus."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "だけ",
+          "しか"
+        ],
+        "id": [
+          "ke",
+          "dari"
+        ],
+        "en": [
+          "from",
+          "for"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ni_purpose_0",
+      "grammarId": "g_ni_purpose",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "えいが",
+            "を",
+            "み",
+            "に",
+            "いきます"
+          ],
+          "display": "えいがを みに いきます。",
+          "romaji": "eiga o mi ni ikimasu"
+        },
+        "id": {
+          "tokens": [
+            "Pergi",
+            "untuk",
+            "menonton",
+            "film"
+          ],
+          "display": "Pergi untuk menonton film."
+        },
+        "en": {
+          "tokens": [
+            "I go",
+            "to",
+            "watch",
+            "a movie"
+          ],
+          "display": "I go to watch a movie."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "まで",
+          "より"
+        ],
+        "id": [
+          "dan",
+          "sedang"
+        ],
+        "en": [
+          "the",
+          "is"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ni_purpose_1",
+      "grammarId": "g_ni_purpose",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ごはん",
+            "を",
+            "たべ",
+            "に",
+            "かえります"
+          ],
+          "display": "ごはんを たべに かえります。",
+          "romaji": "gohan o tabe ni kaerimasu"
+        },
+        "id": {
+          "tokens": [
+            "Pulang",
+            "untuk",
+            "makan"
+          ],
+          "display": "Pulang untuk makan."
+        },
+        "en": {
+          "tokens": [
+            "I go home",
+            "to",
+            "eat"
+          ],
+          "display": "I go home to eat."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "is",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_dake_only_0",
+      "grammarId": "g_dake_only",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "みず",
+            "だけ",
+            "のみます"
+          ],
+          "display": "みずだけ のみます。",
+          "romaji": "mizu dake nomimasu"
+        },
+        "id": {
+          "tokens": [
+            "Hanya",
+            "minum",
+            "air"
+          ],
+          "display": "Hanya minum air."
+        },
+        "en": {
+          "tokens": [
+            "I drink",
+            "only",
+            "water"
+          ],
+          "display": "I drink only water."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "へ",
+          "から"
+        ],
+        "id": [
+          "dengan",
+          "dan"
+        ],
+        "en": [
+          "and",
+          "the"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_dake_only_1",
+      "grammarId": "g_dake_only",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ひとり",
+            "だけ",
+            "きました"
+          ],
+          "display": "ひとりだけ きました。",
+          "romaji": "hitori dake kimashita"
+        },
+        "id": {
+          "tokens": [
+            "Hanya",
+            "satu orang",
+            "yang datang"
+          ],
+          "display": "Hanya satu orang yang datang."
+        },
+        "en": {
+          "tokens": [
+            "Only",
+            "one person",
+            "came"
+          ],
+          "display": "Only one person came."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "から",
+          "まで"
+        ],
+        "id": [
+          "dan",
+          "sedang"
+        ],
+        "en": [
+          "the",
+          "is"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_shika_only_0",
+      "grammarId": "g_shika_only",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "でんしゃ",
+            "しか",
+            "ありません"
+          ],
+          "display": "でんしゃしか ありません。",
+          "romaji": "densha shika arimasen"
+        },
+        "id": {
+          "tokens": [
+            "Cuma ada",
+            "kereta"
+          ],
+          "display": "Cuma ada kereta."
+        },
+        "en": {
+          "tokens": [
+            "There is",
+            "only",
+            "the train"
+          ],
+          "display": "There is only the train."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "まで",
+          "より"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "is",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_shika_only_1",
+      "grammarId": "g_shika_only",
+      "category": "Particles",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "にほんご",
+            "しか",
+            "はなせません"
+          ],
+          "display": "にほんごしか はなせません。",
+          "romaji": "nihongo shika hanasemasen"
+        },
+        "id": {
+          "tokens": [
+            "Hanya bisa",
+            "bicara",
+            "bahasa Jepang"
+          ],
+          "display": "Hanya bisa bicara bahasa Jepang."
+        },
+        "en": {
+          "tokens": [
+            "I can only",
+            "speak",
+            "Japanese"
+          ],
+          "display": "I can only speak Japanese."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "sudah",
+          "akan"
+        ],
+        "en": [
+          "are",
+          "was"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ga_but_0",
+      "grammarId": "g_ga_but",
+      "category": "Conjunctions",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "この",
+            "みせ",
+            "は",
+            "やすいです",
+            "が",
+            "おいしいです"
+          ],
+          "display": "この みせは やすいですが、おいしいです。",
+          "romaji": "kono mise wa yasui desu ga, oishii desu"
+        },
+        "id": {
+          "tokens": [
+            "Toko ini",
+            "murah",
+            "tapi",
+            "enak"
+          ],
+          "display": "Toko ini murah tapi enak."
+        },
+        "en": {
+          "tokens": [
+            "This shop",
+            "is cheap",
+            "but",
+            "delicious"
+          ],
+          "display": "This shop is cheap but delicious."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "か",
+          "を"
+        ],
+        "id": [
+          "akan",
+          "sangat"
+        ],
+        "en": [
+          "was",
+          "not"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ga_but_1",
+      "grammarId": "g_ga_but",
+      "category": "Conjunctions",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "にほんご",
+            "は",
+            "むずかしいです",
+            "が",
+            "おもしろいです"
+          ],
+          "display": "にほんごは むずかしいですが、おもしろいです。",
+          "romaji": "nihongo wa muzukashii desu ga, omoshiroi desu"
+        },
+        "id": {
+          "tokens": [
+            "Bahasa Jepang",
+            "sulit",
+            "tapi",
+            "menarik"
+          ],
+          "display": "Bahasa Jepang sulit tapi menarik."
+        },
+        "en": {
+          "tokens": [
+            "Japanese",
+            "is difficult",
+            "but",
+            "interesting"
+          ],
+          "display": "Japanese is difficult but interesting."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "を",
+          "に"
+        ],
+        "id": [
+          "sangat",
+          "tidak"
+        ],
+        "en": [
+          "not",
+          "very"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_dakara_so_0",
+      "grammarId": "g_dakara_so",
+      "category": "Conjunctions",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "あした",
+            "は",
+            "テストです",
+            "ですから",
+            "きょう",
+            "べんきょうします"
+          ],
+          "display": "あしたは テストです。ですから、きょう べんきょうします。",
+          "romaji": "ashita wa tesuto desu. desukara, kyō benkyō shimasu"
+        },
+        "id": {
+          "tokens": [
+            "Besok",
+            "ujian",
+            "karena itu",
+            "hari ini",
+            "belajar"
+          ],
+          "display": "Besok ujian karena itu hari ini belajar."
+        },
+        "en": {
+          "tokens": [
+            "Tomorrow",
+            "is a test",
+            "so",
+            "today",
+            "I study"
+          ],
+          "display": "Tomorrow is a test so today I study."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "よ",
+          "か"
+        ],
+        "id": [
+          "tidak",
+          "juga"
+        ],
+        "en": [
+          "very",
+          "also"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_dakara_so_1",
+      "grammarId": "g_dakara_so",
+      "category": "Conjunctions",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "さむいです",
+            "ですから",
+            "まど",
+            "を",
+            "しめます"
+          ],
+          "display": "さむいです。ですから、まどを しめます。",
+          "romaji": "samui desu. desukara, mado o shimemasu"
+        },
+        "id": {
+          "tokens": [
+            "Dingin",
+            "karena itu",
+            "menutup",
+            "jendela"
+          ],
+          "display": "Dingin karena itu menutup jendela."
+        },
+        "en": {
+          "tokens": [
+            "It's cold",
+            "so",
+            "I close",
+            "the window"
+          ],
+          "display": "It's cold so I close the window."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "か",
+          "は"
+        ],
+        "id": [
+          "juga",
+          "itu"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_mashou_let_0",
+      "grammarId": "g_mashou_let",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "いっしょ",
+            "に",
+            "かえりましょう"
+          ],
+          "display": "いっしょに かえりましょう。",
+          "romaji": "issho ni kaerimashō"
+        },
+        "id": {
+          "tokens": [
+            "Ayo pulang",
+            "bersama"
+          ],
+          "display": "Ayo pulang bersama."
+        },
+        "en": {
+          "tokens": [
+            "Let's go home",
+            "together"
+          ],
+          "display": "Let's go home together."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "は",
+          "が"
+        ],
+        "id": [
+          "itu",
+          "yang"
+        ],
+        "en": [
+          "will",
+          "to"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_mashou_let_1",
+      "grammarId": "g_mashou_let",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ちょっと",
+            "やすみましょう"
+          ],
+          "display": "ちょっと やすみましょう。",
+          "romaji": "chotto yasumimashō"
+        },
+        "id": {
+          "tokens": [
+            "Ayo",
+            "istirahat",
+            "sebentar"
+          ],
+          "display": "Ayo istirahat sebentar."
+        },
+        "en": {
+          "tokens": [
+            "Let's rest",
+            "a little"
+          ],
+          "display": "Let's rest a little."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "よ",
+          "か"
+        ],
+        "id": [
+          "yang",
+          "di"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_masenka_invite_0",
+      "grammarId": "g_masenka_invite",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "あした",
+            "えいが",
+            "を",
+            "みません",
+            "か"
+          ],
+          "display": "あした えいがを みませんか。",
+          "romaji": "ashita eiga o mimasen ka"
+        },
+        "id": {
+          "tokens": [
+            "Maukah",
+            "besok",
+            "nonton",
+            "film"
+          ],
+          "display": "Maukah besok nonton film."
+        },
+        "en": {
+          "tokens": [
+            "Would you like",
+            "to watch",
+            "a movie",
+            "tomorrow"
+          ],
+          "display": "Would you like to watch a movie tomorrow."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "も",
+          "の"
+        ],
+        "id": [
+          "di",
+          "ke"
+        ],
+        "en": [
+          "at",
+          "from"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_masenka_invite_1",
+      "grammarId": "g_masenka_invite",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "いっしょ",
+            "に",
+            "おひるごはん",
+            "を",
+            "たべません",
+            "か"
+          ],
+          "display": "いっしょに おひるごはんを たべませんか。",
+          "romaji": "issho ni ohirugohan o tabemasen ka"
+        },
+        "id": {
+          "tokens": [
+            "Maukah",
+            "makan siang",
+            "bersama"
+          ],
+          "display": "Maukah makan siang bersama."
+        },
+        "en": {
+          "tokens": [
+            "Would you like",
+            "to have lunch",
+            "together"
+          ],
+          "display": "Would you like to have lunch together."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "ke",
+          "dari"
+        ],
+        "en": [
+          "from",
+          "for"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tai_want_0",
+      "grammarId": "g_tai_want",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "にほん",
+            "へ",
+            "いきたいです"
+          ],
+          "display": "にほんへ いきたいです。",
+          "romaji": "nihon e ikitai desu"
+        },
+        "id": {
+          "tokens": [
+            "Ingin",
+            "pergi",
+            "ke Jepang"
+          ],
+          "display": "Ingin pergi ke Jepang."
+        },
+        "en": {
+          "tokens": [
+            "I want",
+            "to go",
+            "to Japan"
+          ],
+          "display": "I want to go to Japan."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "で",
+          "と"
+        ],
+        "id": [
+          "dari",
+          "untuk"
+        ],
+        "en": [
+          "for",
+          "with"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tai_want_1",
+      "grammarId": "g_tai_want",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "つめたい",
+            "コーヒー",
+            "が",
+            "のみたいです"
+          ],
+          "display": "つめたい コーヒーが のみたいです。",
+          "romaji": "tsumetai kōhī ga nomitai desu"
+        },
+        "id": {
+          "tokens": [
+            "Ingin minum",
+            "kopi",
+            "dingin"
+          ],
+          "display": "Ingin minum kopi dingin."
+        },
+        "en": {
+          "tokens": [
+            "I want to drink",
+            "cold",
+            "coffee"
+          ],
+          "display": "I want to drink cold coffee."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "も",
+          "の"
+        ],
+        "id": [
+          "untuk",
+          "dengan"
+        ],
+        "en": [
+          "with",
+          "and"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tekudasai_please_0",
+      "grammarId": "g_tekudasai_please",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ゆっくり",
+            "はなしてください"
+          ],
+          "display": "ゆっくり はなしてください。",
+          "romaji": "yukkuri hanashite kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Tolong bicara",
+            "pelan-pelan"
+          ],
+          "display": "Tolong bicara pelan-pelan."
+        },
+        "en": {
+          "tokens": [
+            "Please speak",
+            "slowly"
+          ],
+          "display": "Please speak slowly."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "に",
+          "で"
+        ],
+        "id": [
+          "dengan",
+          "dan"
+        ],
+        "en": [
+          "and",
+          "the"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tekudasai_please_1",
+      "grammarId": "g_tekudasai_please",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "まど",
+            "を",
+            "あけてください"
+          ],
+          "display": "まどを あけてください。",
+          "romaji": "mado o akete kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Tolong buka",
+            "jendela"
+          ],
+          "display": "Tolong buka jendela."
+        },
+        "en": {
+          "tokens": [
+            "Please open",
+            "the window"
+          ],
+          "display": "Please open the window."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "へ",
+          "から"
+        ],
+        "id": [
+          "dan",
+          "sedang"
+        ],
+        "en": [
+          "the",
+          "is"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_temoii_may_0",
+      "grammarId": "g_temoii_may",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ここ",
+            "に",
+            "すわってもいいです",
+            "か"
+          ],
+          "display": "ここに すわってもいいですか。",
+          "romaji": "koko ni suwatte mo ii desu ka"
+        },
+        "id": {
+          "tokens": [
+            "Boleh",
+            "duduk",
+            "di sini"
+          ],
+          "display": "Boleh duduk di sini."
+        },
+        "en": {
+          "tokens": [
+            "May I",
+            "sit",
+            "here"
+          ],
+          "display": "May I sit here."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "だけ",
+          "しか"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "is",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_temoii_may_1",
+      "grammarId": "g_temoii_may",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "この",
+            "ほん",
+            "を",
+            "かりてもいいです",
+            "か"
+          ],
+          "display": "この ほんを かりてもいいですか。",
+          "romaji": "kono hon o karite mo ii desu ka"
+        },
+        "id": {
+          "tokens": [
+            "Boleh",
+            "pinjam",
+            "buku ini"
+          ],
+          "display": "Boleh pinjam buku ini."
+        },
+        "en": {
+          "tokens": [
+            "May I",
+            "borrow",
+            "this book"
+          ],
+          "display": "May I borrow this book."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "しか",
+          "ね"
+        ],
+        "id": [
+          "sudah",
+          "akan"
+        ],
+        "en": [
+          "are",
+          "was"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tewaike_mustnot_0",
+      "grammarId": "g_tewaike_mustnot",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ここ",
+            "に",
+            "はいって",
+            "は",
+            "いけません"
+          ],
+          "display": "ここに はいっては いけません。",
+          "romaji": "koko ni haitte wa ikemasen"
+        },
+        "id": {
+          "tokens": [
+            "Tidak boleh",
+            "masuk",
+            "ke sini"
+          ],
+          "display": "Tidak boleh masuk ke sini."
+        },
+        "en": {
+          "tokens": [
+            "You must not",
+            "enter",
+            "here"
+          ],
+          "display": "You must not enter here."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "よ",
+          "か"
+        ],
+        "id": [
+          "akan",
+          "sangat"
+        ],
+        "en": [
+          "was",
+          "not"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tewaike_mustnot_1",
+      "grammarId": "g_tewaike_mustnot",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "じゅぎょうちゅう",
+            "に",
+            "はなして",
+            "は",
+            "いけません"
+          ],
+          "display": "じゅぎょうちゅうに はなしては いけません。",
+          "romaji": "jugyōchū ni hanashite wa ikemasen"
+        },
+        "id": {
+          "tokens": [
+            "Tidak boleh",
+            "berbicara",
+            "saat kelas"
+          ],
+          "display": "Tidak boleh berbicara saat kelas."
+        },
+        "en": {
+          "tokens": [
+            "You must not",
+            "talk",
+            "during class"
+          ],
+          "display": "You must not talk during class."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "か",
+          "が"
+        ],
+        "id": [
+          "sangat",
+          "tidak"
+        ],
+        "en": [
+          "not",
+          "very"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_teiru_ing_0",
+      "grammarId": "g_teiru_ing",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "いま",
+            "でんわ",
+            "を",
+            "かけています"
+          ],
+          "display": "いま、でんわを かけています。",
+          "romaji": "ima, denwa o kakete imasu"
+        },
+        "id": {
+          "tokens": [
+            "Sekarang",
+            "sedang",
+            "menelepon"
+          ],
+          "display": "Sekarang sedang menelepon."
+        },
+        "en": {
+          "tokens": [
+            "I am",
+            "talking",
+            "on the phone",
+            "now"
+          ],
+          "display": "I am talking on the phone now."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "しか",
+          "ね"
+        ],
+        "id": [
+          "ke",
+          "dari"
+        ],
+        "en": [
+          "very",
+          "also"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_teiru_ing_1",
+      "grammarId": "g_teiru_ing",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "とうきょう",
+            "に",
+            "すんでいます"
+          ],
+          "display": "とうきょうに すんでいます。",
+          "romaji": "tōkyō ni sunde imasu"
+        },
+        "id": {
+          "tokens": [
+            "Tinggal",
+            "di",
+            "Tokyo"
+          ],
+          "display": "Tinggal di Tokyo."
+        },
+        "en": {
+          "tokens": [
+            "I live",
+            "in",
+            "Tokyo"
+          ],
+          "display": "I live in Tokyo."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "ね",
+          "よ"
+        ],
+        "id": [
+          "dari",
+          "untuk"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_naide_dont_0",
+      "grammarId": "g_naide_dont",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "しんぱい",
+            "しないで",
+            "ください"
+          ],
+          "display": "しんぱいしないでください。",
+          "romaji": "shinpai shinaide kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Tolong",
+            "jangan khawatir"
+          ],
+          "display": "Tolong jangan khawatir."
+        },
+        "en": {
+          "tokens": [
+            "Please",
+            "don't worry"
+          ],
+          "display": "Please don't worry."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "itu",
+          "yang"
+        ],
+        "en": [
+          "will",
+          "to"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_naide_dont_1",
+      "grammarId": "g_naide_dont",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ここ",
+            "で",
+            "たばこ",
+            "を",
+            "すわないでください"
+          ],
+          "display": "ここで たばこを すわないでください。",
+          "romaji": "koko de tabako o suwanaide kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Tolong",
+            "jangan merokok",
+            "di sini"
+          ],
+          "display": "Tolong jangan merokok di sini."
+        },
+        "en": {
+          "tokens": [
+            "Please",
+            "don't smoke",
+            "here"
+          ],
+          "display": "Please don't smoke here."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "と",
+          "も"
+        ],
+        "id": [
+          "yang",
+          "di"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_nakutemo_neednot_0",
+      "grammarId": "g_nakutemo_neednot",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "あした",
+            "こなくてもいいです"
+          ],
+          "display": "あした こなくてもいいです。",
+          "romaji": "ashita konakute mo ii desu"
+        },
+        "id": {
+          "tokens": [
+            "Besok",
+            "tidak perlu datang"
+          ],
+          "display": "Besok tidak perlu datang."
+        },
+        "en": {
+          "tokens": [
+            "Tomorrow",
+            "you don't need to come"
+          ],
+          "display": "Tomorrow you don't need to come."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "しか",
+          "ね"
+        ],
+        "id": [
+          "di",
+          "ke"
+        ],
+        "en": [
+          "at",
+          "from"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_nakutemo_neednot_1",
+      "grammarId": "g_nakutemo_neednot",
+      "category": "VerbForms",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "いそがなくてもいいです",
+            "よ"
+          ],
+          "display": "いそがなくてもいいですよ。",
+          "romaji": "isoganakute mo ii desu yo"
+        },
+        "id": {
+          "tokens": [
+            "Tidak perlu",
+            "terburu-buru"
+          ],
+          "display": "Tidak perlu terburu-buru."
+        },
+        "en": {
+          "tokens": [
+            "You don't need",
+            "to hurry"
+          ],
+          "display": "You don't need to hurry."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "が",
+          "を"
+        ],
+        "id": [
+          "ke",
+          "dari"
+        ],
+        "en": [
+          "from",
+          "for"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_dochira_0",
+      "grammarId": "g_dochira",
+      "category": "Comparisons",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "バス",
+            "と",
+            "でんしゃ",
+            "と",
+            "どちら",
+            "が",
+            "はやいです",
+            "か"
+          ],
+          "display": "バスと でんしゃと どちらが はやいですか。",
+          "romaji": "basu to densha to dochira ga hayai desu ka"
+        },
+        "id": {
+          "tokens": [
+            "Bus",
+            "atau",
+            "kereta",
+            "mana yang",
+            "lebih cepat"
+          ],
+          "display": "Bus atau kereta mana yang lebih cepat."
+        },
+        "en": {
+          "tokens": [
+            "Which is faster",
+            "the bus",
+            "or",
+            "the train"
+          ],
+          "display": "Which is faster the bus or the train."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "だけ",
+          "しか"
+        ],
+        "id": [
+          "dari",
+          "untuk"
+        ],
+        "en": [
+          "for",
+          "with"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_dochira_1",
+      "grammarId": "g_dochira",
+      "category": "Comparisons",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "おちゃ",
+            "と",
+            "コーヒー",
+            "と",
+            "どちら",
+            "が",
+            "すきです",
+            "か"
+          ],
+          "display": "おちゃと コーヒーと どちらが すきですか。",
+          "romaji": "ocha to kōhī to dochira ga suki desu ka"
+        },
+        "id": {
+          "tokens": [
+            "Teh",
+            "atau",
+            "kopi",
+            "mana yang",
+            "lebih suka"
+          ],
+          "display": "Teh atau kopi mana yang lebih suka."
+        },
+        "en": {
+          "tokens": [
+            "Which do you like",
+            "tea",
+            "or",
+            "coffee"
+          ],
+          "display": "Which do you like tea or coffee."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "しか",
+          "ね"
+        ],
+        "id": [
+          "untuk",
+          "dengan"
+        ],
+        "en": [
+          "with",
+          "and"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_houga_0",
+      "grammarId": "g_houga",
+      "category": "Comparisons",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "なつ",
+            "の",
+            "ほう",
+            "が",
+            "すきです"
+          ],
+          "display": "なつの ほうが すきです。",
+          "romaji": "natsu no hō ga suki desu"
+        },
+        "id": {
+          "tokens": [
+            "Lebih suka",
+            "musim panas"
+          ],
+          "display": "Lebih suka musim panas."
+        },
+        "en": {
+          "tokens": [
+            "I like",
+            "summer",
+            "more"
+          ],
+          "display": "I like summer more."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "まで",
+          "より"
+        ],
+        "id": [
+          "dengan",
+          "dan"
+        ],
+        "en": [
+          "and",
+          "the"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_houga_1",
+      "grammarId": "g_houga",
+      "category": "Comparisons",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "こっち",
+            "の",
+            "ほう",
+            "が",
+            "やすいです"
+          ],
+          "display": "こっちの ほうが やすいです。",
+          "romaji": "kotchi no hō ga yasui desu"
+        },
+        "id": {
+          "tokens": [
+            "Yang ini",
+            "lebih",
+            "murah"
+          ],
+          "display": "Yang ini lebih murah."
+        },
+        "en": {
+          "tokens": [
+            "This one",
+            "is",
+            "cheaper"
+          ],
+          "display": "This one is cheaper."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "dan",
+          "sedang"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ichiban_0",
+      "grammarId": "g_ichiban",
+      "category": "Comparisons",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "にほん",
+            "で",
+            "いちばん",
+            "たかい",
+            "やま",
+            "は",
+            "ふじさんです"
+          ],
+          "display": "にほんで いちばん たかい やまは ふじさんです。",
+          "romaji": "nihon de ichiban takai yama wa fujisan desu"
+        },
+        "id": {
+          "tokens": [
+            "Gunung",
+            "tertinggi",
+            "di Jepang",
+            "adalah",
+            "Fuji"
+          ],
+          "display": "Gunung tertinggi di Jepang adalah Fuji."
+        },
+        "en": {
+          "tokens": [
+            "The highest",
+            "mountain",
+            "in Japan",
+            "is",
+            "Fuji"
+          ],
+          "display": "The highest mountain in Japan is Fuji."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "だけ",
+          "しか"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "will",
+          "to"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_ichiban_1",
+      "grammarId": "g_ichiban",
+      "category": "Comparisons",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "この",
+            "みせ",
+            "の",
+            "ラーメン",
+            "が",
+            "いちばん",
+            "おいしいです"
+          ],
+          "display": "この みせの ラーメンが いちばん おいしいです。",
+          "romaji": "kono mise no rāmen ga ichiban oishii desu"
+        },
+        "id": {
+          "tokens": [
+            "Ramen",
+            "di toko ini",
+            "paling",
+            "enak"
+          ],
+          "display": "Ramen di toko ini paling enak."
+        },
+        "en": {
+          "tokens": [
+            "The ramen",
+            "at this shop",
+            "is",
+            "the most delicious"
+          ],
+          "display": "The ramen at this shop is the most delicious."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "しか",
+          "ね"
+        ],
+        "id": [
+          "sudah",
+          "akan"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_adj_past_0",
+      "grammarId": "g_adj_past",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "きのう",
+            "は",
+            "さむかったです"
+          ],
+          "display": "きのうは さむかったです。",
+          "romaji": "kinō wa samukatta desu"
+        },
+        "id": {
+          "tokens": [
+            "Kemarin",
+            "dingin"
+          ],
+          "display": "Kemarin dingin."
+        },
+        "en": {
+          "tokens": [
+            "Yesterday",
+            "was cold"
+          ],
+          "display": "Yesterday was cold."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "から",
+          "まで"
+        ],
+        "id": [
+          "akan",
+          "sangat"
+        ],
+        "en": [
+          "was",
+          "not"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_adj_past_1",
+      "grammarId": "g_adj_past",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "その",
+            "ほん",
+            "は",
+            "たかかったです"
+          ],
+          "display": "その ほんは たかかったです。",
+          "romaji": "sono hon wa takakatta desu"
+        },
+        "id": {
+          "tokens": [
+            "Buku itu",
+            "mahal"
+          ],
+          "display": "Buku itu mahal."
+        },
+        "en": {
+          "tokens": [
+            "That book",
+            "was expensive"
+          ],
+          "display": "That book was expensive."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "まで",
+          "より"
+        ],
+        "id": [
+          "sangat",
+          "tidak"
+        ],
+        "en": [
+          "not",
+          "very"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_adj_pastneg_0",
+      "grammarId": "g_adj_pastneg",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "テスト",
+            "は",
+            "かんたんじゃ",
+            "なかったです"
+          ],
+          "display": "テストは かんたんじゃ なかったです。",
+          "romaji": "tesuto wa kantan ja nakatta desu"
+        },
+        "id": {
+          "tokens": [
+            "Ujiannya",
+            "tidak",
+            "mudah"
+          ],
+          "display": "Ujiannya tidak mudah."
+        },
+        "en": {
+          "tokens": [
+            "The test",
+            "was not",
+            "easy"
+          ],
+          "display": "The test was not easy."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "dari",
+          "untuk"
+        ],
+        "en": [
+          "very",
+          "also"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_adj_pastneg_1",
+      "grammarId": "g_adj_pastneg",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "きのう",
+            "は",
+            "あつくなかったです"
+          ],
+          "display": "きのうは あつくなかったです。",
+          "romaji": "kinō wa atsukunakatta desu"
+        },
+        "id": {
+          "tokens": [
+            "Kemarin",
+            "tidak",
+            "panas"
+          ],
+          "display": "Kemarin tidak panas."
+        },
+        "en": {
+          "tokens": [
+            "Yesterday",
+            "was not",
+            "hot"
+          ],
+          "display": "Yesterday was not hot."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "だけ",
+          "しか"
+        ],
+        "id": [
+          "untuk",
+          "dengan"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_na_past_0",
+      "grammarId": "g_na_past",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "きのう",
+            "の",
+            "テスト",
+            "は",
+            "たいへんでした"
+          ],
+          "display": "きのうの テストは たいへんでした。",
+          "romaji": "kinō no tesuto wa taihen deshita"
+        },
+        "id": {
+          "tokens": [
+            "Ujian",
+            "kemarin",
+            "berat"
+          ],
+          "display": "Ujian kemarin berat."
+        },
+        "en": {
+          "tokens": [
+            "Yesterday's",
+            "test",
+            "was tough"
+          ],
+          "display": "Yesterday's test was tough."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "を",
+          "に"
+        ],
+        "id": [
+          "itu",
+          "yang"
+        ],
+        "en": [
+          "will",
+          "to"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_na_past_1",
+      "grammarId": "g_na_past",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "そこ",
+            "は",
+            "ゆうめいでした"
+          ],
+          "display": "そこは ゆうめいでした。",
+          "romaji": "soko wa yūmei deshita"
+        },
+        "id": {
+          "tokens": [
+            "Tempat itu",
+            "terkenal"
+          ],
+          "display": "Tempat itu terkenal."
+        },
+        "en": {
+          "tokens": [
+            "That place",
+            "was famous"
+          ],
+          "display": "That place was famous."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "ね",
+          "よ"
+        ],
+        "id": [
+          "yang",
+          "di"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_na_pastneg_0",
+      "grammarId": "g_na_pastneg",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "その",
+            "へや",
+            "は",
+            "きれいじゃ",
+            "ありませんでした"
+          ],
+          "display": "その へやは きれいじゃ ありませんでした。",
+          "romaji": "sono heya wa kirei ja arimasen deshita"
+        },
+        "id": {
+          "tokens": [
+            "Kamar itu",
+            "tidak",
+            "bersih"
+          ],
+          "display": "Kamar itu tidak bersih."
+        },
+        "en": {
+          "tokens": [
+            "That room",
+            "was not",
+            "clean"
+          ],
+          "display": "That room was not clean."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "よ",
+          "か"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "at",
+          "from"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_na_pastneg_1",
+      "grammarId": "g_na_pastneg",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "きのう",
+            "は",
+            "げつようびじゃ",
+            "ありませんでした"
+          ],
+          "display": "きのうは げつようびじゃ ありませんでした。",
+          "romaji": "kinō wa getsuyōbi ja arimasen deshita"
+        },
+        "id": {
+          "tokens": [
+            "Kemarin",
+            "bukan",
+            "hari Senin"
+          ],
+          "display": "Kemarin bukan hari Senin."
+        },
+        "en": {
+          "tokens": [
+            "Yesterday",
+            "was not",
+            "Monday"
+          ],
+          "display": "Yesterday was not Monday."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "か",
+          "が"
+        ],
+        "id": [
+          "ke",
+          "dari"
+        ],
+        "en": [
+          "from",
+          "for"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_adv_iadj_0",
+      "grammarId": "g_adv_iadj",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "もっと",
+            "おおきく",
+            "かいてください"
+          ],
+          "display": "もっと おおきく かいてください。",
+          "romaji": "motto ōkiku kaite kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Tolong tulis",
+            "lebih besar"
+          ],
+          "display": "Tolong tulis lebih besar."
+        },
+        "en": {
+          "tokens": [
+            "Please write",
+            "bigger"
+          ],
+          "display": "Please write bigger."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "だけ",
+          "しか"
+        ],
+        "id": [
+          "dari",
+          "untuk"
+        ],
+        "en": [
+          "for",
+          "with"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_adv_iadj_1",
+      "grammarId": "g_adv_iadj",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "はやく",
+            "ねてください"
+          ],
+          "display": "はやく ねてください。",
+          "romaji": "hayaku nete kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Tolong",
+            "tidur",
+            "cepat"
+          ],
+          "display": "Tolong tidur cepat."
+        },
+        "en": {
+          "tokens": [
+            "Please go to bed",
+            "early"
+          ],
+          "display": "Please go to bed early."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "しか",
+          "ね"
+        ],
+        "id": [
+          "untuk",
+          "dengan"
+        ],
+        "en": [
+          "with",
+          "and"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_adv_naadj_0",
+      "grammarId": "g_adv_naadj",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "へや",
+            "を",
+            "しずか",
+            "に",
+            "してください"
+          ],
+          "display": "へやを しずかに してください。",
+          "romaji": "heya o shizuka ni shite kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Tolong buat",
+            "kamar",
+            "jadi",
+            "tenang"
+          ],
+          "display": "Tolong buat kamar jadi tenang."
+        },
+        "en": {
+          "tokens": [
+            "Please make",
+            "the room",
+            "quiet"
+          ],
+          "display": "Please make the room quiet."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "から",
+          "まで"
+        ],
+        "id": [
+          "dengan",
+          "dan"
+        ],
+        "en": [
+          "and",
+          "the"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_adv_naadj_1",
+      "grammarId": "g_adv_naadj",
+      "category": "AdjectivesGrammar",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "もっと",
+            "ていねい",
+            "に",
+            "かいてください"
+          ],
+          "display": "もっと ていねいに かいてください。",
+          "romaji": "motto teinei ni kaite kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Tolong tulis",
+            "lebih",
+            "rapi"
+          ],
+          "display": "Tolong tulis lebih rapi."
+        },
+        "en": {
+          "tokens": [
+            "Please write",
+            "more",
+            "neatly"
+          ],
+          "display": "Please write more neatly."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "で",
+          "と"
+        ],
+        "id": [
+          "dan",
+          "sedang"
+        ],
+        "en": [
+          "the",
+          "is"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_give_ageru_0",
+      "grammarId": "g_give_ageru",
+      "category": "GivingReceiving",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "わたし",
+            "は",
+            "いもうと",
+            "に",
+            "ほん",
+            "を",
+            "あげました"
+          ],
+          "display": "わたしは いもうとに ほんを あげました。",
+          "romaji": "watashi wa imōto ni hon o agemashita"
+        },
+        "id": {
+          "tokens": [
+            "Saya",
+            "memberi",
+            "buku",
+            "ke adik perempuan"
+          ],
+          "display": "Saya memberi buku ke adik perempuan."
+        },
+        "en": {
+          "tokens": [
+            "I",
+            "gave",
+            "a book",
+            "to my sister"
+          ],
+          "display": "I gave a book to my sister."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "が",
+          "で"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "is",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_give_ageru_1",
+      "grammarId": "g_give_ageru",
+      "category": "GivingReceiving",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "たなかさん",
+            "は",
+            "リンさん",
+            "に",
+            "はな",
+            "を",
+            "あげました"
+          ],
+          "display": "たなかさんは リンさんに はなを あげました。",
+          "romaji": "tanaka-san wa rin-san ni hana o agemashita"
+        },
+        "id": {
+          "tokens": [
+            "Tanaka",
+            "memberi",
+            "bunga",
+            "ke Lin"
+          ],
+          "display": "Tanaka memberi bunga ke Lin."
+        },
+        "en": {
+          "tokens": [
+            "Tanaka",
+            "gave",
+            "flowers",
+            "to Lin"
+          ],
+          "display": "Tanaka gave flowers to Lin."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "で",
+          "と"
+        ],
+        "id": [
+          "sudah",
+          "akan"
+        ],
+        "en": [
+          "are",
+          "was"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_receive_morau_0",
+      "grammarId": "g_receive_morau",
+      "category": "GivingReceiving",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "わたし",
+            "は",
+            "せんせい",
+            "に",
+            "ほん",
+            "を",
+            "もらいました"
+          ],
+          "display": "わたしは せんせいに ほんを もらいました。",
+          "romaji": "watashi wa sensei ni hon o moraimashita"
+        },
+        "id": {
+          "tokens": [
+            "Saya",
+            "menerima",
+            "buku",
+            "dari guru"
+          ],
+          "display": "Saya menerima buku dari guru."
+        },
+        "en": {
+          "tokens": [
+            "I",
+            "received",
+            "a book",
+            "from the teacher"
+          ],
+          "display": "I received a book from the teacher."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "と",
+          "も"
+        ],
+        "id": [
+          "akan",
+          "sangat"
+        ],
+        "en": [
+          "was",
+          "not"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_receive_morau_1",
+      "grammarId": "g_receive_morau",
+      "category": "GivingReceiving",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "たなかさん",
+            "から",
+            "チョコレート",
+            "を",
+            "もらいました"
+          ],
+          "display": "たなかさんから チョコレートを もらいました。",
+          "romaji": "tanaka-san kara chokorēto o moraimashita"
+        },
+        "id": {
+          "tokens": [
+            "Menerima",
+            "cokelat",
+            "dari Tanaka"
+          ],
+          "display": "Menerima cokelat dari Tanaka."
+        },
+        "en": {
+          "tokens": [
+            "I received",
+            "chocolate",
+            "from Tanaka"
+          ],
+          "display": "I received chocolate from Tanaka."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "ね",
+          "よ"
+        ],
+        "id": [
+          "sangat",
+          "tidak"
+        ],
+        "en": [
+          "not",
+          "very"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_giveme_kureru_0",
+      "grammarId": "g_giveme_kureru",
+      "category": "GivingReceiving",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ともだち",
+            "は",
+            "わたし",
+            "に",
+            "プレゼント",
+            "を",
+            "くれました"
+          ],
+          "display": "ともだちは わたしに プレゼントを くれました。",
+          "romaji": "tomodachi wa watashi ni purezento o kuremashita"
+        },
+        "id": {
+          "tokens": [
+            "Teman",
+            "memberi",
+            "saya",
+            "hadiah"
+          ],
+          "display": "Teman memberi saya hadiah."
+        },
+        "en": {
+          "tokens": [
+            "My friend",
+            "gave",
+            "me",
+            "a present"
+          ],
+          "display": "My friend gave me a present."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "の",
+          "へ"
+        ],
+        "id": [
+          "tidak",
+          "juga"
+        ],
+        "en": [
+          "very",
+          "also"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_giveme_kureru_1",
+      "grammarId": "g_giveme_kureru",
+      "category": "GivingReceiving",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "はは",
+            "は",
+            "わたし",
+            "に",
+            "おかね",
+            "を",
+            "くれました"
+          ],
+          "display": "ははは わたしに おかねを くれました。",
+          "romaji": "haha wa watashi ni okane o kuremashita"
+        },
+        "id": {
+          "tokens": [
+            "Ibu",
+            "memberi",
+            "saya",
+            "uang"
+          ],
+          "display": "Ibu memberi saya uang."
+        },
+        "en": {
+          "tokens": [
+            "My mother",
+            "gave",
+            "me",
+            "money"
+          ],
+          "display": "My mother gave me money."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "へ",
+          "から"
+        ],
+        "id": [
+          "juga",
+          "itu"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_nagara_0",
+      "grammarId": "g_nagara",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "コーヒー",
+            "を",
+            "のみながら",
+            "しんぶん",
+            "を",
+            "よみます"
+          ],
+          "display": "コーヒーを のみながら しんぶんを よみます。",
+          "romaji": "kōhī o nominagara shinbun o yomimasu"
+        },
+        "id": {
+          "tokens": [
+            "Membaca koran",
+            "sambil",
+            "minum kopi"
+          ],
+          "display": "Membaca koran sambil minum kopi."
+        },
+        "en": {
+          "tokens": [
+            "I read the newspaper",
+            "while",
+            "drinking coffee"
+          ],
+          "display": "I read the newspaper while drinking coffee."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "itu",
+          "yang"
+        ],
+        "en": [
+          "will",
+          "to"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_nagara_1",
+      "grammarId": "g_nagara",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "あるきながら",
+            "でんわ",
+            "を",
+            "しました"
+          ],
+          "display": "あるきながら でんわを しました。",
+          "romaji": "arukinagara denwa o shimashita"
+        },
+        "id": {
+          "tokens": [
+            "Menelepon",
+            "sambil",
+            "berjalan"
+          ],
+          "display": "Menelepon sambil berjalan."
+        },
+        "en": {
+          "tokens": [
+            "I talked on the phone",
+            "while",
+            "walking"
+          ],
+          "display": "I talked on the phone while walking."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "だけ",
+          "しか"
+        ],
+        "id": [
+          "yang",
+          "di"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_maeni_0",
+      "grammarId": "g_maeni",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "でかける",
+            "まえに",
+            "でんわ",
+            "を",
+            "します"
+          ],
+          "display": "でかける まえに、でんわを します。",
+          "romaji": "dekakeru mae ni, denwa o shimasu"
+        },
+        "id": {
+          "tokens": [
+            "Sebelum keluar",
+            "menelepon",
+            "dulu"
+          ],
+          "display": "Sebelum keluar menelepon dulu."
+        },
+        "en": {
+          "tokens": [
+            "Before going out",
+            "I make",
+            "a call"
+          ],
+          "display": "Before going out I make a call."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "しか",
+          "ね"
+        ],
+        "id": [
+          "di",
+          "ke"
+        ],
+        "en": [
+          "at",
+          "from"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_maeni_1",
+      "grammarId": "g_maeni",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "たべる",
+            "まえに",
+            "て",
+            "を",
+            "あらってください"
+          ],
+          "display": "たべる まえに、てを あらってください。",
+          "romaji": "taberu mae ni, te o aratte kudasai"
+        },
+        "id": {
+          "tokens": [
+            "Sebelum makan",
+            "tolong cuci",
+            "tangan"
+          ],
+          "display": "Sebelum makan tolong cuci tangan."
+        },
+        "en": {
+          "tokens": [
+            "Before eating",
+            "please wash",
+            "your hands"
+          ],
+          "display": "Before eating please wash your hands."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "ね",
+          "よ"
+        ],
+        "id": [
+          "ke",
+          "dari"
+        ],
+        "en": [
+          "from",
+          "for"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_atode_0",
+      "grammarId": "g_atode",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "しごと",
+            "の",
+            "あとで",
+            "ジム",
+            "に",
+            "いきます"
+          ],
+          "display": "しごとの あとで、ジムに いきます。",
+          "romaji": "shigoto no ato de, jimu ni ikimasu"
+        },
+        "id": {
+          "tokens": [
+            "Setelah kerja",
+            "pergi",
+            "ke gym"
+          ],
+          "display": "Setelah kerja pergi ke gym."
+        },
+        "en": {
+          "tokens": [
+            "After work",
+            "I go",
+            "to the gym"
+          ],
+          "display": "After work I go to the gym."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "と",
+          "も"
+        ],
+        "id": [
+          "dari",
+          "untuk"
+        ],
+        "en": [
+          "for",
+          "with"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_atode_1",
+      "grammarId": "g_atode",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "シャワー",
+            "を",
+            "あびた",
+            "あとで",
+            "ねます"
+          ],
+          "display": "シャワーを あびた あとで、ねます。",
+          "romaji": "shawā o abita ato de, nemasu"
+        },
+        "id": {
+          "tokens": [
+            "Setelah mandi",
+            "tidur"
+          ],
+          "display": "Setelah mandi tidur."
+        },
+        "en": {
+          "tokens": [
+            "After taking a shower",
+            "I sleep"
+          ],
+          "display": "After taking a shower I sleep."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "か",
+          "は"
+        ],
+        "id": [
+          "untuk",
+          "dengan"
+        ],
+        "en": [
+          "with",
+          "and"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_koto_dekiru_0",
+      "grammarId": "g_koto_dekiru",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "すし",
+            "を",
+            "つくること",
+            "が",
+            "できます"
+          ],
+          "display": "すしを つくることが できます。",
+          "romaji": "sushi o tsukuru koto ga dekimasu"
+        },
+        "id": {
+          "tokens": [
+            "Bisa",
+            "membuat",
+            "sushi"
+          ],
+          "display": "Bisa membuat sushi."
+        },
+        "en": {
+          "tokens": [
+            "I can",
+            "make",
+            "sushi"
+          ],
+          "display": "I can make sushi."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "へ",
+          "から"
+        ],
+        "id": [
+          "dengan",
+          "dan"
+        ],
+        "en": [
+          "and",
+          "the"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_koto_dekiru_1",
+      "grammarId": "g_koto_dekiru",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ここ",
+            "で",
+            "カード",
+            "を",
+            "つかうこと",
+            "が",
+            "できます",
+            "か"
+          ],
+          "display": "ここで カードを つかうことが できますか。",
+          "romaji": "koko de kādo o tsukau koto ga dekimasu ka"
+        },
+        "id": {
+          "tokens": [
+            "Bisa",
+            "pakai",
+            "kartu",
+            "di sini"
+          ],
+          "display": "Bisa pakai kartu di sini."
+        },
+        "en": {
+          "tokens": [
+            "Can I",
+            "use",
+            "a card",
+            "here"
+          ],
+          "display": "Can I use a card here."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "から",
+          "まで"
+        ],
+        "id": [
+          "dan",
+          "sedang"
+        ],
+        "en": [
+          "the",
+          "is"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tsumori_0",
+      "grammarId": "g_tsumori",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "らいねん",
+            "にほん",
+            "へ",
+            "いくつもりです"
+          ],
+          "display": "らいねん にほんへ いくつもりです。",
+          "romaji": "rainen nihon e iku tsumori desu"
+        },
+        "id": {
+          "tokens": [
+            "Tahun depan",
+            "berniat",
+            "pergi",
+            "ke Jepang"
+          ],
+          "display": "Tahun depan berniat pergi ke Jepang."
+        },
+        "en": {
+          "tokens": [
+            "Next year",
+            "I plan",
+            "to go",
+            "to Japan"
+          ],
+          "display": "Next year I plan to go to Japan."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "を",
+          "に"
+        ],
+        "id": [
+          "sedang",
+          "sudah"
+        ],
+        "en": [
+          "is",
+          "are"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tsumori_1",
+      "grammarId": "g_tsumori",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "きょう",
+            "は",
+            "うち",
+            "に",
+            "いるつもりです"
+          ],
+          "display": "きょうは うちに いるつもりです。",
+          "romaji": "kyō wa uchi ni iru tsumori desu"
+        },
+        "id": {
+          "tokens": [
+            "Hari ini",
+            "berniat",
+            "di rumah"
+          ],
+          "display": "Hari ini berniat di rumah."
+        },
+        "en": {
+          "tokens": [
+            "Today",
+            "I plan",
+            "to stay",
+            "at home"
+          ],
+          "display": "Today I plan to stay at home."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "より",
+          "だけ"
+        ],
+        "id": [
+          "sudah",
+          "akan"
+        ],
+        "en": [
+          "are",
+          "was"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tari_0",
+      "grammarId": "g_tari",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "やすみ",
+            "の",
+            "ひ",
+            "は",
+            "ねたり",
+            "ほん",
+            "を",
+            "よんだり",
+            "します"
+          ],
+          "display": "やすみの ひは ねたり ほんを よんだり します。",
+          "romaji": "yasumi no hi wa netari hon o yondari shimasu"
+        },
+        "id": {
+          "tokens": [
+            "Hari libur",
+            "tidur",
+            "dan",
+            "baca buku"
+          ],
+          "display": "Hari libur tidur dan baca buku."
+        },
+        "en": {
+          "tokens": [
+            "On days off",
+            "I sleep",
+            "and",
+            "read books"
+          ],
+          "display": "On days off I sleep and read books."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "で",
+          "と"
+        ],
+        "id": [
+          "ke",
+          "dari"
+        ],
+        "en": [
+          "from",
+          "for"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_tari_1",
+      "grammarId": "g_tari",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "ともだち",
+            "と",
+            "はなしたり",
+            "あるいたり",
+            "しました"
+          ],
+          "display": "ともだちと はなしたり あるいたり しました。",
+          "romaji": "tomodachi to hanashitari aruitari shimashita"
+        },
+        "id": {
+          "tokens": [
+            "Berbicara",
+            "dan",
+            "berjalan",
+            "dengan teman"
+          ],
+          "display": "Berbicara dan berjalan dengan teman."
+        },
+        "en": {
+          "tokens": [
+            "I talked",
+            "and",
+            "walked",
+            "with friends"
+          ],
+          "display": "I talked and walked with friends."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "も",
+          "の"
+        ],
+        "id": [
+          "dari",
+          "untuk"
+        ],
+        "en": [
+          "for",
+          "with"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_narimasu_0",
+      "grammarId": "g_narimasu",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "だんだん",
+            "あたたかく",
+            "なりました"
+          ],
+          "display": "だんだん あたたかく なりました。",
+          "romaji": "dandan atatakaku narimashita"
+        },
+        "id": {
+          "tokens": [
+            "Lama-lama",
+            "jadi",
+            "hangat"
+          ],
+          "display": "Lama-lama jadi hangat."
+        },
+        "en": {
+          "tokens": [
+            "Gradually",
+            "it became",
+            "warm"
+          ],
+          "display": "Gradually it became warm."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "は",
+          "が"
+        ],
+        "id": [
+          "tidak",
+          "juga"
+        ],
+        "en": [
+          "very",
+          "also"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_narimasu_1",
+      "grammarId": "g_narimasu",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "せんせい",
+            "に",
+            "なりたいです"
+          ],
+          "display": "せんせいに なりたいです。",
+          "romaji": "sensei ni naritai desu"
+        },
+        "id": {
+          "tokens": [
+            "Ingin",
+            "jadi",
+            "guru"
+          ],
+          "display": "Ingin jadi guru."
+        },
+        "en": {
+          "tokens": [
+            "I want",
+            "to become",
+            "a teacher"
+          ],
+          "display": "I want to become a teacher."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "へ",
+          "から"
+        ],
+        "id": [
+          "juga",
+          "itu"
+        ],
+        "en": [
+          "also",
+          "will"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_shiteimasu_0",
+      "grammarId": "g_shiteimasu",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "あの",
+            "ひと",
+            "は",
+            "ぼうし",
+            "を",
+            "かぶっています"
+          ],
+          "display": "あの ひとは ぼうしを かぶっています。",
+          "romaji": "ano hito wa bōshi o kabutte imasu"
+        },
+        "id": {
+          "tokens": [
+            "Orang itu",
+            "memakai",
+            "topi"
+          ],
+          "display": "Orang itu memakai topi."
+        },
+        "en": {
+          "tokens": [
+            "That person",
+            "is wearing",
+            "a hat"
+          ],
+          "display": "That person is wearing a hat."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "か",
+          "が"
+        ],
+        "id": [
+          "itu",
+          "yang"
+        ],
+        "en": [
+          "will",
+          "to"
+        ]
+      }
+    },
+    {
+      "id": "sc_g_shiteimasu_1",
+      "grammarId": "g_shiteimasu",
+      "category": "VerbFormsExt",
+      "langs": {
+        "jp": {
+          "tokens": [
+            "わたし",
+            "は",
+            "めがね",
+            "を",
+            "かけています"
+          ],
+          "display": "わたしは めがねを かけています。",
+          "romaji": "watashi wa megane o kakete imasu"
+        },
+        "id": {
+          "tokens": [
+            "Saya",
+            "memakai",
+            "kacamata"
+          ],
+          "display": "Saya memakai kacamata."
+        },
+        "en": {
+          "tokens": [
+            "I",
+            "am wearing",
+            "glasses"
+          ],
+          "display": "I am wearing glasses."
+        }
+      },
+      "distractors": {
+        "jp": [
+          "が",
+          "に"
+        ],
+        "id": [
+          "yang",
+          "di"
+        ],
+        "en": [
+          "to",
+          "at"
+        ]
+      }
+    }
+  ]
+}

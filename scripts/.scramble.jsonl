@@ -1,0 +1,106 @@
+{"gid": "g_ni_freq", "idx": 0, "jp": ["いっしゅうかん", "に", "3かい", "プール", "に", "いきます"], "id": ["Seminggu", "tiga kali", "pergi", "ke kolam renang"], "en": ["I go", "to the pool", "three times", "a week"]}
+{"gid": "g_ni_freq", "idx": 1, "jp": ["いちにち", "に", "8じかん", "ねます"], "id": ["Sehari", "tidur", "delapan jam"], "en": ["I sleep", "eight hours", "a day"]}
+{"gid": "g_ya_list", "idx": 0, "jp": ["つくえ", "の", "うえ", "に", "ほん", "や", "ノート", "が", "あります"], "id": ["Di atas meja", "ada", "buku", "dan", "catatan"], "en": ["On the desk", "there are", "books", "and", "notebooks"]}
+{"gid": "g_ya_list", "idx": 1, "jp": ["にちようび", "は", "そうじ", "や", "せんたく", "を", "します"], "id": ["Hari Minggu", "bersih-bersih", "dan", "cuci baju"], "en": ["On Sunday", "I clean", "and", "do laundry"]}
+{"gid": "g_de_place", "idx": 0, "jp": ["としょかん", "で", "べんきょうします"], "id": ["Belajar", "di", "perpustakaan"], "en": ["I study", "in", "the library"]}
+{"gid": "g_de_place", "idx": 1, "jp": ["レストラン", "で", "ひるごはん", "を", "たべました"], "id": ["Makan siang", "di", "restoran"], "en": ["I ate lunch", "at", "a restaurant"]}
+{"gid": "g_ga_desire", "idx": 0, "jp": ["あたらしい", "けいたい", "が", "ほしいです"], "id": ["Ingin", "ponsel", "baru"], "en": ["I want", "a new", "phone"]}
+{"gid": "g_ga_desire", "idx": 1, "jp": ["つめたい", "みず", "が", "のみたいです"], "id": ["Ingin minum", "air", "dingin"], "en": ["I want to drink", "cold", "water"]}
+{"gid": "g_mo_nothing", "idx": 0, "jp": ["きのう", "は", "なにも", "たべませんでした"], "id": ["Kemarin", "tidak makan", "apa-apa"], "en": ["Yesterday", "I didn't eat", "anything"]}
+{"gid": "g_mo_nothing", "idx": 1, "jp": ["へや", "に", "は", "なにも", "ありません"], "id": ["Di kamar", "tidak ada", "apa-apa"], "en": ["In the room", "there is", "nothing"]}
+{"gid": "g_zutto_compare", "idx": 0, "jp": ["でんしゃ", "は", "バス", "より", "ずっと", "はやいです"], "id": ["Kereta", "jauh lebih cepat", "daripada", "bus"], "en": ["The train", "is much faster", "than", "the bus"]}
+{"gid": "g_zutto_compare", "idx": 1, "jp": ["この", "へや", "の", "ほう", "が", "ずっと", "しずかです"], "id": ["Kamar ini", "jauh lebih", "tenang"], "en": ["This room", "is much", "quieter"]}
+{"gid": "g_wa_topic", "idx": 0, "jp": ["たなかさん", "は", "せんせい", "です"], "id": ["Tanaka", "adalah", "guru"], "en": ["Tanaka", "is", "a teacher"]}
+{"gid": "g_wa_topic", "idx": 1, "jp": ["この", "ほん", "は", "おもしろいです"], "id": ["Buku", "ini", "menarik"], "en": ["This", "book", "is interesting"]}
+{"gid": "g_wo_object", "idx": 0, "jp": ["まいにち", "にほんご", "を", "べんきょうします"], "id": ["Setiap hari", "belajar", "bahasa Jepang"], "en": ["Every day", "I study", "Japanese"]}
+{"gid": "g_wo_object", "idx": 1, "jp": ["おんがく", "を", "ききます"], "id": ["Saya", "mendengarkan", "musik"], "en": ["I", "listen to", "music"]}
+{"gid": "g_ni_time", "idx": 0, "jp": ["よる", "11じ", "に", "ねます"], "id": ["Tidur", "jam 11", "malam"], "en": ["I sleep", "at 11", "PM"]}
+{"gid": "g_ni_time", "idx": 1, "jp": ["4がつ", "に", "にほん", "へ", "いきます"], "id": ["Bulan April", "pergi", "ke Jepang"], "en": ["In April", "I go", "to Japan"]}
+{"gid": "g_ni_destination", "idx": 0, "jp": ["あした", "がっこう", "に", "いきます"], "id": ["Besok", "pergi", "ke", "sekolah"], "en": ["Tomorrow", "I go", "to", "school"]}
+{"gid": "g_ni_destination", "idx": 1, "jp": ["7じ", "に", "うち", "に", "かえります"], "id": ["Jam tujuh", "pulang", "ke", "rumah"], "en": ["At seven", "I go back", "home"]}
+{"gid": "g_de_tool", "idx": 0, "jp": ["ペン", "で", "なまえ", "を", "かいてください"], "id": ["Tolong tulis", "nama", "dengan", "pulpen"], "en": ["Please write", "the name", "with", "a pen"]}
+{"gid": "g_de_tool", "idx": 1, "jp": ["にほんご", "で", "はなしましょう"], "id": ["Ayo bicara", "dengan", "bahasa Jepang"], "en": ["Let's speak", "in", "Japanese"]}
+{"gid": "g_ga_suki", "idx": 0, "jp": ["わたし", "は", "にほん", "の", "おんがく", "が", "すきです"], "id": ["Saya", "suka", "musik", "Jepang"], "en": ["I", "like", "Japanese", "music"]}
+{"gid": "g_ga_suki", "idx": 1, "jp": ["たなかさん", "は", "かんじ", "が", "わかります"], "id": ["Tanaka", "paham", "kanji"], "en": ["Tanaka", "understands", "kanji"]}
+{"gid": "g_to_with", "idx": 0, "jp": ["かぞく", "と", "りょこうします"], "id": ["Bepergian", "bersama", "keluarga"], "en": ["I travel", "with", "my family"]}
+{"gid": "g_to_with", "idx": 1, "jp": ["せんせい", "と", "はなしました"], "id": ["Berbicara", "dengan", "guru"], "en": ["I talked", "with", "the teacher"]}
+{"gid": "g_kara_from", "idx": 0, "jp": ["あさ", "7じ", "から", "はたらきます"], "id": ["Bekerja", "mulai", "jam tujuh pagi"], "en": ["I work", "from", "seven in the morning"]}
+{"gid": "g_kara_from", "idx": 1, "jp": ["インドネシア", "から", "きました"], "id": ["Datang", "dari", "Indonesia"], "en": ["I came", "from", "Indonesia"]}
+{"gid": "g_made_until", "idx": 0, "jp": ["ぎんこう", "は", "3じ", "まで", "です"], "id": ["Bank", "buka", "sampai", "jam tiga"], "en": ["The bank", "is open", "until", "three"]}
+{"gid": "g_made_until", "idx": 1, "jp": ["えき", "まで", "あるきました"], "id": ["Berjalan", "sampai", "stasiun"], "en": ["I walked", "to", "the station"]}
+{"gid": "g_mo_also", "idx": 0, "jp": ["わたし", "も", "いきます"], "id": ["Saya", "juga", "pergi"], "en": ["I", "will go", "too"]}
+{"gid": "g_mo_also", "idx": 1, "jp": ["この", "みせ", "は", "やすいです", "あの", "みせ", "も", "やすいです"], "id": ["Toko ini", "murah", "Toko itu", "juga", "murah"], "en": ["This shop", "is cheap", "That shop", "is also", "cheap"]}
+{"gid": "g_no_possession", "idx": 0, "jp": ["これ", "は", "せんせい", "の", "かさ", "です"], "id": ["Ini", "payung", "guru"], "en": ["This", "is", "the teacher's", "umbrella"]}
+{"gid": "g_no_possession", "idx": 1, "jp": ["にほん", "の", "アニメ", "が", "すきです"], "id": ["Suka", "anime", "Jepang"], "en": ["I like", "Japanese", "anime"]}
+{"gid": "g_ga_exist", "idx": 0, "jp": ["つくえ", "の", "うえ", "に", "ペン", "が", "あります"], "id": ["Di atas meja", "ada", "pulpen"], "en": ["On the desk", "there is", "a pen"]}
+{"gid": "g_ga_exist", "idx": 1, "jp": ["こうえん", "に", "こども", "が", "います"], "id": ["Di taman", "ada", "anak-anak"], "en": ["In the park", "there are", "children"]}
+{"gid": "g_yori_than", "idx": 0, "jp": ["なつ", "は", "ふゆ", "より", "あついです"], "id": ["Musim panas", "lebih panas", "daripada", "musim dingin"], "en": ["Summer", "is hotter", "than", "winter"]}
+{"gid": "g_yori_than", "idx": 1, "jp": ["でんしゃ", "の", "ほう", "が", "バス", "より", "べんりです"], "id": ["Kereta", "lebih praktis", "daripada", "bus"], "en": ["The train", "is more convenient", "than", "the bus"]}
+{"gid": "g_ni_purpose", "idx": 0, "jp": ["えいが", "を", "み", "に", "いきます"], "id": ["Pergi", "untuk", "menonton", "film"], "en": ["I go", "to", "watch", "a movie"]}
+{"gid": "g_ni_purpose", "idx": 1, "jp": ["ごはん", "を", "たべ", "に", "かえります"], "id": ["Pulang", "untuk", "makan"], "en": ["I go home", "to", "eat"]}
+{"gid": "g_dake_only", "idx": 0, "jp": ["みず", "だけ", "のみます"], "id": ["Hanya", "minum", "air"], "en": ["I drink", "only", "water"]}
+{"gid": "g_dake_only", "idx": 1, "jp": ["ひとり", "だけ", "きました"], "id": ["Hanya", "satu orang", "yang datang"], "en": ["Only", "one person", "came"]}
+{"gid": "g_shika_only", "idx": 0, "jp": ["でんしゃ", "しか", "ありません"], "id": ["Cuma ada", "kereta"], "en": ["There is", "only", "the train"]}
+{"gid": "g_shika_only", "idx": 1, "jp": ["にほんご", "しか", "はなせません"], "id": ["Hanya bisa", "bicara", "bahasa Jepang"], "en": ["I can only", "speak", "Japanese"]}
+{"gid": "g_ga_but", "idx": 0, "jp": ["この", "みせ", "は", "やすいです", "が", "おいしいです"], "id": ["Toko ini", "murah", "tapi", "enak"], "en": ["This shop", "is cheap", "but", "delicious"]}
+{"gid": "g_ga_but", "idx": 1, "jp": ["にほんご", "は", "むずかしいです", "が", "おもしろいです"], "id": ["Bahasa Jepang", "sulit", "tapi", "menarik"], "en": ["Japanese", "is difficult", "but", "interesting"]}
+{"gid": "g_dakara_so", "idx": 0, "jp": ["あした", "は", "テストです", "ですから", "きょう", "べんきょうします"], "id": ["Besok", "ujian", "karena itu", "hari ini", "belajar"], "en": ["Tomorrow", "is a test", "so", "today", "I study"]}
+{"gid": "g_dakara_so", "idx": 1, "jp": ["さむいです", "ですから", "まど", "を", "しめます"], "id": ["Dingin", "karena itu", "menutup", "jendela"], "en": ["It's cold", "so", "I close", "the window"]}
+{"gid": "g_mashou_let", "idx": 0, "jp": ["いっしょ", "に", "かえりましょう"], "id": ["Ayo pulang", "bersama"], "en": ["Let's go home", "together"]}
+{"gid": "g_mashou_let", "idx": 1, "jp": ["ちょっと", "やすみましょう"], "id": ["Ayo", "istirahat", "sebentar"], "en": ["Let's rest", "a little"]}
+{"gid": "g_masenka_invite", "idx": 0, "jp": ["あした", "えいが", "を", "みません", "か"], "id": ["Maukah", "besok", "nonton", "film"], "en": ["Would you like", "to watch", "a movie", "tomorrow"]}
+{"gid": "g_masenka_invite", "idx": 1, "jp": ["いっしょ", "に", "おひるごはん", "を", "たべません", "か"], "id": ["Maukah", "makan siang", "bersama"], "en": ["Would you like", "to have lunch", "together"]}
+{"gid": "g_tai_want", "idx": 0, "jp": ["にほん", "へ", "いきたいです"], "id": ["Ingin", "pergi", "ke Jepang"], "en": ["I want", "to go", "to Japan"]}
+{"gid": "g_tai_want", "idx": 1, "jp": ["つめたい", "コーヒー", "が", "のみたいです"], "id": ["Ingin minum", "kopi", "dingin"], "en": ["I want to drink", "cold", "coffee"]}
+{"gid": "g_tekudasai_please", "idx": 0, "jp": ["ゆっくり", "はなしてください"], "id": ["Tolong bicara", "pelan-pelan"], "en": ["Please speak", "slowly"]}
+{"gid": "g_tekudasai_please", "idx": 1, "jp": ["まど", "を", "あけてください"], "id": ["Tolong buka", "jendela"], "en": ["Please open", "the window"]}
+{"gid": "g_temoii_may", "idx": 0, "jp": ["ここ", "に", "すわってもいいです", "か"], "id": ["Boleh", "duduk", "di sini"], "en": ["May I", "sit", "here"]}
+{"gid": "g_temoii_may", "idx": 1, "jp": ["この", "ほん", "を", "かりてもいいです", "か"], "id": ["Boleh", "pinjam", "buku ini"], "en": ["May I", "borrow", "this book"]}
+{"gid": "g_tewaike_mustnot", "idx": 0, "jp": ["ここ", "に", "はいって", "は", "いけません"], "id": ["Tidak boleh", "masuk", "ke sini"], "en": ["You must not", "enter", "here"]}
+{"gid": "g_tewaike_mustnot", "idx": 1, "jp": ["じゅぎょうちゅう", "に", "はなして", "は", "いけません"], "id": ["Tidak boleh", "berbicara", "saat kelas"], "en": ["You must not", "talk", "during class"]}
+{"gid": "g_teiru_ing", "idx": 0, "jp": ["いま", "でんわ", "を", "かけています"], "id": ["Sekarang", "sedang", "menelepon"], "en": ["I am", "talking", "on the phone", "now"]}
+{"gid": "g_teiru_ing", "idx": 1, "jp": ["とうきょう", "に", "すんでいます"], "id": ["Tinggal", "di", "Tokyo"], "en": ["I live", "in", "Tokyo"]}
+{"gid": "g_naide_dont", "idx": 0, "jp": ["しんぱいしないでください"], "id": ["Tolong", "jangan khawatir"], "en": ["Please", "don't worry"]}
+{"gid": "g_naide_dont", "idx": 1, "jp": ["ここ", "で", "たばこ", "を", "すわないでください"], "id": ["Tolong", "jangan merokok", "di sini"], "en": ["Please", "don't smoke", "here"]}
+{"gid": "g_nakutemo_neednot", "idx": 0, "jp": ["あした", "こなくてもいいです"], "id": ["Besok", "tidak perlu datang"], "en": ["Tomorrow", "you don't need to come"]}
+{"gid": "g_nakutemo_neednot", "idx": 1, "jp": ["いそがなくてもいいです", "よ"], "id": ["Tidak perlu", "terburu-buru"], "en": ["You don't need", "to hurry"]}
+{"gid": "g_dochira", "idx": 0, "jp": ["バス", "と", "でんしゃ", "と", "どちら", "が", "はやいです", "か"], "id": ["Bus", "atau", "kereta", "mana yang", "lebih cepat"], "en": ["Which is faster", "the bus", "or", "the train"]}
+{"gid": "g_dochira", "idx": 1, "jp": ["おちゃ", "と", "コーヒー", "と", "どちら", "が", "すきです", "か"], "id": ["Teh", "atau", "kopi", "mana yang", "lebih suka"], "en": ["Which do you like", "tea", "or", "coffee"]}
+{"gid": "g_houga", "idx": 0, "jp": ["なつ", "の", "ほう", "が", "すきです"], "id": ["Lebih suka", "musim panas"], "en": ["I like", "summer", "more"]}
+{"gid": "g_houga", "idx": 1, "jp": ["こっち", "の", "ほう", "が", "やすいです"], "id": ["Yang ini", "lebih", "murah"], "en": ["This one", "is", "cheaper"]}
+{"gid": "g_ichiban", "idx": 0, "jp": ["にほん", "で", "いちばん", "たかい", "やま", "は", "ふじさんです"], "id": ["Gunung", "tertinggi", "di Jepang", "adalah", "Fuji"], "en": ["The highest", "mountain", "in Japan", "is", "Fuji"]}
+{"gid": "g_ichiban", "idx": 1, "jp": ["この", "みせ", "の", "ラーメン", "が", "いちばん", "おいしいです"], "id": ["Ramen", "di toko ini", "paling", "enak"], "en": ["The ramen", "at this shop", "is", "the most delicious"]}
+{"gid": "g_adj_past", "idx": 0, "jp": ["きのう", "は", "さむかったです"], "id": ["Kemarin", "dingin"], "en": ["Yesterday", "was cold"]}
+{"gid": "g_adj_past", "idx": 1, "jp": ["その", "ほん", "は", "たかかったです"], "id": ["Buku itu", "mahal"], "en": ["That book", "was expensive"]}
+{"gid": "g_adj_pastneg", "idx": 0, "jp": ["テスト", "は", "かんたんじゃ", "なかったです"], "id": ["Ujiannya", "tidak", "mudah"], "en": ["The test", "was not", "easy"]}
+{"gid": "g_adj_pastneg", "idx": 1, "jp": ["きのう", "は", "あつくなかったです"], "id": ["Kemarin", "tidak", "panas"], "en": ["Yesterday", "was not", "hot"]}
+{"gid": "g_na_past", "idx": 0, "jp": ["きのう", "の", "テスト", "は", "たいへんでした"], "id": ["Ujian", "kemarin", "berat"], "en": ["Yesterday's", "test", "was tough"]}
+{"gid": "g_na_past", "idx": 1, "jp": ["そこ", "は", "ゆうめいでした"], "id": ["Tempat itu", "terkenal"], "en": ["That place", "was famous"]}
+{"gid": "g_na_pastneg", "idx": 0, "jp": ["その", "へや", "は", "きれいじゃ", "ありませんでした"], "id": ["Kamar itu", "tidak", "bersih"], "en": ["That room", "was not", "clean"]}
+{"gid": "g_na_pastneg", "idx": 1, "jp": ["きのう", "は", "げつようびじゃ", "ありませんでした"], "id": ["Kemarin", "bukan", "hari Senin"], "en": ["Yesterday", "was not", "Monday"]}
+{"gid": "g_adv_iadj", "idx": 0, "jp": ["もっと", "おおきく", "かいてください"], "id": ["Tolong tulis", "lebih besar"], "en": ["Please write", "bigger"]}
+{"gid": "g_adv_iadj", "idx": 1, "jp": ["はやく", "ねてください"], "id": ["Tolong", "tidur", "cepat"], "en": ["Please go to bed", "early"]}
+{"gid": "g_adv_naadj", "idx": 0, "jp": ["へや", "を", "しずか", "に", "してください"], "id": ["Tolong buat", "kamar", "jadi", "tenang"], "en": ["Please make", "the room", "quiet"]}
+{"gid": "g_adv_naadj", "idx": 1, "jp": ["もっと", "ていねい", "に", "かいてください"], "id": ["Tolong tulis", "lebih", "rapi"], "en": ["Please write", "more", "neatly"]}
+{"gid": "g_give_ageru", "idx": 0, "jp": ["わたし", "は", "いもうと", "に", "ほん", "を", "あげました"], "id": ["Saya", "memberi", "buku", "ke adik perempuan"], "en": ["I", "gave", "a book", "to my sister"]}
+{"gid": "g_give_ageru", "idx": 1, "jp": ["たなかさん", "は", "リンさん", "に", "はな", "を", "あげました"], "id": ["Tanaka", "memberi", "bunga", "ke Lin"], "en": ["Tanaka", "gave", "flowers", "to Lin"]}
+{"gid": "g_receive_morau", "idx": 0, "jp": ["わたし", "は", "せんせい", "に", "ほん", "を", "もらいました"], "id": ["Saya", "menerima", "buku", "dari guru"], "en": ["I", "received", "a book", "from the teacher"]}
+{"gid": "g_receive_morau", "idx": 1, "jp": ["たなかさん", "から", "チョコレート", "を", "もらいました"], "id": ["Menerima", "cokelat", "dari Tanaka"], "en": ["I received", "chocolate", "from Tanaka"]}
+{"gid": "g_giveme_kureru", "idx": 0, "jp": ["ともだち", "は", "わたし", "に", "プレゼント", "を", "くれました"], "id": ["Teman", "memberi", "saya", "hadiah"], "en": ["My friend", "gave", "me", "a present"]}
+{"gid": "g_giveme_kureru", "idx": 1, "jp": ["はは", "は", "わたし", "に", "おかね", "を", "くれました"], "id": ["Ibu", "memberi", "saya", "uang"], "en": ["My mother", "gave", "me", "money"]}
+{"gid": "g_nagara", "idx": 0, "jp": ["コーヒー", "を", "のみながら", "しんぶん", "を", "よみます"], "id": ["Membaca koran", "sambil", "minum kopi"], "en": ["I read the newspaper", "while", "drinking coffee"]}
+{"gid": "g_nagara", "idx": 1, "jp": ["あるきながら", "でんわ", "を", "しました"], "id": ["Menelepon", "sambil", "berjalan"], "en": ["I talked on the phone", "while", "walking"]}
+{"gid": "g_maeni", "idx": 0, "jp": ["でかける", "まえに", "でんわ", "を", "します"], "id": ["Sebelum keluar", "menelepon", "dulu"], "en": ["Before going out", "I make", "a call"]}
+{"gid": "g_maeni", "idx": 1, "jp": ["たべる", "まえに", "て", "を", "あらってください"], "id": ["Sebelum makan", "tolong cuci", "tangan"], "en": ["Before eating", "please wash", "your hands"]}
+{"gid": "g_atode", "idx": 0, "jp": ["しごと", "の", "あとで", "ジム", "に", "いきます"], "id": ["Setelah kerja", "pergi", "ke gym"], "en": ["After work", "I go", "to the gym"]}
+{"gid": "g_atode", "idx": 1, "jp": ["シャワー", "を", "あびた", "あとで", "ねます"], "id": ["Setelah mandi", "tidur"], "en": ["After taking a shower", "I sleep"]}
+{"gid": "g_koto_dekiru", "idx": 0, "jp": ["すし", "を", "つくること", "が", "できます"], "id": ["Bisa", "membuat", "sushi"], "en": ["I can", "make", "sushi"]}
+{"gid": "g_koto_dekiru", "idx": 1, "jp": ["ここ", "で", "カード", "を", "つかうこと", "が", "できます", "か"], "id": ["Bisa", "pakai", "kartu", "di sini"], "en": ["Can I", "use", "a card", "here"]}
+{"gid": "g_tsumori", "idx": 0, "jp": ["らいねん", "にほん", "へ", "いくつもりです"], "id": ["Tahun depan", "berniat", "pergi", "ke Jepang"], "en": ["Next year", "I plan", "to go", "to Japan"]}
+{"gid": "g_tsumori", "idx": 1, "jp": ["きょう", "は", "うち", "に", "いるつもりです"], "id": ["Hari ini", "berniat", "di rumah"], "en": ["Today", "I plan", "to stay", "at home"]}
+{"gid": "g_tari", "idx": 0, "jp": ["やすみ", "の", "ひ", "は", "ねたり", "ほん", "を", "よんだり", "します"], "id": ["Hari libur", "tidur", "dan", "baca buku"], "en": ["On days off", "I sleep", "and", "read books"]}
+{"gid": "g_tari", "idx": 1, "jp": ["ともだち", "と", "はなしたり", "あるいたり", "しました"], "id": ["Berbicara", "dan", "berjalan", "dengan teman"], "en": ["I talked", "and", "walked", "with friends"]}
+{"gid": "g_narimasu", "idx": 0, "jp": ["だんだん", "あたたかく", "なりました"], "id": ["Lama-lama", "jadi", "hangat"], "en": ["Gradually", "it became", "warm"]}
+{"gid": "g_narimasu", "idx": 1, "jp": ["せんせい", "に", "なりたいです"], "id": ["Ingin", "jadi", "guru"], "en": ["I want", "to become", "a teacher"]}
+{"gid": "g_shiteimasu", "idx": 0, "jp": ["あの", "ひと", "は", "ぼうし", "を", "かぶっています"], "id": ["Orang itu", "memakai", "topi"], "en": ["That person", "is wearing", "a hat"]}
+{"gid": "g_shiteimasu", "idx": 1, "jp": ["わたし", "は", "めがね", "を", "かけています"], "id": ["Saya", "memakai", "kacamata"], "en": ["I", "am wearing", "glasses"]}

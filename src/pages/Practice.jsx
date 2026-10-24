@@ -18,6 +18,8 @@ import { categoryTranslations } from "../utils/translations";
 import { KanaTypeToggle } from "../components/KanaTypeToggle";
 import { KanaQuiz } from "../features/quiz/KanaQuiz";
 import { NotesPanel } from "../features/learn/NotesPanel";
+import { useScrambleSession } from "../features/scramble/useScrambleSession";
+import { ScrambleBoard } from "../features/scramble/ScrambleBoard";
 import { useEffectLayer } from "../features/effects/EffectContext";
 import { HinaResultSticker } from "../features/effects/HinaResultSticker";
 import { yujiBurnedIds, YUJI_FINISHER_XP_MULT } from "../features/effects/yujiFx";
@@ -109,6 +111,8 @@ export function Practice() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [difficulty, setDifficulty] = useState('Medium');
   const [quizStarted, setQuizStarted] = useState(false);
+  const [scrambleStarted, setScrambleStarted] = useState(false);
+  const [scrambleCount, setScrambleCount] = useState(10);
   const [activeKanaType, setActiveKanaType] = useState('hiragana');
   const [activeKanaSubtype, setActiveKanaSubtype] = useState('all');
   const navigate = useNavigate();
@@ -161,6 +165,8 @@ export function Practice() {
     currentIndex,
     timeLeft
   } = useQuizSession({ frozen: domainOn || yutaCopyFreezes });   // Gojo/domain copy = waktu BEKU
+
+  const scramble = useScrambleSession();
 
   // Soal berganti → efek jawaban (GIF + teks) padam seketika. Tanpa ini GIF
   // ber-hold 2–4,6s tetap menutupi soal berikutnya ("lama buat ke next quiz").
@@ -427,6 +433,23 @@ export function Practice() {
       setQuizStarted(true);
     };
 
+    const handleStartScramble = () => {
+      const categories = selectedRows.length > 0 ? selectedRows : null;
+      const ok = scramble.startSession({
+        language,
+        categories,
+        difficulty,
+        count: scrambleCount,
+      });
+      if (ok) {
+        endQuizSession();
+        clearAnswerFx();
+        resetEffectStreak();
+        setScrambleStarted(true);
+        setQuizStarted(false);
+      }
+    };
+
     const handleFullChallenge = () => {
     const allRowNames = (activeKanaType === 'kotoba' || activeKanaType === 'kanji')
       ? [...new Set(filteredData.map(item => item.category))]
@@ -437,6 +460,42 @@ export function Practice() {
     initializeQuiz({ rows: allRowNames, difficulty: 'Hard', sourceData: activeData });
     setQuizStarted(true);
   };
+
+  // ── Susun Balok (grammar scramble): hasil → daftar soal sesi → ulang / beranda.
+  const handleScrambleRestart = () => {
+    scramble.startSession({ language, count: scrambleCount, difficulty });
+  };
+  if (scrambleStarted) {
+    if (scramble.isFinished) {
+      return (
+        <QuizResult
+          score={scramble.score}
+          totalQuestions={scramble.totalQuestions}
+          wrongAnswers={scramble.wrongIds}
+          onPlayAgain={handleScrambleRestart}
+          onGoHome={() => { setScrambleStarted(false); endQuizSession(); navigate('/'); }}
+        />
+      );
+    }
+    return (
+      <ScrambleBoard
+        question={scramble.currentQuestion}
+        placed={scramble.placed}
+        checked={scramble.checked}
+        isCorrect={scramble.isCorrect}
+        language={language}
+        onPlace={scramble.placeBlock}
+        onRemove={scramble.removeBlock}
+        onClear={scramble.clearPlaced}
+        onCheck={scramble.checkAnswer}
+        onNext={scramble.nextQuestion}
+        onBack={() => { endQuizSession(); setScrambleStarted(false); }}
+        index={scramble.currentIndex}
+        total={scramble.totalQuestions}
+        score={scramble.score}
+      />
+    );
+  }
 
   if (quizStarted) {
     if (isFinished) {
@@ -1016,6 +1075,38 @@ export function Practice() {
               >
                 {language === 'id' ? 'Mulai Kuis' : 'Start Quiz'}
               </Button>
+
+              {/* Susun Balok — mode grammar: susun balok kalimat. */}
+              {activeKanaType === 'grammar' && (
+                <>
+                  <div className="w-full mt-6">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-sumi/50 mb-3">
+                      {language === 'id' ? 'Jumlah Soal Susun Balok' : 'Scramble Question Count'}
+                    </p>
+                    <div className="flex gap-2 flex-wrap">
+                      {[10, 20, 50, 106].map(n => (
+                        <button
+                          key={n}
+                          onClick={() => setScrambleCount(n)}
+                          className={`px-6 py-3 border-[3px] border-sumi font-bold text-sm tracking-widest uppercase transition-all shadow-[4px_4px_0_0_#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#1a1a1a] ${
+                            scrambleCount === n
+                              ? 'bg-sumi text-kinari-light translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0_0_#1a1a1a]'
+                              : 'bg-kinari text-sumi hover:bg-kinari-light'
+                          }`}
+                        >
+                          {n === 106 ? (language === 'id' ? 'Semua' : 'All') : n}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleStartScramble}
+                    className="w-full mt-4 py-5 text-base sm:text-lg tracking-[0.3em] font-black uppercase border-[4px] border-sumi rounded-none shadow-[8px_8px_0_0_#1a1a1a] transition-all !bg-matcha !text-kinari-light hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[4px_4px_0_0_#1a1a1a]"
+                  >
+                    {language === 'id' ? '⑂ Susun Balok Kalimat' : '⑂ Sentence Blocks'}
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* Full Hiragana Challenge */}
