@@ -435,10 +435,11 @@ export function Practice() {
 
     const handleStartScramble = () => {
       const categories = selectedRows.length > 0 ? selectedRows : null;
+      const scrambleDiff = String(difficulty).toLowerCase(); // Easy→easy, Hard→hard
       const ok = scramble.startSession({
         language,
         categories,
-        difficulty,
+        difficulty: scrambleDiff,
         count: scrambleCount,
       });
       if (ok) {
@@ -451,9 +452,10 @@ export function Practice() {
     };
 
     const handleFullChallenge = () => {
-    const allRowNames = (activeKanaType === 'kotoba' || activeKanaType === 'kanji')
-      ? [...new Set(filteredData.map(item => item.category))]
-      : [...new Set(filteredData.map(item => item.row))];
+    const allRowNames = (activeKanaType === 'kotoba' || activeKanaType === 'kanji' || activeKanaType === 'grammar')
+      ? [...new Set(filteredData.map(item => item.category).filter(Boolean))]
+      : [...new Set(filteredData.map(item => item.row).filter(Boolean))];
+    if (allRowNames.length === 0) return;
     setSelectedRows(allRowNames);
     setDifficulty('Hard');
     resetEffectStreak();
@@ -483,6 +485,7 @@ export function Practice() {
         placed={scramble.placed}
         checked={scramble.checked}
         isCorrect={scramble.isCorrect}
+        timeLeft={scramble.timeLeft}
         language={language}
         onPlace={scramble.placeBlock}
         onRemove={scramble.removeBlock}
@@ -1128,12 +1131,12 @@ export function Practice() {
               <div>
                 <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-shu mb-3">
                   {language === 'id'
-                    ? `Mode Sulit · Semua ${(activeKanaType === 'kotoba' || activeKanaType === 'kanji') ? 'Kategori' : 'Baris'} · ${activeData.length} ${activeKanaType === 'kotoba' ? 'Kata' : activeKanaType === 'kanji' ? 'Kanji' : 'Karakter'}`
-                    : `Hard Mode · All ${(activeKanaType === 'kotoba' || activeKanaType === 'kanji') ? 'Categories' : 'Rows'} · ${activeData.length} ${activeKanaType === 'kotoba' ? 'Words' : activeKanaType === 'kanji' ? 'Kanji' : 'Characters'}`
+                    ? `Mode Sulit · Semua ${(activeKanaType === 'kotoba' || activeKanaType === 'kanji' || activeKanaType === 'grammar') ? 'Kategori' : 'Baris'} · ${activeData.length} ${activeKanaType === 'kotoba' ? 'Kata' : activeKanaType === 'kanji' ? 'Kanji' : activeKanaType === 'grammar' ? 'Pola' : 'Karakter'}`
+                    : `Hard Mode · All ${(activeKanaType === 'kotoba' || activeKanaType === 'kanji' || activeKanaType === 'grammar') ? 'Categories' : 'Rows'} · ${activeData.length} ${activeKanaType === 'kotoba' ? 'Words' : activeKanaType === 'kanji' ? 'Kanji' : activeKanaType === 'grammar' ? 'Patterns' : 'Characters'}`
                   }
                 </div>
                 <h3 className="text-3xl sm:text-4xl font-serif font-black text-kinari-light leading-tight tracking-tight">
-                  Full {activeKanaType === 'kotoba' ? 'Kotoba' : activeKanaType === 'kanji' ? '漢字 Kanji' : activeKanaType === 'hiragana' ? 'Hiragana' : 'Katakana'}<br />
+                  Full {activeKanaType === 'kotoba' ? 'Kotoba' : activeKanaType === 'kanji' ? '漢字 Kanji' : activeKanaType === 'grammar' ? '文法 Grammar' : activeKanaType === 'hiragana' ? 'Hiragana' : 'Katakana'}<br />
                   <span className="text-shu">{language === 'id' ? 'Tantangan Penuh' : 'Challenge'}</span>
                 </h3>
               </div>

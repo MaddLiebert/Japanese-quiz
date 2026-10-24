@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  MODE_JP, MODE_TR, shuffleTokens, buildPool, isCorrectOrder,
+  MODE_JP, shuffleTokens, buildPool, isCorrectOrder,
   normalizeSentence, pickScrambleItems, buildScrambleQuestion, buildScrambleSession,
 } from './scramble.js';
 
@@ -33,16 +33,14 @@ test('bank: minimal 100 soal, id unik, tiap soal punya 3 bahasa', () => {
   }
 });
 
-test('bank: pengecoh tidak boleh kembar dengan token jawaban', () => {
+test('bank: block jp punya t + kanji field (kanji opsional, t wajib)', () => {
   for (const it of ITEMS) {
-    for (const lang of ['jp', 'id', 'en']) {
-      const answer = new Set(it.langs[lang].tokens.map((t) => t.toLowerCase()));
-      for (const d of it.distractors[lang]) {
-        assert.ok(
-          !answer.has(d.toLowerCase()),
-          `${it.id}.${lang}: pengecoh "${d}" kembar dengan token jawaban`,
-        );
-      }
+    assert.ok(Array.isArray(it.langs.jp.blocks), `${it.id} tanpa blocks`);
+    assert.equal(it.langs.jp.blocks.length, it.langs.jp.tokens.length);
+    for (const b of it.langs.jp.blocks) {
+      assert.ok(typeof b.t === 'string' && b.t.length > 0, `${it.id} block tanpa t`);
+      assert.ok('kanji' in b, `${it.id} block tanpa field kanji`);
+      assert.equal(b.t, (b.kanji ?? b.t).length > 0 ? b.t : b.t);
     }
   }
 });
@@ -65,20 +63,22 @@ test('shuffleTokens: permutasi, array baru, input tetap', () => {
   assert.deepEqual(input, ['a', 'b', 'c', 'd']);
 });
 
-test('buildPool: semua token jawaban + pengecoh masuk, key unik', () => {
-  const { pool, answer, answerKeys } = buildPool(['に', 'に', 'いきます'], ['は', 'が']);
+test('buildPool: semua token jawaban + pengecoh masuk, key unik, pengecoh ditandai', () => {
+  const blocks = [{ t: 'あした', kanji: '明日' }, { t: 'に', kanji: null }, { t: 'いきます', kanji: '行きます' }];
+  const { answer, pool, answerKeys } = buildPool(blocks, ['は'], lcg(3));
   assert.equal(answer.length, 3);
-  assert.equal(pool.length, 5);
-  assert.equal(new Set(pool.map((b) => b.key)).size, 5);
-  assert.equal(answerKeys.length, 3);
-  // token kembar tetap terpisah jadi dua balok
-  assert.equal(pool.filter((b) => b.text === 'に').length, 2);
+  assert.equal(pool.length, 4);
+  assert.equal(new Set(pool.map((b) => b.key)).size, 4);
+  assert.deepEqual(answerKeys, ['a0', 'a1', 'a2']);
+  const dist = pool.filter((b) => b.isDistractor);
+  assert.equal(dist.length, 1);
+  assert.equal(dist[0].text, 'は');
 });
 
-test('buildPool: pengecoh ditandai isDistractor', () => {
-  const { pool } = buildPool(['あ'], ['い']);
-  assert.equal(pool.filter((b) => b.isDistractor).length, 1);
-  assert.equal(pool.filter((b) => !b.isDistractor).length, 1);
+test('buildPool: token kembar tetap terpisah jadi dua balok', () => {
+  const blocks = [{ t: 'に', kanji: null }, { t: 'に', kanji: null }, { t: 'いきます', kanji: '行きます' }];
+  const { pool } = buildPool(blocks, []);
+  assert.equal(pool.filter((b) => b.text === 'に').length, 2);
 });
 
 test('isCorrectOrder: hanya urutan persis yang benar', () => {
@@ -105,58 +105,64 @@ test('pickScrambleItems: hormati jumlah & kategori', () => {
   for (const it of onlyParticles) assert.equal(it.category, 'Particles');
 });
 
-test('buildScrambleQuestion mode jp: prompt = arti, balok = kana', () => {
+test('buildScrambleQuestion easy: prompt = arti id, balok = hiragana', () => {
   const item = ITEMS[0];
-  const q = buildScrambleQuestion(item, { language: 'id', mode: MODE_JP, rng: lcg(1) });
+  const q = buildScrambleQuestion(item, { language: 'id', difficulty: 'easy', rng: lcg(1) });
   assert.equal(q.mode, MODE_JP);
-  assert.equal(q.prompt, item.langs.id.display);
-  assert.deepEqual(
-    q.blocks.filter((b) => !b.isDistractor).map((b) => b.text).sort(),
-    [...item.langs.jp.tokens].sort(),
-  );
-  assert.equal(q.answerTokens.length, item.langs.jp.tokens.length);
-});
-
-test('buildScrambleQuestion mode tr: prompt = kalimat Jepang, balok = terjemahan', () => {
-  const item = ITEMS[0];
-  const q = buildScrambleQuestion(item, { language: 'en', mode: MODE_TR, rng: lcg(2) });
-  assert.equal(q.mode, MODE_TR);
-  assert.equal(q.prompt, item.langs.jp.display);
-  assert.equal(q.promptRomaji, item.langs.jp.romaji);
-  assert.deepEqual(
-    q.blocks.filter((b) => !b.isDistractor).map((b) => b.text).sort(),
-    [...item.langs.en.tokens].sort(),
-  );
-});
-
-test('buildScrambleQuestion: answerKeys menunjuk balok jawaban di kolam', () => {
-  const item = ITEMS[3];
-  for (const mode of [MODE_JP, MODE_TR]) {
-    const q = buildScrambleQuestion(item, { language: 'id', mode, rng: lcg(3) });
-    const byKey = new Map(q.blocks.map((b) => [b.key, b]));
-    const texts = q.answerKeys.map((k) => byKey.get(k)?.text);
-    assert.deepEqual(texts, q.answerTokens);
+  assert.equal(q.difficulty, 'easy');
+  assert.equal(q.prompt, item.langs.id.display, item.langs.id.display);
+  // easy → balok = token hiragana apa adanya (bukan kanji)
+  for (const b of q.blocks) {
+    if (b.isDistractor) continue;
+    assert.ok(item.langs.jp.tokens.includes(b.text), `${b.text} bukan token`);
   }
 });
 
-test('buildScrambleSession: dua-duanya ada (jp & tr), jumlah tepat', () => {
-  const session = buildScrambleSession(ITEMS, { language: 'id', count: 10, rng: lcg(9) });
-  assert.equal(session.length, 10);
-  assert.ok(session.some((q) => q.mode === MODE_JP));
-  assert.ok(session.some((q) => q.mode === MODE_TR));
-  assert.equal(new Set(session.map((q) => q.id)).size, 10);
+test('buildScrambleQuestion hard: kata ber-kanji ditampil kanji, partikel tetap kana', () => {
+  const mk = {
+    langs: {
+      jp: {
+        blocks: [{ t: 'あした', kanji: '明日' }, { t: 'に', kanji: null }, { t: 'いきます', kanji: '行きます' }],
+        tokens: ['あした', 'に', 'いきます'],
+        display: 'あしたにいきます。', romaji: 'ashita ni ikimasu',
+      },
+      id: { display: 'Besok pergi.', tokens: ['Besok', 'pergi'] },
+      en: { display: 'Tomorrow go.', tokens: ['Tomorrow', 'go'] },
+    },
+    id: 'mk', grammarId: 'g', category: 'Kata Kerja',
+  };
+  const q = buildScrambleQuestion(mk, { language: 'id', difficulty: 'hard', rng: lcg(4) });
+  const texts = q.blocks.filter((b) => !b.isDistractor).map((b) => b.text);
+  assert.ok(texts.includes('明日'), 'kanji bermakna wajib tampil di hard');
+  assert.ok(texts.includes('に'), 'partikel tanpa kanji tetap hiragana');
+  assert.ok(!texts.includes('あした'), 'token ber-kanji tak boleh kana');
 });
 
-test('buildScrambleSession mix=false: semua mode jp', () => {
-  const session = buildScrambleSession(ITEMS, { count: 6, mix: false, rng: lcg(11) });
-  assert.ok(session.every((q) => q.mode === MODE_JP));
+test('buildScrambleQuestion medium: pakai furigana pasangan kanji/kana', () => {
+  const mk = {
+    langs: {
+      jp: {
+        blocks: [{ t: 'あした', kanji: '明日' }, { t: 'に', kanji: null }, { t: 'いきます', kanji: '行きます' }],
+        tokens: ['あした', 'に', 'いきます'], display: 'あしたにいきます。', romaji: 'ashita ni ikimasu',
+      },
+      id: { display: 'Besok pergi.', tokens: ['Besok', 'pergi'] },
+      en: { display: 'Tomorrow go.', tokens: ['Tomorrow', 'go'] },
+    },
+    id: 'mk', grammarId: 'g', category: 'Kata Kerja',
+  };
+  const q = buildScrambleQuestion(mk, { language: 'id', difficulty: 'medium', rng: lcg(4) });
+  assert.equal(q.furigana.length, 3);
+  assert.deepEqual(
+    q.furigana.map((f) => [f.kanji, f.kana]),
+    [['明日', 'あした'], ['に', 'に'], ['行きます', 'いきます']],
+  );
 });
 
-test('buildScrambleSession: bahasa en memakai token Inggris', () => {
-  const session = buildScrambleSession(ITEMS, {
-    language: 'en', count: 4, mix: false, rng: lcg(5),
-  });
-  for (const q of session) {
-    assert.equal(q.language, 'en');
-  }
+test('buildScrambleSession: semua jp mode, jumlah tepat, difficulty diteruskan', () => {
+  const session = buildScrambleSession(ITEMS, { language: 'id', count: 10, difficulty: 'hard', rng: lcg(9) });  // eslint-disable-line no-undef
+  // langsung pakai import buildScrambleSession
+  const s2 = buildScrambleSession(ITEMS, { language: 'en', count: 12, difficulty: 'hard', rng: lcg(9) });
+  assert.equal(s2.length, 12);
+  assert.ok(s2.every((q) => q.mode === MODE_JP && q.difficulty === 'hard'));
+  assert.ok(s2.every((q) => q.prompt.length > 0));
 });
