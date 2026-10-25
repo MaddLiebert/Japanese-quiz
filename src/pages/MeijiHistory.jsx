@@ -13,7 +13,6 @@
 //   • M3 第二面 — halaman belakang koran (opsional, nada datar) per perhentian.
 //   • M6 縦→横 — arah teks berputar dari tegak (縦) ke datar (横) sepanjang rute.
 //   • M7 時刻 — penjelasan jam standar setelah 鉄道 (index ≥ 4).
-//   • M14 印刷所 — easter egg (tautan muncul kalau terbuka).
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -24,8 +23,6 @@ import { pagesForStop } from '../features/news/newsPages';
 import { flowAtStop, writingMode } from '../features/theme/textFlow';
 import { isStandardTime, standardTimeNotice } from '../features/time/temporal';
 import { waYoCss } from '../features/theme/waYo';
-import { useUserStats } from '../features/progress/ProgressContext';
-import { isPrintShopUnlocked } from '../features/printshop/printshop';
 
 // Perhentian → tujuan navigasi (fitur app). Yang tak punya rute → null.
 const ROUTE_BY_FEATURE = {
@@ -54,11 +51,8 @@ export function MeijiHistory() {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const { play } = useCinematic();
-  const { progress } = useUserStats();
   const [openSecond, setOpenSecond] = useState(null); // id perhentian yg 第二面-nya dibuka
   const id = language === 'id';
-
-  const printshopOpen = isPrintShopUnlocked({ era: 'meiji', level: progress?.level, editionsPrinted: 0 });
 
   return (
     <div className="relative mx-auto max-w-3xl px-4 py-8 sm:py-12">
@@ -100,16 +94,6 @@ export function MeijiHistory() {
           >
             ▶ {id ? 'Putar Ulang Cinematic Meiji' : 'Replay Meiji Cinematic'}
           </button>
-          {printshopOpen && (
-            <button
-              type="button"
-              onClick={() => navigate('/printshop')}
-              className="inline-flex items-center gap-2 border-2 border-renga px-4 py-2.5 font-sans text-xs font-bold uppercase tracking-widest text-renga transition-colors hover:bg-renga hover:text-kinari-light"
-              style={{ borderRadius: 0 }}
-            >
-              印刷所 {id ? 'Buka Percetakan' : 'Open Print Shop'}
-            </button>
-          )}
         </div>
       </div>
 

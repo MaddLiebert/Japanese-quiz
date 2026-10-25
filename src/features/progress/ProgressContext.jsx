@@ -145,6 +145,7 @@ export const ACHIEVEMENT_META = {
   blind_ten: { label: '闇', title: 'Dark Ink', desc: 'Lulus level Buta di 10 karakter', desc_en: 'Pass Blind level on 10 characters' },
   // Speaking (2) — dari fitur Latihan Bicara (話)
   first_voice: { label: '声', title: 'First Voice', desc: 'Selesaikan latihan bicara pertama', desc_en: 'Complete first speaking practice' },
+  first_typing: { label: '打', title: 'First Keypress', desc: 'Benar pertama di Kuis Ketik', desc_en: 'First correct in Typing Quiz' },
   poem_reciter: { label: '詩', title: 'Poem Reciter', desc: 'Selesaikan 3 puisi', desc_en: 'Complete 3 poems' },
   // Language Arts (6)
   bunpo_student: { label: '文', title: 'Bunpo Student', desc: '10 Grammar sessions', desc_en: '10 Grammar sessions' },

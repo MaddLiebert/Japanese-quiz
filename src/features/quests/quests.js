@@ -5,7 +5,7 @@
 // Reward: EXP (dihitung ProgressContext) + Medaru. Dites via `node --test`.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const SIDE_SOURCES = ['writing', 'speaking', 'review', 'poem'];
+export const SIDE_SOURCES = ['writing', 'speaking', 'review', 'poem', 'typing', 'typing_jp'];
 
 export const QUEST_DEFS = [
   {

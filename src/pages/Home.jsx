@@ -82,8 +82,8 @@ export function Home() {
   const masteredKanji = countMasteredKanji(itemProgress);
   const n5Unlocked = isN5ExamUnlocked(getGateRank(progress), masteredKanji);
 
-  // 活字組み (Typesetting) — terbuka di era Meiji (gate Lv 50, sumber tunggal eras.js).
-  const typesettingUnlocked = isEraUnlocked('meiji', gateLevel(progress));
+  // Era Meiji — gate Lv 50, sumber tunggal eras.js.
+  const meijiUnlocked = isEraUnlocked('meiji', gateLevel(progress));
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 min-h-screen">
@@ -393,6 +393,19 @@ export function Home() {
                 </div>
               </motion.div>
 
+              <motion.div onClick={() => navigate('/typing')} whileHover={{ backgroundColor: "rgba(24, 43, 73, 0.05)" }} className="p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi">
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-xl sm:text-2xl font-serif font-bold text-sumi group-hover:text-ai transition-colors">
+                    {language === 'id' ? 'Kuis Ketik' : 'Typing Quiz'} 打
+                  </h4>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
+                    {language === 'id' ? 'Ketik Romaji & Kana via Keyboard' : 'Type Romaji & Kana with Keyboard'}
+                  </p>
+                </div>
+                <div className="w-14 h-14 border-[3px] border-ai text-ai flex items-center justify-center group-hover:bg-ai group-hover:text-kinari-light transition-all flex-shrink-0">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01"></path></svg>
+                </div>
+              </motion.div>
               <motion.div onClick={() => navigate('/writing')} whileHover={{ backgroundColor: "rgba(24, 43, 73, 0.05)" }} className="p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi">
                 <div className="flex flex-col gap-2">
                   <h4 className="text-xl sm:text-2xl font-serif font-bold text-sumi group-hover:text-ai transition-colors">
@@ -420,74 +433,56 @@ export function Home() {
                 </div>
               </motion.div>
 
-              {/* 活字組み Typesetting — era Meiji (gate Lv 50) */}
-              <motion.div onClick={() => navigate('/typesetting')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${typesettingUnlocked ? '' : 'opacity-60'}`}>
-                <div className="flex flex-col gap-2 relative z-10">
-                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${typesettingUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
-                    {language === 'id' ? 'Susun Huruf' : 'Typesetting'} 活字組み
-                    {!typesettingUnlocked && <Glyph name="lock" className="text-xs" />}
-                  </h4>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
-                    {typesettingUnlocked
-                      ? (language === 'id' ? 'Grammar · Susun Blok Jadi Kalimat' : 'Grammar · Set Blocks Into Sentences')
-                      : (language === 'id' ? 'Era Meiji · Lv 50' : 'Meiji Era · Lv 50')}
-                  </p>
-                </div>
-                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${typesettingUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
-                  <span className="text-lg font-serif font-black select-none">活</span>
-                </div>
-              </motion.div>
-
               {/* 新語 Neologism — era Meiji (gate Lv 50) */}
-              <motion.div onClick={() => navigate('/neologism')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${typesettingUnlocked ? '' : 'opacity-60'}`}>
+              <motion.div onClick={() => navigate('/neologism')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${meijiUnlocked ? '' : 'opacity-60'}`}>
                 <div className="flex flex-col gap-2 relative z-10">
-                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${typesettingUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
+                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${meijiUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
                     {language === 'id' ? 'Cipta Kata' : 'Coin Words'} 新語
-                    {!typesettingUnlocked && <Glyph name="lock" className="text-xs" />}
+                    {!meijiUnlocked && <Glyph name="lock" className="text-xs" />}
                   </h4>
                   <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
-                    {typesettingUnlocked
+                    {meijiUnlocked
                       ? (language === 'id' ? 'Susun Kanji Jadi Istilah Baru' : 'Build New Terms From Kanji')
                       : (language === 'id' ? 'Era Meiji · Lv 50' : 'Meiji Era · Lv 50')}
                   </p>
                 </div>
-                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${typesettingUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${meijiUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
                   <span className="text-lg font-serif font-black select-none">新</span>
                 </div>
               </motion.div>
 
               {/* Codex つながり — glosarium lintas-era (gate Meiji) */}
-              <motion.div onClick={() => navigate('/codex')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${typesettingUnlocked ? '' : 'opacity-60'}`}>
+              <motion.div onClick={() => navigate('/codex')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${meijiUnlocked ? '' : 'opacity-60'}`}>
                 <div className="flex flex-col gap-2 relative z-10">
-                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${typesettingUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
+                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${meijiUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
                     {language === 'id' ? 'Benang Lintas Era' : 'Cross-Era Threads'} Codex
-                    {!typesettingUnlocked && <Glyph name="lock" className="text-xs" />}
+                    {!meijiUnlocked && <Glyph name="lock" className="text-xs" />}
                   </h4>
                   <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
-                    {typesettingUnlocked
+                    {meijiUnlocked
                       ? (language === 'id' ? 'Edo → Meiji → Shōwa' : 'Edo → Meiji → Shōwa')
                       : (language === 'id' ? 'Era Meiji · Lv 50' : 'Meiji Era · Lv 50')}
                   </p>
                 </div>
-                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${typesettingUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${meijiUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
                   <span className="text-lg font-serif font-black select-none">繋</span>
                 </div>
               </motion.div>
 
               {/* 戸籍 Koseki — buku hidup pemain (gate Meiji) */}
-              <motion.div onClick={() => navigate('/koseki')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${typesettingUnlocked ? '' : 'opacity-60'}`}>
+              <motion.div onClick={() => navigate('/koseki')} whileHover={{ backgroundColor: "rgba(155, 74, 60, 0.05)" }} className={`p-6 sm:p-8 cursor-pointer flex items-center justify-between group transition-colors border-t-[4px] border-sumi relative overflow-hidden ${meijiUnlocked ? '' : 'opacity-60'}`}>
                 <div className="flex flex-col gap-2 relative z-10">
-                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${typesettingUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
+                  <h4 className={`text-xl sm:text-2xl font-serif font-bold flex items-center gap-3 transition-colors ${meijiUnlocked ? 'text-sumi group-hover:text-renga' : 'text-sumi/60'}`}>
                     {language === 'id' ? 'Buku Hidupmu' : 'Your Life Record'} 戸籍
-                    {!typesettingUnlocked && <Glyph name="lock" className="text-xs" />}
+                    {!meijiUnlocked && <Glyph name="lock" className="text-xs" />}
                   </h4>
                   <p className="text-[10px] uppercase tracking-[0.2em] text-sumi/60 font-bold">
-                    {typesettingUnlocked
+                    {meijiUnlocked
                       ? (language === 'id' ? 'Apa yang App Ingat Tentangmu' : 'What the App Remembers')
                       : (language === 'id' ? 'Era Meiji · Lv 50' : 'Meiji Era · Lv 50')}
                   </p>
                 </div>
-                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${typesettingUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
+                <div className={`w-14 h-14 border-[3px] flex items-center justify-center transition-all flex-shrink-0 relative z-10 ${meijiUnlocked ? 'border-renga text-renga group-hover:bg-renga group-hover:text-kinari-light' : 'border-sumi/30 text-sumi/40'}`}>
                   <span className="text-lg font-serif font-black select-none">籍</span>
                 </div>
               </motion.div>

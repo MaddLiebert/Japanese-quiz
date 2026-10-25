@@ -78,7 +78,7 @@ test('questBoard: 3 misi, semua punya current/target/done/claimed + reward > 0',
 });
 
 test('SIDE_SOURCES + defs: konsisten (event misi ada di counters)', () => {
-  assert.deepEqual(SIDE_SOURCES, ['writing', 'speaking', 'review', 'poem']);
+  assert.deepEqual(SIDE_SOURCES, ['writing', 'speaking', 'review', 'poem', 'typing', 'typing_jp']);
   for (const d of QUEST_DEFS) {
     assert.ok(['correct', 'session', 'side'].includes(d.event), d.id);
   }

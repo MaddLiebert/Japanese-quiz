@@ -17,6 +17,7 @@ const Practice = lazyNamed(() => import("./pages/Practice"), "Practice");
 const Review = lazyNamed(() => import("./pages/Review"), "Review");
 const Settings = lazyNamed(() => import("./pages/Settings"), "Settings");
 const Writing = lazyNamed(() => import("./pages/Writing"), "Writing");
+const Typing = lazyNamed(() => import("./pages/Typing"), "Typing");
 const Speaking = lazyNamed(() => import("./pages/Speaking"), "Speaking");
 const HeianHistory = lazyNamed(() => import("./pages/HeianHistory"), "HeianHistory");
 const EdoHistory = lazyNamed(() => import("./pages/EdoHistory"), "EdoHistory");
@@ -29,8 +30,6 @@ const AnimeCheckpoint = lazyNamed(() => import("./pages/AnimeCheckpoint"), "Anim
 const AnimePractice = lazyNamed(() => import("./pages/AnimePractice"), "AnimePractice");
 const CyberpunkHistory = lazyNamed(() => import("./pages/CyberpunkHistory"), "CyberpunkHistory");
 const OwariCheckpoint = lazyNamed(() => import("./pages/OwariCheckpoint"), "OwariCheckpoint");
-const Typesetting = lazyNamed(() => import("./pages/Typesetting"), "Typesetting");
-const PrintShop = lazyNamed(() => import("./pages/PrintShop"), "PrintShop");
 const Neologism = lazyNamed(() => import("./pages/Neologism"), "Neologism");
 const Codex = lazyNamed(() => import("./pages/Codex"), "Codex");
 const Koseki = lazyNamed(() => import("./pages/Koseki"), "Koseki");
@@ -393,6 +392,7 @@ function App() {
                   <Route path="/learn" element={<Learn />} />
                   <Route path="/practice" element={<Practice />} />
                   <Route path="/writing" element={<Writing />} />
+                  <Route path="/typing" element={<Typing />} />
                   <Route path="/speaking" element={<Speaking />} />
                   <Route path="/mondai" element={<MondaiChapterFlow />} />
                   <Route path="/review" element={<Review />} />
@@ -422,8 +422,6 @@ function App() {
                   <Route path="/hakone-checkpoint" element={<HakoneCheckpoint />} />
                   <Route path="/kokkai-checkpoint" element={<KokkaiCheckpoint />} />
                   <Route path="/sotsugyo-checkpoint" element={<SotsugyoCheckpoint />} />
-                  <Route path="/typesetting" element={<Typesetting />} />
-                  <Route path="/printshop" element={<PrintShop />} />
                   <Route path="/neologism" element={<Neologism />} />
                   <Route path="/codex" element={<Codex />} />
                   <Route path="/koseki" element={<Koseki />} />
