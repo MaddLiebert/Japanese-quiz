@@ -339,11 +339,12 @@ export function Typing() {
               <input
                 ref={inputRef}
                 value={input}
-                onChange={(e) => { if (!composing) setInput(e.target.value); }}
+                onChange={(e) => setInput(e.target.value)}
                 onCompositionStart={() => setComposing(true)}
-                onCompositionEnd={(e) => { setComposing(false); setInput(e.target.value); }}
+                onCompositionEnd={() => setComposing(false)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') submit();
+                  const ime = composing || e.nativeEvent?.isComposing || e.keyCode === 229;
+                  if (e.key === 'Enter' && !ime) submit();
                 }}
                 autoFocus
                 autoComplete="off"
