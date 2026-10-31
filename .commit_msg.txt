@@ -1,35 +1,32 @@
-feat(kotoba): mode SULIT = soal KANJI, jawaban HIRAGANA
+feat(kotoba): kata ditulis KANJI + furigana di atasnya (bukan kana murni)
 
-Kotoba mode Gampang/Lumayan hanya menampilkan kana lalu menanyakan arti,
-jadi kanji kotoba tak pernah dilatih. Sekarang mode Susah menampilkan kata
-dalam bentuk kanji (食べる) dengan opsi jawaban berupa bacaan hiragana
-(たべる) — satu soal melatih pengenalan kanji SEKALIGUS hafalan kotoba.
+Sebelumnya kartu kotoba di Gampang/Lumayan, hasil kuis, Targeted Review, dan
+flashcard Learn hanya menampilkan kana (たべる), jadi bentuk kanji kata itu
+tidak pernah terlihat. Sekarang kata ditulis dengan kanji asli dan bacaan
+hiragana kecil di atasnya — gaya buku pelajaran.
 
-Data:
-- scripts/gen-kotoba-kanji.cjs: bangun src/data/kotobaKanji.json dari JMdict
-  (.hermes/_jmdict.json). Kandidat disaring per bacaan kana + dicocokkan arti
-  Inggrisnya, supaya homofon tidak tertukar (はし "sumpit"→箸, "jembatan"→橋;
-  かみ "rambut"→髪, "kertas"→紙; とる "ambil"→取る, "potret"→撮る).
-  Hanya bentuk `common` JMdict (ateji langka seperti 此の/珈琲 dibuang), angka
-  dinormalkan ke kanji (９月→九月, ２０日→二十日).
-  Hasil: 634 dari 876 kata punya bentuk kanji umum.
+Furigana (src/features/quiz/furigana.js, murni + diuji):
+- toFurigana("食べる","たべる") → "食[た]べる" (markup yang dibaca <Furigana>).
+- Okurigana jadi jangkar: 食[た]べる, 大[おお]きい, 男[おとこ]の子[こ].
+- Blok kanji diambil sebanyak mungkin dengan backtracking: 男の子 harus
+  男[おとこ]の子[こ], bukan 男[おと]の子[この]; 痛い butuh 痛[いた]い karena
+  "い" juga muncul di awal bacaan.
+- Kata semua-kanji memakai ruby satu blok (教室[きょうしつ], 大人[おとな]) —
+  bacaan per-kanji tidak bisa ditebak dari data ini.
+- Kana katakana di bentuk kanji tetap tampil aslinya (消[け]しゴム).
+- Bacaan tak sinkron → null; pemanggil menampilkan teks apa adanya (tak menebak).
+- Cakupan: 634/634 kata ber-kanji berhasil dibuat furigana (dijaga test).
 
-Logika (murni, diuji node --test):
-- kotobaReading.js: toReadingItem / readingPool / buildKotobaReadingQuiz.
-  Satu bentuk kanji = satu soal (道 dipakai 2 entri kotoba), kata tanpa kanji
-  umum (コーヒー, ドア) dilewati.
-- questionBuilder.buildKotobaReadingOptions: distraktor disaring per TEKS KANA —
-  箸 dan 橋 sama-sama はし, kalau lolos layar menampilkan dua opsi kembar.
-  Kategori kecil (Angka = 2 kata) dilengkapi distraktor dari seluruh kotoba
-  supaya tetap 6 opsi.
-- useQuizSession: difficulty hard + pool 100% kotoba → jalur soal bacaan
-  (timer 7 dtk seperti hard biasa). Kurikulum MNN (campur grammar) tidak ikut.
+decorateKotobaItems (kotobaReading.js): menambah `kanji` + `furigana` TANPA
+mengubah `char`. Penting: `char` tetap kana karena dipakai untuk opsi jawaban
+dan penilaian benar/salah — mengubahnya akan merusak kuis.
 
-UI (Practice.jsx):
-- Kartu: kanji besar + label "↓ Pilih cara bacanya"; opsi = hiragana.
-- Reveal jawaban: bacaan hiragana (aksen ai) + romaji + arti EN/ID.
-- Panel penjelasan mode Susah di layar setup; kartu Boss "Full Kotoba"
-  menampilkan jumlah kata ber-kanji (634).
+Diterapkan di:
+- Practice.jsx: kartu kotoba Gampang/Lumayan + daftar "Perlu Latihan Lagi".
+- Review.jsx: daftar target + kartu sesi review.
+- Learn.jsx + Flashcard.jsx: kartu kategori & flashcard kotoba.
 
-Gampang/Lumayan kotoba dan tab Kanji tetap menanyakan arti (tanpa regresi).
-Test: 1804 pass, build pass.
+Mode SULIT (kanji → hiragana) sengaja TIDAK diberi furigana sebelum dijawab:
+furigana = jawabannya. Furigana baru muncul di reveal.
+
+Test: 1816 pass (13 test baru untuk furigana + decorate), build pass.

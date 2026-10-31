@@ -16,8 +16,13 @@ import poemsData from "../data/poems.json";
 
 import { Button } from "../components/ui/Button";
 import { EraPaper } from "../components/EraPaper";
+import { Furigana } from "../components/Furigana";
+import { decorateKotobaItems } from "../features/quiz/kotobaReading";
+import kotobaKanjiData from "../data/kotobaKanji.json";
 
-const allData = [
+// Kotoba ditulis dengan kanji asli + furigana (gaya buku pelajaran), bukan kana
+// murni — supaya review ikut melatih bentuk kanji kata yang sama.
+const allData = decorateKotobaItems([
   ...hiraganaData,
   ...katakanaData,
   ...kotobaData,
@@ -31,7 +36,7 @@ const allData = [
     meaning_id: p.meaning_id,
     type: 'poem',
   })),
-];
+], kotobaKanjiData);
 
 function shuffle(array) {
   const arr = [...array];
@@ -290,7 +295,9 @@ export function Review() {
           <div className="flex flex-wrap gap-4 relative z-10">
             {globalWeakCharacters.map((item, idx) => (
               <div key={idx} className="flex items-baseline gap-2 bg-kinari-light px-5 py-3 border-[3px] border-sumi/10 shadow-sm">
-                <span className={`font-serif text-shu font-black ${item.type === 'grammar' ? 'text-xl' : 'text-3xl'}`}>{item.char}</span>
+                <span className={`font-serif text-shu font-black ${item.type === 'grammar' ? 'text-xl' : 'text-3xl'}`}>
+                  {item.furigana ? <Furigana text={item.furigana} /> : item.char}
+                </span>
                 <span className="text-xs text-sumi/60 font-bold uppercase tracking-widest">
                   {item.type === 'grammar' ? item.answer : item.type === 'kotoba' || item.type === 'kanji' || item.type === 'poem' ? item.meaning : item.romaji}
                 </span>
@@ -400,7 +407,7 @@ export function Review() {
                   </h2>
                 ) : (
                   <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black text-sumi leading-tight select-none relative z-10 text-center break-words max-w-full">
-                    {currentWeakChar.char}
+                    {currentWeakChar.furigana ? <Furigana text={currentWeakChar.furigana} /> : currentWeakChar.char}
                   </h2>
                 )}
 

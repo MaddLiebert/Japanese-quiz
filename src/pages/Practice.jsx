@@ -1,5 +1,6 @@
 import { Glyph } from "../components/icons/Glyph";
 import { EraPaper } from "../components/EraPaper";
+import { Furigana } from "../components/Furigana";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +14,7 @@ import grammarData from "../data/grammar.json";
 import kanjiData from "../data/kanji.json";
 import syllabusData from "../data/syllabus.json";
 import { useQuizSession } from "../features/quiz/useQuizSession";
-import { KOTOBA_READING_MODE } from "../features/quiz/kotobaReading";
+import { KOTOBA_READING_MODE, decorateKotobaItems } from "../features/quiz/kotobaReading";
 import kotobaKanjiData from "../data/kotobaKanji.json";
 import { Button } from "../components/ui/Button";
 import { categoryTranslations } from "../utils/translations";
@@ -37,7 +38,11 @@ function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome
   else if (percentage >= 80) grade = 'A';
   else if (percentage >= 60) grade = 'B';
 
-  const allData = [...hiraganaData, ...katakanaData, ...kotobaData, ...grammarData, ...kanjiData];
+  // Daftar salah ikut ditulis dengan kanji + furigana (konsisten dengan kartu soal).
+  const allData = decorateKotobaItems(
+    [...hiraganaData, ...katakanaData, ...kotobaData, ...grammarData, ...kanjiData],
+    kotobaKanjiData,
+  );
   const wrongItems = wrongAnswers.map(id => allData.find(item => item.id === id)).filter(Boolean);
 
   return (
@@ -81,7 +86,9 @@ function QuizResult({ score, totalQuestions, wrongAnswers, onPlayAgain, onGoHome
           <div className="flex flex-wrap gap-4 relative z-10">
             {wrongItems.map((item, idx) => (
               <div key={idx} className="flex items-baseline gap-2 bg-kinari-light px-4 py-2 border-[3px] border-sumi/10">
-                <span className={`font-serif text-shu font-black ${item.type === 'grammar' ? 'text-lg' : 'text-3xl'}`}>{item.char}</span>
+                <span className={`font-serif text-shu font-black ${item.type === 'grammar' ? 'text-lg' : 'text-3xl'}`}>
+                  {item.furigana ? <Furigana text={item.furigana} /> : item.char}
+                </span>
                 <span className="text-xs text-sumi/60 font-bold uppercase tracking-widest">
                   {item.type === 'grammar' ? item.answer : item.type === 'kotoba' ? item.meaning : item.romaji}
                 </span>
@@ -779,9 +786,15 @@ export function Practice() {
                     </button>
                   )}
 
-                  {/* Japanese character */}
+                  {/* Japanese character — kanji asli + furigana di atasnya.
+                      Mode SULIT (kanji→hiragana) TIDAK boleh menampilkan furigana
+                      sebelum dijawab: itu jawabannya. */}
                   <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black text-sumi leading-tight select-none relative z-10 text-center break-words max-w-full">
-                    {currentQuestion.char}
+                    {!isReadingMode && currentQuestion.furigana ? (
+                      <Furigana text={currentQuestion.furigana} />
+                    ) : (
+                      currentQuestion.char
+                    )}
                   </h2>
 
                   {/* Prompt mode kanji → hiragana */}

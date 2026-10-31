@@ -16,6 +16,8 @@ import { Search } from "lucide-react";
 import { KanaTypeToggle } from "../components/KanaTypeToggle";
 import { PoemReader } from "../features/learn/PoemReader";
 import { EraPaper } from "../components/EraPaper";
+import { decorateKotobaItems } from "../features/quiz/kotobaReading";
+import kotobaKanjiData from "../data/kotobaKanji.json";
 
 export function Learn() {
   const navigate = useNavigate();
@@ -27,6 +29,7 @@ export function Learn() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeKanaSubtype, setActiveKanaSubtype] = useState('all');
 
+  // Kotoba ditulis dengan kanji asli + furigana di kartu (bukan kana murni).
   const activeData = activeKanaType === 'hiragana'
     ? hiraganaData
     : activeKanaType === 'katakana'
@@ -35,7 +38,7 @@ export function Learn() {
         ? kanjiData
         : activeKanaType === 'grammar'
           ? grammarData
-          : kotobaData;
+          : decorateKotobaItems(kotobaData, kotobaKanjiData);
 
   const filteredData = activeData.filter(item => {
     if (activeKanaType !== 'hiragana' && activeKanaType !== 'katakana') return true;
@@ -240,7 +243,7 @@ export function Learn() {
   if (isKurikulum && selectedRow) {
     const chapter = syllabusData.find(c => c.chapter === selectedRow);
     const combinedIds = [...(chapter?.grammar_ids || []), ...(chapter?.kotoba_ids || [])];
-    const allData = [...kotobaData, ...grammarData];
+    const allData = [...decorateKotobaItems(kotobaData, kotobaKanjiData), ...grammarData];
     rowKana = allData.filter(item => combinedIds.includes(item.id));
   } else {
     rowKana = (activeKanaType === 'kotoba' || activeKanaType === 'grammar' || activeKanaType === 'kanji')

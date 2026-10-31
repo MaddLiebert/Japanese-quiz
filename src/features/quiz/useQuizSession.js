@@ -6,7 +6,7 @@ import kotobaData from '../../data/kotoba.json';
 import grammarData from '../../data/grammar.json';
 import kanjiData from '../../data/kanji.json';
 import { shuffle, buildOptions } from './questionBuilder';
-import { buildKotobaReadingQuiz } from './kotobaReading';
+import { buildKotobaReadingQuiz, decorateKotobaItems } from './kotobaReading';
 import kotobaKanjiData from '../../data/kotobaKanji.json';
 
 // Dataset lengkap untuk fallback distractor (dipakai questionBuilder).
@@ -105,9 +105,14 @@ export function useQuizSession({ frozen = false } = {}) {
     if (diff === 'easy') optionCount = 4;
     if (diff === 'medium' || diff === 'hard') optionCount = 6;
 
-    const shuffledItems = shuffle(availableItems);
+    // Kata kotoba ditulis dengan kanji asli + furigana di atasnya (gaya buku
+    // pelajaran). Soalnya tetap "apa artinya" — jadi bacaan tidak membocorkan
+    // jawaban. Hanya `char` yang TIDAK diubah, jadi opsi/penilaian tetap aman.
+    const displayItems = decorateKotobaItems(availableItems, kotobaKanjiData);
+
+    const shuffledItems = shuffle(displayItems);
     const generatedQuestions = shuffledItems.map(item => {
-      const options = buildOptions(item, availableItems, optionCount, DATASETS);
+      const options = buildOptions(item, displayItems, optionCount, DATASETS);
       return { target: item, options };
     });
 

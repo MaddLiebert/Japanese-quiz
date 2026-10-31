@@ -10,6 +10,7 @@
 // parameter, sesuai aturan repo untuk modul yang diuji `node --test`.
 // ─────────────────────────────────────────────────────────────────────────────
 import { shuffle, buildKotobaReadingOptions } from './questionBuilder.js';
+import { toFurigana } from './furigana.js';
 
 export const KOTOBA_READING_MODE = 'kotoba-reading';
 
@@ -23,6 +24,7 @@ export function toReadingItem(item, kanjiMap) {
     char: entry.k,        // tampil di kartu soal: KANJI
     reading: entry.r,     // jawaban benar: HIRAGANA
     kana: item.char,      // bentuk kana asli (untuk reveal)
+    furigana: toFurigana(entry.k, entry.r), // markup ruby (null bila tak sinkron)
     quizMode: KOTOBA_READING_MODE,
   };
 }
@@ -35,6 +37,24 @@ export function readingPool(items, kanjiMap) {
     if (converted) out.push(converted);
   }
   return out;
+}
+
+// Tambahkan bentuk kanji + markup furigana TANPA mengubah `char`.
+// Dipakai mode gampang/lumayan: soalnya tetap "apa artinya", tapi kata di kartu
+// ditulis dengan kanji asli dan bacaan kana di atasnya (gaya buku pelajaran).
+// Item tanpa bentuk kanji umum (コーヒー) dibiarkan apa adanya.
+export function decorateKotobaItems(items, kanjiMap) {
+  return (items || []).map((item) => {
+    if (item?.type !== 'kotoba') return item;
+    const entry = kanjiMap?.[item.id];
+    if (!entry?.k || !entry?.r) return item;
+    return {
+      ...item,
+      kanji: entry.k,
+      furigana: toFurigana(entry.k, entry.r),
+      reading: entry.r,
+    };
+  });
 }
 
 // Susun seluruh soal satu sesi (target + opsi) untuk mode kanji → hiragana.

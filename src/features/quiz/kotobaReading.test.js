@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { KOTOBA_READING_MODE, toReadingItem, readingPool, buildKotobaReadingQuiz } from './kotobaReading.js';
+import { KOTOBA_READING_MODE, toReadingItem, readingPool, buildKotobaReadingQuiz, decorateKotobaItems } from './kotobaReading.js';
 import { buildKotobaReadingOptions } from './questionBuilder.js';
 
 // Aturan repo: modul murni tidak import JSON — data dibaca manual di test.
@@ -128,6 +128,31 @@ test('buildKotobaReadingQuiz: kategori kecil dilengkapi distraktor global', () =
     assert.equal(new Set(readings).size, readings.length);
     assert.ok(q.options.some((o) => o.id === q.target.id));
   }
+});
+
+test('decorateKotobaItems: menambah kanji + furigana TANPA mengubah char', () => {
+  const out = decorateKotobaItems(kotoba, kanjiMap);
+  assert.equal(out.length, kotoba.length, 'jumlah item tidak boleh berubah');
+
+  const taberu = out.find((x) => x.id === 'v_taberu');
+  assert.equal(taberu.char, 'たべる', 'char harus tetap kana (dipakai opsi & penilaian)');
+  assert.equal(taberu.kanji, '食べる');
+  assert.equal(taberu.furigana, '食[た]べる');
+  assert.equal(taberu.reading, 'たべる');
+  assert.ok(taberu.meaning, 'arti tetap ada');
+});
+
+test('decorateKotobaItems: kata tanpa kanji umum dibiarkan apa adanya', () => {
+  const kopi = kotoba.find((x) => x.char === 'コーヒー');
+  const out = decorateKotobaItems([kopi], kanjiMap)[0];
+  assert.equal(out, kopi, 'objek harus dikembalikan tanpa diubah');
+  assert.equal(out.furigana, undefined);
+});
+
+test('decorateKotobaItems: item non-kotoba tidak disentuh', () => {
+  const kana = { id: 'hira_a', char: 'あ', romaji: 'a', type: 'seion' };
+  assert.equal(decorateKotobaItems([kana], kanjiMap)[0], kana);
+  assert.deepEqual(decorateKotobaItems(null, kanjiMap), []);
 });
 
 test('buildKotobaReadingQuiz: tiap soal punya target kanji + opsi bacaan', () => {

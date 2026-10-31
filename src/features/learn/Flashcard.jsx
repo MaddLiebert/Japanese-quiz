@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/Button";
 import { playDramaticAudio } from "../../utils/audio";
 import { useLanguage } from "../../context/LanguageContext";
 import { NotesPanel } from "./NotesPanel";
+import { Furigana } from "../../components/Furigana";
 
 export function Flashcard({ kana, isMastered, onToggleMastery, showAudio = true }) {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -61,7 +62,7 @@ export function Flashcard({ kana, isMastered, onToggleMastery, showAudio = true 
             <>
               <div className="text-[8px] uppercase tracking-[0.4em] font-bold text-sumi/40 mb-4 z-10">{kana.category}</div>
               <h2 className="text-5xl sm:text-6xl font-serif text-sumi leading-tight z-10 select-none text-center px-4">
-                {kana.char}
+                {isKotoba && kana.furigana ? <Furigana text={kana.furigana} /> : kana.char}
               </h2>
               {isKotoba && <p className="text-sm tracking-[0.2em] text-sumi/50 font-bold uppercase mt-4 z-10">{kana.romaji}</p>}
               {isKanji && (
