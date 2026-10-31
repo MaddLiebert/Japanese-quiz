@@ -118,6 +118,66 @@ function pickDistractors(item, quizPool, optionCount, datasets, rng = Math.rando
   return picked;
 }
 
+// ── Kotoba mode SULIT: soal KANJI → jawaban HIRAGANA ────────────────────────
+// Tujuan latihan: satu soal menguji dua hal sekaligus — mengenali kanji DAN
+// mengingat bacaan kotoba-nya. Karena opsi ditampilkan sebagai kana, dua kata
+// berbeda yang berbunyi sama (箸/橋 = はし) TIDAK boleh muncul sebagai dua opsi:
+// di layar keduanya tampak identik. Karena itu distraktor disaring per teks kana.
+// `fallbackPool` (opsional): cadangan distraktor saat kategori terlalu kecil.
+export function buildKotobaReadingOptions(item, quizPool, optionCount, rng = Math.random, fallbackPool = []) {
+  const needed = Math.max(1, optionCount - 1);
+  const readingOf = (d) => String(d?.reading || d?.char || '');
+  const seen = new Set([readingOf(item)]);
+  const picked = [];
+
+  const candidates = quizPool.filter((d) => d.id !== item.id && d.type === 'kotoba');
+  const sameGroup = shuffle(candidates.filter((d) => d.category === item.category), rng);
+  const otherGroup = shuffle(candidates.filter((d) => d.category !== item.category), rng);
+
+  for (const cand of [...sameGroup, ...otherGroup]) {
+    if (picked.length >= needed) break;
+    const reading = readingOf(cand);
+    if (!reading || seen.has(reading)) continue;
+    seen.add(reading);
+    picked.push(cand);
+  }
+
+  // Kategori kecil (Angka = 2 kata) → lengkapi dari seluruh kotoba.
+  if (picked.length < needed && fallbackPool.length) {
+    for (const cand of shuffle(fallbackPool, rng)) {
+      if (picked.length >= needed) break;
+      if (cand.id === item.id) continue;
+      const reading = readingOf(cand);
+      if (!reading || seen.has(reading)) continue;
+      seen.add(reading);
+      picked.push(cand);
+    }
+  }
+
+  const correct = {
+    id: item.id,
+    char: item.char,
+    reading: readingOf(item),
+    romaji: item.romaji,
+    meaning: item.meaning,
+    meaning_id: item.meaning_id,
+    type: 'kotoba',
+    isCorrect: true,
+  };
+  const distractors = picked.map((d) => ({
+    id: d.id,
+    char: d.char,
+    reading: readingOf(d),
+    romaji: d.romaji,
+    meaning: d.meaning,
+    meaning_id: d.meaning_id,
+    type: 'kotoba',
+    isCorrect: false,
+  }));
+
+  return shuffle([...distractors, correct], rng);
+}
+
 // ── Option formatters (bentuk data opsi sesuai yang dibaca UI) ───────────────
 function toOptionShape(d) {
   if (d.type === 'grammar') {

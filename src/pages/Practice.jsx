@@ -13,6 +13,8 @@ import grammarData from "../data/grammar.json";
 import kanjiData from "../data/kanji.json";
 import syllabusData from "../data/syllabus.json";
 import { useQuizSession } from "../features/quiz/useQuizSession";
+import { KOTOBA_READING_MODE } from "../features/quiz/kotobaReading";
+import kotobaKanjiData from "../data/kotobaKanji.json";
 import { Button } from "../components/ui/Button";
 import { categoryTranslations } from "../utils/translations";
 import { KanaTypeToggle } from "../components/KanaTypeToggle";
@@ -718,6 +720,8 @@ export function Practice() {
 
       // ── Kotoba Quiz UI ───────────────────────────────────────────────────────
       if (isKotobaMode) {
+        // Mode SULIT: kartu menampilkan KANJI, opsi berupa bacaan HIRAGANA.
+        const isReadingMode = currentQuestion.quizMode === KOTOBA_READING_MODE;
 
         return (
           <div data-quiz-shell className="relative max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 min-h-screen flex flex-col">
@@ -780,6 +784,13 @@ export function Practice() {
                     {currentQuestion.char}
                   </h2>
 
+                  {/* Prompt mode kanji → hiragana */}
+                  {isReadingMode && !isAnswered && (
+                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-sumi/40 relative z-10">
+                      {language === 'id' ? '↓ Pilih cara bacanya' : '↓ Choose the reading'}
+                    </p>
+                  )}
+
                   {/* Feedback reveal after answering */}
                   {isAnswered && (
                     <motion.div
@@ -787,6 +798,11 @@ export function Practice() {
                       animate={{ opacity: 1, y: 0 }}
                       className="flex flex-col items-center gap-1 border-t-[2px] border-sumi/10 pt-4 mt-2 relative z-10 w-full"
                     >
+                      {isReadingMode && (
+                        <span className="text-2xl sm:text-3xl font-serif font-black text-ai tracking-wide">
+                          {currentQuestion.reading}
+                        </span>
+                      )}
                       <span className="text-base sm:text-lg font-bold tracking-widest text-sumi/50 uppercase">
                         {currentQuestion.romaji}
                       </span>
@@ -854,7 +870,9 @@ export function Practice() {
                       disabled={isAnswered || isBurned || isCut || isMegumiCut || isNobaraCut || isNanamiCut || isTojiKill}
                     >
                       <span className="text-center font-serif">
-                        {(language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning}
+                        {isReadingMode
+                          ? option.reading
+                          : ((language === 'id' && option.meaning_id) ? option.meaning_id : option.meaning)}
                       </span>
                     </motion.button>
                   );
@@ -1064,6 +1082,20 @@ export function Practice() {
                   );
                 })}
               </div>
+
+              {/* Penjelasan mode SULIT kotoba: kanji → hiragana */}
+              {activeKanaType === 'kotoba' && difficulty === 'Hard' && (
+                <div className="mt-4 p-4 sm:p-5 border-[3px] border-sumi/20 bg-kinari-light relative z-10">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-shu mb-2">
+                    漢字 → ひらがな
+                  </p>
+                  <p className="text-sm font-medium text-sumi/70 leading-relaxed">
+                    {language === 'id'
+                      ? 'Kata tampil dalam KANJI (食べる) dan jawabannya HIRAGANA (たべる) — sekalian hafal kanji kotoba-nya. Kata tanpa kanji umum (コーヒー, ドア) dilewati. Waktu 7 detik per soal.'
+                      : 'Words appear in KANJI (食べる) and answers are HIRAGANA (たべる) — you learn the kanji while reviewing vocabulary. Words with no common kanji (コーヒー, ドア) are skipped. 7 seconds per question.'}
+                  </p>
+                </div>
+              )}
             </section>
 
             {/* Start Button */}
@@ -1131,8 +1163,12 @@ export function Practice() {
               <div>
                 <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-shu mb-3">
                   {language === 'id'
-                    ? `Mode Sulit · Semua ${(activeKanaType === 'kotoba' || activeKanaType === 'kanji' || activeKanaType === 'grammar') ? 'Kategori' : 'Baris'} · ${activeData.length} ${activeKanaType === 'kotoba' ? 'Kata' : activeKanaType === 'kanji' ? 'Kanji' : activeKanaType === 'grammar' ? 'Pola' : 'Karakter'}`
-                    : `Hard Mode · All ${(activeKanaType === 'kotoba' || activeKanaType === 'kanji' || activeKanaType === 'grammar') ? 'Categories' : 'Rows'} · ${activeData.length} ${activeKanaType === 'kotoba' ? 'Words' : activeKanaType === 'kanji' ? 'Kanji' : activeKanaType === 'grammar' ? 'Patterns' : 'Characters'}`
+                    ? `Mode Sulit · Semua ${(activeKanaType === 'kotoba' || activeKanaType === 'kanji' || activeKanaType === 'grammar') ? 'Kategori' : 'Baris'} · ${activeKanaType === 'kotoba'
+                      ? `${Object.keys(kotobaKanjiData).length} Kata Ber-kanji`
+                      : `${activeData.length} ${activeKanaType === 'kanji' ? 'Kanji' : activeKanaType === 'grammar' ? 'Pola' : 'Karakter'}`}`
+                    : `Hard Mode · All ${(activeKanaType === 'kotoba' || activeKanaType === 'kanji' || activeKanaType === 'grammar') ? 'Categories' : 'Rows'} · ${activeKanaType === 'kotoba'
+                      ? `${Object.keys(kotobaKanjiData).length} Words with Kanji`
+                      : `${activeData.length} ${activeKanaType === 'kanji' ? 'Kanji' : activeKanaType === 'grammar' ? 'Patterns' : 'Characters'}`}`
                   }
                 </div>
                 <h3 className="text-3xl sm:text-4xl font-serif font-black text-kinari-light leading-tight tracking-tight">

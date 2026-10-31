@@ -1,14 +1,35 @@
-fix(gacha): Cyberpunk gacha — 3-tahap terminal hack minigame
+feat(kotoba): mode SULIT = soal KANJI, jawaban HIRAGANA
 
-Files baru:
-- cyberpunkHack.js: logic hacking (rollResult, calcPenalty, buildCommandSequence)
-- cyberpunkHack.test.js: 10 unit test (pass)
-- CyberpunkGachaOverlay.jsx: React component (terminal UI, hologram style)
+Kotoba mode Gampang/Lumayan hanya menampilkan kana lalu menanyakan arti,
+jadi kanji kotoba tak pernah dilatih. Sekarang mode Susah menampilkan kata
+dalam bentuk kanji (食べる) dengan opsi jawaban berupa bacaan hiragana
+(たべる) — satu soal melatih pengenalan kanji SEKALIGUS hafalan kotoba.
 
-Mekanik:
-- 3 tahap hacking dengan command input (ls → sudo → cat archive.dat)
-- Risk vs reward: common (90% success, -5%), rare (75%, -15%), legendary (50%, -30%), special (30%, -50%)
-- Fail penalty: score deduction, streak reset, points loss
-- UI: glassmorphism frame + scanline + cyan glow + glitch effect
+Data:
+- scripts/gen-kotoba-kanji.cjs: bangun src/data/kotobaKanji.json dari JMdict
+  (.hermes/_jmdict.json). Kandidat disaring per bacaan kana + dicocokkan arti
+  Inggrisnya, supaya homofon tidak tertukar (はし "sumpit"→箸, "jembatan"→橋;
+  かみ "rambut"→髪, "kertas"→紙; とる "ambil"→取る, "potret"→撮る).
+  Hanya bentuk `common` JMdict (ateji langka seperti 此の/珈琲 dibuang), angka
+  dinormalkan ke kanji (９月→九月, ２０日→二十日).
+  Hasil: 634 dari 876 kata punya bentuk kanji umum.
 
-Build + test pass.
+Logika (murni, diuji node --test):
+- kotobaReading.js: toReadingItem / readingPool / buildKotobaReadingQuiz.
+  Satu bentuk kanji = satu soal (道 dipakai 2 entri kotoba), kata tanpa kanji
+  umum (コーヒー, ドア) dilewati.
+- questionBuilder.buildKotobaReadingOptions: distraktor disaring per TEKS KANA —
+  箸 dan 橋 sama-sama はし, kalau lolos layar menampilkan dua opsi kembar.
+  Kategori kecil (Angka = 2 kata) dilengkapi distraktor dari seluruh kotoba
+  supaya tetap 6 opsi.
+- useQuizSession: difficulty hard + pool 100% kotoba → jalur soal bacaan
+  (timer 7 dtk seperti hard biasa). Kurikulum MNN (campur grammar) tidak ikut.
+
+UI (Practice.jsx):
+- Kartu: kanji besar + label "↓ Pilih cara bacanya"; opsi = hiragana.
+- Reveal jawaban: bacaan hiragana (aksen ai) + romaji + arti EN/ID.
+- Panel penjelasan mode Susah di layar setup; kartu Boss "Full Kotoba"
+  menampilkan jumlah kata ber-kanji (634).
+
+Gampang/Lumayan kotoba dan tab Kanji tetap menanyakan arti (tanpa regresi).
+Test: 1804 pass, build pass.

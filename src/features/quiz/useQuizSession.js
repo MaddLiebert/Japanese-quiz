@@ -6,6 +6,8 @@ import kotobaData from '../../data/kotoba.json';
 import grammarData from '../../data/grammar.json';
 import kanjiData from '../../data/kanji.json';
 import { shuffle, buildOptions } from './questionBuilder';
+import { buildKotobaReadingQuiz } from './kotobaReading';
+import kotobaKanjiData from '../../data/kotobaKanji.json';
 
 // Dataset lengkap untuk fallback distractor (dipakai questionBuilder).
 const DATASETS = { hiragana: hiraganaData, katakana: katakanaData, kotoba: kotobaData, grammar: grammarData, kanji: kanjiData };
@@ -68,6 +70,36 @@ export function useQuizSession({ frozen = false } = {}) {
 
     const diff = (difficulty || 'easy').toLowerCase();
     difficultyRef.current = diff;
+
+    // ── Mode SULIT Kotoba: KANJI di soal, HIRAGANA di jawaban ────────────────
+    // Hanya untuk pool yang SELURUHNYA kotoba (kurikulum campur grammar tidak
+    // ikut, karena soalnya beda bentuk). Kata tanpa bentuk kanji umum
+    // (コーヒー, ドア) otomatis dibuang dari sesi ini.
+    const kotobaOnly = availableItems.every(item => item.type === 'kotoba');
+    if (diff === 'hard' && kotobaOnly) {
+      const readingQuestions = buildKotobaReadingQuiz({
+        items: availableItems,
+        kanjiMap: kotobaKanjiData,
+        optionCount: 6,
+        fallbackItems: kotobaData,
+      });
+      if (readingQuestions.length > 0) {
+        questionsRef.current = readingQuestions;
+        currentIndexRef.current = 0;
+        isAnsweredRef.current = false;
+        scoreRef.current = 0;
+
+        setQuestions(readingQuestions);
+        setCurrentIndex(0);
+        setScore(0);
+        setIsFinished(false);
+        setWrongAnswers([]);
+        setAnsweredId(null);
+        setIsAnswered(false);
+        setTimeLeft(7);
+        return;
+      }
+    }
 
     let optionCount = 4;
     if (diff === 'easy') optionCount = 4;
